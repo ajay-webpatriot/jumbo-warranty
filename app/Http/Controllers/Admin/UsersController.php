@@ -22,12 +22,12 @@ class UsersController extends Controller
             return abort(401);
         }
 
-
-                $users = User::all();
+        $users = User::all();
+        
+        
 
         return view('admin.users.index', compact('users'));
     }
-
     /**
      * Show the form for creating new User.
      *
@@ -43,8 +43,9 @@ class UsersController extends Controller
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
-            
-        return view('admin.users.create', compact('enum_status', 'roles', 'companies', 'service_centers'));
+        $logged_userRole_id= auth()->user()->role_id;
+        // echo $logged_userRole_id;exit;    
+        return view('admin.users.create', compact('enum_status', 'roles', 'companies', 'service_centers','logged_userRole_id'));
     }
 
     /**

@@ -38,7 +38,8 @@
                             <i class="fa fa-user"></i>
                             <span>@lang('quickadmin.users.title')</span>
                         </a>
-                    </li>@endcan
+                    </li>
+                    @endcan
                     
                 </ul>
             </li>@endcan
@@ -96,15 +97,39 @@
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.company.title')</span>
                         </a>
-                    </li>@endcan
+                    </li>
+                    @endcan
                     
                     @can('customer_access')
+                    @if(auth()->user()->role_id == 4)
+                    <li>
+                        <a href="{{ route('admin.customers.index') }}">
+                            <i class="fa fa-gears"></i>
+                            <span>@lang('quickadmin.customers.companyUserTitle')</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.customers.index') }}">
+                            <i class="fa fa-gears"></i>
+                            <span>@lang('quickadmin.customers.companyCustomerTitle')</span>
+                        </a>
+                    </li>
+                    @elseif(auth()->user()->role_id == 5)
+                    <li>
+                        <a href="{{ route('admin.customers.index') }}">
+                            <i class="fa fa-gears"></i>
+                            <span>@lang('quickadmin.customers.technicianTitle')</span>
+                        </a>
+                    </li>
+                    @else
                     <li>
                         <a href="{{ route('admin.customers.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.customers.title')</span>
                         </a>
-                    </li>@endcan
+                    </li>
+                    @endif
+                    @endcan
                     
                     @can('assign_product_access')
                     <li>

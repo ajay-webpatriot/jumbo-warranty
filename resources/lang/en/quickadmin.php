@@ -1,30 +1,247 @@
 <?php
 
 return [
-		'user-management' => [		'title' => 'User management',		'fields' => [		],	],
-		'roles' => [		'title' => 'Roles',		'fields' => [			'title' => 'Title',			'status' => 'Status',		],	],
-		'users' => [		'title' => 'Users',		'fields' => [			'role' => 'Role',			'company' => 'Company',			'service-center' => 'Service center',			'name' => 'Name',			'phone' => 'Phone',			'address-1' => 'Address 1',			'address-2' => 'Address 2',			'city' => 'City',			'state' => 'State',			'zipcode' => 'Zipcode',			'location' => 'Location',			'email' => 'Email',			'password' => 'Password',			'remember-token' => 'Remember token',			'status' => 'Status',		],	],
-		'products' => [		'title' => 'Products',		'fields' => [			'name' => 'Name',			'category' => 'Category',			'price' => 'Price',			'status' => 'Status',		],	],
-		'product-parts' => [		'title' => 'Product parts',		'fields' => [		],	],
-		'categories' => [		'title' => 'Categories',		'fields' => [			'name' => 'Name',			'service-charge' => 'Service charge',			'status' => 'Status',		],	],
-		'product-parts' => [		'title' => 'Parts',		'fields' => [			'name' => 'Name',			'status' => 'Status',		],	],
-		'company-management' => [		'title' => 'Company management',		'fields' => [		],	],
-		'company' => [		'title' => 'Company',		'fields' => [			'name' => 'Name',			'credit' => 'Credit',			'installation-charge' => 'Installation charge',			'address-1' => 'Address 1',			'address-2' => 'Address 2',			'city' => 'City',			'state' => 'State',			'zipcode' => 'Zipcode',			'location' => 'Location',			'status' => 'Status',		],	],
-		'company-admins' => [		'title' => 'Company admins',		'fields' => [		],	],
-		'customers' => [		'title' => 'Customers',		'fields' => [			'firstname' => 'Firstname',			'lastname' => 'Lastname',			'phone' => 'Phone',			'company' => 'Company',			'address-1' => 'Address 1',			'address-2' => 'Address 2',			'city' => 'City',			'state' => 'State',			'zipcode' => 'Zipcode',			'location' => 'Location',			'status' => 'Status',		],	],
-		'service-request' => [		'title' => 'Service request',		'fields' => [			'company' => 'Company',			'customer' => 'Customer',			'service-type' => 'Service type',			'service-center' => 'Service center',			'technician' => 'Technician',			'call-type' => 'Call type',			'call-location' => 'Call location',			'priority' => 'Priority',			'product' => 'Product',			'make' => 'Make',			'model-no' => 'Model no',			'is-item-in-warrenty' => 'Is item in warranty',			'bill-no' => 'Bill no',			'bill-date' => 'Bill date',			'serial-no' => 'Serial no',			'mop' => 'MOP',			'purchase-from' => 'Purchase from',			'adavance-amount' => 'Adavance amount',			'service-charge' => 'Service charge',			'service-tag' => 'Service tag',			'complain-details' => 'Complain details',			'note' => 'Note',			'completion-date' => 'Completion date',			'parts' => 'Parts',			'additional-charges' => 'Additional charges',			'amount' => 'Total Amount',			'status' => 'Status',		],	],
-		'service-center-management' => [		'title' => 'Service center management',		'fields' => [		],	],
-		'service-center' => [		'title' => 'Service center',		'fields' => [			'name' => 'Name',			'address-1' => 'Address 1',			'location' => 'Location',			'commission' => 'Commission (%)',			'address-2' => 'Address 2',			'city' => 'City',			'state' => 'State',			'zipcode' => 'Zipcode',			'status' => 'Status',		],	],
-		'service-center-admin' => [		'title' => 'Service center admin',		'fields' => [		],	],
-		'technician' => [		'title' => 'Technician',		'fields' => [		],	],
-		'service-request-log' => [		'title' => 'Service request log',		'fields' => [		],	],
-		'manage-charges' => [		'title' => 'Manage charges',		'fields' => [			'km-charge' => 'km charge',			'status' => 'Status',		],	],
-		'invoices' => [		'title' => 'Invoices',		'fields' => [			'company' => 'Company',			'status' => 'Status',		],	],
-		'product-management' => [		'title' => 'Product management',		'fields' => [		],	],
-		'company-users' => [		'title' => 'Company users',		'fields' => [		],	],
-		'assign-parts' => [		'title' => 'Assign parts',		'fields' => [			'company' => 'Company',			'product-parts' => 'Parts',			'quantity' => 'Quantity',			'status' => 'Status',		],	],
-		'assign-product' => [		'title' => 'Assign product',		'fields' => [		],	],
-		'assign-product' => [		'title' => 'Assign products',		'fields' => [			'company' => 'Company',			'product-id' => 'Product',			'status' => 'Status',		],	],
+	
+	'user-management' => [
+		'title' => 'User management',
+		'fields' => [
+		],
+	],
+	
+	'roles' => [
+		'title' => 'Roles',
+		'fields' => [
+			'title' => 'Title',
+			'status' => 'Status',
+		],
+	],
+	
+	'users' => [
+		'title' => 'Users',
+		'fields' => [
+			'role' => 'Role',
+			'company' => 'Company',
+			'service-center' => 'Service center',
+			'name' => 'Name',
+			'phone' => 'Phone',
+			'address-1' => 'Address 1',
+			'address-2' => 'Address 2',
+			'city' => 'City',
+			'state' => 'State',
+			'zipcode' => 'Zipcode',
+			'location' => 'Location',
+			'email' => 'Email',
+			'password' => 'Password',
+			'remember-token' => 'Remember token',
+			'status' => 'Status',
+		],
+	],
+	
+	'products' => [
+		'title' => 'Products',
+		'fields' => [
+			'name' => 'Name',
+			'category' => 'Category',
+			'price' => 'Price',
+			'status' => 'Status',
+		],
+	],
+	
+	'product-parts' => [
+		'title' => 'Product parts',
+		'fields' => [
+		],
+	],
+	
+	'categories' => [
+		'title' => 'Categories',
+		'fields' => [
+			'name' => 'Name',
+			'service-charge' => 'Service charge',
+			'status' => 'Status',
+		],
+	],
+	
+	'product-parts' => [
+		'title' => 'Parts',
+		'fields' => [
+			'name' => 'Name',
+			'status' => 'Status',
+		],
+	],
+	
+	'company-management' => [
+		'title' => 'Company management',
+		'fields' => [
+		],
+	],
+	
+	'company' => [
+		'title' => 'Company',
+		'fields' => [
+			'name' => 'Name',
+			'credit' => 'Credit',
+			'installation-charge' => 'Installation charge',
+			'address-1' => 'Address 1',
+			'address-2' => 'Address 2',
+			'city' => 'City',
+			'state' => 'State',
+			'zipcode' => 'Zipcode',
+			'location' => 'Location',
+			'status' => 'Status',
+		],
+	],
+	
+	'company-admins' => [
+		'title' => 'Company admins',
+		'fields' => [
+		],
+	],
+	
+	'customers' => [
+		'title' => 'Customers',
+		'companyUserTitle' => 'Company User',
+		'companyCustomerTitle' => 'Company Customer',
+		'technicianTitle' => 'Technician',
+		'fields' => [
+			'firstname' => 'Firstname',
+			'lastname' => 'Lastname',
+			'phone' => 'Phone',
+			'company' => 'Company',
+			'address-1' => 'Address 1',
+			'address-2' => 'Address 2',
+			'city' => 'City',
+			'state' => 'State',
+			'zipcode' => 'Zipcode',
+			'location' => 'Location',
+			'status' => 'Status',
+		],
+	],
+	
+	'service-request' => [
+		'title' => 'Service request',
+		'fields' => [
+			'company' => 'Company',
+			'customer' => 'Customer',
+			'service-type' => 'Service type',
+			'service-center' => 'Service center',
+			'technician' => 'Technician',
+			'call-type' => 'Call type',
+			'call-location' => 'Call location',
+			'priority' => 'Priority',
+			'product' => 'Product',
+			'make' => 'Make',
+			'model-no' => 'Model no',
+			'is-item-in-warrenty' => 'Is item in warranty',
+			'bill-no' => 'Bill no',
+			'bill-date' => 'Bill date',
+			'serial-no' => 'Serial no',
+			'mop' => 'MOP',
+			'purchase-from' => 'Purchase from',
+			'adavance-amount' => 'Adavance amount',
+			'service-charge' => 'Service charge',
+			'service-tag' => 'Service tag',
+			'complain-details' => 'Complain details',
+			'note' => 'Note',
+			'completion-date' => 'Completion date',
+			'parts' => 'Parts',
+			'additional-charges' => 'Additional charges',
+			'amount' => 'Total Amount',
+			'status' => 'Status',
+		],
+	],
+	
+	'service-center-management' => [
+		'title' => 'Service center management',
+		'fields' => [
+		],
+	],
+	
+	'service-center' => [
+		'title' => 'Service center',
+		'fields' => [
+			'name' => 'Name',
+			'address-1' => 'Address 1',
+			'location' => 'Location',
+			'commission' => 'Commission (%)',
+			'address-2' => 'Address 2',
+			'city' => 'City',
+			'state' => 'State',
+			'zipcode' => 'Zipcode',
+			'status' => 'Status',
+		],
+	],
+	
+	'service-center-admin' => [
+		'title' => 'Service center admin',
+		'fields' => [
+		],
+	],
+	
+	'technician' => [
+		'title' => 'Technician',
+		'fields' => [
+		],
+	],
+	
+	'service-request-log' => [
+		'title' => 'Service request log',
+		'fields' => [
+		],
+	],
+	
+	'manage-charges' => [
+		'title' => 'Manage charges',
+		'fields' => [
+			'km-charge' => 'km charge',
+			'status' => 'Status',
+		],
+	],
+	
+	'invoices' => [
+		'title' => 'Invoices',
+		'fields' => [
+			'company' => 'Company',
+			'status' => 'Status',
+		],
+	],
+	
+	'product-management' => [
+		'title' => 'Product management',
+		'fields' => [
+		],
+	],
+	
+	'company-users' => [
+		'title' => 'Company users',
+		'fields' => [
+		],
+	],
+	
+	'assign-parts' => [
+		'title' => 'Assign parts',
+		'fields' => [
+			'company' => 'Company',
+			'product-parts' => 'Parts',
+			'quantity' => 'Quantity',
+			'status' => 'Status',
+		],
+	],
+	
+	'assign-product' => [
+		'title' => 'Assign product',
+		'fields' => [
+		],
+	],
+	
+	'assign-product' => [
+		'title' => 'Assign products',
+		'fields' => [
+			'company' => 'Company',
+			'product-id' => 'Product',
+			'status' => 'Status',
+		],
+	],
 	'qa_create' => 'Create',
 	'qa_save' => 'Save',
 	'qa_edit' => 'Edit',

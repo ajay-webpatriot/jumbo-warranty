@@ -26,6 +26,9 @@
 <script src="{{ url('adminlte/plugins/fastclick/fastclick.js') }}"></script>
 <script src="{{ url('adminlte/js/app.min.js') }}"></script>
 
+<!-- custom js -->
+<script src="{{ url('js/custom.js') }}"></script>
+
 <script>
     window._token = '{{ csrf_token() }}';
 </script>

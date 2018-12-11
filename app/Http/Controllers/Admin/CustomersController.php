@@ -21,7 +21,7 @@ class CustomersController extends Controller
         if (! Gate::allows('customer_access')) {
             return abort(401);
         }
-
+// echo "<pre>"; print_r (auth()->user()); echo "</pre>"; exit();
 
         if (request('show_deleted') == 1) {
             if (! Gate::allows('customer_delete')) {

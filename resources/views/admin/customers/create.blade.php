@@ -1,7 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+    @if(auth()->user()->role_id == 4)
+    <h3 class="page-title">@lang('quickadmin.customers.companyUserTitle')</h3>
+    @elseif(auth()->user()->role_id == 5)
+    <h3 class="page-title">@lang('quickadmin.customers.technicianTitle')</h3>
+    @else
     <h3 class="page-title">@lang('quickadmin.customers.title')</h3>
+    @endif
     {!! Form::open(['method' => 'POST', 'route' => ['admin.customers.store']]) !!}
 
     <div class="panel panel-default">

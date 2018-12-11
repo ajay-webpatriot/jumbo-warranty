@@ -2,7 +2,13 @@
 @extends('layouts.app')
 
 @section('content')
+    @if(auth()->user()->role_id == 4)
+    <h3 class="page-title">@lang('quickadmin.customers.companyUserTitle')</h3>
+    @elseif(auth()->user()->role_id == 5)
+    <h3 class="page-title">@lang('quickadmin.customers.technicianTitle')</h3>
+    @else
     <h3 class="page-title">@lang('quickadmin.customers.title')</h3>
+    @endif
     @can('customer_create')
     <p>
         <a href="{{ route('admin.customers.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
