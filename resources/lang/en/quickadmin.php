@@ -186,10 +186,10 @@ return [
 	'service-request-log' => [
 		'title' => 'Service request log',
 		'fields' => [
-			'status_made' => 'Status',
-			'service_center' => 'Service Center',
+			'status-made' => 'Status',
+			'service-request' => 'Service Center',
 			'user' => 'User',
-			'created_date' => 'Creation Date',
+			'created-date' => 'Creation Date',
 		],
 	],
 	

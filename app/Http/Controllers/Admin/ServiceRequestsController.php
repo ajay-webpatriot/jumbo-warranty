@@ -43,7 +43,7 @@ class ServiceRequestsController extends Controller
             }
             
         }
-
+        // echo "<pre>"; print_r ($service_requests); echo "</pre>"; exit();
         return view('admin.service_requests.index', compact('service_requests'));
     }
 

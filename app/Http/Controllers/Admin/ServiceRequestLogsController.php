@@ -13,6 +13,20 @@ class ServiceRequestLogsController extends Controller
         if (! Gate::allows('service_request_log_access')) {
             return abort(401);
         }
-        return view('admin.service_request_logs.index');
+        
+
+         if (request('show_deleted') == 1) {
+            if (! Gate::allows('service_request_delete')) {
+                return abort(401);
+            }
+            $service_request_logs = ServiceRequestLog::onlyTrashed()->get();
+        } else {
+            
+                $service_request_logs = ServiceRequestLog::all();
+            
+            
+        }
+        // echo "<pre>"; print_r ($service_request_logs); echo "</pre>"; exit();
+        return view('admin.service_request_logs.index', compact('service_request_logs'));
     }
 }

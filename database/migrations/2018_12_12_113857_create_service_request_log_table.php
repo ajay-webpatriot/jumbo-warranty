@@ -13,7 +13,7 @@ class CreateServiceRequestLogTable extends Migration
      */
     public function up()
     {
-        Schema::create('service_request_log', function (Blueprint $table) {
+        Schema::create('service_request_logs', function (Blueprint $table) {
             $table->increments('id');
             $table->enum('status_made', array('New', 'Assigned', 'Started', 'Pending for parts', 'Cancelled', 'Transferred to inhouse', 'Under testing', 'Issue for replacement', 'Closed'))->nullable();
 
@@ -37,6 +37,6 @@ class CreateServiceRequestLogTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('service_request_log');
+        Schema::dropIfExists('service_request_logs');
     }
 }
