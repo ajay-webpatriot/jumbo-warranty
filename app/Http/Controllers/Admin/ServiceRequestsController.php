@@ -29,7 +29,19 @@ class ServiceRequestsController extends Controller
             }
             $service_requests = ServiceRequest::onlyTrashed()->get();
         } else {
-            $service_requests = ServiceRequest::all();
+            if(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+            {
+                $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+            }
+            else if(auth()->user()->role_id == $_ENV['TECHNICIAN_ROLE_ID'])
+            {
+                $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+            }
+            else
+            {
+                $service_requests = ServiceRequest::all();
+            }
+            
         }
 
         return view('admin.service_requests.index', compact('service_requests'));
@@ -47,9 +59,11 @@ class ServiceRequestsController extends Controller
         }
         
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $technicians = \App\User::where('role_id',$_ENV['TECHNICIAN_ROLE_ID'])->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $parts = \App\ProductPart::get()->pluck('name', 'id');
 
@@ -60,8 +74,9 @@ class ServiceRequestsController extends Controller
                     $enum_is_item_in_warrenty = ServiceRequest::$enum_is_item_in_warrenty;
                     $enum_mop = ServiceRequest::$enum_mop;
                     $enum_status = ServiceRequest::$enum_status;
-            
-        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts'));
+        $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
+        
+        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName'));
     }
 
     /**
@@ -97,9 +112,11 @@ class ServiceRequestsController extends Controller
         }
         
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $technicians = \App\User::where('role_id',$_ENV['TECHNICIAN_ROLE_ID'])->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $parts = \App\ProductPart::get()->pluck('name', 'id');
 
@@ -112,8 +129,8 @@ class ServiceRequestsController extends Controller
                     $enum_status = ServiceRequest::$enum_status;
             
         $service_request = ServiceRequest::findOrFail($id);
-
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts'));
+        $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName'));
     }
 
     /**

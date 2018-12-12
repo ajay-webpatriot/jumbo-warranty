@@ -10,6 +10,21 @@
         </div>
         
         <div class="panel-body">
+            @if(auth()->user()->role_id == $_ENV['COMPANY_ADMIN_ROLE_ID'] || auth()->user()->role_id == $_ENV['COMPANY_USER_ROLE_ID'])
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
+                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('company_id'))
+                        <p class="help-block">
+                            {{ $errors->first('company_id') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+            @else
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
@@ -22,6 +37,7 @@
                     @endif
                 </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'', ['class' => 'control-label']) !!}
@@ -46,6 +62,7 @@
                     @endif
                 </div>
             </div>
+            @if(auth()->user()->role_id != $_ENV['COMPANY_ADMIN_ROLE_ID'] && auth()->user()->role_id != $_ENV['COMPANY_USER_ROLE_ID'])
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
@@ -70,6 +87,7 @@
                     @endif
                 </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('call_type', trans('quickadmin.service-request.fields.call-type').'*', ['class' => 'control-label']) !!}

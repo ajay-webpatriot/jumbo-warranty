@@ -36,29 +36,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property decimal $amount
  * @property enum $status
 */
-class ServiceRequest extends Model
+class ServiceRequestLog extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['service_type', 'call_type', 'call_location', 'priority', 'make', 'model_no', 'is_item_in_warrenty', 'bill_no', 'bill_date', 'serial_no', 'mop', 'purchase_from', 'adavance_amount', 'service_charge', 'service_tag', 'complain_details', 'note', 'completion_date', 'additional_charges', 'amount', 'status', 'company_id', 'customer_id', 'service_center_id', 'technician_id', 'product_id'];
+    protected $fillable = ['service_request_id', 'status_made', 'user_id'];
     protected $hidden = [];
     
     
-
-    public static $enum_service_type = ["installation" => "Installation", "repair" => "Repair"];
-
-    public static $enum_call_type = ["AMC" => "AMC", "Chargeable" => "Chargeable", "FOC" => "FOC", "Warranty" => "Warranty"];
-
-    public static $enum_call_location = ["On site" => "On site", "In House" => "In House"];
-
-    public static $enum_priority = ["HIGH" => "HIGH", "LOW" => "LOW", "MEDIUM" => "MEDIUM", "MODERATE" => "MODERATE"];
-
-    public static $enum_is_item_in_warrenty = ["Yes" => "Yes", "No" => "No"];
-
-    public static $enum_mop = ["Cash" => "Cash", "Bank" => "Bank", "Online" => "Online", "Credit / Debit Card" => "Credit / Debit Card"];
-
-    public static $enum_status = ["New" => "New", "Assigned" => "Assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
-
     /**
      * Set to null if empty
      * @param $input
@@ -175,11 +160,6 @@ class ServiceRequest extends Model
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id')->withTrashed();
-    }
-    
-    public function parts()
-    {
-        return $this->belongsToMany(ProductPart::class, 'product_part_service_request')->withTrashed();
     }
     
 }

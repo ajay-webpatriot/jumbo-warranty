@@ -18,6 +18,8 @@ return [
 	
 	'users' => [
 		'title' => 'Users',
+		'companyUserTitle' => 'Company Users',
+		'technicianTitle' => 'Technicians',
 		'fields' => [
 			'role' => 'Role',
 			'company' => 'Company',
@@ -100,9 +102,6 @@ return [
 	
 	'customers' => [
 		'title' => 'Customers',
-		'companyUserTitle' => 'Company User',
-		'companyCustomerTitle' => 'Company Customer',
-		'technicianTitle' => 'Technician',
 		'fields' => [
 			'firstname' => 'Firstname',
 			'lastname' => 'Lastname',
@@ -187,6 +186,10 @@ return [
 	'service-request-log' => [
 		'title' => 'Service request log',
 		'fields' => [
+			'status_made' => 'Status',
+			'service_center' => 'Service Center',
+			'user' => 'User',
+			'created_date' => 'Creation Date',
 		],
 	],
 	

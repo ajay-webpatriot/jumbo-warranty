@@ -77,7 +77,7 @@
                                 @endcan
 
                                 <td field-key='company'>{{ $service_request->company->name or '' }}</td>
-                                <td field-key='customer'>{{ $service_request->customer->name or '' }}</td>
+                                <td field-key='customer'>{{ $service_request->customer->firstname or '' }}</td>
                                 <td field-key='service_type'>{{ $service_request->service_type }}</td>
                                 <td field-key='service_center'>{{ $service_request->service_center->name or '' }}</td>
                                 <td field-key='technician'>{{ $service_request->technician->name or '' }}</td>

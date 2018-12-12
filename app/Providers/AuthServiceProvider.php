@@ -31,7 +31,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: User management
         Gate::define('user_management_access', function ($user) {
-            return in_array($user->role_id, [1]);
+            // return in_array($user->role_id, [1]);
+            return in_array($user->role_id, [1,4,5]);
         });
 
         // Auth gates for: Roles
@@ -127,7 +128,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Company management
         Gate::define('company_management_access', function ($user) {
-            return in_array($user->role_id, [1, 3, 4]);
+            // return in_array($user->role_id, [1, 3, 4]);
+            return in_array($user->role_id, [1, 3, 4,5,6,7]);
         });
 
         // Auth gates for: Company
@@ -218,6 +220,18 @@ class AuthServiceProvider extends ServiceProvider
         // Auth gates for: Service request log
         Gate::define('service_request_log_access', function ($user) {
             return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
+        });
+        Gate::define('service_request_log_create', function ($user) {
+            return in_array($user->role_id, [1, 3, 4, 7]);
+        });
+        Gate::define('service_request_log_edit', function ($user) {
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
+        });
+        Gate::define('service_request_log_view', function ($user) {
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
+        });
+        Gate::define('service_request_log_delete', function ($user) {
+            return in_array($user->role_id, [1, 3, 4, 7]);
         });
 
         // Auth gates for: Service center management
