@@ -14,11 +14,21 @@ class ServiceRequestLogsController extends Controller
             return abort(401);
         }
         
-            $service_request_log = ServiceRequestLog::select('service_request_logs.id', 'users.name', 'users.email', 'service_requests.service_type', 'service_request_logs.status_made', 'service_request_logs.created_at', 'service_request_logs.updated_at')
-        												->Join('service_requests', 'service_request_logs.service_request_id', '=', 'service_requests.id')
-    													->Join('users', 'service_request_logs.user_id', '=', 'users.id')
-    													->orderby('service_request_logs.created_at','desc')
-    													->get();
+            // $service_request_log = ServiceRequestLog::select('service_request_logs.id', 'users.name', 'users.email', 'service_requests.service_type', 'service_request_logs.status_made', 'service_request_logs.created_at', 'service_request_logs.updated_at')
+        				// 								->Join('service_requests', 'service_request_logs.service_request_id', '=', 'service_requests.id')
+    								// 					->Join('users', 'service_request_logs.user_id', '=', 'users.id')
+    								// 					->orderby('service_request_logs.created_at','desc')
+    								// 					->get();
+
+        if (request('show_deleted') == 1) {
+            if (! Gate::allows('service_request_log_delete')) {
+                return abort(401);
+            }
+            $service_request_log = ServiceRequestLog::onlyTrashed()->orderby('created_at','desc')->get();
+        } else {
+            
+                $service_request_log = ServiceRequestLog::all()->sortByDesc('created_at');
+            }
     	// $service_request_log = ServiceRequestLog::all();
        	return view('admin.service_request_logs.index', compact('service_request_log'));
     }

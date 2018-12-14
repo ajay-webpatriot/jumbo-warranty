@@ -4,13 +4,6 @@
 @section('content')
     <h3 class="page-title">@lang('quickadmin.service-request-log.title')</h3>
 
-    @can('service_request_create')
-    <p>
-        <a href="{{ route('admin.service_request_logs.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
-        
-    </p>
-    @endcan
-
     @can('service_request_log_delete')
     <p>
         <ul class="list-inline">
@@ -49,8 +42,8 @@
 	                    	 	 	@can('service_request_log_delete')
 	                                    @if ( request('show_deleted') != 1 )<td></td>@endif
 	                                @endcan
-	                                <td field-key='name'>{{ $service_request_log->name or '' }}</td>
-	                                <td field-key='email'>{{ $service_request_log->email or '' }}</td>
+	                                <td field-key='name'>{{ $service_request_log->user->name or '' }}</td>
+	                                <td field-key='email'>{{ $service_request_log->user->email or '' }}</td>
 	                                <td field-key='status_made'>{{ $service_request_log->status_made or '' }}</td>
 	                                <td field-key='created_at'>{{ $service_request_log->created_at or '' }}</td>
 	                                <td field-key='updated_at'>{{ $service_request_log->updated_at or '' }}</td>
