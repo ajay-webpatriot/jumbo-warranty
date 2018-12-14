@@ -11,6 +11,21 @@
         </div>
 
         <div class="panel-body">
+            @if(auth()->user()->role_id == $_ENV['COMPANY_ADMIN_ROLE_ID'] || auth()->user()->role_id == $_ENV['COMPANY_USER_ROLE_ID'])
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
+                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('company_id'))
+                        <p class="help-block">
+                            {{ $errors->first('company_id') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+            @else
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
@@ -23,6 +38,7 @@
                     @endif
                 </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'', ['class' => 'control-label']) !!}
@@ -47,6 +63,7 @@
                     @endif
                 </div>
             </div>
+            @if(auth()->user()->role_id != $_ENV['COMPANY_ADMIN_ROLE_ID'] && auth()->user()->role_id != $_ENV['COMPANY_USER_ROLE_ID'])
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
@@ -62,7 +79,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
-                    {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2']) !!}
+                    {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('technician_id'))
                         <p class="help-block">
@@ -71,6 +88,7 @@
                     @endif
                 </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('call_type', trans('quickadmin.service-request.fields.call-type').'*', ['class' => 'control-label']) !!}
@@ -218,7 +236,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('adavance_amount', trans('quickadmin.service-request.fields.adavance-amount').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('adavance_amount', old('adavance_amount'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('adavance_amount', old('adavance_amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'adavance_amount']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('adavance_amount'))
                         <p class="help-block">
@@ -230,7 +248,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('service_charge'))
                         <p class="help-block">
@@ -242,7 +260,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_tag', trans('quickadmin.service-request.fields.service-tag').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('service_tag', old('service_tag'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('service_tag', old('service_tag'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_tag']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('service_tag'))
                         <p class="help-block">
@@ -308,7 +326,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '','id' => 'additional_charges']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('additional_charges'))
                         <p class="help-block">
@@ -320,7 +338,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('amount'))
                         <p class="help-block">
@@ -332,7 +350,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('status'))
                         <p class="help-block">
@@ -364,7 +382,38 @@
                 format: "{{ config('app.date_format_moment') }}",
                 locale: "{{ App::getLocale() }}",
             });
+
             
+            if({{auth()->user()->role_id}} == SERVICE_ADMIN_ROLE_ID)
+            {
+                // disabled all field except technician and status for service admin
+                $("input[type=text]").prop("readonly", true);
+                $("textarea").prop("readonly", true);
+                $("select").prop("disabled", true);
+                $("#technician_id").prop("disabled", false);
+                $("#status").prop("disabled", false);
+            }
+            else if({{auth()->user()->role_id}} == TECHNICIAN_ROLE_ID)
+            {
+                // disabled all field except charges related field, parts and status for technician
+                $("input[type=text]").prop("readonly", true);
+                $("textarea").prop("readonly", true);
+                $("select").prop("disabled", true);
+
+                $("#adavance_amount").prop("readonly", false);
+                $("#service_charge").prop("readonly", false);
+                $("#service_tag").prop("readonly", false);
+                $("#additional_charges").prop("readonly", false);
+                $("#amount").prop("readonly", false);
+
+                $("#selectall-parts").prop("disabled", false);
+                $("#status").prop("disabled", false);
+
+            }
+            // removed disabled attr of select on form submit to store exusting value
+            $('form').bind('submit', function() {
+                $(this).find('select:disabled').removeAttr('disabled');
+            });
         });
     </script>
             

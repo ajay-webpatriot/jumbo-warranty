@@ -33,12 +33,29 @@
                     </li>@endcan
                     
                     @can('user_access')
+                    @if(auth()->user()->role_id ==  $_ENV['COMPANY_ADMIN_ROLE_ID'])
+                    <li>
+                        <a href="{{ route('admin.users.index') }}">
+                            <i class="fa fa-user"></i>
+                            <span>@lang('quickadmin.users.companyUserTitle')</span>
+                        </a>
+                    </li>
+                    @elseif(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+                    <li>
+                        <a href="{{ route('admin.users.index') }}">
+                            <i class="fa fa-user"></i>
+                            <span>@lang('quickadmin.users.technicianTitle')</span>
+                        </a>
+                    </li>
+                    @else
                     <li>
                         <a href="{{ route('admin.users.index') }}">
                             <i class="fa fa-user"></i>
                             <span>@lang('quickadmin.users.title')</span>
                         </a>
                     </li>
+                    @endif
+                    
                     @endcan
                     
                 </ul>
@@ -101,34 +118,12 @@
                     @endcan
                     
                     @can('customer_access')
-                    @if(auth()->user()->role_id == 4)
-                    <li>
-                        <a href="{{ route('admin.customers.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.customers.companyUserTitle')</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.customers.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.customers.companyCustomerTitle')</span>
-                        </a>
-                    </li>
-                    @elseif(auth()->user()->role_id == 5)
-                    <li>
-                        <a href="{{ route('admin.customers.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.customers.technicianTitle')</span>
-                        </a>
-                    </li>
-                    @else
                     <li>
                         <a href="{{ route('admin.customers.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.customers.title')</span>
                         </a>
                     </li>
-                    @endif
                     @endcan
                     
                     @can('assign_product_access')
@@ -182,7 +177,8 @@
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.service-center.title')</span>
                         </a>
-                    </li>@endcan
+                    </li>
+                    @endcan
                     
                 </ul>
             </li>@endcan

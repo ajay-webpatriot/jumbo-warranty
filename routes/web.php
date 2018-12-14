@@ -69,7 +69,5 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::post('invoices_restore/{id}', ['uses' => 'Admin\InvoicesController@restore', 'as' => 'invoices.restore']);
     Route::delete('invoices_perma_del/{id}', ['uses' => 'Admin\InvoicesController@perma_del', 'as' => 'invoices.perma_del']);
 
-
-
- 
+    Route::post('service_requests_logs_mass_destroy', ['uses' => 'Admin\ServiceRequestLogsController@massDestroy', 'as' => 'service_requests_logs.mass_destroy']);
 });

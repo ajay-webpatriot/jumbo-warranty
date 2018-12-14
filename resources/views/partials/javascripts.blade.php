@@ -6,6 +6,13 @@
     window.pdfButtonTrans = '{{ trans("quickadmin.qa_pdf") }}';
     window.printButtonTrans = '{{ trans("quickadmin.qa_print") }}';
     window.colvisButtonTrans = '{{ trans("quickadmin.qa_colvis") }}';
+    var SUPER_ADMIN_ROLE_ID='{{ $_ENV["SUPER_ADMIN_ROLE_ID"] }}';
+    var ADMIN_ROLE_ID='{{ $_ENV["ADMIN_ROLE_ID"] }}';
+    var COMPANY_ADMIN_ROLE_ID='{{ $_ENV["COMPANY_ADMIN_ROLE_ID"] }}';
+    var SERVICE_ADMIN_ROLE_ID='{{ $_ENV["SERVICE_ADMIN_ROLE_ID"] }}';
+    var TECHNICIAN_ROLE_ID='{{ $_ENV["TECHNICIAN_ROLE_ID"] }}';
+    var COMPANY_USER_ROLE_ID='{{ $_ENV["COMPANY_USER_ROLE_ID"] }}';
+    var COMPANY_CUST_ROLE_ID='{{ $_ENV["COMPANY_CUST_ROLE_ID"] }}';
 </script>
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>

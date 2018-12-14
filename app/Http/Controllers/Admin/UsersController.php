@@ -21,8 +21,19 @@ class UsersController extends Controller
         if (! Gate::allows('user_access')) {
             return abort(401);
         }
-
-        $users = User::all();
+        if(auth()->user()->role_id ==  $_ENV['COMPANY_ADMIN_ROLE_ID'])
+        {
+            $users = User::where('role_id',$_ENV['COMPANY_USER_ROLE_ID'])->where('company_id',auth()->user()->company_id)->get();
+        }
+        else if(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+        {
+            $users = User::where('role_id',$_ENV['TECHNICIAN_ROLE_ID'])->where('service_center_id',auth()->user()->service_center_id)->get();
+        }
+        else
+        {
+            $users = User::all();
+        }
+        
         
         
 
@@ -43,8 +54,7 @@ class UsersController extends Controller
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
-        $logged_userRole_id= auth()->user()->role_id;
-        // echo $logged_userRole_id;exit;    
+        $logged_userRole_id= auth()->user()->role_id;  
         return view('admin.users.create', compact('enum_status', 'roles', 'companies', 'service_centers','logged_userRole_id'));
     }
 
@@ -88,8 +98,8 @@ class UsersController extends Controller
         $enum_status = User::$enum_status;
             
         $user = User::findOrFail($id);
-
-        return view('admin.users.edit', compact('user', 'enum_status', 'roles', 'companies', 'service_centers'));
+        $logged_userRole_id= auth()->user()->role_id;
+        return view('admin.users.edit', compact('user', 'enum_status', 'roles', 'companies', 'service_centers','logged_userRole_id'));
     }
 
     /**

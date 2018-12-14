@@ -2,7 +2,13 @@
 @extends('layouts.app')
 
 @section('content')
+    @if(auth()->user()->role_id ==  $_ENV['COMPANY_ADMIN_ROLE_ID'])
+    <h3 class="page-title">@lang('quickadmin.users.companyUserTitle')</h3>
+    @elseif(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+    <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3>
+    @else
     <h3 class="page-title">@lang('quickadmin.users.title')</h3>
+    @endif
     @can('user_create')
     <p>
         <a href="{{ route('admin.users.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
