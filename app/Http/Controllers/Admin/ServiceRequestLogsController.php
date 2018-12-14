@@ -14,7 +14,7 @@ class ServiceRequestLogsController extends Controller
             return abort(401);
         }
         
-        $service_request_log = ServiceRequestLog::select('service_request_logs.id', 'users.name', 'users.email', 'service_requests.service_type', 'service_request_logs.status_made', 'service_request_logs.created_at', 'service_request_logs.updated_at')
+            $service_request_log = ServiceRequestLog::select('service_request_logs.id', 'users.name', 'users.email', 'service_requests.service_type', 'service_request_logs.status_made', 'service_request_logs.created_at', 'service_request_logs.updated_at')
         												->Join('service_requests', 'service_request_logs.service_request_id', '=', 'service_requests.id')
     													->Join('users', 'service_request_logs.user_id', '=', 'users.id')
     													->orderby('service_request_logs.created_at','desc')
@@ -40,10 +40,7 @@ class ServiceRequestLogsController extends Controller
     													->where('service_request_logs.id', $id)
     													->orderby('service_request_logs.created_at','desc')
     													->get();
-    													
-
-    													
-        // $service_request_logs = ServiceRequestLog::findOrFail($id);
+    	// $service_request_logs = ServiceRequestLog::findOrFail($id);
 
         return view('admin.service_request_logs.show', compact('service_request_logs'));
     }

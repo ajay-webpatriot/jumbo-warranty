@@ -1,7 +1,25 @@
+@inject('request', 'Illuminate\Http\Request')
 @extends('layouts.app')
 
 @section('content')
     <h3 class="page-title">@lang('quickadmin.service-request-log.title')</h3>
+
+    @can('service_request_create')
+    <p>
+        <a href="{{ route('admin.service_request_logs.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
+        
+    </p>
+    @endcan
+
+    @can('service_request_log_delete')
+    <p>
+        <ul class="list-inline">
+            <li><a href="{{ route('admin.service_request_logs.index') }}" style="{{ request('show_deleted') == 1 ? '' : 'font-weight: 700' }}">@lang('quickadmin.qa_all')</a></li> |
+            <li><a href="{{ route('admin.service_request_logs.index') }}?show_deleted=1" style="{{ request('show_deleted') == 1 ? 'font-weight: 700' : '' }}">@lang('quickadmin.qa_trash')</a></li>
+        </ul>
+    </p>
+    @endcan
+
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('quickadmin.qa_list')

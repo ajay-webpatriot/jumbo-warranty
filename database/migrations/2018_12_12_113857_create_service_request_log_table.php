@@ -14,6 +14,7 @@ class CreateServiceRequestLogTable extends Migration
     public function up()
     {
         Schema::create('service_request_log', function (Blueprint $table) {
+
             $table->increments('id');
             $table->enum('status_made', array('New', 'Assigned', 'Started', 'Pending for parts', 'Cancelled', 'Transferred to inhouse', 'Under testing', 'Issue for replacement', 'Closed'))->nullable();
 
