@@ -2,16 +2,32 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreServiceRequestsRequest;
 use App\Http\Requests\Admin\UpdateServiceRequestsRequest;
+
+// models
+use App\ServiceRequest;
 use App\ServiceRequestLog;
+
+// permission plugin
+use Spatie\Permission\Models\Role as RolePermission;
+use Spatie\Permission\Models\Permission as perm;
 
 class ServiceRequestsController extends Controller
 {
+    public function __construct()
+    {
+        // Check permission
+        $this->middleware(function ($request, $next) {
+            if (! Gate::allows('manageServiceRequest')) {
+                return abort(404);
+            }
+            return $next($request);
+        });
+    }
     /**
      * Display a listing of ServiceRequest.
      *
@@ -94,7 +110,14 @@ class ServiceRequestsController extends Controller
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
 
-
+        // service request log
+        $insertServiceRequestLogArr = array(
+                                        'action_made'     =>   "Service request is created.", 
+                                        'service_request_id'   =>   $service_request->id,
+                                        'user_id'   =>   auth()->user()->id
+                                    );
+        ServiceRequestLog::create($insertServiceRequestLogArr);
+            
 
         return redirect()->route('admin.service_requests.index');
     }
@@ -146,17 +169,45 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_edit')) {
             return abort(401);
         }
+        // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
         $service_request = ServiceRequest::findOrFail($id);
+
         if(isset($service_request->status) && isset($request['status'])){
            if($service_request->status !== $request['status']){
                 $insertServiceRequestLogArr =   array(
-                                                    'status_made'     =>   $request['status'], 
+                                                    'action_made'     =>  "Status is changed from ".$service_request->status." to ".$request['status'].".", 
                                                     'service_request_id'   =>   $id,
                                                     'user_id'   =>   auth()->user()->id
                                                 );
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
         }
+        if(isset($request['technician_id']))
+        {
+            if($service_request->technician_id != $request['technician_id']){
+
+                $technician=\App\User::where('id',$request['technician_id'])->first();
+                $insertServiceRequestLogArr =   array(
+                                                    'action_made'     =>  "Technician is assigned to ".$technician->name.".", 
+                                                    'service_request_id'   =>   $id,
+                                                    'user_id'   =>   auth()->user()->id
+                                                );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+            }
+        }
+        if(isset($request['service_center_id']))
+        {
+            if($service_request->service_center_id != $request['service_center_id']){
+
+                $service_center=\App\ServiceCenter::where('id',$request['service_center_id'])->first();
+                $insertServiceRequestLogArr =   array(
+                                                    'action_made'     =>  "Service center is assigned to ".$service_center->name.".", 
+                                                    'service_request_id'   =>   $id,
+                                                    'user_id'   =>   auth()->user()->id
+                                                );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+            }
+        }    
         $service_request->update($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
 

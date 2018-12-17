@@ -21,4 +21,16 @@ $(document).ready(function(){
 
   });
 
+  $(document).on('click', '.allRoleCheck', function () {
+       // checked current column checkbox on click of permission checkbox in permission management
+       var index=$(this).closest("th").index();
+       $(this).closest("table").find("tr td:nth-child("+(index+1)+") input[type=checkbox]").prop("checked", $(this).prop("checked"));
+       // $("#tblPermission tr td:nth-child("+(index+1)+") input[type=checkbox]").prop("checked", true);
+  });
+  $(document).on('click', '.roleCheck', function () {
+       // checked current row checkbox on click of permission checkbox in permission management
+       var index=$(this).closest("tr").index();
+       $(this).closest("tr").find("input[type=checkbox]").prop("checked", $(this).prop("checked"));
+  });
+
 })

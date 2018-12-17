@@ -9,8 +9,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreProductPartsRequest;
 use App\Http\Requests\Admin\UpdateProductPartsRequest;
 
+// permission plugin
+use Spatie\Permission\Models\Role as RolePermission;
+use Spatie\Permission\Models\Permission as perm;
+
 class ProductPartsController extends Controller
 {
+    public function __construct()
+    {
+        // Check permission
+        $this->middleware(function ($request, $next) {
+            if (! Gate::allows('manageParts')) {
+                return abort(404);
+            }
+            return $next($request);
+        });
+    } 
     /**
      * Display a listing of ProductPart.
      *

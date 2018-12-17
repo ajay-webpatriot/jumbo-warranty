@@ -9,8 +9,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreRolesRequest;
 use App\Http\Requests\Admin\UpdateRolesRequest;
 
+// permission plugin
+use Spatie\Permission\Models\Role as RolePermission;
+use Spatie\Permission\Models\Permission as perm;
+
 class RolesController extends Controller
 {
+    public function __construct()
+    {
+        // Check permission
+        $this->middleware(function ($request, $next) {
+            if (! Gate::allows('manageUser')) {
+                return abort(404);
+            }
+            return $next($request);
+        });
+    }    
     /**
      * Display a listing of Role.
      *
@@ -21,7 +35,11 @@ class RolesController extends Controller
         if (! Gate::allows('role_access')) {
             return abort(401);
         }
-
+        
+        // $role = RolePermission::findById(auth()->user()->role_id);
+        // $res= $role->hasPermissionTo('User Management');
+        // print_r($res);
+        // exit;
 
                 $roles = Role::all();
 

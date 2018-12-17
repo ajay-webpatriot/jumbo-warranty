@@ -6,6 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Hash;
 
+//permission plugin
+// use Spatie\Permission\Traits\HasRoles;
 /**
  * Class User
  *
@@ -28,6 +30,9 @@ use Hash;
 */
 class User extends Authenticatable
 {
+    // permission plugin
+    // use HasRoles;
+
     use Notifiable;
     protected $fillable = ['name', 'phone', 'address_1', 'address_2', 'city', 'state', 'zipcode', 'email', 'password', 'remember_token', 'status', 'location_address', 'location_latitude', 'location_longitude', 'role_id', 'company_id', 'service_center_id'];
     protected $hidden = ['password', 'remember_token'];

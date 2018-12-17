@@ -1,7 +1,16 @@
 <?php
 
 return [
-	
+	'permission-management' => [
+		'title' => 'Permission management',
+		'fields' => [
+		],
+	],
+	'permissions' => [
+		'title' => 'Permissions',
+		'fields' => [
+		],
+	],
 	'user-management' => [
 		'title' => 'User management',
 		'fields' => [
@@ -186,13 +195,21 @@ return [
 	'service-request-log' => [
 		'title' => 'Service request log',
 		'fields' => [
-			'status_made' => 'Status',
-			'service_center' => 'Service Center',
-			'user' => 'User',
+			'service-request-id' => 'Service Request Id',
+			'company' => 'Company',
+			'status' => 'Status',
 			'created_date' => 'Creation Date',
 		],
 	],
-	
+
+	'service-request-log-view' => [
+		'title' => 'Service request log',
+		'fields' => [
+			'action' => 'Action',
+			'action-taken-by' => 'Action Taken By',
+			'date-time' => 'Date Time'
+		],
+	],
 	'manage-charges' => [
 		'title' => 'Manage charges',
 		'fields' => [
@@ -489,5 +506,5 @@ return [
 	'qa_deselect_all' => 'Deselect all',
 	'qa_team-management' => 'Teams',
 	'qa_team-management-singular' => 'Team',
-	'quickadmin_title' => 'Jumbo Warrenty',
+	'quickadmin_title' => 'Jumbo Warranty',
 ];

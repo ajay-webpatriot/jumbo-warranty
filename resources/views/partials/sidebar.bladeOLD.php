@@ -34,8 +34,7 @@
                 </ul>
             </li>
             @endcan
-            @can('manageUser')
-            <!-- can('user_management_access') -->
+            @can('user_management_access')
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-users"></i>
@@ -51,10 +50,9 @@
                             <i class="fa fa-briefcase"></i>
                             <span>@lang('quickadmin.roles.title')</span>
                         </a>
-                    </li>
-                    @endcan
+                    </li>@endcan
                     
-                    <!-- can('user_access') -->
+                    @can('user_access')
                     @if(auth()->user()->role_id ==  $_ENV['COMPANY_ADMIN_ROLE_ID'])
                     <li>
                         <a href="{{ route('admin.users.index') }}">
@@ -78,7 +76,7 @@
                     </li>
                     @endif
                     
-                    <!-- endcan -->
+                    @endcan
                     
                 </ul>
             </li>@endcan
@@ -93,44 +91,34 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <!-- can('category_access') -->
-                    @can('manageCategory')
+                    @can('category_access')
                     <li>
                         <a href="{{ route('admin.categories.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.categories.title')</span>
                         </a>
-                    </li>
-                    @endcan
-                    <!-- endcan -->
+                    </li>@endcan
                     
-                    <!-- can('product_access') -->
-                    @can('manageProduct')
+                    @can('product_access')
                     <li>
                         <a href="{{ route('admin.products.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.products.title')</span>
                         </a>
-                    </li>
-                    @endcan
-                    <!-- endcan -->
+                    </li>@endcan
                     
-                    <!-- can('product_part_access') -->
-                    @can('manageParts')
+                    @can('product_part_access')
                     <li>
                         <a href="{{ route('admin.product_parts.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.product-parts.title')</span>
                         </a>
-                    </li>
-                    @endcan
-                    <!-- endcan -->
+                    </li>@endcan
                     
                 </ul>
             </li>@endcan
             
             @can('company_management_access')
-            <!-- can('company_management_access') -->
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-gears"></i>
@@ -140,8 +128,7 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <!-- can('company_access') -->
-                    @can('manageCompany')
+                    @can('company_access')
                     <li>
                         <a href="{{ route('admin.companies.index') }}">
                             <i class="fa fa-gears"></i>
@@ -149,10 +136,8 @@
                         </a>
                     </li>
                     @endcan
-                    <!-- endcan -->
                     
-                    <!-- can('customer_access') -->
-                    @can('manageCompany')
+                    @can('customer_access')
                     <li>
                         <a href="{{ route('admin.customers.index') }}">
                             <i class="fa fa-gears"></i>
@@ -160,57 +145,43 @@
                         </a>
                     </li>
                     @endcan
-                    <!-- endcan -->
                     
-                    <!-- can('assign_product_access') -->
-                    @can('manageCompany')
+                    @can('assign_product_access')
                     <li>
                         <a href="{{ route('admin.assign_products.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.assign-product.title')</span>
                         </a>
-                    </li>
-                    @endcan
-                    <!-- endcan -->
+                    </li>@endcan
                     
-                    <!-- can('assign_part_access') -->
-                    @can('manageCompany')
+                    @can('assign_part_access')
                     <li>
                         <a href="{{ route('admin.assign_parts.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.assign-parts.title')</span>
                         </a>
-                    </li>
-                    @endcan
-                    <!-- endcan -->
+                    </li>@endcan
                     
-                    <!-- can('service_request_access') -->
-                    @can('manageServiceRequest')
+                    @can('service_request_access')
                     <li>
                         <a href="{{ route('admin.service_requests.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.service-request.title')</span>
                         </a>
-                    </li>
-                    @endcan
-                    <!-- endcan -->
+                    </li>@endcan
                     
-                    <!-- can('service_request_log_access') -->
-                    @can('manageServiceRequestLog')
+                    @can('service_request_log_access')
                     <li>
                         <a href="{{ route('admin.service_request_logs.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.service-request-log.title')</span>
                         </a>
-                    </li>
-                    @endcan
-                    <!-- endcan -->
+                    </li>@endcan
                     
                 </ul>
             </li>@endcan
             
-            @can('manageServiceCenter')
-            <!-- can('service_center_management_access') -->
+            @can('service_center_management_access')
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-gears"></i>
@@ -220,14 +191,14 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <!-- can('service_center_access') -->
+                    @can('service_center_access')
                     <li>
                         <a href="{{ route('admin.service_centers.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.service-center.title')</span>
                         </a>
                     </li>
-                    <!-- endcan -->
+                    @endcan
                     
                 </ul>
             </li>@endcan
@@ -240,8 +211,7 @@
                 </a>
             </li>@endcan
             
-            @can('manageInvoices')
-            <!-- can('invoice_access') -->
+            @can('invoice_access')
             <li>
                 <a href="{{ route('admin.invoices.index') }}">
                     <i class="fa fa-gears"></i>

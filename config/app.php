@@ -194,6 +194,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        /* permission plugin provider */
+        Spatie\Permission\PermissionServiceProvider::class,
         
 
     ],

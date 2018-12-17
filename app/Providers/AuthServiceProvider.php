@@ -7,6 +7,10 @@ use App\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+// permission plugin
+use Spatie\Permission\Models\Role as RolePermission;
+use Spatie\Permission\Models\Permission as perm;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -29,10 +33,105 @@ class AuthServiceProvider extends ServiceProvider
 
         $user = \Auth::user();
 
+        // permission plugin work starts
+        // Auth gates for: Manage user permission
+        Gate::define('manageUser', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('User Management');
+        });
+        // Auth gates for: Manage Product permission
+        Gate::define('manageProduct', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Product Management');
+        });
+        // Auth gates for: Manage Parts permission
+        Gate::define('manageParts', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Parts Management');
+        });
+        // Auth gates for: Manage Category permission
+        Gate::define('manageCategory', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Category Management');
+        });
+        // Auth gates for: Manage Company permission
+        Gate::define('manageCompany', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Company Management');
+        });
+        // Auth gates for: Manage service request permission
+        Gate::define('manageServiceRequest', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Service Request Management');
+        });
+        // Auth gates for: Manage service request log permission
+        Gate::define('manageServiceRequestLog', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Service Request Log Management');
+        });
+        // Auth gates for: Manage Service Center permission
+        Gate::define('manageServiceCenter', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Service Center Management');
+        });
+        // Auth gates for: Manage Charges permission
+        Gate::define('manageCharges', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Charges Management');
+        });
+        // Auth gates for: Manage Invoices permission
+        Gate::define('manageInvoices', function ($user) {
+            if($user->role_id == 1 || $user->role_id == 3){
+                return true;
+            }
+            $role = Role::findById($user->role_id);
+            return $role->hasPermissionTo('Invoices Management');
+        });
+        // permission plugin ends
+
+
+        // Auth gates for: Permission management
+        Gate::define('permission_management_access', function ($user) {
+            return in_array($user->role_id, [1,3]);
+        });
+
+        // Auth gates for: Permissions
+        Gate::define('permission_access', function ($user) {
+
+            return in_array($user->role_id, [1,3]);
+        });
+
         // Auth gates for: User management
         Gate::define('user_management_access', function ($user) {
             // return in_array($user->role_id, [1]);
-            return in_array($user->role_id, [1,4,5]);
+            return in_array($user->role_id, [1,3,4,5,7]);
         });
 
         // Auth gates for: Roles
@@ -72,12 +171,13 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Product management
         Gate::define('product_management_access', function ($user) {
-            return in_array($user->role_id, [1, 3, 4]);
+            // return in_array($user->role_id, [1, 3, 4]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
 
         // Auth gates for: Categories
         Gate::define('category_access', function ($user) {
-            return in_array($user->role_id, [1, 3]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
         Gate::define('category_create', function ($user) {
             return in_array($user->role_id, [1, 3]);
@@ -94,7 +194,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Products
         Gate::define('product_access', function ($user) {
-            return in_array($user->role_id, [1, 3]);
+            // return in_array($user->role_id, [1, 3]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
         Gate::define('product_create', function ($user) {
             return in_array($user->role_id, [1, 3]);
@@ -111,7 +212,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Product parts
         Gate::define('product_part_access', function ($user) {
-            return in_array($user->role_id, [1, 3]);
+            // return in_array($user->role_id, [1, 3]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
         Gate::define('product_part_create', function ($user) {
             return in_array($user->role_id, [1, 3]);
@@ -129,7 +231,7 @@ class AuthServiceProvider extends ServiceProvider
         // Auth gates for: Company management
         Gate::define('company_management_access', function ($user) {
             // return in_array($user->role_id, [1, 3, 4]);
-            return in_array($user->role_id, [1, 3, 4,5,6,7]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
 
         // Auth gates for: Company
@@ -168,7 +270,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Assign product
         Gate::define('assign_product_access', function ($user) {
-            return in_array($user->role_id, [1, 3]);
+            // return in_array($user->role_id, [1, 3]);
+            return in_array($user->role_id, [1, 3, 4, 7]);
         });
         Gate::define('assign_product_create', function ($user) {
             return in_array($user->role_id, [1, 3]);
@@ -185,7 +288,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Assign parts
         Gate::define('assign_part_access', function ($user) {
-            return in_array($user->role_id, [1, 3]);
+            // return in_array($user->role_id, [1, 3]);
+            return in_array($user->role_id, [1, 3, 4, 7]);
         });
         Gate::define('assign_part_create', function ($user) {
             return in_array($user->role_id, [1, 3]);
@@ -236,12 +340,14 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Service center management
         Gate::define('service_center_management_access', function ($user) {
-            return in_array($user->role_id, [1, 3, 5, 6]);
+            // return in_array($user->role_id, [1, 3, 5, 6]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
 
         // Auth gates for: Service center
         Gate::define('service_center_access', function ($user) {
-            return in_array($user->role_id, [1, 3, 5]);
+            // return in_array($user->role_id, [1, 3, 5]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
         Gate::define('service_center_create', function ($user) {
             return in_array($user->role_id, [1, 3]);
@@ -275,7 +381,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Invoices
         Gate::define('invoice_access', function ($user) {
-            return in_array($user->role_id, [1, 3]);
+            // return in_array($user->role_id, [1, 3]);
+            return in_array($user->role_id, [1, 3, 4, 5, 6, 7]);
         });
         Gate::define('invoice_create', function ($user) {
             return in_array($user->role_id, [1, 3]);
