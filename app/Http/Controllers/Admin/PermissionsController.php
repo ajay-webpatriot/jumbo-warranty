@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Permission;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
+// models
+use App\Role as RoleModel;
 use App\ModelHasPermission;// model
 use App\ModelHasRole;//model
 use App\RoleHasPermission;//model
@@ -69,7 +72,7 @@ class PermissionsController extends Controller
         {
             foreach ($request['permissions_role'] as $roleKey => $roleValue) {
 
-                $role = Role::findByName($roleKey);
+                $role = RoleModel::findByRoleName($roleKey);
 
                 $role->permissions()->sync([]);
                 foreach ($roleValue as $key => $value) {
