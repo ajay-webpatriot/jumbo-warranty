@@ -7,7 +7,8 @@ $(document).ready(function(){
 
        $('#userCompany').removeAttr('required');
        $("#userServiceCenter").removeAttr('required');
-       if(loggedUser_role == SUPER_ADMIN_ROLE_ID || ADMIN_ROLE_ID == 3)
+
+       if(loggedUser_role == SUPER_ADMIN_ROLE_ID || loggedUser_role == ADMIN_ROLE_ID)
        {
             if($(this).val() == COMPANY_ADMIN_ROLE_ID || $(this).val() == COMPANY_USER_ROLE_ID)
             {
