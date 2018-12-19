@@ -40,12 +40,8 @@
                             $per_found = null;
                             $options= null ;
                             if( isset($role) ) {
-                                $per_found = $role->hasPermissionTo($perm->name);
-                                // $role = RolePermission::findById(auth()->user()->role_id);
-                                // $res= $role->hasPermissionTo('User Management');
-                                // echo "........... ".$res.".............. ";
-                                // echo "<pre>";
-                                // print_r($role->syncPermissions());exit;
+                                // $per_found = $role->hasPermissionTo($perm->name);
+                                
                                 if($role->title == "Technician")
                                 {
                                     if($perm->name == "Company Management")
@@ -68,7 +64,7 @@
                             }
 
                         ?>
-                        <td>{!! Form::checkbox("permissions_role[".$role->title."][]", $perm->name, $per_found, ['class' => 'chk',$options]) !!}</td>
+                        <td>{!! Form::checkbox("permissions_role[".$role->title."][]", $perm->name, $permissionCheck[$role->id][$perm->id], ['class' => 'chk',$options]) !!}</td>
 
                         @endforeach
                         

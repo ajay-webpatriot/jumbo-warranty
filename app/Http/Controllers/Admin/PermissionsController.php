@@ -28,8 +28,15 @@ class PermissionsController extends Controller
         $roles = \App\Role::where('id','!=','1')->where('id','!=','3')->orderBy('title','asc')->get();
         $modules = \App\Module::all();
         $permissions = Permission::all();
-        // echo "<pre>"; print_r ($permissions); echo "</pre>"; exit();
-        return view('admin.permissions.index', compact('roles', 'permissions','modules'));
+        $permissionCheck=array();
+        foreach($permissions as $perm)
+        {
+            foreach ($roles as $key => $role) {
+                $permissionCheck[$role->id][$perm->id]=$role->hasPermissionTo($perm->name);
+            }
+        }    
+        // echo "<pre>"; print_r ($permissionCheck); echo "</pre>"; exit();
+        return view('admin.permissions.index', compact('roles', 'permissions','modules','permissionCheck'));
     }
 
     /**
