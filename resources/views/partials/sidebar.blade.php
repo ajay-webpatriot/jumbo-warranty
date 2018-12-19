@@ -4,9 +4,6 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <ul class="sidebar-menu">
-
-             
-
             <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
                 <a href="{{ url('/') }}">
                     <i class="fa fa-wrench"></i>
@@ -233,7 +230,7 @@
                     || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
                     || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
                     <li>
-                        <a href="{{ route('admin.users.index') }}">
+                        <a href="{{ route('admin.technicians.index') }}">
                             <i class="fa fa-user"></i>
                             <span>@lang('quickadmin.users.technicianTitle')</span>
                         </a>

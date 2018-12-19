@@ -276,7 +276,7 @@ return [
 	'qa_custom_controller_index' => 'Custom controller index.',
 	'qa_logout' => 'Logout',
 	'qa_add_new' => 'Add new',
-	'qa_are_you_sure' => 'Are you sure?',
+	'qa_are_you_sure' => 'Are you sure ?',
 	'qa_back_to_list' => 'Back to list',
 	'qa_dashboard' => 'Dashboard',
 	'qa_delete' => 'Delete',

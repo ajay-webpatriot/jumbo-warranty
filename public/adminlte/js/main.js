@@ -79,7 +79,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.js-delete-selected', function () {
-        if (confirm('Are you sure')) {
+        if (confirm('Are you sure ?')) {
             var ids = [];
 
             $(this).closest('.actions').siblings('.datatable, .ajaxTable').find('tbody tr.selected').each(function () {

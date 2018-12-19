@@ -92,7 +92,7 @@ class AuthServiceProvider extends ServiceProvider
         });
         // Auth gates for: Manage Service Center permission
         Gate::define('manageServiceCenter', function ($user) {
-            if($user->role_id == 1 || $user->role_id == 3){
+            if($user->role_id == 1 || $user->role_id == 3 || $user->role_id == 5){
                 return true;
             }
             $role = Role::findById($user->role_id);
