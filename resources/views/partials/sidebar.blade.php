@@ -228,7 +228,17 @@
                         </a>
                     </li>
                     <!-- endcan -->
-                    
+
+                    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
+                    || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
+                    || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+                    <li>
+                        <a href="{{ route('admin.users.index') }}">
+                            <i class="fa fa-user"></i>
+                            <span>@lang('quickadmin.users.technicianTitle')</span>
+                        </a>
+                    </li>
+                    @endif
                 </ul>
             </li>@endcan
             
