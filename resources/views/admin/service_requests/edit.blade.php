@@ -11,7 +11,7 @@
         </div>
 
         <div class="panel-body">
-            @if(auth()->user()->role_id == $_ENV['COMPANY_ADMIN_ROLE_ID'] || auth()->user()->role_id == $_ENV['COMPANY_USER_ROLE_ID'])
+            @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
@@ -63,7 +63,7 @@
                     @endif
                 </div>
             </div>
-            @if(auth()->user()->role_id != $_ENV['COMPANY_ADMIN_ROLE_ID'] && auth()->user()->role_id != $_ENV['COMPANY_USER_ROLE_ID'])
+            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}

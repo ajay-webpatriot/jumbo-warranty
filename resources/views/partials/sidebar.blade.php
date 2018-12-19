@@ -55,14 +55,14 @@
                     @endcan
                     
                     <!-- can('user_access') -->
-                    @if(auth()->user()->role_id ==  $_ENV['COMPANY_ADMIN_ROLE_ID'])
+                    @if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID'))
                     <li>
                         <a href="{{ route('admin.users.index') }}">
                             <i class="fa fa-user"></i>
                             <span>@lang('quickadmin.users.companyUserTitle')</span>
                         </a>
                     </li>
-                    @elseif(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+                    @elseif(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
                     <li>
                         <a href="{{ route('admin.users.index') }}">
                             <i class="fa fa-user"></i>

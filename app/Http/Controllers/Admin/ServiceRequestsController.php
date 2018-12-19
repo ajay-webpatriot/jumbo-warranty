@@ -46,11 +46,11 @@ class ServiceRequestsController extends Controller
             }
             $service_requests = ServiceRequest::onlyTrashed()->get();
         } else {
-            if(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             {
                 $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
             }
-            else if(auth()->user()->role_id == $_ENV['TECHNICIAN_ROLE_ID'])
+            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
                 $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
             }
@@ -80,7 +80,7 @@ class ServiceRequestsController extends Controller
         $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $technicians = \App\User::where('role_id',$_ENV['TECHNICIAN_ROLE_ID'])->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $parts = \App\ProductPart::get()->pluck('name', 'id');
 
@@ -140,7 +140,7 @@ class ServiceRequestsController extends Controller
         $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $technicians = \App\User::where('role_id',$_ENV['TECHNICIAN_ROLE_ID'])->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $parts = \App\ProductPart::get()->pluck('name', 'id');
 

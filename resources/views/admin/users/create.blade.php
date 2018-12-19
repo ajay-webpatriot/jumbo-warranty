@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    @if(auth()->user()->role_id ==  $_ENV['COMPANY_ADMIN_ROLE_ID'])
+    @if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID'))
     <h3 class="page-title">@lang('quickadmin.users.companyUserTitle')</h3>
-    @elseif(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+    @elseif(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
     <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3>
     @else
     <h3 class="page-title">@lang('quickadmin.users.title')</h3>
@@ -25,12 +25,12 @@
                     
                 </div>
             </div>
-            @if($logged_userRole_id == $_ENV['COMPANY_ADMIN_ROLE_ID'])
+            @if($logged_userRole_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('role_id', trans('quickadmin.users.fields.role').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('role_name', $roles[$_ENV['COMPANY_USER_ROLE_ID']], ['class' => 'form-control', 'placeholder' => 'Role','disabled' => '']) !!}
-                    {!! Form::hidden('role_id', $_ENV['COMPANY_USER_ROLE_ID'], ['class' => 'form-control','id' => 'userRole']) !!}
+                    {!! Form::text('role_name', $roles[config('constants.COMPANY_USER_ROLE_ID')], ['class' => 'form-control', 'placeholder' => 'Role','disabled' => '']) !!}
+                    {!! Form::hidden('role_id', config('constants.COMPANY_USER_ROLE_ID'), ['class' => 'form-control','id' => 'userRole']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('role_id'))
                         <p class="help-block">
@@ -39,12 +39,12 @@
                     @endif
                 </div>
             </div>
-            @elseif($logged_userRole_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+            @elseif($logged_userRole_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('role_id', trans('quickadmin.users.fields.role').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('role_name', $roles[$_ENV['TECHNICIAN_ROLE_ID']], ['class' => 'form-control', 'placeholder' => 'Role','disabled' => '']) !!}
-                    {!! Form::hidden('role_id', $_ENV['TECHNICIAN_ROLE_ID'], ['class' => 'form-control','id' => 'userRole']) !!}
+                    {!! Form::text('role_name', $roles[config('constants.TECHNICIAN_ROLE_ID')], ['class' => 'form-control', 'placeholder' => 'Role','disabled' => '']) !!}
+                    {!! Form::hidden('role_id', config('constants.TECHNICIAN_ROLE_ID'), ['class' => 'form-control','id' => 'userRole']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('role_id'))
                         <p class="help-block">
@@ -67,7 +67,7 @@
                 </div>
             </div>
             @endif
-            @if(auth()->user()->role_id == $_ENV['COMPANY_ADMIN_ROLE_ID'])
+            @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.users.fields.company').'', ['class' => 'control-label']) !!}
@@ -95,7 +95,7 @@
                 </div>
             </div>
             @endif
-            @if(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+            @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.users.fields.service-center').'', ['class' => 'control-label']) !!}

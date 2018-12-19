@@ -35,13 +35,13 @@ class UsersController extends Controller
         if (! Gate::allows('user_access')) {
             return abort(401);
         }
-        if(auth()->user()->role_id ==  $_ENV['COMPANY_ADMIN_ROLE_ID'])
+        if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID'))
         {
-            $users = User::where('role_id',$_ENV['COMPANY_USER_ROLE_ID'])->where('company_id',auth()->user()->company_id)->get();
+            $users = User::where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->where('company_id',auth()->user()->company_id)->get();
         }
-        else if(auth()->user()->role_id == $_ENV['SERVICE_ADMIN_ROLE_ID'])
+        else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
         {
-            $users = User::where('role_id',$_ENV['TECHNICIAN_ROLE_ID'])->where('service_center_id',auth()->user()->service_center_id)->get();
+            $users = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('service_center_id',auth()->user()->service_center_id)->get();
         }
         else
         {
