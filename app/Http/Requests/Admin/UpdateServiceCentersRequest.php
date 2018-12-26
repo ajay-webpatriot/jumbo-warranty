@@ -26,9 +26,9 @@ class UpdateServiceCentersRequest extends FormRequest
             
             'name' => 'required',
             'address_1' => 'required',
-            'location_address'=>'required|unique:service_centers,location_address,'.$this->route('service_center'),
-            'location_latitude'=>'required|unique:service_centers,location_latitude,'.$this->route('service_center'),
-            'location_longitude'=>'required|unique:service_centers,location_longitude,'.$this->route('service_center'),
+            'location_address'=>'required',
+            'location_latitude'=>'required',
+            'location_longitude'=>'required',
 
             'commission' => 'max:2147483647|required|numeric',
             'city' => 'required',

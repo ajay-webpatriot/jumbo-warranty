@@ -2,13 +2,8 @@
 @extends('layouts.app')
 
 @section('content')
-    @if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID'))
-    <h3 class="page-title">@lang('quickadmin.users.companyUserTitle')</h3>
-    @elseif(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-    <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3>
-    @else
+    
     <h3 class="page-title">@lang('quickadmin.users.title')</h3>
-    @endif
     @can('user_create')
     <p>
         <a href="{{ route('admin.users.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
@@ -31,17 +26,9 @@
                             <th style="text-align:center;"><input type="checkbox" id="select-all" /></th>
                         @endcan
 
-                        <th>@lang('quickadmin.users.fields.role')</th>
-                        <th>@lang('quickadmin.users.fields.company')</th>
-                        <th>@lang('quickadmin.users.fields.service-center')</th>
+                        
                         <th>@lang('quickadmin.users.fields.name')</th>
                         <th>@lang('quickadmin.users.fields.phone')</th>
-                        <th>@lang('quickadmin.users.fields.address-1')</th>
-                        <th>@lang('quickadmin.users.fields.address-2')</th>
-                        <th>@lang('quickadmin.users.fields.city')</th>
-                        <th>@lang('quickadmin.users.fields.state')</th>
-                        <th>@lang('quickadmin.users.fields.zipcode')</th>
-                        <th>@lang('quickadmin.users.fields.location')</th>
                         <th>@lang('quickadmin.users.fields.email')</th>
                         <th>@lang('quickadmin.users.fields.status')</th>
                                                 <th>&nbsp;</th>
@@ -57,17 +44,9 @@
                                     <td></td>
                                 @endcan
 
-                                <td field-key='role'>{{ $user->role->title or '' }}</td>
-                                <td field-key='company'>{{ $user->company->name or '' }}</td>
-                                <td field-key='service_center'>{{ $user->service_center->name or '' }}</td>
+                                
                                 <td field-key='name'>{{ $user->name }}</td>
                                 <td field-key='phone'>{{ $user->phone }}</td>
-                                <td field-key='address_1'>{{ $user->address_1 }}</td>
-                                <td field-key='address_2'>{{ $user->address_2 }}</td>
-                                <td field-key='city'>{{ $user->city }}</td>
-                                <td field-key='state'>{{ $user->state }}</td>
-                                <td field-key='zipcode'>{{ $user->zipcode }}</td>
-                                <td field-key='location'>{{ $user->location_address }}</td>
                                 <td field-key='email'>{{ $user->email }}</td>
                                 <td field-key='status'>{{ $user->status }}</td>
                                                                 <td>

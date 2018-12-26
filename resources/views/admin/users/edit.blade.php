@@ -2,13 +2,9 @@
 
 @section('content')
     
-    @if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID'))
-    <h3 class="page-title">@lang('quickadmin.users.companyUserTitle')</h3>
-    @elseif(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-    <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3>
-    @else
+    
     <h3 class="page-title">@lang('quickadmin.users.title')</h3>
-    @endif
+    
     
     {!! Form::model($user, ['method' => 'PUT', 'route' => ['admin.users.update', $user->id]]) !!}
 
@@ -26,104 +22,7 @@
                    
                 </div>
             </div>
-            @if($logged_userRole_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('role_id', trans('quickadmin.users.fields.role').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('role_name', $roles[config('constants.COMPANY_USER_ROLE_ID')], ['class' => 'form-control', 'placeholder' => 'Role','disabled' => '']) !!}
-                    {!! Form::hidden('role_id', config('constants.COMPANY_USER_ROLE_ID'), ['class' => 'form-control']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('role_id'))
-                        <p class="help-block">
-                            {{ $errors->first('role_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            @elseif($logged_userRole_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('role_id', trans('quickadmin.users.fields.role').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('role_name', $roles[config('constants.TECHNICIAN_ROLE_ID')], ['class' => 'form-control', 'placeholder' => 'Role','disabled' => '']) !!}
-                    {!! Form::hidden('role_id', config('constants.TECHNICIAN_ROLE_ID'), ['class' => 'form-control']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('role_id'))
-                        <p class="help-block">
-                            {{ $errors->first('role_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            @else
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('role_id', trans('quickadmin.users.fields.role').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('role_id', $roles, old('role_id'), ['class' => 'form-control select2', 'required' => '','id' => 'userRole']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('role_id'))
-                        <p class="help-block">
-                            {{ $errors->first('role_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            @endif
-            @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('company_id', trans('quickadmin.users.fields.company').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('company_name', $companies[auth()->user()->company_id], ['class' => 'form-control', 'placeholder' => 'Comapny Name','disabled' => '']) !!}
-                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('company_id'))
-                        <p class="help-block">
-                            {{ $errors->first('company_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            @else
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('company_id', trans('quickadmin.users.fields.company').'', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2','id' => 'userCompany']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('company_id'))
-                        <p class="help-block">
-                            {{ $errors->first('company_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            @endif
-            @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('company_id', trans('quickadmin.users.fields.service-center').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('service_center_name', $service_centers[auth()->user()->service_center_id], ['class' => 'form-control', 'placeholder' => 'Comapny Name','disabled' => '']) !!}
-                    {!! Form::hidden('service_center_id', auth()->user()->service_center_id, ['class' => 'form-control']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('company_id'))
-                        <p class="help-block">
-                            {{ $errors->first('company_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            @else
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('service_center_id', trans('quickadmin.users.fields.service-center').'', ['class' => 'control-label']) !!}
-                    {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2','id' => 'userServiceCenter']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('service_center_id'))
-                        <p class="help-block">
-                            {{ $errors->first('service_center_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            @endif
+            
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('name', trans('quickadmin.users.fields.name').'*', ['class' => 'control-label']) !!}
@@ -138,8 +37,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('phone', trans('quickadmin.users.fields.phone').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('phone', trans('quickadmin.users.fields.phone').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','maxlength' => '10']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('phone'))
                         <p class="help-block">
@@ -150,8 +49,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('address_1', trans('quickadmin.users.fields.address-1').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('address_1', old('address_1'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('address_1', trans('quickadmin.users.fields.address-1').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('address_1', old('address_1'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('address_1'))
                         <p class="help-block">
@@ -174,8 +73,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('city', trans('quickadmin.users.fields.city').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('city', old('city'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('city', trans('quickadmin.users.fields.city').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('city', old('city'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('city'))
                         <p class="help-block">
@@ -186,8 +85,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('state', trans('quickadmin.users.fields.state').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('state', old('state'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('state', trans('quickadmin.users.fields.state').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('state', old('state'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('state'))
                         <p class="help-block">
@@ -198,8 +97,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('zipcode', trans('quickadmin.users.fields.zipcode').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('zipcode', trans('quickadmin.users.fields.zipcode').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('zipcode'))
                         <p class="help-block">

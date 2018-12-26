@@ -27,6 +27,15 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::resource('users', 'Admin\UsersController');
     Route::post('users_mass_destroy', ['uses' => 'Admin\UsersController@massDestroy', 'as' => 'users.mass_destroy']);
 
+    Route::resource('service_center_admins', 'Admin\ServiceCenterAdminsController');
+    Route::post('service_center_admin_mass_destroy', ['uses' => 'Admin\ServiceCenterAdminsController@massDestroy', 'as' => 'service_center_admins.mass_destroy']);
+
+    Route::resource('company_admins', 'Admin\CompanyAdminsController');
+    Route::post('company_admins_mass_destroy', ['uses' => 'Admin\CompanyAdminsController@massDestroy', 'as' => 'company_admins.mass_destroy']);
+
+    Route::resource('company_users', 'Admin\CompanyUsersController');
+    Route::post('company_admin_mass_destroy', ['uses' => 'Admin\CompanyUsersController@massDestroy', 'as' => 'company_users.mass_destroy']);
+
     Route::resource('technicians', 'Admin\TechniciansController');
     Route::post('technicians_mass_destroy', ['uses' => 'Admin\TechniciansController@massDestroy', 'as' => 'technicians.mass_destroy']);
 

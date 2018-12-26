@@ -19,7 +19,7 @@ class TechniciansController extends Controller
     {
         // Check permission
         $this->middleware(function ($request, $next) {
-            if (! Gate::allows('manageUser')) {
+            if (! Gate::allows('manageServiceCenter')) {
                 return abort(404);
             }
             return $next($request);

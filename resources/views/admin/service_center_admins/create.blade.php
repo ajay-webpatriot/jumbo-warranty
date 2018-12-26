@@ -1,10 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    
-    <h3 class="page-title">@lang('quickadmin.users.title')</h3>
-    
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.users.store']]) !!}
+    <h3 class="page-title">@lang('quickadmin.service-center-admin.title')</h3>
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_center_admins.store']]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -14,14 +12,25 @@
         <div class="panel-body">
             
             <div class="row">
-                <div class="col-xs-12 form-group">
-                    
+                <div class="col-xs-12 form-group">                    
                     {!! Form::hidden('loggedUser_role',$logged_userRole_id, ['class' => 'form-control', 'placeholder' => '','id' => 'loggedUser_role']) !!}
                     <p class="help-block"></p>
                     
                 </div>
             </div>
             
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    {!! Form::label('service_center_id', trans('quickadmin.users.fields.service-center').'*', ['class' => 'control-label']) !!}
+                    {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2','id' => 'userServiceCenter', 'required' => '']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('service_center_id'))
+                        <p class="help-block">
+                            {{ $errors->first('service_center_id') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('name', trans('quickadmin.users.fields.name').'*', ['class' => 'control-label']) !!}
@@ -143,7 +152,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('password', trans('quickadmin.users.fields.password').'*', ['class' => 'control-label']) !!}
-                    {!! Form::password('password', ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::password('password', ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('password'))
                         <p class="help-block">

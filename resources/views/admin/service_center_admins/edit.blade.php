@@ -1,27 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
+    <h3 class="page-title">@lang('quickadmin.service-center-admin.title')</h3>
     
-    <h3 class="page-title">@lang('quickadmin.users.title')</h3>
-    
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.users.store']]) !!}
+    {!! Form::model($user, ['method' => 'PUT', 'route' => ['admin.service_center_admins.update', $user->id]]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('quickadmin.qa_create')
+            @lang('quickadmin.qa_edit')
         </div>
-        
         <div class="panel-body">
-            
             <div class="row">
-                <div class="col-xs-12 form-group">
-                    
+                <div class="col-xs-12 form-group">                    
                     {!! Form::hidden('loggedUser_role',$logged_userRole_id, ['class' => 'form-control', 'placeholder' => '','id' => 'loggedUser_role']) !!}
-                    <p class="help-block"></p>
-                    
+                    <p class="help-block"></p>                   
                 </div>
             </div>
             
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    {!! Form::label('service_center_id', trans('quickadmin.users.fields.service-center').'*', ['class' => 'control-label']) !!}
+                    {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2','id' => 'userServiceCenter', 'required' => '']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('service_center_id'))
+                        <p class="help-block">
+                            {{ $errors->first('service_center_id') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('name', trans('quickadmin.users.fields.name').'*', ['class' => 'control-label']) !!}
@@ -110,8 +117,8 @@
                 <div class="col-xs-12 form-group">
                     {!! Form::label('location_address', trans('quickadmin.users.fields.location').'', ['class' => 'control-label']) !!}
                     {!! Form::text('location_address', old('location_address'), ['class' => 'form-control map-input', 'id' => 'location-input']) !!}
-                    {!! Form::hidden('location_latitude', 0 , ['id' => 'location-latitude']) !!}
-                    {!! Form::hidden('location_longitude', 0 , ['id' => 'location-longitude']) !!}
+                    {!! Form::hidden('location_latitude', $user->location_latitude , ['id' => 'location-latitude']) !!}
+                    {!! Form::hidden('location_longitude', $user->location_longitude , ['id' => 'location-longitude']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('location'))
                         <p class="help-block">
@@ -142,8 +149,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('password', trans('quickadmin.users.fields.password').'*', ['class' => 'control-label']) !!}
-                    {!! Form::password('password', ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::label('password', trans('quickadmin.users.fields.password').'', ['class' => 'control-label']) !!}
+                    {!! Form::password('password', ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('password'))
                         <p class="help-block">
@@ -192,18 +199,25 @@
                 </tr>
                 </thead>
                 <tbody id="service-request">
-                    @foreach(old('service_requests', []) as $index => $data)
+                    @forelse(old('service_requests', []) as $index => $data)
                         @include('admin.users.service_requests_row', [
                             'index' => $index
                         ])
-                    @endforeach
+                    @empty
+                        @foreach($user->service_requests as $item)
+                            @include('admin.users.service_requests_row', [
+                                'index' => 'id-' . $item->id,
+                                'field' => $item
+                            ])
+                        @endforeach
+                    @endforelse
                 </tbody>
             </table>
             <a href="#" class="btn btn-success pull-right add-new">@lang('quickadmin.qa_add_new')</a>
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
     {!! Form::close() !!}
 @stop
 
@@ -235,6 +249,5 @@
             row.remove();
             return false;
         });
-
         </script>
 @stop

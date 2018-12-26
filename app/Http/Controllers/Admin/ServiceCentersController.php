@@ -13,6 +13,9 @@ use App\Http\Requests\Admin\UpdateServiceCentersRequest;
 use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
 
+// get lat long 
+use GoogleAPIHelper;
+
 class ServiceCentersController extends Controller
 {
     public function __construct()
@@ -32,10 +35,11 @@ class ServiceCentersController extends Controller
      */
     public function index()
     {
+
+        // echo GoogleAPIHelper::distance(22.8418873, 72.5559746, 23.024349, 72.5301521, "K");exit;
         if (! Gate::allows('service_center_access')) {
             return abort(401);
         }
-
 
         if (request('show_deleted') == 1) {
             if (! Gate::allows('service_center_delete')) {
@@ -71,9 +75,18 @@ class ServiceCentersController extends Controller
      */
     public function store(StoreServiceCentersRequest $request)
     {
+
         if (! Gate::allows('service_center_create')) {
             return abort(401);
         }
+
+        $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
+            
+        if($resultLocation){    
+            $request['location_latitude']=$resultLocation['lat'];
+            $request['location_longitude']=$resultLocation['lng'];
+        }
+
         $service_center = ServiceCenter::create($request->all());
 
 
@@ -111,6 +124,14 @@ class ServiceCentersController extends Controller
         if (! Gate::allows('service_center_edit')) {
             return abort(401);
         }
+
+        $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
+            
+        if($resultLocation){    
+            $request['location_latitude']=$resultLocation['lat'];
+            $request['location_longitude']=$resultLocation['lng'];
+        }
+
         $service_center = ServiceCenter::findOrFail($id);
         $service_center->update($request->all());
 

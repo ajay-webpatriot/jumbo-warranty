@@ -26,7 +26,7 @@ return [
 	],
 	
 	'users' => [
-		'title' => 'Users',
+		'title' => 'Admins',
 		'companyUserTitle' => 'Company Users',
 		'technicianTitle' => 'Technicians',
 		'fields' => [
@@ -181,7 +181,7 @@ return [
 	],
 	
 	'service-center-admin' => [
-		'title' => 'Service center admin',
+		'title' => 'Service center admins',
 		'fields' => [
 		],
 	],

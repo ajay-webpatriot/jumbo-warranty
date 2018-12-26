@@ -2,7 +2,7 @@
 
 @section('content')
     
-    <h3 class="page-title">@lang('quickadmin.users.title')</h3>
+    <h3 class="page-title">@lang('quickadmin.service_center_admins.title')</h3>
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('quickadmin.qa_view')
@@ -15,15 +15,11 @@
                         <!-- <tr>
                             <th>@lang('quickadmin.users.fields.role')</th>
                             <td field-key='role'>{{ $user->role->title or '' }}</td>
-                        </tr> 
-                        <tr>
-                            <th>@lang('quickadmin.users.fields.company')</th>
-                            <td field-key='company'>{{ $user->company->name or '' }}</td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <th>@lang('quickadmin.users.fields.service-center')</th>
                             <td field-key='service_center'>{{ $user->service_center->name or '' }}</td>
-                        </tr>-->
+                        </tr>
                         <tr>
                             <th>@lang('quickadmin.users.fields.name')</th>
                             <td field-key='name'>{{ $user->name }}</td>
@@ -327,7 +323,7 @@
 
             <p>&nbsp;</p>
 
-            <a href="{{ route('admin.users.index') }}" class="btn btn-default">@lang('quickadmin.qa_back_to_list')</a>
+            <a href="{{ route('admin.service_center_admins.index') }}" class="btn btn-default">@lang('quickadmin.qa_back_to_list')</a>
         </div>
     </div>
 @stop

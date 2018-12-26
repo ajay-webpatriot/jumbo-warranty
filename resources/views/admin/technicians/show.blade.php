@@ -1,13 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID'))
-    <h3 class="page-title">@lang('quickadmin.users.companyUserTitle')</h3>
-    @elseif(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
     <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3>
-    @else
-    <h3 class="page-title">@lang('quickadmin.users.title')</h3>
-    @endif
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('quickadmin.qa_view')
@@ -17,14 +11,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <table class="table table-bordered table-striped">
-                        <tr>
+                        <!-- <tr>
                             <th>@lang('quickadmin.users.fields.role')</th>
                             <td field-key='role'>{{ $user->role->title or '' }}</td>
                         </tr>
                         <tr>
                             <th>@lang('quickadmin.users.fields.company')</th>
                             <td field-key='company'>{{ $user->company->name or '' }}</td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <th>@lang('quickadmin.users.fields.service-center')</th>
                             <td field-key='service_center'>{{ $user->service_center->name or '' }}</td>

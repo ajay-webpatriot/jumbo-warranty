@@ -25,7 +25,7 @@ class StoreCustomersRequest extends FormRequest
         return [
             'firstname' => 'required',
             'lastname' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'company_id' => 'required',
             'address_1' => 'required',
             'city' => 'required',

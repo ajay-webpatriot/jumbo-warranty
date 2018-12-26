@@ -13,6 +13,9 @@ use App\Http\Requests\Admin\UpdateCustomersRequest;
 use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
 
+// get lat long 
+use GoogleAPIHelper;
+
 class CustomersController extends Controller
 {
     public function __construct()
@@ -77,6 +80,19 @@ class CustomersController extends Controller
         if (! Gate::allows('customer_create')) {
             return abort(401);
         }
+
+        $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
+            
+        if($resultLocation){    
+            $request['location_latitude']=$resultLocation['lat'];
+            $request['location_longitude']=$resultLocation['lng'];
+        }
+        else
+        {
+            $request['location_latitude']=112;
+            $request['location_longitude']=113;
+        }
+
         $customer = Customer::create($request->all());
 
         foreach ($request->input('service_requests', []) as $data) {
@@ -121,6 +137,18 @@ class CustomersController extends Controller
             return abort(401);
         }
         $customer = Customer::findOrFail($id);
+        $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
+            
+        if($resultLocation){    
+            $request['location_latitude']=$resultLocation['lat'];
+            $request['location_longitude']=$resultLocation['lng'];
+        }
+        else
+        {
+            $request['location_latitude']=112;
+            $request['location_longitude']=113;
+        }
+        // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
         $customer->update($request->all());
 
         $serviceRequests           = $customer->service_requests;

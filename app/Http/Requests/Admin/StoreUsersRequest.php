@@ -23,8 +23,12 @@ class StoreUsersRequest extends FormRequest
     public function rules()
     {
         return [
-            'role_id' => 'required',
             'name' => 'required',
+            'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
+            'address_1' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zipcode' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'status' => 'required',

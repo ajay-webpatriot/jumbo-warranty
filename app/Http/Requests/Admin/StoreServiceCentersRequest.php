@@ -25,9 +25,9 @@ class StoreServiceCentersRequest extends FormRequest
         return [
             'name' => 'required',
             'address_1' => 'required',
-            'location_address'=>'required|unique:service_centers,location_address',
-            'location_latitude'=>'required|unique:service_centers,location_latitude',
-            'location_longitude'=>'required|unique:service_centers,location_longitude',
+            'location_address'=>'required',
+            'location_latitude'=>'required',
+            'location_longitude'=>'required',
 
             'commission' => 'max:2147483647|required|numeric',
             'city' => 'required',
