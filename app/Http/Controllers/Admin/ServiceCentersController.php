@@ -124,15 +124,23 @@ class ServiceCentersController extends Controller
         if (! Gate::allows('service_center_edit')) {
             return abort(401);
         }
-
-        $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
-            
-        if($resultLocation){    
-            $request['location_latitude']=$resultLocation['lat'];
-            $request['location_longitude']=$resultLocation['lng'];
-        }
-
         $service_center = ServiceCenter::findOrFail($id);
+
+
+        if(isset($service_center->zipcode) && isset($request['zipcode']))
+        {
+            if($service_center->zipcode !== $request['zipcode'])
+            {
+
+                $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
+                    
+                if($resultLocation){    
+                    $request['location_latitude']=$resultLocation['lat'];
+                    $request['location_longitude']=$resultLocation['lng'];
+                }
+            }
+        }     
+        
         $service_center->update($request->all());
 
 

@@ -8,7 +8,9 @@ return [
 	'COMPANY_USER_ROLE_ID' => env('COMPANY_USER_ROLE_ID','7'),
 	'COMPANY_US' => env('COMPANY_US','7'),
 
-	'GOOGLE_MAPS_API_KEY' =>  env('GOOGLE_MAPS_API_KEY','AIzaSyBsNVGUNzn19onCo93Vb1aupJO45oGrVMc')
+	'GOOGLE_MAPS_API_KEY' =>  env('GOOGLE_MAPS_API_KEY','AIzaSyBsNVGUNzn19onCo93Vb1aupJO45oGrVMc'),
+
+	'APP_URL' =>  env('APP_URL','http://jumbo-warranty.local')
 
 ];
 

@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('company_id'))
                         <p class="help-block">
@@ -54,7 +54,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_type', trans('quickadmin.service-request.fields.service-type').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('service_type', $enum_service_type, old('service_type'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('service_type', $enum_service_type, old('service_type'), ['class' => 'form-control select2', 'required' => '', 'onchange' => 'requestCharge(this)']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('service_type'))
                         <p class="help-block">
@@ -128,7 +128,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('product_id', $products, old('product_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('product_id', $products, old('product_id'), ['class' => 'form-control select2', 'required' => '', 'onchange' => 'requestCharge(this)']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('product_id'))
                         <p class="help-block">
@@ -245,14 +245,27 @@
                     @endif
                 </div>
             </div>
-            <div class="row">
+
+            <div class="row serviceChargeDiv" {{ ($service_request->service_type != "repair") ? 'style=display:none' : ''}}>
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge']) !!}
+                    {!! Form::text('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('service_charge'))
                         <p class="help-block">
                             {{ $errors->first('service_charge') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+            <div class="row installationChargeDiv" {{ ($service_request->service_type != "installation") ? 'style=display:none' : ''}}>
+                <div class="col-xs-12 form-group">
+                    {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').'', ['class' => 'control-label']) !!}
+                    {!! Form::text('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('installation_charge'))
+                        <p class="help-block">
+                            {{ $errors->first('installation_charge') }}
                         </p>
                     @endif
                 </div>
@@ -305,7 +318,7 @@
                     @endif
                 </div>
             </div>
-            <div class="row">
+            <div class="row partsDiv" {{ ($service_request->service_type != "repair") ? 'style=display:none' : ''}}>
                 <div class="col-xs-12 form-group">
                     {!! Form::label('parts', trans('quickadmin.service-request.fields.parts').'', ['class' => 'control-label']) !!}
                     <button type="button" class="btn btn-primary btn-xs" id="selectbtn-parts">

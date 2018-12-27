@@ -62,6 +62,15 @@ if (!Schema::hasColumn('service_requests', 'priority')) {
 if (!Schema::hasColumn('service_requests', 'email')) {
                 $table->string('email')->nullable();
                 }
+if (!Schema::hasColumn('service_requests', 'installation_charge')) {
+                $table->string('installation_charge')->nullable();
+                }
+if (!Schema::hasColumn('service_requests', 'km_charge')) {
+                $table->string('km_charge')->nullable();
+                }
+if (!Schema::hasColumn('service_requests', 'km_distance')) {
+                $table->string('km_distance')->nullable();
+                }
         });
 
     }
@@ -90,6 +99,10 @@ if (!Schema::hasColumn('service_requests', 'email')) {
             $table->dropColumn('model_no');
             $table->dropColumn('priority');
             $table->dropColumn('email');
+
+            $table->dropColumn('installation_charge');
+            $table->dropColumn('km_charge');
+            $table->dropColumn('km_distance');
             
         });
 

@@ -255,6 +255,8 @@ return [
         'Form'         => Collective\Html\FormFacade::class,
         'Html'         => Collective\Html\HtmlFacade::class,
 
+
+        // custom helper
         'GoogleAPIHelper' => App\Helpers\GoogleAPI::class,
         
     ],

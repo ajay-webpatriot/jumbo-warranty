@@ -36,7 +36,9 @@ class AssignPartsController extends Controller
             return abort(401);
         }
 
-
+        $AssignPart = new AssignPart(); // model object to call custom functions
+        
+        
         if (request('show_deleted') == 1) {
             if (! Gate::allows('assign_part_delete')) {
                 return abort(401);
@@ -46,6 +48,15 @@ class AssignPartsController extends Controller
             $assign_parts = AssignPart::all();
         }
 
+        
+        foreach ($assign_parts as $key => $value) {
+            $usedParts=$AssignPart->getRequestedServiceParts($value->id);// get quantity of used parts in service requests
+
+            $value['availableQuantity']=$value->quantity-$usedParts;
+        }
+
+        // echo "<pre>";
+        // print_r($assign_parts);exit;
         return view('admin.assign_parts.index', compact('assign_parts'));
     }
 

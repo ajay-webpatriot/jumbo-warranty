@@ -36,6 +36,7 @@
                         <th>@lang('quickadmin.assign-parts.fields.company')</th>
                         <th>@lang('quickadmin.assign-parts.fields.product-parts')</th>
                         <th>@lang('quickadmin.assign-parts.fields.quantity')</th>
+                        <th>@lang('quickadmin.assign-parts.fields.availableQuantity')</th>
                         <th>@lang('quickadmin.assign-parts.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
@@ -56,6 +57,7 @@
                                 <td field-key='company'>{{ $assign_part->company->name or '' }}</td>
                                 <td field-key='product_parts'>{{ $assign_part->product_parts->name or '' }}</td>
                                 <td field-key='quantity'>{{ $assign_part->quantity }}</td>
+                                <td field-key='quantity'>{{ $assign_part->availableQuantity }}</td>
                                 <td field-key='status'>{{ $assign_part->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

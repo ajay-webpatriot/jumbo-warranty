@@ -16,6 +16,10 @@ use App\ServiceRequestLog;
 use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
 
+// get lat long & distance
+use GoogleAPIHelper;
+use Dompdf\Dompdf;
+
 class ServiceRequestsController extends Controller
 {
     public function __construct()
@@ -107,6 +111,43 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_create')) {
             return abort(401);
         }
+
+        // calculate total amount work start
+        $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        if($request['service_type'] == 'repair')
+        {
+            if($request['service_center_id'] != "" && $request['customer_id'] != "")
+            {
+                // calculate repair charges for different city
+
+                $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
+                $customerDetail=\App\Customer::findOrFail($request['customer_id']);
+
+                if($customerDetail->zipcode != $centerDetail->zipcode)
+                {
+                    $customer_latitude=$customerDetail->location_latitude;
+                    $customer_longitude=$customerDetail->location_longitude;
+
+                    $center_latitude=$centerDetail->location_latitude;
+                    $center_longitude=$centerDetail->location_longitude;
+                    
+                    $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
+
+                    $request['km_distance']=$distance;
+                    $distance_charge=\App\ManageCharge::where("km",">=",$distance)->orderBy("km","asc")->get()->first();
+                    if(count($distance_charge))
+                    {
+                        $request['km_charge']=$distance_charge->km_charge;
+                        $total_amount+=($distance*$distance_charge->km_charge);
+                    }
+                   
+                }
+            } 
+        }
+        $request['amount']=$total_amount;  
+        // calculate total amount work end
+
+
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
 
@@ -154,6 +195,7 @@ class ServiceRequestsController extends Controller
             
         $service_request = ServiceRequest::findOrFail($id);
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
+
         return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName'));
     }
 
@@ -182,7 +224,7 @@ class ServiceRequestsController extends Controller
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
         }
-        if(isset($request['technician_id']))
+        if($request['technician_id'] != "")
         {
             if($service_request->technician_id != $request['technician_id']){
 
@@ -195,7 +237,7 @@ class ServiceRequestsController extends Controller
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
         }
-        if(isset($request['service_center_id']))
+        if($request['service_center_id'] != "")
         {
             if($service_request->service_center_id != $request['service_center_id']){
 
@@ -207,13 +249,56 @@ class ServiceRequestsController extends Controller
                                                 );
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
-        }    
+        }  
+
+        // calculate total amount work start
+        $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        if($request['service_type'] == 'repair')
+        {
+            if($request['service_center_id'] != "" && $request['customer_id'] != "")
+            {
+                // calculate repair charges for different city
+
+                $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
+                $customerDetail=\App\Customer::findOrFail($request['customer_id']);
+
+                if($customerDetail->zipcode != $centerDetail->zipcode)
+                {
+                    $customer_latitude=$customerDetail->location_latitude;
+                    $customer_longitude=$customerDetail->location_longitude;
+
+                    $center_latitude=$centerDetail->location_latitude;
+                    $center_longitude=$centerDetail->location_longitude;
+                    
+                    $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
+
+                    $request['km_distance']=$distance;
+                    $distance_charge=\App\ManageCharge::where("km",">=",$distance)->orderBy("km","asc")->get()->first();
+                    if(count($distance_charge))
+                    {
+                        $request['km_charge']=$distance_charge->km_charge;
+                        $total_amount+=($distance*$distance_charge->km_charge);
+                    }
+                   
+                }
+            } 
+        }
+        $request['amount']=$total_amount;  
+        // calculate total amount work end
+
+
         $service_request->update($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
 
-
-
-        return redirect()->route('admin.service_requests.index');
+        if($request['status'] == "Closed")
+        {
+            return $this->createReceiptPDF($request->all());
+        }
+        else
+        {
+             return redirect()->route('admin.service_requests.index');
+        }
+        // return redirect()->route('admin.service_requests.index');
     }
 
 
@@ -303,5 +388,126 @@ class ServiceRequestsController extends Controller
         $service_request->forceDelete();
 
         return redirect()->route('admin.service_requests.index');
+    }
+    public function createReceiptPDF($request)
+    {
+        
+        if($request['service_center_id'] != "" && 
+            $request['customer_id'] != "" && 
+            $request['technician_id'] != ""
+            )
+        {
+            $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
+            $technicianDetail=\App\User::findOrFail($request['technician_id']);
+            $customerDetail=\App\Customer::findOrFail($request['customer_id']);
+            $companyDetail=\App\Company::findOrFail($request['company_id']);
+            $productDetail=\App\Product::findOrFail($request['product_id']);
+           
+            
+            $compCustHTML="<div style='float:left;width:50%;'>
+                    <b>Company: ".$companyDetail->name."</b>
+                    <div>".$companyDetail->address_1."</div>
+                    <div>".$companyDetail->city.",".$companyDetail->state." - ".$companyDetail->zipcode."</div>
+                    <b>Customer: ".$customerDetail->firstname." ".$customerDetail->lastname."</b>
+                    <div>".$customerDetail->address_1."</div>
+                    <div>".$customerDetail->city.",".$customerDetail->state." - ".$customerDetail->zipcode."</div>
+                    <div>Phone: ".$customerDetail->phone."</div>
+                </div>";
+
+            $centerHTML="<div style='float:left;width:50%;'>
+                            <b>Service Center: ".$centerDetail->name."</b>
+                            <div>".$centerDetail->address_1."</div>
+                            <div>".$centerDetail->city.",".$centerDetail->state." - ".$centerDetail->zipcode."</div>
+                            <div><b>Technician: ".$technicianDetail->name."</b></div>
+                        </div>";
+
+            $productHTML="<table border='1' style='width:100%;'>
+                                <thead style='width:100%;'>
+                                    <tr>
+                                        <th>Sr#</th>
+                                        <th>Product</th>
+                                        <th>Installation Charge</th>
+                                        <th>Service Charge</th>
+                                        <th>Additional Charge</th>
+                                        <th>Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody style='width:100%;'>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>".$productDetail->name."</td>
+                                        <td>".$request['installation_charge']."</td>
+                                        <td>".($request['service_charge']+($request['km_charge']*$request['km_distance']))."</td>
+                                        <td>".$request['additional_charges']."</td>
+                                        <td>".$request['amount']."</td>
+                                    </tr>
+                                </tbody>
+                        </table>";
+
+                
+            $html="<html>
+                    <head>
+                        <style type='text/css'>
+                            table {
+                              border-collapse: collapse;
+                            }
+
+                            table, th, td {
+                              border: 1px solid black;
+                              text-align:center;
+                            }
+                        </style>
+                    </head>";
+            $html.="<body>
+                    <h1 style='text-align:center;'>Bill Receipt</h1>";
+            
+            $html.="<div style='height:18%;'>".$compCustHTML.$centerHTML."</div>";
+            $html.=$productHTML;
+
+            $html.="</body></html>";
+            // echo $html;exit;
+            // print_r ($request); exit(); 
+            
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($html);
+
+            // (Optional) Setup the paper size and orientation
+            // $dompdf->setPaper('A4', 'landscape');
+
+            // Render the HTML as PDF
+            $dompdf->render();
+
+            // Output the generated PDF to Browser
+            $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
+        }
+        else
+        {
+            return redirect()->route('admin.service_requests.index');
+        }
+        
+    }
+    public function requestCharge(Request $request)
+    {
+        
+        // ajx function to get service request charge details
+        
+        $details=$request->all();
+
+        $data['installation_charge']=0;
+        $data['service_charge']=0;
+        if($details['serviceType'] == "installation" && $details['companyId'])
+        {
+            $companyDetails=\App\Company::findOrFail($details['companyId']);
+            $data['installation_charge']=$companyDetails->installation_charge;
+        }
+        else if($details['serviceType'] == "repair" && $details['productId'])
+        {
+            $productDetails=\App\Product::findOrFail($details['productId']);
+            $data['service_charge']=$productDetails->category->service_charge;
+            
+        }
+        
+        echo json_encode($data);
+        exit;
     }
 }

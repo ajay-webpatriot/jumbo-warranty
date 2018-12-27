@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property integer $quantity
  * @property enum $status
 */
+
+use DB;// DB library
+
 class AssignPart extends Model
 {
     use SoftDeletes;
@@ -24,6 +27,16 @@ class AssignPart extends Model
 
     public static $enum_status = ["Active" => "Active", "Inactive" => "Inactive"];
 
+    public function getRequestedServiceParts($assignPartId)
+    {
+        // get total used parts in service request
+        return $usedParts = DB::table('service_requests')
+            ->select('service_requests.id as articles_id')
+            ->join('product_part_service_request', 'service_requests.id', '=', 'product_part_service_request.service_request_id')
+            ->join('assign_parts', 'assign_parts.product_parts_id', '=', 'product_part_service_request.product_part_id')
+            ->where('assign_parts.product_parts_id',$assignPartId)
+            ->get()->count();
+    }
     /**
      * Set to null if empty
      * @param $input

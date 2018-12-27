@@ -15,7 +15,7 @@ class ManageCharge extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['km_charge', 'status'];
+    protected $fillable = ['km','km_charge', 'status'];
     protected $hidden = [];
     
     
