@@ -13,7 +13,7 @@
     var TECHNICIAN_ROLE_ID='{{ config("constants.TECHNICIAN_ROLE_ID") }}';
     var COMPANY_USER_ROLE_ID='{{ config("constants.COMPANY_USER_ROLE_ID") }}';
 
-    var APP_URL='{{ config("constants.APP_URL") }}';
+    var APP_URL='{{ config("app.APP_URL") }}';
 </script>
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>

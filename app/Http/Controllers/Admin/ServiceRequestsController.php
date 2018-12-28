@@ -431,15 +431,22 @@ class ServiceRequestsController extends Controller
                             ".$technician."
                         </div>";
 
-            $installation_charge=($request['installation_charge'] != "" && $request['installation_charge'] != 0)? "<tr><td colspan='2'>Installation Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['installation_charge']."</td></tr>":"";
+            $installation_charge=($request['installation_charge'] != "" && $request['installation_charge'] != 0)? "<tr><td colspan='2'>Installation Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['installation_charge'],2)."</td></tr>":"";
 
-            $service_charge=($request['service_charge'] != "" && $request['service_charge'] != 0)? "<tr><td colspan='2'>Service Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['service_charge']."</td></tr>":"";
+            $service_charge=($request['service_charge'] != "" && $request['service_charge'] != 0)? "<tr><td colspan='2'>Service Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['service_charge'],2)."</td></tr>":"";
 
-            $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".$request['km_distance']."</td></tr>":"";
+            $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".number_format($request['km_distance'],2)."</td></tr>":"";
 
-            $km_charge=($request['km_charge'] != "" && $request['km_charge'] != 0)? "<tr><td colspan='2'>Charge per km</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['km_charge']."</td></tr>":"";
+            $km_charge="";
+            if($request['km_distance'] != "" && $request['km_distance'] != 0)
+            {
+                $km_charge=($request['km_charge'] != "" && $request['km_charge'] != 0)? "<tr><td colspan='2'>Charge per km</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['km_charge'],2)."</td></tr>":"";
+            }    
+            
 
-            $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['amount']."</b></td></tr>";
+            $additional_charges=($request['additional_charges'] != "" && $request['additional_charges'] != 0)? "<tr><td colspan='2'>Additional Charge </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['additional_charges'],2)."</td></tr>":"";
+
+            $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['amount'],2)."</b></td></tr>";
 
             $parts_used="";
             if($request['service_type'] == "repair" && count($request['parts']) > 0)
@@ -476,6 +483,7 @@ class ServiceRequestsController extends Controller
                                     ".$service_charge."
                                     ".$km_distance."
                                     ".$km_charge."
+                                    ".$additional_charges."
                                     
                                     ".$total_amount."
                                 </tbody>
@@ -495,7 +503,7 @@ class ServiceRequestsController extends Controller
             $html.="<body>
                     <h1 style='text-align:center;'>Bill Receipt</h1>";
             
-            $html.="<div style='height:18%;'>".$compCustHTML.$centerHTML."</div>";
+            $html.="<div style='height:18%;margin-top:5%;'>".$compCustHTML.$centerHTML."</div>";
             $html.=$productHTML;
 
             $html.="</body></html>";

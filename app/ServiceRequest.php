@@ -60,13 +60,13 @@ class ServiceRequest extends Model
 
     public static $enum_status = ["Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
 
-    public function getServiceRequestParts($serviceReqId)
+    public function getServiceRequestParts($partsIds)
     {
         // get parts name of service request
         return $parts = DB::table('product_parts')
             ->select(DB::raw('group_concat(product_parts.name SEPARATOR ", ") as name'))
             ->join('product_part_service_request', 'product_parts.id', '=', 'product_part_service_request.product_part_id')
-            ->whereIn('product_parts.id',$serviceReqId)
+            ->whereIn('product_parts.id',$partsIds)
             ->groupBy('product_part_service_request.service_request_id')
             ->get()->first();
     }

@@ -80,7 +80,7 @@ function requestCharge(ele) {
 	       		var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
 	       		var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
 
-	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+(km_distance * km_charge));
+	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+(km_distance * km_charge)).toFixed(2);
 	          	$("#amount").val(total_amount);
 	       	}
 	    });
@@ -97,7 +97,7 @@ function totalServiceAmount() {
 	var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
 	var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
 
-  	var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge));
+  	var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge)).toFixed(2);
 
   	$("#amount").val(total_amount);
 }

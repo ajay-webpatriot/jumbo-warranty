@@ -82,16 +82,18 @@ class CustomersController extends Controller
         }
 
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
-            
+        
+        $request['location_latitude']=0; 
+        $request['location_longitude']=0;   
         if($resultLocation){    
             $request['location_latitude']=$resultLocation['lat'];
             $request['location_longitude']=$resultLocation['lng'];
         }
-        else
-        {
-            $request['location_latitude']=112;
-            $request['location_longitude']=113;
-        }
+        // else
+        // {
+        //     $request['location_latitude']=112;
+        //     $request['location_longitude']=113;
+        // }
 
         $customer = Customer::create($request->all());
 
@@ -143,7 +145,9 @@ class CustomersController extends Controller
             if($customer->zipcode !== $request['zipcode'])
             {
                 $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
-                    
+                
+                $request['location_latitude']=0; 
+                $request['location_longitude']=0;     
                 if($resultLocation){    
                     $request['location_latitude']=$resultLocation['lat'];
                     $request['location_longitude']=$resultLocation['lng'];
