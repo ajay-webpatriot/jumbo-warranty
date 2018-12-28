@@ -96,7 +96,16 @@ class CompaniesController extends Controller
             
         $company = Company::findOrFail($id);
 
-        return view('admin.companies.edit', compact('company', 'enum_status'));
+        // $companyCredit=\App\ServiceRequest::select('sum(amount)')->where('company_id',$id)->groupBy('company_id')->get();
+
+        $companyCredit=\App\ServiceRequest::groupBy('company_id')
+       ->selectRaw('sum(amount) as used_credit')
+       ->where('company_id',$id)
+       ->get()->first();
+
+       // echo $companyCredit->used_credit;exit;
+        $available_credit=($companyCredit) ? ($company->credit - $companyCredit->used_credit) : $company->credit;
+        return view('admin.companies.edit', compact('company', 'available_credit', 'enum_status'));
     }
 
     /**

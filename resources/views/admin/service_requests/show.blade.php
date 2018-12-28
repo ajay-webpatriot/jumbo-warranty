@@ -81,8 +81,20 @@
                             <td field-key='adavance_amount'>{{ $service_request->adavance_amount }}</td>
                         </tr>
                         <tr>
+                            <th>@lang('quickadmin.service-request.fields.installation-charge')</th>
+                            <td field-key='installation_charge'>{{ $service_request->installation_charge }}</td>
+                        </tr>
+                        <tr>
                             <th>@lang('quickadmin.service-request.fields.service-charge')</th>
                             <td field-key='service_charge'>{{ $service_request->service_charge }}</td>
+                        </tr>
+                        <tr>
+                            <th>@lang('quickadmin.service-request.fields.distance')</th>
+                            <td field-key='km_distance'>{{ $service_request->km_distance }}</td>
+                        </tr>
+                        <tr>
+                            <th>@lang('quickadmin.service-request.fields.distance-charge')</th>
+                            <td field-key='km_charge'>{{ $service_request->km_charge }}</td>
                         </tr>
                         <tr>
                             <th>@lang('quickadmin.service-request.fields.service-tag')</th>

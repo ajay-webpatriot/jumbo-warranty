@@ -4,19 +4,19 @@
 @section('content')
     <h3 class="page-title">@lang('quickadmin.manage-charges.title')</h3>
     @can('manage_charge_create')
-    <p>
+    <!-- <p>
         <a href="{{ route('admin.manage_charges.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
         
-    </p>
+    </p> -->
     @endcan
 
     @can('manage_charge_delete')
-    <p>
+    <!-- <p>
         <ul class="list-inline">
             <li><a href="{{ route('admin.manage_charges.index') }}" style="{{ request('show_deleted') == 1 ? '' : 'font-weight: 700' }}">@lang('quickadmin.qa_all')</a></li> |
             <li><a href="{{ route('admin.manage_charges.index') }}?show_deleted=1" style="{{ request('show_deleted') == 1 ? 'font-weight: 700' : '' }}">@lang('quickadmin.qa_trash')</a></li>
         </ul>
-    </p>
+    </p> -->
     @endcan
 
 
@@ -83,13 +83,13 @@
                                     <a href="{{ route('admin.manage_charges.edit',[$manage_charge->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('manage_charge_delete')
-{!! Form::open(array(
+<!-- {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
                                         'route' => ['admin.manage_charges.destroy', $manage_charge->id])) !!}
                                     {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                    {!! Form::close() !!} -->
                                     @endcan
                                 </td>
                                 @endif
@@ -107,10 +107,10 @@
 @stop
 
 @section('javascript') 
-    <script>
+    <!-- <script>
         @can('manage_charge_delete')
             @if ( request('show_deleted') != 1 ) window.route_mass_crud_entries_destroy = '{{ route('admin.manage_charges.mass_destroy') }}'; @endif
         @endcan
 
-    </script>
+    </script> -->
 @endsection

@@ -27,6 +27,7 @@
                 <div class="col-xs-12 form-group">
                     {!! Form::label('credit', trans('quickadmin.company.fields.credit').'', ['class' => 'control-label']) !!}
                     {!! Form::text('credit', old('credit'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    <font color="green"><p>Available credit is {{$available_credit}}</p></font>
                     <p class="help-block"></p>
                     @if($errors->has('credit'))
                         <p class="help-block">

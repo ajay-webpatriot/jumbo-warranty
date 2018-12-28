@@ -114,6 +114,8 @@ class ServiceRequestsController extends Controller
 
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        $request['km_distance']=0;
+        $request['km_charge']=0;
         if($request['service_type'] == 'repair')
         {
             if($request['service_center_id'] != "" && $request['customer_id'] != "")
@@ -134,14 +136,13 @@ class ServiceRequestsController extends Controller
                     $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
 
                     $request['km_distance']=$distance;
-                    $distance_charge=\App\ManageCharge::where("km",">=",$distance)->orderBy("km","asc")->get()->first();
-                    if(count($distance_charge))
-                    {
-                        $request['km_charge']=$distance_charge->km_charge;
-                        $total_amount+=($distance*$distance_charge->km_charge);
-                    }
+
+                    $distance_charge=\App\ManageCharge::get()->first();
+                    $request['km_charge']=$distance_charge->km_charge;
+                    $total_amount+=($distance*$distance_charge->km_charge);
                    
                 }
+                $request['status'] ="Assigned";
             } 
         }
         $request['amount']=$total_amount;  
@@ -239,6 +240,10 @@ class ServiceRequestsController extends Controller
         }
         if($request['service_center_id'] != "")
         {
+            if($service_request->status == "New")
+            {
+                $request['status']="Assigned";
+            }
             if($service_request->service_center_id != $request['service_center_id']){
 
                 $service_center=\App\ServiceCenter::where('id',$request['service_center_id'])->first();
@@ -253,6 +258,8 @@ class ServiceRequestsController extends Controller
 
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        $request['km_distance']=0;
+        $request['km_charge']=0;
         if($request['service_type'] == 'repair')
         {
             if($request['service_center_id'] != "" && $request['customer_id'] != "")
@@ -261,7 +268,7 @@ class ServiceRequestsController extends Controller
 
                 $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
                 $customerDetail=\App\Customer::findOrFail($request['customer_id']);
-
+                
                 if($customerDetail->zipcode != $centerDetail->zipcode)
                 {
                     $customer_latitude=$customerDetail->location_latitude;
@@ -273,12 +280,11 @@ class ServiceRequestsController extends Controller
                     $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
 
                     $request['km_distance']=$distance;
-                    $distance_charge=\App\ManageCharge::where("km",">=",$distance)->orderBy("km","asc")->get()->first();
-                    if(count($distance_charge))
-                    {
-                        $request['km_charge']=$distance_charge->km_charge;
-                        $total_amount+=($distance*$distance_charge->km_charge);
-                    }
+
+                    $distance_charge=\App\ManageCharge::get()->first();
+                    $request['km_charge']=$distance_charge->km_charge;
+                    $total_amount+=($distance*$distance_charge->km_charge);
+                    
                    
                 }
             } 
@@ -393,12 +399,14 @@ class ServiceRequestsController extends Controller
     {
         
         if($request['service_center_id'] != "" && 
-            $request['customer_id'] != "" && 
-            $request['technician_id'] != ""
+            $request['customer_id'] != ""
             )
         {
             $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
-            $technicianDetail=\App\User::findOrFail($request['technician_id']);
+            if($request['technician_id'] != "")
+            {
+                $technicianDetail=\App\User::findOrFail($request['technician_id']);
+            }
             $customerDetail=\App\Customer::findOrFail($request['customer_id']);
             $companyDetail=\App\Company::findOrFail($request['company_id']);
             $productDetail=\App\Product::findOrFail($request['product_id']);
@@ -413,48 +421,74 @@ class ServiceRequestsController extends Controller
                     <div>".$customerDetail->city.",".$customerDetail->state." - ".$customerDetail->zipcode."</div>
                     <div>Phone: ".$customerDetail->phone."</div>
                 </div>";
+            
 
+            $technician= ($request['technician_id'] != "")? "<div><b>Technician: ".$technicianDetail->name."</b></div>":"";   
             $centerHTML="<div style='float:left;width:50%;'>
                             <b>Service Center: ".$centerDetail->name."</b>
                             <div>".$centerDetail->address_1."</div>
                             <div>".$centerDetail->city.",".$centerDetail->state." - ".$centerDetail->zipcode."</div>
-                            <div><b>Technician: ".$technicianDetail->name."</b></div>
+                            ".$technician."
                         </div>";
 
-            $productHTML="<table border='1' style='width:100%;'>
-                                <thead style='width:100%;'>
+            $installation_charge=($request['installation_charge'] != "" && $request['installation_charge'] != 0)? "<tr><td colspan='2'>Installation Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['installation_charge']."</td></tr>":"";
+
+            $service_charge=($request['service_charge'] != "" && $request['service_charge'] != 0)? "<tr><td colspan='2'>Service Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['service_charge']."</td></tr>":"";
+
+            $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".$request['km_distance']."</td></tr>":"";
+
+            $km_charge=($request['km_charge'] != "" && $request['km_charge'] != 0)? "<tr><td colspan='2'>Charge per km</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['km_charge']."</td></tr>":"";
+
+            $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$request['amount']."</b></td></tr>";
+
+            $parts_used="";
+            if($request['service_type'] == "repair" && count($request['parts']) > 0)
+            {
+                $obj= new ServiceRequest();
+                $parts= $obj->getServiceRequestParts($request['parts']);  
+                $parts_used="<tr><td>Parts Used</td><td colspan='2'>".$parts->name."</td></tr>";  
+            }
+            
+            $productHTML="<div><table class='table' style='width:100%;'>
+                                <thead>
                                     <tr>
-                                        <th>Sr#</th>
                                         <th>Product</th>
-                                        <th>Installation Charge</th>
-                                        <th>Service Charge</th>
-                                        <th>Additional Charge</th>
-                                        <th>Total Amount</th>
+                                        <th>Category</th>
+                                        <th>Price</th>
                                     </tr>
                                 </thead>
-                                <tbody style='width:100%;'>
+                                <tbody>
                                     <tr>
-                                        <td>1</td>
                                         <td>".$productDetail->name."</td>
-                                        <td>".$request['installation_charge']."</td>
-                                        <td>".($request['service_charge']+($request['km_charge']*$request['km_distance']))."</td>
-                                        <td>".$request['additional_charges']."</td>
-                                        <td>".$request['amount']."</td>
+                                        <td>".$productDetail->category->name."</td>
+                                        <td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$productDetail->price."</td>
                                     </tr>
+                                    <tr>
+                                    <td style='border:0;'></td>
+                                    </tr>
+                                    <tr>
+                                    <td style='border:0;'></td>
+                                    </tr><tr>
+                                    <td style='border:0;'></td>
+                                    </tr>
+                                    ".$parts_used."
+                                    ".$installation_charge."
+                                    ".$service_charge."
+                                    ".$km_distance."
+                                    ".$km_charge."
+                                    
+                                    ".$total_amount."
                                 </tbody>
-                        </table>";
+                        </table></div>";
 
-                
+            // final html of PDF    
             $html="<html>
                     <head>
+                    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
                         <style type='text/css'>
-                            table {
-                              border-collapse: collapse;
-                            }
-
-                            table, th, td {
-                              border: 1px solid black;
-                              text-align:center;
+                           
+                            .price{
+                                color:#120CEA;
                             }
                         </style>
                     </head>";

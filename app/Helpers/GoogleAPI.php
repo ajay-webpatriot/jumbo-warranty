@@ -9,8 +9,8 @@ class GoogleAPI
 		".urlencode($zipcode)."&sensor=true&key=".config('constants.GOOGLE_MAPS_API_KEY');
 		$result_string = file_get_contents($url);
 		$result = json_decode($result_string, true);
-		echo "<pre>";
-		print_r($result);exit;
+		// echo "<pre>";
+		// print_r($result);exit;
 		if(count($result['results']))
 		{
 			$result1[]=$result['results'][0];

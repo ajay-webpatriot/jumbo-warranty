@@ -51,13 +51,13 @@
                         <th>@lang('quickadmin.service-request.fields.mop')</th>
                         <th>@lang('quickadmin.service-request.fields.purchase-from')</th>
                         <th>@lang('quickadmin.service-request.fields.adavance-amount')</th>
-                        <th>@lang('quickadmin.service-request.fields.service-charge')</th>
+                        <!-- <th>@lang('quickadmin.service-request.fields.service-charge')</th> -->
                         <th>@lang('quickadmin.service-request.fields.service-tag')</th>
                         <th>@lang('quickadmin.service-request.fields.complain-details')</th>
                         <th>@lang('quickadmin.service-request.fields.note')</th>
                         <th>@lang('quickadmin.service-request.fields.completion-date')</th>
                         <th>@lang('quickadmin.service-request.fields.parts')</th>
-                        <th>@lang('quickadmin.service-request.fields.additional-charges')</th>
+                        <!-- <th>@lang('quickadmin.service-request.fields.additional-charges')</th> -->
                         <th>@lang('quickadmin.service-request.fields.amount')</th>
                         <th>@lang('quickadmin.service-request.fields.status')</th>
                         @if( request('show_deleted') == 1 )
@@ -94,7 +94,7 @@
                                 <td field-key='mop'>{{ $service_request->mop }}</td>
                                 <td field-key='purchase_from'>{{ $service_request->purchase_from }}</td>
                                 <td field-key='adavance_amount'>{{ $service_request->adavance_amount }}</td>
-                                <td field-key='service_charge'>{{ $service_request->service_charge }}</td>
+                                <!-- <td field-key='service_charge'>{{ $service_request->service_charge }}</td> -->
                                 <td field-key='service_tag'>{{ $service_request->service_tag }}</td>
                                 <td field-key='complain_details'>{!! $service_request->complain_details !!}</td>
                                 <td field-key='note'>{{ $service_request->note }}</td>
@@ -104,7 +104,7 @@
                                         <span class="label label-info label-many">{{ $singleParts->name }}</span>
                                     @endforeach
                                 </td>
-                                <td field-key='additional_charges'>{{ $service_request->additional_charges }}</td>
+                                <!-- <td field-key='additional_charges'>{{ $service_request->additional_charges }}</td> -->
                                 <td field-key='amount'>{{ $service_request->amount }}</td>
                                 <td field-key='status'>{{ $service_request->status }}</td>
                                 @if( request('show_deleted') == 1 )

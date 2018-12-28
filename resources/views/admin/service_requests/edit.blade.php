@@ -41,8 +41,8 @@
             @endif
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'', ['class' => 'control-label']) !!}
-                    {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2']) !!}
+                    {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
+                    {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('customer_id'))
                         <p class="help-block">
@@ -339,7 +339,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '','id' => 'additional_charges']) !!}
+                    {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '', 'onkeyup' => 'totalServiceAmount()']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('additional_charges'))
                         <p class="help-block">
@@ -351,7 +351,9 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount']) !!}
+                    {!! Form::text('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
+                    {!! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !!}
+                    {!! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('amount'))
                         <p class="help-block">
@@ -360,6 +362,7 @@
                     @endif
                 </div>
             </div>
+            @if($service_request->status != "New")
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
@@ -372,7 +375,9 @@
                     @endif
                 </div>
             </div>
-            
+            @else
+            {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
+            @endif
         </div>
     </div>
 
