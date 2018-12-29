@@ -88,6 +88,9 @@
                     @endif
                 </div>
             </div>
+            @else
+            {!! Form::hidden('service_center_id', old('service_center_id'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'service_center_id']) !!}
+            {!! Form::hidden('technician_id', old('technician_id'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'technician_id']) !!}
             @endif
             <div class="row">
                 <div class="col-xs-12 form-group">

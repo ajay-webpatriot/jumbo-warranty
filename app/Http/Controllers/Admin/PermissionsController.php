@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Permission;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 // models
 use App\Role as RoleModel;
@@ -18,6 +19,17 @@ use Spatie\Permission\Models\Permission as perm;
 
 class PermissionsController extends Controller
 {
+
+    public function __construct()
+    {
+        // Check permission
+        $this->middleware(function ($request, $next) {
+            if (! Gate::allows('permission_management_access')) {
+                return abort(404);
+            }
+            return $next($request);
+        });
+    }
     /**
      * Display a listing of the resource.
      *

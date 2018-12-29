@@ -449,7 +449,7 @@ class ServiceRequestsController extends Controller
             $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['amount'],2)."</b></td></tr>";
 
             $parts_used="";
-            if($request['service_type'] == "repair" && count($request['parts']) > 0)
+            if($request['service_type'] == "repair" && isset($request['parts']))
             {
                 $obj= new ServiceRequest();
                 $parts= $obj->getServiceRequestParts($request['parts']);  

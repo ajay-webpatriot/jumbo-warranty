@@ -13,21 +13,6 @@ $(document).ready(function(){
 	});
 
 });
-
-// function requestCharge(ele) {
-// 	$.ajax({
-//        type:'GET',
-//        url:'/getCharge',
-//        data:{
-//        		'companyId':'',
-//        		'serviceType':''
-//        },
-//        success:function(data) {
-//           $("#msg").html(data.msg);
-//        }
-//     });
-// }
-
 function requestCharge(ele) {
 
 	var companyId=$("#company_id").val().trim();

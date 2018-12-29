@@ -39,8 +39,9 @@ class AuthServiceProvider extends ServiceProvider
             if($user->role_id == 1 || $user->role_id == 3){
                 return true;
             }
-            $role = Role::findById($user->role_id);
-            return $role->hasPermissionTo('User Management');
+            // $role = Role::findById($user->role_id);
+            // return $role->hasPermissionTo('User Management');
+            return false;
         });
         // Auth gates for: Manage Product permission
         Gate::define('manageProduct', function ($user) {
