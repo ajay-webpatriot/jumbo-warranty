@@ -275,4 +275,25 @@ class CustomersController extends Controller
 
         return redirect()->route('admin.customers.index');
     }
+    public function getCustomerAddress(Request $request)
+    {
+        
+        // ajx function to get customer address
+        
+        $details=$request->all();
+        $data['address']="";
+        if($details['customerId'] != "")
+        {
+            $customer = Customer::where('id',$details['customerId'])
+                                ->where('status','Active')->get()->first();
+            // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
+            if(count($customer) > 0)
+            {
+                $data['address'].=$customer->address_1."<br/>".$customer->address_2."<br/>".$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
+            }
+        }
+        echo json_encode($data);
+        exit;
+    
+    }
 }

@@ -39,12 +39,12 @@
                         <th>@lang('quickadmin.customers.fields.lastname')</th>
                         <th>@lang('quickadmin.customers.fields.phone')</th>
                         <th>@lang('quickadmin.customers.fields.company')</th>
-                        <th>@lang('quickadmin.customers.fields.address-1')</th>
+                        <!-- <th>@lang('quickadmin.customers.fields.address-1')</th>
                         <th>@lang('quickadmin.customers.fields.address-2')</th>
                         <th>@lang('quickadmin.customers.fields.city')</th>
                         <th>@lang('quickadmin.customers.fields.state')</th>
                         <th>@lang('quickadmin.customers.fields.zipcode')</th>
-                        <th>@lang('quickadmin.customers.fields.location')</th>
+                        <th>@lang('quickadmin.customers.fields.location')</th> -->
                         <th>@lang('quickadmin.customers.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
@@ -66,12 +66,12 @@
                                 <td field-key='lastname'>{{ $customer->lastname }}</td>
                                 <td field-key='phone'>{{ $customer->phone }}</td>
                                 <td field-key='company'>{{ $customer->company->name or '' }}</td>
-                                <td field-key='address_1'>{{ $customer->address_1 }}</td>
+                                <!-- <td field-key='address_1'>{{ $customer->address_1 }}</td>
                                 <td field-key='address_2'>{{ $customer->address_2 }}</td>
                                 <td field-key='city'>{{ $customer->city }}</td>
                                 <td field-key='state'>{{ $customer->state }}</td>
                                 <td field-key='zipcode'>{{ $customer->zipcode }}</td>
-                                <td field-key='location'>{{ $customer->location }}</td>
+                                <td field-key='location'>{{ $customer->location }}</td> -->
                                 <td field-key='status'>{{ $customer->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

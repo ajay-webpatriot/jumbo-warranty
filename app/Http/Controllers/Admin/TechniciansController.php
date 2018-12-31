@@ -204,4 +204,35 @@ class TechniciansController extends Controller
         }
     }
 
+    public function getTechnicians(Request $request)
+    {
+        
+        // ajx function to get technicians of particular service center
+        
+        $details=$request->all();
+        $data['options']="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
+        if($details['serviceCenterId'] != "")
+        {
+            $query = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                        ->orderby('name');
+
+            $query->where('service_center_id',$details['serviceCenterId']);
+            $query->where('status','Active');
+            
+            $technicians = $query->get();
+            if(count($technicians) > 0)
+            {
+                foreach($technicians as $key => $value)
+                {
+                    $data['options'].="<option value='".$value->id."'>".$value->name."</option>";
+                    
+                }
+                
+            }
+        }
+        echo json_encode($data);
+        exit;
+    
+    }
+
 }

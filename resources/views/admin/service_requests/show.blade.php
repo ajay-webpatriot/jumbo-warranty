@@ -135,7 +135,45 @@
                     </table>
                 </div>
             </div>
+            <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        
+    <li role="presentation" class="active"><a href="#service_request" aria-controls="service_request" role="tab" data-toggle="tab">Service Request Log</a></li>
+    </ul>
 
+    <!-- Tab panes -->
+    <div class="tab-content">
+        
+        <div role="tabpanel" class="tab-pane active" id="service_request">
+        <table class="table table-bordered table-striped {{ count($service_request_logs) > 0 ? 'datatable' : '' }}">
+            <thead>
+                <tr>
+                    <th>Sr no.</th>
+                    <th>@lang('quickadmin.service-request-log-view.fields.action')</th>
+                    <th>@lang('quickadmin.service-request-log-view.fields.action-taken-by')</th>
+                    <th>@lang('quickadmin.service-request-log-view.fields.date-time')</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (count($service_request_logs) > 0)
+                    @foreach ($service_request_logs as $service_request_log)
+                        <tr data-entry-id="{{ $service_request_log->id }}">
+                            <td field-key='serial_no'>{{ $no++ }}</td>
+                            <td field-key='name'>{{ $service_request_log->action_made or '' }}</td>
+                            <td field-key='email'>{{ $service_request_log->user->name or '' }}</td>
+                            <td field-key='created_at'>{{ $service_request_log->created_at or '' }}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="32">@lang('quickadmin.qa_no_entries_in_table')</td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+        </div>
+    </div>
             <p>&nbsp;</p>
 
             <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_back_to_list')</a>

@@ -62,10 +62,8 @@ class AssignProductsController extends Controller
         
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $product_ids = \App\Product::get()->pluck('name', 'id');
-
-        $enum_status = AssignProduct::$enum_status;
             
-        return view('admin.assign_products.create', compact('enum_status', 'companies', 'product_ids'));
+        return view('admin.assign_products.create', compact('companies', 'product_ids'));
     }
 
     /**
@@ -103,11 +101,9 @@ class AssignProductsController extends Controller
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $product_ids = \App\Product::get()->pluck('name', 'id');
 
-        $enum_status = AssignProduct::$enum_status;
-            
         $assign_product = AssignProduct::findOrFail($id);
 
-        return view('admin.assign_products.edit', compact('assign_product', 'enum_status', 'companies', 'product_ids'));
+        return view('admin.assign_products.edit', compact('assign_product', 'companies', 'product_ids'));
     }
 
     /**

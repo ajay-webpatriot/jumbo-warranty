@@ -25,8 +25,7 @@ class StoreAssignPartsRequest extends FormRequest
         return [
             'company_id' => 'required',
             'product_parts_id' => 'required',
-            'quantity' => 'max:2147483647|required|numeric',
-            'status' => 'required',
+            'quantity' => 'max:2147483647|required|numeric'
         ];
     }
 }

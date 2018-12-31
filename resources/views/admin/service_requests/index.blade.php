@@ -38,26 +38,7 @@
                         <th>@lang('quickadmin.service-request.fields.service-type')</th>
                         <th>@lang('quickadmin.service-request.fields.service-center')</th>
                         <th>@lang('quickadmin.service-request.fields.technician')</th>
-                        <th>@lang('quickadmin.service-request.fields.call-type')</th>
-                        <th>@lang('quickadmin.service-request.fields.call-location')</th>
-                        <th>@lang('quickadmin.service-request.fields.priority')</th>
                         <th>@lang('quickadmin.service-request.fields.product')</th>
-                        <th>@lang('quickadmin.service-request.fields.make')</th>
-                        <th>@lang('quickadmin.service-request.fields.model-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.is-item-in-warrenty')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-date')</th>
-                        <th>@lang('quickadmin.service-request.fields.serial-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.mop')</th>
-                        <th>@lang('quickadmin.service-request.fields.purchase-from')</th>
-                        <th>@lang('quickadmin.service-request.fields.adavance-amount')</th>
-                        <!-- <th>@lang('quickadmin.service-request.fields.service-charge')</th> -->
-                        <th>@lang('quickadmin.service-request.fields.service-tag')</th>
-                        <th>@lang('quickadmin.service-request.fields.complain-details')</th>
-                        <th>@lang('quickadmin.service-request.fields.note')</th>
-                        <th>@lang('quickadmin.service-request.fields.completion-date')</th>
-                        <th>@lang('quickadmin.service-request.fields.parts')</th>
-                        <!-- <th>@lang('quickadmin.service-request.fields.additional-charges')</th> -->
                         <th>@lang('quickadmin.service-request.fields.amount')</th>
                         <th>@lang('quickadmin.service-request.fields.status')</th>
                         @if( request('show_deleted') == 1 )
@@ -81,30 +62,7 @@
                                 <td field-key='service_type'>{{ $service_request->service_type }}</td>
                                 <td field-key='service_center'>{{ $service_request->service_center->name or '' }}</td>
                                 <td field-key='technician'>{{ $service_request->technician->name or '' }}</td>
-                                <td field-key='call_type'>{{ $service_request->call_type }}</td>
-                                <td field-key='call_location'>{{ $service_request->call_location }}</td>
-                                <td field-key='priority'>{{ $service_request->priority }}</td>
                                 <td field-key='product'>{{ $service_request->product->name or '' }}</td>
-                                <td field-key='make'>{{ $service_request->make }}</td>
-                                <td field-key='model_no'>{{ $service_request->model_no }}</td>
-                                <td field-key='is_item_in_warrenty'>{{ $service_request->is_item_in_warrenty }}</td>
-                                <td field-key='bill_no'>{{ $service_request->bill_no }}</td>
-                                <td field-key='bill_date'>{{ $service_request->bill_date }}</td>
-                                <td field-key='serial_no'>{{ $service_request->serial_no }}</td>
-                                <td field-key='mop'>{{ $service_request->mop }}</td>
-                                <td field-key='purchase_from'>{{ $service_request->purchase_from }}</td>
-                                <td field-key='adavance_amount'>{{ $service_request->adavance_amount }}</td>
-                                <!-- <td field-key='service_charge'>{{ $service_request->service_charge }}</td> -->
-                                <td field-key='service_tag'>{{ $service_request->service_tag }}</td>
-                                <td field-key='complain_details'>{!! $service_request->complain_details !!}</td>
-                                <td field-key='note'>{{ $service_request->note }}</td>
-                                <td field-key='completion_date'>{{ $service_request->completion_date }}</td>
-                                <td field-key='parts'>
-                                    @foreach ($service_request->parts as $singleParts)
-                                        <span class="label label-info label-many">{{ $singleParts->name }}</span>
-                                    @endforeach
-                                </td>
-                                <!-- <td field-key='additional_charges'>{{ $service_request->additional_charges }}</td> -->
                                 <td field-key='amount'>{{ $service_request->amount }}</td>
                                 <td field-key='status'>{{ $service_request->status }}</td>
                                 @if( request('show_deleted') == 1 )

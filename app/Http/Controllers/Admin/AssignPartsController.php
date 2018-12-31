@@ -73,9 +73,8 @@ class AssignPartsController extends Controller
         
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $product_parts = \App\ProductPart::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $enum_status = AssignPart::$enum_status;
             
-        return view('admin.assign_parts.create', compact('enum_status', 'companies', 'product_parts'));
+        return view('admin.assign_parts.create', compact('companies', 'product_parts'));
     }
 
     /**
@@ -111,11 +110,10 @@ class AssignPartsController extends Controller
         
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $product_parts = \App\ProductPart::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $enum_status = AssignPart::$enum_status;
             
         $assign_part = AssignPart::findOrFail($id);
 
-        return view('admin.assign_parts.edit', compact('assign_part', 'enum_status', 'companies', 'product_parts'));
+        return view('admin.assign_parts.edit', compact('assign_part', 'companies', 'product_parts'));
     }
 
     /**

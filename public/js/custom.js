@@ -12,6 +12,65 @@ $(document).ready(function(){
 	    return true;
 	});
 
+	$(document).on("change","#service_center_id",function(evt)
+	{
+		// get technician according to service center for service request 
+		var serviceCenterId = $(this).val();
+
+		$.ajax({
+	       	type:'GET',
+	       	url:APP_URL+'/admin/getTechnicians',
+	       	data:{
+	       		'serviceCenterId':serviceCenterId
+	       	},
+	       	dataType: "json",
+	       	success:function(data) {
+	       		$(".techDiv").show();
+	       		$(".techDiv").find(".select2").select2();
+	       		$("#technician_id").html(data.options);
+	       	}
+	    });
+	});
+	$(document).on("change","#company_id",function(evt)
+	{
+		// get technician according to service center for service request 
+		var companyId = $(this).val();
+
+		$.ajax({
+	       	type:'GET',
+	       	url:APP_URL+'/admin/getCompanyDetails',
+	       	data:{
+	       		'companyId':companyId
+	       	},
+	       	dataType: "json",
+	       	success:function(data) {
+	       		$(".custDiv").show();
+	       		$(".custDiv").find(".select2").select2();
+	       		$("#customer_id").html(data.custOptions);
+	       		$("#selectall-parts").html(data.partOptions);
+	       		$("#product_id").html(data.productOptions);
+	       	}
+	    });
+	});
+	$(document).on("change","#customer_id",function(evt)
+	{
+		// get technician according to service center for service request 
+		var customerId = $(this).val();
+
+		$.ajax({
+	       	type:'GET',
+	       	url:APP_URL+'/admin/getCustomerAddress',
+	       	data:{
+	       		'customerId':customerId
+	       	},
+	       	dataType: "json",
+	       	success:function(data) {
+	       		$(".custDiv").show();
+	       		$(".custAddress").html(data.address);
+	       	}
+	    });
+	});
+
 });
 function requestCharge(ele) {
 

@@ -41,23 +41,12 @@
                     @endif
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('status', trans('quickadmin.assign-product.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('status'))
-                        <p class="help-block">
-                            {{ $errors->first('status') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
             
         </div>
     </div>
 
     {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
+    <a href="{{ route('admin.assign_products.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop
 

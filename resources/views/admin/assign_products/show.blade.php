@@ -24,10 +24,6 @@
                                 @endforeach
                             </td>
                         </tr>
-                        <tr>
-                            <th>@lang('quickadmin.assign-product.fields.status')</th>
-                            <td field-key='status'>{{ $assign_product->status }}</td>
-                        </tr>
                     </table>
                 </div>
             </div>

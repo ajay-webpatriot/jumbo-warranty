@@ -178,11 +178,9 @@ class ServiceRequestsController extends Controller
         }
         
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        
         $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $parts = \App\ProductPart::get()->pluck('name', 'id');
 
@@ -195,9 +193,46 @@ class ServiceRequestsController extends Controller
                     $enum_status = ServiceRequest::$enum_status;
             
         $service_request = ServiceRequest::findOrFail($id);
+        
+        
+        if($service_request['service_center_id'] != "")
+        {
+            // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                                    ->where('status','Active')
+                                    ->where('service_center_id',$service_request['service_center_id'])
+                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        }
+        else
+        {
+            $technicians=array(''=>trans('quickadmin.qa_please_select'));
+        }
+
+        $customer_address="";
+        $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
+                                        ->where('status','Active')
+                                        ->get()->first();
+                                       
+        if($service_request['company_id'] != "")
+        {
+            // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $customers = \App\Customer::where('company_id',$service_request['company_id'])
+                                        ->where('status','Active')
+                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        }
+        else
+        {
+            $customers=array(''=>trans('quickadmin.qa_please_select'));
+        }
+        
+
+        
+
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
 
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName'));
+        $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
+
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData'))->with('no', 1);
     }
 
     /**
@@ -320,8 +355,8 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         $service_request = ServiceRequest::findOrFail($id);
-
-        return view('admin.service_requests.show', compact('service_request'));
+        $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
+        return view('admin.service_requests.show', compact('service_request', 'service_request_logs'))->with('no', 1);
     }
 
 
@@ -549,6 +584,59 @@ class ServiceRequestsController extends Controller
             
         }
         
+        echo json_encode($data);
+        exit;
+    }
+    public function getCompanyDetails(Request $request)
+    {
+        
+        // ajx function to get customers, product and parts of particular company
+        
+        $details=$request->all();
+
+        $data['custOptions']="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
+        $data['partOptions']="";
+        $data['productOptions']="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
+
+        if($details['companyId'] != "")
+        {
+            $customers = \App\Customer::where('company_id',$details['companyId'])
+                                ->where('status','Active')->get();
+
+            $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
+                                ->with('product_parts')->get();
+
+            $products = \App\AssignProduct::where('company_id',$details['companyId'])
+                                ->with('product_id')->get();
+            // echo count($product_parts);
+            //             echo "<pre>"; print_r ($product_parts); echo "</pre>"; exit();        
+            if(count($customers) > 0)
+            {
+                foreach($customers as $key => $value)
+                {
+                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname.' '.$value->lastname."</option>";   
+                }   
+            }
+            if(count($product_parts) > 0)
+            {
+                foreach($product_parts as $key => $value)
+                {
+                    $data['partOptions'].="<option value='".$value->product_parts->id."'>".$value->product_parts->name."</option>";   
+                    
+                }   
+            }
+            if(count($products) > 0)
+            {
+                foreach($products as $key => $value)
+                {
+                    // echo "<pre>"; print_r ($value->product_id); echo "</pre>"; exit();
+                    foreach($value->product_id as $details)
+                    {
+                        $data['productOptions'].="<option value='".$details->id."'>".$details->name."</option>";   
+                    }
+                }   
+            }
+        }
         echo json_encode($data);
         exit;
     }

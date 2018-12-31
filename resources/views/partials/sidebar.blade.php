@@ -196,14 +196,14 @@
                     <!-- endcan -->
                     
                     <!-- can('service_request_log_access') -->
-                    @can('manageServiceRequestLog')
+                    <!-- can('manageServiceRequestLog')
                     <li>
                         <a href="{{ route('admin.service_request_logs.index') }}">
                             <i class="fa fa-gears"></i>
                             <span>@lang('quickadmin.service-request-log.title')</span>
                         </a>
                     </li>
-                    @endcan
+                    endcan -->
                     <!-- endcan -->
                     
                 </ul>

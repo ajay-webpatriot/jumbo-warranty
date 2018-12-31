@@ -35,7 +35,6 @@
 
                         <th>@lang('quickadmin.assign-product.fields.company')</th>
                         <th>@lang('quickadmin.assign-product.fields.product-id')</th>
-                        <th>@lang('quickadmin.assign-product.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
@@ -58,7 +57,6 @@
                                         <span class="label label-info label-many">{{ $singleProductId->name }}</span>
                                     @endforeach
                                 </td>
-                                <td field-key='status'>{{ $assign_product->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>
                                     @can('assign_product_delete')

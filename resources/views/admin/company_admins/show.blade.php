@@ -30,33 +30,6 @@
                             <td field-key='phone'>{{ $user->phone }}</td>
                         </tr>
                         <tr>
-                            <th>@lang('quickadmin.users.fields.address-1')</th>
-                            <td field-key='address_1'>{{ $user->address_1 }}</td>
-                        </tr>
-                        <tr>
-                            <th>@lang('quickadmin.users.fields.address-2')</th>
-                            <td field-key='address_2'>{{ $user->address_2 }}</td>
-                        </tr>
-                        <tr>
-                            <th>@lang('quickadmin.users.fields.city')</th>
-                            <td field-key='city'>{{ $user->city }}</td>
-                        </tr>
-                        <tr>
-                            <th>@lang('quickadmin.users.fields.state')</th>
-                            <td field-key='state'>{{ $user->state }}</td>
-                        </tr>
-                        <tr>
-                            <th>@lang('quickadmin.users.fields.zipcode')</th>
-                            <td field-key='zipcode'>{{ $user->zipcode }}</td>
-                        </tr>
-                        <tr>
-                            <th>@lang('quickadmin.users.fields.location')</th>
-                            <td>
-                    <strong>{{ $user->location_address }}</strong>
-                    <div id='location-map' style='width: 600px;height: 300px;' class='map' data-key='location' data-latitude='{{$user->location_latitude}}' data-longitude='{{$user->location_longitude}}'></div>
-                </td>
-                        </tr>
-                        <tr>
                             <th>@lang('quickadmin.users.fields.email')</th>
                             <td field-key='email'>{{ $user->email }}</td>
                         </tr>

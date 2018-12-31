@@ -20,12 +20,9 @@ class AssignPart extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['quantity', 'status', 'company_id', 'product_parts_id'];
+    protected $fillable = ['quantity', 'company_id', 'product_parts_id'];
     protected $hidden = [];
     
-    
-
-    public static $enum_status = ["Active" => "Active", "Inactive" => "Inactive"];
 
     public function getRequestedServiceParts($assignPartId)
     {

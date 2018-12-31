@@ -26,8 +26,7 @@ class UpdateAssignProductsRequest extends FormRequest
             
             'company_id' => 'required',
             'product_id' => 'required',
-            'product_id.*' => 'exists:products,id',
-            'status' => 'required',
+            'product_id.*' => 'exists:products,id'
         ];
     }
 }

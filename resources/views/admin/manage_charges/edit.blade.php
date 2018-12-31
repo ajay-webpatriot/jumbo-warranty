@@ -40,6 +40,7 @@
     </div>
 
     {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
+    <a href="{{ route('admin.manage_charges.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop
 

@@ -64,12 +64,9 @@ class UsersController extends Controller
             return abort(401);
         }
         
-        $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
         $logged_userRole_id= auth()->user()->role_id;  
-        return view('admin.users.create', compact('enum_status', 'roles', 'companies', 'service_centers','logged_userRole_id'));
+        return view('admin.users.create', compact('enum_status','logged_userRole_id'));
     }
 
     /**
@@ -88,10 +85,6 @@ class UsersController extends Controller
         $data['role_id'] = config('constants.ADMIN_ROLE_ID');
         $user = User::create($data);
 
-        foreach ($request->input('service_requests', []) as $data) {
-            $user->service_requests()->create($data);
-        }
-
 
         return redirect()->route('admin.users.index');
     }
@@ -108,15 +101,12 @@ class UsersController extends Controller
         if (! Gate::allows('user_edit')) {
             return abort(401);
         }
-        
-        $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+
         $enum_status = User::$enum_status;
             
         $user = User::findOrFail($id);
         $logged_userRole_id= auth()->user()->role_id;
-        return view('admin.users.edit', compact('user', 'enum_status', 'roles', 'companies', 'service_centers','logged_userRole_id'));
+        return view('admin.users.edit', compact('user', 'enum_status','logged_userRole_id'));
     }
 
     /**
@@ -133,25 +123,6 @@ class UsersController extends Controller
         }
         $user = User::findOrFail($id);
         $user->update($request->all());
-
-        $serviceRequests           = $user->service_requests;
-        $currentServiceRequestData = [];
-        foreach ($request->input('service_requests', []) as $index => $data) {
-            if (is_integer($index)) {
-                $user->service_requests()->create($data);
-            } else {
-                $id                          = explode('-', $index)[1];
-                $currentServiceRequestData[$id] = $data;
-            }
-        }
-        foreach ($serviceRequests as $item) {
-            if (isset($currentServiceRequestData[$item->id])) {
-                $item->update($currentServiceRequestData[$item->id]);
-            } else {
-                $item->delete();
-            }
-        }
-
 
         return redirect()->route('admin.users.index');
     }

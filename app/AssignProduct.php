@@ -15,12 +15,9 @@ class AssignProduct extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['status', 'company_id'];
+    protected $fillable = ['company_id'];
     protected $hidden = [];
     
-    
-
-    public static $enum_status = ["Active" => "Active", "Inactive" => "Inactive"];
 
     /**
      * Set to null if empty

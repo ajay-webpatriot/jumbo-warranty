@@ -89,6 +89,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
 
     // ajax routes
     Route::get('/getCharge','Admin\ServiceRequestsController@requestCharge');
+    Route::get('/getTechnicians','Admin\TechniciansController@getTechnicians');
+    Route::get('/getCompanyDetails','Admin\ServiceRequestsController@getCompanyDetails');
+    Route::get('/getCustomerAddress','Admin\CustomersController@getCustomerAddress');
 
 });
   

@@ -2,7 +2,7 @@
 
 return [
 	'permission-management' => [
-		'title' => 'Permission management',
+		'title' => 'Permission Management',
 		'fields' => [
 		],
 	],
@@ -12,7 +12,7 @@ return [
 		],
 	],
 	'user-management' => [
-		'title' => 'User management',
+		'title' => 'User Management',
 		'fields' => [
 		],
 	],
@@ -26,7 +26,7 @@ return [
 	],
 	
 	'users' => [
-		'title' => 'Admins',
+		'title' => 'Admin Users',
 		'companyUserTitle' => 'Company Users',
 		'technicianTitle' => 'Technicians',
 		'fields' => [
@@ -82,7 +82,7 @@ return [
 	],
 	
 	'company-management' => [
-		'title' => 'Company management',
+		'title' => 'Company Management',
 		'fields' => [
 		],
 	],
@@ -104,7 +104,7 @@ return [
 	],
 	
 	'company-admins' => [
-		'title' => 'Company admins',
+		'title' => 'Company Admins',
 		'fields' => [
 		],
 	],
@@ -112,8 +112,8 @@ return [
 	'customers' => [
 		'title' => 'Customers',
 		'fields' => [
-			'firstname' => 'Firstname',
-			'lastname' => 'Lastname',
+			'firstname' => 'First Name',
+			'lastname' => 'Last Name',
 			'phone' => 'Phone',
 			'company' => 'Company',
 			'address-1' => 'Address 1',
@@ -127,10 +127,11 @@ return [
 	],
 	
 	'service-request' => [
-		'title' => 'Service request',
+		'title' => 'Service Request',
 		'fields' => [
 			'company' => 'Company',
 			'customer' => 'Customer',
+			'customer-address' => 'Address',
 			'service-type' => 'Service type',
 			'service-center' => 'Service center',
 			'technician' => 'Technician',
@@ -163,13 +164,13 @@ return [
 	],
 	
 	'service-center-management' => [
-		'title' => 'Service center management',
+		'title' => 'Service Center Management',
 		'fields' => [
 		],
 	],
 	
 	'service-center' => [
-		'title' => 'Service center',
+		'title' => 'Service Center',
 		'fields' => [
 			'name' => 'Name',
 			'address-1' => 'Address 1',
@@ -184,7 +185,7 @@ return [
 	],
 	
 	'service-center-admin' => [
-		'title' => 'Service center admins',
+		'title' => 'Service Center Admins',
 		'fields' => [
 		],
 	],
@@ -196,7 +197,7 @@ return [
 	],
 	
 	'service-request-log' => [
-		'title' => 'Service request log',
+		'title' => 'Service Request Log',
 		'fields' => [
 			'service-request-id' => 'Service Request Id',
 			'company' => 'Company',
@@ -214,7 +215,7 @@ return [
 		],
 	],
 	'manage-charges' => [
-		'title' => 'Manage charges',
+		'title' => 'Manage Charges',
 		'fields' => [
 			'km-charge' => 'km charge',
 			'status' => 'Status',
@@ -230,19 +231,19 @@ return [
 	],
 	
 	'product-management' => [
-		'title' => 'Product management',
+		'title' => 'Product Management',
 		'fields' => [
 		],
 	],
 	
 	'company-users' => [
-		'title' => 'Company users',
+		'title' => 'Company Users',
 		'fields' => [
 		],
 	],
 	
 	'assign-parts' => [
-		'title' => 'Assign parts',
+		'title' => 'Assign Parts',
 		'fields' => [
 			'company' => 'Company',
 			'product-parts' => 'Parts',
@@ -259,7 +260,7 @@ return [
 	],
 	
 	'assign-product' => [
-		'title' => 'Assign products',
+		'title' => 'Assign Products',
 		'fields' => [
 			'company' => 'Company',
 			'product-id' => 'Product',
@@ -282,6 +283,7 @@ return [
 	'qa_add_new' => 'Add new',
 	'qa_are_you_sure' => 'Are you sure ?',
 	'qa_back_to_list' => 'Back to list',
+	'qa_cancel' => 'Cancel',
 	'qa_dashboard' => 'Dashboard',
 	'qa_delete' => 'Delete',
 	'qa_delete_selected' => 'Delete selected',
@@ -472,7 +474,7 @@ return [
 	'qa_forgot_password' => 'Forgot your password?',
 	'qa_remember_me' => 'Remember me',
 	'qa_login' => 'Login',
-	'qa_change_password' => 'Change password',
+	'qa_change_password' => 'Change Password',
 	'qa_csv' => 'CSV',
 	'qa_print' => 'Print',
 	'qa_excel' => 'Excel',

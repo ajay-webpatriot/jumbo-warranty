@@ -24,10 +24,6 @@
                             <th>@lang('quickadmin.assign-parts.fields.quantity')</th>
                             <td field-key='quantity'>{{ $assign_part->quantity }}</td>
                         </tr>
-                        <tr>
-                            <th>@lang('quickadmin.assign-parts.fields.status')</th>
-                            <td field-key='status'>{{ $assign_part->status }}</td>
-                        </tr>
                     </table>
                 </div>
             </div>
