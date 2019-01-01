@@ -29,7 +29,6 @@ class StoreCompaniesRequest extends FormRequest
             'city' => 'required',
             'state' => 'required',
             'zipcode' => 'required',
-            'location' => 'required',
             'status' => 'required',
         ];
     }

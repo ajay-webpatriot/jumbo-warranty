@@ -61,7 +61,6 @@
 <li role="presentation" class=""><a href="#invoices" aria-controls="invoices" role="tab" data-toggle="tab">Invoices</a></li>
 <li role="presentation" class=""><a href="#assign_product" aria-controls="assign_product" role="tab" data-toggle="tab">Assign products</a></li>
 <li role="presentation" class=""><a href="#assign_parts" aria-controls="assign_parts" role="tab" data-toggle="tab">Assign parts</a></li>
-<li role="presentation" class=""><a href="#users" aria-controls="users" role="tab" data-toggle="tab">Users</a></li>
 <li role="presentation" class=""><a href="#customers" aria-controls="customers" role="tab" data-toggle="tab">Customers</a></li>
 </ul>
 
@@ -73,29 +72,13 @@
     <thead>
         <tr>
             <th>@lang('quickadmin.service-request.fields.company')</th>
+                        <th>@lang('quickadmin.service-request.fields.customer')</th>
                         <th>@lang('quickadmin.service-request.fields.service-type')</th>
                         <th>@lang('quickadmin.service-request.fields.service-center')</th>
                         <th>@lang('quickadmin.service-request.fields.technician')</th>
-                        <th>@lang('quickadmin.service-request.fields.call-type')</th>
-                        <th>@lang('quickadmin.service-request.fields.call-location')</th>
-                        <th>@lang('quickadmin.service-request.fields.priority')</th>
+                        
                         <th>@lang('quickadmin.service-request.fields.product')</th>
-                        <th>@lang('quickadmin.service-request.fields.make')</th>
-                        <th>@lang('quickadmin.service-request.fields.model-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.is-item-in-warrenty')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-date')</th>
-                        <th>@lang('quickadmin.service-request.fields.serial-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.mop')</th>
-                        <th>@lang('quickadmin.service-request.fields.purchase-from')</th>
-                        <th>@lang('quickadmin.service-request.fields.adavance-amount')</th>
-                        <th>@lang('quickadmin.service-request.fields.service-charge')</th>
-                        <th>@lang('quickadmin.service-request.fields.service-tag')</th>
-                        <th>@lang('quickadmin.service-request.fields.complain-details')</th>
-                        <th>@lang('quickadmin.service-request.fields.note')</th>
-                        <th>@lang('quickadmin.service-request.fields.completion-date')</th>
-                        <th>@lang('quickadmin.service-request.fields.parts')</th>
-                        <th>@lang('quickadmin.service-request.fields.additional-charges')</th>
+                        
                         <th>@lang('quickadmin.service-request.fields.amount')</th>
                         <th>@lang('quickadmin.service-request.fields.status')</th>
                         @if( request('show_deleted') == 1 )
@@ -111,33 +94,12 @@
             @foreach ($service_requests as $service_request)
                 <tr data-entry-id="{{ $service_request->id }}">
                     <td field-key='company'>{{ $service_request->company->name or '' }}</td>
+                    <td field-key='customer'>{{ $service_request->customer->firstname or '' }}</td>
                                 <td field-key='service_type'>{{ $service_request->service_type }}</td>
                                 <td field-key='service_center'>{{ $service_request->service_center->name or '' }}</td>
                                 <td field-key='technician'>{{ $service_request->technician->name or '' }}</td>
-                                <td field-key='call_type'>{{ $service_request->call_type }}</td>
-                                <td field-key='call_location'>{{ $service_request->call_location }}</td>
-                                <td field-key='priority'>{{ $service_request->priority }}</td>
+                                
                                 <td field-key='product'>{{ $service_request->product->name or '' }}</td>
-                                <td field-key='make'>{{ $service_request->make }}</td>
-                                <td field-key='model_no'>{{ $service_request->model_no }}</td>
-                                <td field-key='is_item_in_warrenty'>{{ $service_request->is_item_in_warrenty }}</td>
-                                <td field-key='bill_no'>{{ $service_request->bill_no }}</td>
-                                <td field-key='bill_date'>{{ $service_request->bill_date }}</td>
-                                <td field-key='serial_no'>{{ $service_request->serial_no }}</td>
-                                <td field-key='mop'>{{ $service_request->mop }}</td>
-                                <td field-key='purchase_from'>{{ $service_request->purchase_from }}</td>
-                                <td field-key='adavance_amount'>{{ $service_request->adavance_amount }}</td>
-                                <td field-key='service_charge'>{{ $service_request->service_charge }}</td>
-                                <td field-key='service_tag'>{{ $service_request->service_tag }}</td>
-                                <td field-key='complain_details'>{!! $service_request->complain_details !!}</td>
-                                <td field-key='note'>{{ $service_request->note }}</td>
-                                <td field-key='completion_date'>{{ $service_request->completion_date }}</td>
-                                <td field-key='parts'>
-                                    @foreach ($service_request->parts as $singleParts)
-                                        <span class="label label-info label-many">{{ $singleParts->name }}</span>
-                                    @endforeach
-                                </td>
-                                <td field-key='additional_charges'>{{ $service_request->additional_charges }}</td>
                                 <td field-key='amount'>{{ $service_request->amount }}</td>
                                 <td field-key='status'>{{ $service_request->status }}</td>
                                 @if( request('show_deleted') == 1 )
@@ -266,7 +228,6 @@
         <tr>
             <th>@lang('quickadmin.assign-product.fields.company')</th>
                         <th>@lang('quickadmin.assign-product.fields.product-id')</th>
-                        <th>@lang('quickadmin.assign-product.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
@@ -285,7 +246,6 @@
                                         <span class="label label-info label-many">{{ $singleProductId->name }}</span>
                                     @endforeach
                                 </td>
-                                <td field-key='status'>{{ $assign_product->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>
                                     @can('assign_product_delete')
@@ -343,7 +303,6 @@
             <th>@lang('quickadmin.assign-parts.fields.company')</th>
                         <th>@lang('quickadmin.assign-parts.fields.product-parts')</th>
                         <th>@lang('quickadmin.assign-parts.fields.quantity')</th>
-                        <th>@lang('quickadmin.assign-parts.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
@@ -359,7 +318,6 @@
                     <td field-key='company'>{{ $assign_part->company->name or '' }}</td>
                                 <td field-key='product_parts'>{{ $assign_part->product_parts->name or '' }}</td>
                                 <td field-key='quantity'>{{ $assign_part->quantity }}</td>
-                                <td field-key='status'>{{ $assign_part->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>
                                     @can('assign_part_delete')
@@ -410,73 +368,6 @@
     </tbody>
 </table>
 </div>
-<div role="tabpanel" class="tab-pane " id="users">
-<table class="table table-bordered table-striped {{ count($users) > 0 ? 'datatable' : '' }}">
-    <thead>
-        <tr>
-            <th>@lang('quickadmin.users.fields.role')</th>
-                        <th>@lang('quickadmin.users.fields.company')</th>
-                        <th>@lang('quickadmin.users.fields.service-center')</th>
-                        <th>@lang('quickadmin.users.fields.name')</th>
-                        <th>@lang('quickadmin.users.fields.phone')</th>
-                        <th>@lang('quickadmin.users.fields.address-1')</th>
-                        <th>@lang('quickadmin.users.fields.address-2')</th>
-                        <th>@lang('quickadmin.users.fields.city')</th>
-                        <th>@lang('quickadmin.users.fields.state')</th>
-                        <th>@lang('quickadmin.users.fields.zipcode')</th>
-                        <th>@lang('quickadmin.users.fields.location')</th>
-                        <th>@lang('quickadmin.users.fields.email')</th>
-                        <th>@lang('quickadmin.users.fields.status')</th>
-                                                <th>&nbsp;</th>
-
-        </tr>
-    </thead>
-
-    <tbody>
-        @if (count($users) > 0)
-            @foreach ($users as $user)
-                <tr data-entry-id="{{ $user->id }}">
-                    <td field-key='role'>{{ $user->role->title or '' }}</td>
-                                <td field-key='company'>{{ $user->company->name or '' }}</td>
-                                <td field-key='service_center'>{{ $user->service_center->name or '' }}</td>
-                                <td field-key='name'>{{ $user->name }}</td>
-                                <td field-key='phone'>{{ $user->phone }}</td>
-                                <td field-key='address_1'>{{ $user->address_1 }}</td>
-                                <td field-key='address_2'>{{ $user->address_2 }}</td>
-                                <td field-key='city'>{{ $user->city }}</td>
-                                <td field-key='state'>{{ $user->state }}</td>
-                                <td field-key='zipcode'>{{ $user->zipcode }}</td>
-                                <td field-key='location'>{{ $user->location_address }}</td>
-                                <td field-key='email'>{{ $user->email }}</td>
-                                <td field-key='status'>{{ $user->status }}</td>
-                                                                <td>
-                                    @can('user_view')
-                                    <a href="{{ route('admin.users.show',[$user->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
-                                    @endcan
-                                    @can('user_edit')
-                                    <a href="{{ route('admin.users.edit',[$user->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
-                                    @endcan
-                                    @can('user_delete')
-{!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.users.destroy', $user->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
-                                    @endcan
-                                </td>
-
-                </tr>
-            @endforeach
-        @else
-            <tr>
-                <td colspan="20">@lang('quickadmin.qa_no_entries_in_table')</td>
-            </tr>
-        @endif
-    </tbody>
-</table>
-</div>
 <div role="tabpanel" class="tab-pane " id="customers">
 <table class="table table-bordered table-striped {{ count($customers) > 0 ? 'datatable' : '' }}">
     <thead>
@@ -485,12 +376,6 @@
                         <th>@lang('quickadmin.customers.fields.lastname')</th>
                         <th>@lang('quickadmin.customers.fields.phone')</th>
                         <th>@lang('quickadmin.customers.fields.company')</th>
-                        <th>@lang('quickadmin.customers.fields.address-1')</th>
-                        <th>@lang('quickadmin.customers.fields.address-2')</th>
-                        <th>@lang('quickadmin.customers.fields.city')</th>
-                        <th>@lang('quickadmin.customers.fields.state')</th>
-                        <th>@lang('quickadmin.customers.fields.zipcode')</th>
-                        <th>@lang('quickadmin.customers.fields.location')</th>
                         <th>@lang('quickadmin.customers.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
@@ -508,12 +393,6 @@
                                 <td field-key='lastname'>{{ $customer->lastname }}</td>
                                 <td field-key='phone'>{{ $customer->phone }}</td>
                                 <td field-key='company'>{{ $customer->company->name or '' }}</td>
-                                <td field-key='address_1'>{{ $customer->address_1 }}</td>
-                                <td field-key='address_2'>{{ $customer->address_2 }}</td>
-                                <td field-key='city'>{{ $customer->city }}</td>
-                                <td field-key='state'>{{ $customer->state }}</td>
-                                <td field-key='zipcode'>{{ $customer->zipcode }}</td>
-                                <td field-key='location'>{{ $customer->location }}</td>
                                 <td field-key='status'>{{ $customer->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

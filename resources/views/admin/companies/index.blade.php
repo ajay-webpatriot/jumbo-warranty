@@ -41,7 +41,6 @@
                         <th>@lang('quickadmin.company.fields.city')</th>
                         <th>@lang('quickadmin.company.fields.state')</th>
                         <th>@lang('quickadmin.company.fields.zipcode')</th>
-                        <th>@lang('quickadmin.company.fields.location')</th>
                         <th>@lang('quickadmin.company.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
@@ -67,7 +66,6 @@
                                 <td field-key='city'>{{ $company->city }}</td>
                                 <td field-key='state'>{{ $company->state }}</td>
                                 <td field-key='zipcode'>{{ $company->zipcode }}</td>
-                                <td field-key='location'>{{ $company->location }}</td>
                                 <td field-key='status'>{{ $company->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

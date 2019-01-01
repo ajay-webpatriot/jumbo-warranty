@@ -84,11 +84,12 @@
                     </div>
                 </div>
             </div> 
+            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
             <div class="panel panel-default">
                 <div class="panel-heading"> <a data-toggle="collapse" href="#collapseServiceCenter">Service Center:</a></div>
                 <div id="collapseServiceCenter" class="panel-collapse in">
                   <div class="panel-body">
-                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                    
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
@@ -113,10 +114,11 @@
                             @endif
                         </div>
                     </div>
-                    @endif
+                    
                 </div>
             </div>
         </div>
+        @endif
         <div class="panel panel-default">
               <div class="panel-heading"> <a data-toggle="collapse" href="#collapseCallDetail">Call Detail:</a></div>
               <div id="collapseCallDetail" class="panel-collapse in">

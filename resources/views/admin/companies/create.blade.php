@@ -108,18 +108,6 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('location', trans('quickadmin.company.fields.location').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('location', old('location'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('location'))
-                        <p class="help-block">
-                            {{ $errors->first('location') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 form-group">
                     {!! Form::label('status', trans('quickadmin.company.fields.status').'*', ['class' => 'control-label']) !!}
                     {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
                     <p class="help-block"></p>
