@@ -28,7 +28,8 @@ class AssignPart extends Model
     {
         // get total used parts in service request
         return $usedParts = DB::table('service_requests')
-            ->select('service_requests.id as articles_id')
+            ->select('service_requests.id as service_request_id')
+            ->distinct()
             ->join('product_part_service_request', 'service_requests.id', '=', 'product_part_service_request.service_request_id')
             ->join('assign_parts', 'assign_parts.product_parts_id', '=', 'product_part_service_request.product_part_id')
             ->where('assign_parts.product_parts_id',$assignPartId)

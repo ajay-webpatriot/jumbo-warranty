@@ -35,7 +35,7 @@ $(document).ready(function(){
 	{
 		// get technician according to service center for service request 
 		var companyId = $(this).val();
-
+		$(".custAddress").html('');
 		$.ajax({
 	       	type:'GET',
 	       	url:APP_URL+'/admin/getCompanyDetails',

@@ -181,9 +181,9 @@ class ServiceRequestsController extends Controller
         
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
-        $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $parts = \App\ProductPart::get()->pluck('name', 'id');
-
+        // $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        // $parts = \App\ProductPart::get()->pluck('name', 'id');
+// echo "<pre>"; print_r ($products); echo "</pre>"; exit();
         $enum_service_type = ServiceRequest::$enum_service_type;
                     $enum_call_type = ServiceRequest::$enum_call_type;
                     $enum_call_location = ServiceRequest::$enum_call_location;
@@ -212,21 +212,44 @@ class ServiceRequestsController extends Controller
         $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
                                         ->where('status','Active')
                                         ->get()->first();
-                                       
+          
+        $parts=array();
+        $products=array(''=>trans('quickadmin.qa_please_select'));                             
         if($service_request['company_id'] != "")
         {
-            // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
             $customers = \App\Customer::where('company_id',$service_request['company_id'])
                                         ->where('status','Active')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+
+            $product_parts = \App\AssignPart::where('company_id',$service_request['company_id'])
+                                ->with('product_parts')->get();
+
+            $company_products = \App\AssignProduct::where('company_id',$service_request['company_id'])
+                                ->with('product_id')->get();
+            if(count($product_parts) > 0)
+            {
+                foreach($product_parts as $key => $value)
+                {
+                    $parts[$value->product_parts->id]=$value->product_parts->name;
+                }   
+            }
+            if(count($company_products) > 0)
+            {
+                foreach($company_products as $key => $value)
+                {
+                    foreach($value->product_id as $details)
+                    {
+                        $products[$details->id]=$details->name;
+                    }
+                }
+            }
+
         }
         else
         {
             $customers=array(''=>trans('quickadmin.qa_please_select'));
         }
-        
-
-        
+             
 
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
 

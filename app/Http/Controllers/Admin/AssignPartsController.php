@@ -47,16 +47,11 @@ class AssignPartsController extends Controller
         } else {
             $assign_parts = AssignPart::all();
         }
-
         
         foreach ($assign_parts as $key => $value) {
             $usedParts=$AssignPart->getRequestedServiceParts($value->id);// get quantity of used parts in service requests
-
             $value['availableQuantity']=$value->quantity-$usedParts;
         }
-
-        // echo "<pre>";
-        // print_r($assign_parts);exit;
         return view('admin.assign_parts.index', compact('assign_parts'));
     }
 
