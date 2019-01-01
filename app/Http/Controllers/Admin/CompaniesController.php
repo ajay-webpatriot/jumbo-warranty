@@ -144,6 +144,11 @@ class CompaniesController extends Controller
 
         $company = Company::findOrFail($id);
 
+        $AssignPart = new \App\AssignPart();
+        foreach ($assign_parts as $key => $value) {
+            $usedParts=$AssignPart->getRequestedServiceParts($value->product_parts_id,$value->company_id);// get quantity of used parts in service requests
+            $value['availableQuantity']=$value->quantity-$usedParts;
+        }
         return view('admin.companies.show', compact('company', 'service_requests', 'invoices', 'assign_products', 'assign_parts', 'users', 'customers'));
     }
 
