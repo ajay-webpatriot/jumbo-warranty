@@ -74,6 +74,7 @@ $(document).ready(function(){
 });
 function requestCharge(ele) {
 
+	// display charges for service and installation in service request
 	var companyId=$("#company_id").val().trim();
 	var serviceType=$("#service_type").val().trim();
 	var productId=$("#product_id").val().trim();
@@ -118,7 +119,10 @@ function requestCharge(ele) {
 	       	success:function(data) {
 	       		
 	       		$("#installation_charge").val(data.installation_charge);
+	       		$("#lbl_installation_charge").html(data.installation_charge);
+	       		
 	       		$("#service_charge").val(data.service_charge);
+	       		$("#lbl_service_charge").html(data.service_charge);
 
 	       		var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
 	       		var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
@@ -126,13 +130,14 @@ function requestCharge(ele) {
 
 	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+(km_distance * km_charge)).toFixed(2);
 	          	$("#amount").val(total_amount);
+	          	$("#lbl_total_amount").html(total_amount);
 	       	}
 	    });
 	}
 	
 }
 function totalServiceAmount() {
-	// called on keyup of additional amount
+	// called on keyup of additional amount in service request
 
 	var installation_charge=isNaN(parseFloat($("#installation_charge").val()))?0:parseFloat($("#installation_charge").val());
 	var service_charge=isNaN(parseFloat($("#service_charge").val()))?0:parseFloat($("#service_charge").val());
@@ -140,8 +145,8 @@ function totalServiceAmount() {
 	var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
 	var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
 	var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
-
-  	var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge)).toFixed(2);
-
+	var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge)).toFixed(2);
+  	
   	$("#amount").val(total_amount);
+  	$("#lbl_total_amount").html(total_amount);
 }

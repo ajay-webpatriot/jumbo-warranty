@@ -69,6 +69,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::delete('assign_parts_perma_del/{id}', ['uses' => 'Admin\AssignPartsController@perma_del', 'as' => 'assign_parts.perma_del']);
     Route::resource('service_requests', 'Admin\ServiceRequestsController');
     Route::post('service_requests_mass_destroy', ['uses' => 'Admin\ServiceRequestsController@massDestroy', 'as' => 'service_requests.mass_destroy']);
+    Route::get('service_request_invoice/{id}', ['uses' => 'Admin\ServiceRequestsController@createReceiptPDF', 'as' => 'service_request.invoice']);
+
     Route::post('service_requests_restore/{id}', ['uses' => 'Admin\ServiceRequestsController@restore', 'as' => 'service_requests.restore']);
     Route::delete('service_requests_perma_del/{id}', ['uses' => 'Admin\ServiceRequestsController@perma_del', 'as' => 'service_requests.perma_del']);
     Route::resource('service_request_logs', 'Admin\ServiceRequestLogsController');
@@ -86,7 +88,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::delete('invoices_perma_del/{id}', ['uses' => 'Admin\InvoicesController@perma_del', 'as' => 'invoices.perma_del']);
 
     Route::post('service_requests_logs_mass_destroy', ['uses' => 'Admin\ServiceRequestLogsController@massDestroy', 'as' => 'service_requests_logs.mass_destroy']);
-
+    
     // ajax routes
     Route::get('/getCharge','Admin\ServiceRequestsController@requestCharge');
     Route::get('/getTechnicians','Admin\TechniciansController@getTechnicians');

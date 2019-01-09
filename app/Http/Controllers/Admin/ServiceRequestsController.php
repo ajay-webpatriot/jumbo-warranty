@@ -142,9 +142,14 @@ class ServiceRequestsController extends Controller
                     $total_amount+=($distance*$distance_charge->km_charge);
                    
                 }
-                $request['status'] ="Assigned";
+                
             } 
         }
+        if($request['service_center_id'] != "")
+        {
+            $request['status'] ="Assigned";
+        }
+        
         $request['amount']=$total_amount;  
         // calculate total amount work end
 
@@ -208,7 +213,6 @@ class ServiceRequestsController extends Controller
             $technicians=array(''=>trans('quickadmin.qa_please_select'));
         }
 
-        $customer_address="";
         $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
                                         ->where('status','Active')
                                         ->get()->first();
@@ -356,7 +360,8 @@ class ServiceRequestsController extends Controller
 
         if($request['status'] == "Closed")
         {
-            return $this->createReceiptPDF($request->all());
+            // return $this->createReceiptPDF($request->all());
+            return $this->createReceiptPDF($id);
         }
         else
         {
@@ -453,9 +458,11 @@ class ServiceRequestsController extends Controller
 
         return redirect()->route('admin.service_requests.index');
     }
-    public function createReceiptPDF($request)
+    public function createReceiptPDF($id)
     {
-        
+        $request = ServiceRequest::findOrFail($id);
+        $request_parts=$request->parts->pluck('id')->toArray();
+
         if($request['service_center_id'] != "" && 
             $request['customer_id'] != ""
             )
@@ -507,10 +514,10 @@ class ServiceRequestsController extends Controller
             $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['amount'],2)."</b></td></tr>";
 
             $parts_used="";
-            if($request['service_type'] == "repair" && isset($request['parts']))
+            if($request['service_type'] == "repair" && count($request_parts) > 0)
             {
                 $obj= new ServiceRequest();
-                $parts= $obj->getServiceRequestParts($request['parts']);  
+                $parts= $obj->getServiceRequestParts($request_parts);  
                 $parts_used="<tr><td>Parts Used</td><td colspan='2'>".$parts->name."</td></tr>";  
             }
             

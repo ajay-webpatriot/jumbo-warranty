@@ -9,7 +9,7 @@
             margin-top: 10px !important;
             margin-bottom: 10px !important;
         }
-        .fontwaight{
+        .fontweight{
             font-weight: 400!important;
         }
         .fontsize{
@@ -457,8 +457,10 @@
                                         <div class="col-md-12">
                                             {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label lablemargin']) !!}
 
-                                            {!! Form::label('service_charge', $service_request->service_charge, ['class' => 'control-label lablemargin pull-right','readonly' => '']) !!}
+                                            <!-- service charge value label -->
+                                            {!! Form::label('', $service_request->service_charge, ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !!}
 
+                                            <!-- service charge hidden field -->
                                             {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('service_charge'))
@@ -473,8 +475,10 @@
                                         <div class="col-md-12">
                                             {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').':', ['class' => 'control-label lablemargin']) !!}
                                             
-                                            {!! Form::label('installation_charge', $service_request->installation_charge, ['class' => 'control-label lablemargin pull-right','readonly' => '']) !!}
+                                            <!-- installation charge value label -->
+                                            {!! Form::label('', $service_request->installation_charge, ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
                                             
+                                            <!-- installation charge hidden field -->
                                             {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('installation_charge'))
@@ -494,9 +498,9 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-8">
-                                                    {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').'', ['class' => 'control-label fontwaight fontsize']) !!}
+                                                    {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').'', ['class' => 'control-label fontweight fontsize']) !!}
                                                 
-                                                    {!! Form::text('additional_charges','for installation ' , ['class' => 'form-control', 'placeholder' => 'Charges for']) !!}
+                                                    {!! Form::text('additional_charges_title','for installation ' , ['class' => 'form-control', 'placeholder' => 'Charges for']) !!}
                                                         <p class="help-block"></p>
                                                         @if($errors->has('additional_charges'))
                                                             <p class="help-block">
@@ -506,9 +510,9 @@
                                                 </div>
 
                                                 <div class="col-sm-4">
-                                                    {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontwaight fontsize']) !!}
+                                                    {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !!}
 
-                                                    {!! Form::text('additional_charges', $service_request->additional_charges, ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                    {!! Form::text('additional_charges', $service_request->additional_charges, ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
 
                                                     <p class="help-block"></p>
                                                     @if($errors->has('additional_charges'))
@@ -527,9 +531,12 @@
                                         <div class="col-md-12">
                                             {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
 
-                                            {!! Form::label('totalamount',$service_request->amount, ['class' => 'control-label pull-right']) !!}
+                                            <!-- total amount value label -->
+                                            {!! Form::label('totalamount',$service_request->amount, ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
 
+                                            <!-- total amount hidden field -->
                                             {!! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
+
                                             {!! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !!}
                                             {!! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !!}
                                             <p class="help-block"></p>
@@ -550,7 +557,7 @@
                                     <!-- {!! Form::text('note', old('note'), ['class' => 'form-control', 'placeholder' => '']) !!} -->
 
                                     {!! Form::textarea('note', old('note'), ['class' => 'form-control ', 'placeholder' => '']) !!}
-
+                                    
                                     <p class="help-block"></p>
                                     @if($errors->has('note'))
                                         <p class="help-block">
@@ -558,6 +565,12 @@
                                         </p>
                                     @endif
                                 </div>
+                                @if($service_request->status == "Closed")
+                                <div class="col-xs-12 form-group pull-right">
+                                     
+                                    <a href="{{ route('admin.service_request.invoice',[$service_request->id]) }}" class="btn btn-xl btn-primary pull-right">View Invoice</a>
+                                </div> 
+                                @endif
                             </div>
                             
                         </div>
@@ -571,7 +584,7 @@
    <!-- Form Buttons -->
     <div class="row">
         <div class="col-md-12 form-group">
-            {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
+            {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate']) !!}
             <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
             {!! Form::close() !!}
         </div>
@@ -632,6 +645,13 @@
     <script src="{{ url('adminlte/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
     <script>
         $(function(){
+            if("{{$service_request->status}}" == "Closed")
+            {
+                $("input").prop("disabled", true);
+                $("select").prop("disabled", true);
+                $("textarea").prop("disabled", true);
+                $("#btnUpdate").hide();
+            }
             moment.updateLocale('{{ App::getLocale() }}', {
                 week: { dow: 1 } // Monday is the first day of the week
             });
