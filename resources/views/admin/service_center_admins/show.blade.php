@@ -2,12 +2,12 @@
 
 @section('content')
     
-    <h3 class="page-title">@lang('quickadmin.service_center_admins.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.service_center_admins.title')</h3> -->
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_view')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.service-center-admin.formTitle')
         </div>
-
+        
         <div class="panel-body table-responsive">
             <div class="row">
                 <div class="col-md-6">

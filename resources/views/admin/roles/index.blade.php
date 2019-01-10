@@ -2,9 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.roles.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.roles.title')</h3> -->
     @can('role_create')
-    <p>
+    <p class="text-right">
         <a href="{{ route('admin.roles.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
         
     </p>
@@ -13,8 +13,8 @@
     
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_list')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.roles.title')
         </div>
 
         <div class="panel-body table-responsive">
@@ -44,7 +44,7 @@
                                 <td field-key='status'>{{ $role->status }}</td>
                                                                 <td>
                                     @can('role_view')
-                                    <a href="{{ route('admin.roles.show',[$role->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
+                                    <!-- <a href="{{ route('admin.roles.show',[$role->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
                                     @endcan
                                     @can('role_edit')
                                     <a href="{{ route('admin.roles.edit',[$role->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>

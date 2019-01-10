@@ -2,9 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.service-request.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     @can('service_request_create')
-    <p>
+    <p class="text-right">
         <a href="{{ route('admin.service_requests.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
         
     </p>
@@ -21,8 +21,8 @@
 
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_list')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.service-request.title')
         </div>
 
         <div class="panel-body table-responsive">

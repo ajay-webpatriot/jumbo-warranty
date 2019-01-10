@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.categories.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.categories.title')</h3> -->
     {!! Form::open(['method' => 'POST', 'route' => ['admin.categories.store']]) !!}
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_create')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.categories.formTitle')
         </div>
         
         <div class="panel-body">

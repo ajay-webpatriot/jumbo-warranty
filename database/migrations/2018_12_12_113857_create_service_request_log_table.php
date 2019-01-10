@@ -19,6 +19,8 @@ class CreateServiceRequestLogTable extends Migration
             // $table->enum('status_made', array('New', 'Assigned', 'Started', 'Pending for parts', 'Cancelled', 'Transferred to inhouse', 'Under testing', 'Issue for replacement', 'Closed'))->nullable();
 
             $table->string('action_made');
+            $table->string('action_made_company');
+            $table->string('action_made_service_center');
 
             $table->integer('service_request_id')->unsigned()->nullable();
             $table->foreign('service_request_id')->references('id')->on('service_requests')->onDelete('cascade');

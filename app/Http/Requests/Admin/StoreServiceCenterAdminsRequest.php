@@ -31,7 +31,7 @@ class StoreServiceCenterAdminsRequest extends FormRequest
             'state' => 'required',
             'zipcode' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required',
+            'password' => 'required|confirmed',
             'status' => 'required',
         ];
     }

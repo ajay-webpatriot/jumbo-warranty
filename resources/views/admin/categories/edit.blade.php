@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.categories.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.categories.title')</h3> -->
     
     {!! Form::model($category, ['method' => 'PUT', 'route' => ['admin.categories.update', $category->id]]) !!}
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_edit')
+        <div class="panel-heading headerTitle">
+             @lang('quickadmin.categories.formTitle')
         </div>
 
         <div class="panel-body">

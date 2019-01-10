@@ -2,9 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.service-center.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.service-center.title')</h3> -->
     @can('service_center_create')
-    <p>
+    <p class="text-right">
         <a href="{{ route('admin.service_centers.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
         
     </p>
@@ -21,8 +21,8 @@
 
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_list')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.service-center.title')
         </div>
 
         <div class="panel-body table-responsive">
@@ -91,7 +91,7 @@
                                 @else
                                 <td>
                                     @can('service_center_view')
-                                    <a href="{{ route('admin.service_centers.show',[$service_center->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
+                                    <!-- <a href="{{ route('admin.service_centers.show',[$service_center->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
                                     @endcan
                                     @can('service_center_edit')
                                     <a href="{{ route('admin.service_centers.edit',[$service_center->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-	<h3 class="page-title">@lang('quickadmin.qa_change_password')</h3>
+	<!-- <h3 class="page-title">@lang('quickadmin.qa_change_password')</h3> -->
 
 	@if(session('success'))
 		<!-- If password successfully show message -->
@@ -14,8 +14,8 @@
 		{!! Form::open(['method' => 'PATCH', 'route' => ['auth.change_password']]) !!}
 		<!-- If no success message in flash session show change password form  -->
 		<div class="panel panel-default">
-			<div class="panel-heading">
-				@lang('quickadmin.qa_edit')
+			<div class="panel-heading headerTitle">
+				@lang('quickadmin.qa_change_password')
 			</div>
 
 			<div class="panel-body">

@@ -3,15 +3,15 @@
 
 @section('content')
     
-    <h3 class="page-title">@lang('quickadmin.permissions.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.permissions.title')</h3> -->
     
     {!! Form::open(['method' => 'POST', 'route' => ['admin.permissions.store']]) !!}
     
     <div class="panel panel-default">
-        <div class="panel-heading"  >
-            <h4 class="panel-title">
-                
-            </h4>
+        <div class="panel-heading headerTitle"  >
+            <!-- <h4 class="panel-title"> -->
+                @lang('quickadmin.permissions.title')
+            <!-- </h4> -->
         </div>
         <div>
             <div class="panel-body">

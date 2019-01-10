@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3> -->
     {!! Form::open(['method' => 'POST', 'route' => ['admin.technicians.store']]) !!}
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_create')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.users.technicianFormTitle')
         </div>
         
         <div class="panel-body">
@@ -172,6 +172,18 @@
                     @if($errors->has('password'))
                         <p class="help-block">
                             {{ $errors->first('password') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    {!! Form::label('password_confirmation', trans('quickadmin.users.fields.confirm-password'), ['class' => 'control-label']) !!}
+                    {!! Form::password('password_confirmation', ['class' => 'form-control', 'placeholder' => '']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('password_confirmation'))
+                        <p class="help-block">
+                            {{ $errors->first('password_confirmation') }}
                         </p>
                     @endif
                 </div>

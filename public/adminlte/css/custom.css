@@ -2,3 +2,9 @@
 .label {margin-right:5px;margin-bottom:5px !important;display:inline-block;} #wrapper {
     position: relative;
 }
+
+/* set header title as bold in crud page*/
+.headerTitle
+{
+	font-weight: bold;
+}

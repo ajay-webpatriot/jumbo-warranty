@@ -2,13 +2,13 @@
 
 @section('content')
     
-    <h3 class="page-title">@lang('quickadmin.customers.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.customers.title')</h3> -->
     
     {!! Form::open(['method' => 'POST', 'route' => ['admin.customers.store']]) !!}
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_create')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.customers.formTitle')
         </div>
         
         <div class="panel-body">

@@ -31,6 +31,7 @@ class UpdateServiceCenterAdminsRequest extends FormRequest
             'state' => 'required',
             'zipcode' => 'required',
             'email' => 'required|email|unique:users,email,'.$this->route('service_center_admin'),
+            'password' => 'confirmed',
             'status' => 'required',
         ];
     }

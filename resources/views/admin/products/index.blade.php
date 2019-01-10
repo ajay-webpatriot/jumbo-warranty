@@ -2,9 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.products.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.products.title')</h3> -->
     @can('product_create')
-    <p>
+    <p class="text-right">
         <a href="{{ route('admin.products.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
         
     </p>
@@ -21,8 +21,8 @@
 
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_list')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.products.title')
         </div>
 
         <div class="panel-body table-responsive">
@@ -81,7 +81,7 @@
                                 @else
                                 <td>
                                     @can('product_view')
-                                    <a href="{{ route('admin.products.show',[$product->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
+                                    <!-- <a href="{{ route('admin.products.show',[$product->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
                                     @endcan
                                     @can('product_edit')
                                     <a href="{{ route('admin.products.edit',[$product->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>

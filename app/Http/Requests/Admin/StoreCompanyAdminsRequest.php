@@ -27,7 +27,7 @@ class StoreCompanyAdminsRequest extends FormRequest
             'name' => 'required',
             'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required',
+            'password' => 'required|confirmed',
             'status' => 'required',
         ];
     }

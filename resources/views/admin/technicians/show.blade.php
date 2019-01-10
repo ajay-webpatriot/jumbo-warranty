@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3> -->
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_view')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.users.technicianFormTitle')
         </div>
 
         <div class="panel-body table-responsive">

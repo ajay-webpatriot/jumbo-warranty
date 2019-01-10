@@ -2,9 +2,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.manage-charges.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.manage-charges.title')</h3> -->
     @can('manage_charge_create')
-    <!-- <p>
+    <!-- <p class="text-right">
         <a href="{{ route('admin.manage_charges.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
         
     </p> -->
@@ -21,8 +21,8 @@
 
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_list')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.manage-charges.title')
         </div>
 
         <div class="panel-body table-responsive">
@@ -77,7 +77,7 @@
                                 @else
                                 <td>
                                     @can('manage_charge_view')
-                                    <a href="{{ route('admin.manage_charges.show',[$manage_charge->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
+                                    <!-- <a href="{{ route('admin.manage_charges.show',[$manage_charge->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
                                     @endcan
                                     @can('manage_charge_edit')
                                     <a href="{{ route('admin.manage_charges.edit',[$manage_charge->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>

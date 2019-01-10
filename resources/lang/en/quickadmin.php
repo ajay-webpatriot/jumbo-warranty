@@ -19,6 +19,7 @@ return [
 	
 	'roles' => [
 		'title' => 'Roles',
+		'formTitle' => 'Role',
 		'fields' => [
 			'title' => 'Title',
 			'status' => 'Status',
@@ -27,12 +28,14 @@ return [
 	
 	'users' => [
 		'title' => 'Admin Users',
+		'formTitle' => 'Admin User',
 		'companyUserTitle' => 'Company Users',
 		'technicianTitle' => 'Technicians',
+		'technicianFormTitle' => 'Technician',
 		'fields' => [
 			'role' => 'Role',
 			'company' => 'Company',
-			'service-center' => 'Service center',
+			'service-center' => 'Service Center',
 			'name' => 'Name',
 			'phone' => 'Phone',
 			'address-1' => 'Address 1',
@@ -43,6 +46,7 @@ return [
 			'location' => 'Location',
 			'email' => 'Email',
 			'password' => 'Password',
+			'confirm-password' => 'Confirm Password',
 			'remember-token' => 'Remember token',
 			'status' => 'Status',
 		],
@@ -50,6 +54,7 @@ return [
 	
 	'products' => [
 		'title' => 'Products',
+		'formTitle' => 'Product',
 		'fields' => [
 			'name' => 'Name',
 			'category' => 'Category',
@@ -66,15 +71,17 @@ return [
 	
 	'categories' => [
 		'title' => 'Categories',
+		'formTitle' => 'Category',
 		'fields' => [
 			'name' => 'Name',
-			'service-charge' => 'Service charge',
+			'service-charge' => 'Service Charge',
 			'status' => 'Status',
 		],
 	],
 	
 	'product-parts' => [
 		'title' => 'Parts',
+		'formTitle' => 'Part',
 		'fields' => [
 			'name' => 'Name',
 			'status' => 'Status',
@@ -88,11 +95,12 @@ return [
 	],
 	
 	'company' => [
-		'title' => 'Company',
+		'title' => 'Companies',
+		'formTitle' => 'Company',
 		'fields' => [
 			'name' => 'Name',
 			'credit' => 'Credit',
-			'installation-charge' => 'Installation charge',
+			'installation-charge' => 'Installation Charge',
 			'address-1' => 'Address 1',
 			'address-2' => 'Address 2',
 			'city' => 'City',
@@ -105,12 +113,14 @@ return [
 	
 	'company-admins' => [
 		'title' => 'Company Admins',
+		'formTitle' => 'Company Admin',
 		'fields' => [
 		],
 	],
 	
 	'customers' => [
 		'title' => 'Customers',
+		'formTitle' => 'Customer',
 		'fields' => [
 			'firstname' => 'First Name',
 			'lastname' => 'Last Name',
@@ -127,37 +137,38 @@ return [
 	],
 	
 	'service-request' => [
-		'title' => 'Service Request',
+		'title' => 'Service Requests',
+		'formTitle' => 'Service Request',
 		'fields' => [
 			'company' => 'Company',
 			'customer' => 'Customer',
 			'customer-address' => 'Address',
-			'service-type' => 'Service type',
-			'service-center' => 'Service center',
+			'service-type' => 'Service Type',
+			'service-center' => 'Service Center',
 			'technician' => 'Technician',
-			'call-type' => 'Call type',
-			'call-location' => 'Call location',
+			'call-type' => 'Call Type',
+			'call-location' => 'Call Location',
 			'priority' => 'Priority',
 			'product' => 'Product',
 			'make' => 'Make',
-			'model-no' => 'Model no',
-			'is-item-in-warrenty' => 'Is item in warranty',
-			'bill-no' => 'Bill no',
-			'bill-date' => 'Bill date',
-			'serial-no' => 'Serial no',
+			'model-no' => 'Model No',
+			'is-item-in-warrenty' => 'Is Item In Warranty',
+			'bill-no' => 'Bill No',
+			'bill-date' => 'Bill Date',
+			'serial-no' => 'Serial No',
 			'mop' => 'MOP',
-			'purchase-from' => 'Purchase from',
-			'adavance-amount' => 'Adavance amount',
-			'installation-charge' => 'Installation charges',
-			'service-charge' => 'Service charge',
+			'purchase-from' => 'Purchase From',
+			'adavance-amount' => 'Adavance Amount',
+			'installation-charge' => 'Installation Charges',
+			'service-charge' => 'Service Charge',
 			'distance' => 'Distance (km)',
-			'distance-charge' => 'Charge per km',
-			'service-tag' => 'Service tag',
-			'complain-details' => 'Complain details',
+			'distance-charge' => 'Charge Per KM',
+			'service-tag' => 'Service Tag',
+			'complain-details' => 'Complain Details',
 			'note' => 'Note',
-			'completion-date' => 'Completion date',
+			'completion-date' => 'Completion Date',
 			'parts' => 'Parts',
-			'additional-charges' => 'Additional charges',
+			'additional-charges' => 'Additional Charges',
 			'amount' => 'Amount',
 			'status' => 'Request Status',
 			'charges_for' => 'Charges For',
@@ -173,7 +184,8 @@ return [
 	],
 	
 	'service-center' => [
-		'title' => 'Service Center',
+		'title' => 'Service Centers',
+		'formTitle' => 'Service Center',
 		'fields' => [
 			'name' => 'Name',
 			'address-1' => 'Address 1',
@@ -189,6 +201,7 @@ return [
 	
 	'service-center-admin' => [
 		'title' => 'Service Center Admins',
+		'formTitle' => 'Service Center Admin',
 		'fields' => [
 		],
 	],
@@ -219,14 +232,16 @@ return [
 	],
 	'manage-charges' => [
 		'title' => 'Manage Charges',
+		'formTitle' => 'Manage Charge',
 		'fields' => [
-			'km-charge' => 'km charge',
+			'km-charge' => 'km Charge',
 			'status' => 'Status',
 		],
 	],
 	
 	'invoices' => [
 		'title' => 'Invoices',
+		'formTitle' => 'Invoice',
 		'fields' => [
 			'company' => 'Company',
 			'status' => 'Status',
@@ -241,12 +256,14 @@ return [
 	
 	'company-users' => [
 		'title' => 'Company Users',
+		'formTitle' => 'Company User',
 		'fields' => [
 		],
 	],
 	
 	'assign-parts' => [
 		'title' => 'Assign Parts',
+		'formTitle' => 'Assign Part',
 		'fields' => [
 			'company' => 'Company',
 			'product-parts' => 'Parts',
@@ -264,6 +281,7 @@ return [
 	
 	'assign-product' => [
 		'title' => 'Assign Products',
+		'formTitle' => 'Assign Product',
 		'fields' => [
 			'company' => 'Company',
 			'product-id' => 'Product',
@@ -283,7 +301,7 @@ return [
 	'qa_no_entries_in_table' => 'No entries in table',
 	'qa_custom_controller_index' => 'Custom controller index.',
 	'qa_logout' => 'Logout',
-	'qa_add_new' => 'Add new',
+	'qa_add_new' => 'Add New',
 	'qa_are_you_sure' => 'Are you sure ?',
 	'qa_back_to_list' => 'Back to list',
 	'qa_cancel' => 'Cancel',
@@ -470,9 +488,9 @@ return [
 	'qa_transaction_type' => 'Transaction type',
 	'qa_transaction_date' => 'Transaction date',
 	'qa_currency' => 'Currency',
-	'qa_current_password' => 'Current password',
-	'qa_new_password' => 'New password',
-	'qa_password_confirm' => 'New password confirmation',
+	'qa_current_password' => 'Current Password',
+	'qa_new_password' => 'New Password',
+	'qa_password_confirm' => 'New Password Confirmation',
 	'qa_dashboard_text' => 'You are logged in!',
 	'qa_forgot_password' => 'Forgot your password?',
 	'qa_remember_me' => 'Remember me',

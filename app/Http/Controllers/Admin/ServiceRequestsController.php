@@ -58,7 +58,7 @@ class ServiceRequestsController extends Controller
             {
                 $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
             }
-            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
             {
                 $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
             }
@@ -118,6 +118,8 @@ class ServiceRequestsController extends Controller
 
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        // convert to json
+        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => $request['additional_charges']));
         $request['km_distance']=0;
         $request['km_charge']=0;
         if($request['service_type'] == 'repair')
@@ -219,7 +221,20 @@ class ServiceRequestsController extends Controller
             
         $service_request = ServiceRequest::findOrFail($id);
         
+        $additional_charge_array=json_decode($service_request['additional_charges']);
+        $additional_charge_title="";
+        $additional_charges="";
+        if(!empty($additional_charge_array))
+        {
+            // Worked to display json value in edit page
+            foreach ($additional_charge_array as $key => $value) {
+                $additional_charge_title=str_replace('_empty_', '', $key);
+                $additional_charges=$value;
+            }
+        }
         
+        $service_request['additional_charges']=$additional_charges;
+
         if($service_request['service_center_id'] != "")
         {
             // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
@@ -292,8 +307,8 @@ class ServiceRequestsController extends Controller
         {
             $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
         }
-            
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData'))->with('no', 1);
+
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title'))->with('no', 1);
     }
 
     /**
@@ -308,7 +323,9 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_edit')) {
             return abort(401);
         }
-        // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
+        
+        
+        
         $service_request = ServiceRequest::findOrFail($id);
 
 
@@ -424,6 +441,9 @@ class ServiceRequestsController extends Controller
 
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+
+        // convert to json
+        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => $request['additional_charges']));
         $request['km_distance']=0;
         $request['km_charge']=0;
         if($request['service_type'] == 'repair')

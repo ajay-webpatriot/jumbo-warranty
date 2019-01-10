@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">@lang('quickadmin.service-center.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.service-center.title')</h3> -->
     
     {!! Form::model($service_center, ['method' => 'PUT', 'route' => ['admin.service_centers.update', $service_center->id]]) !!}
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_edit')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.service-center.formTitle')
         </div>
 
         <div class="panel-body">

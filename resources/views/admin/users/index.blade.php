@@ -3,19 +3,18 @@
 
 @section('content')
     
-    <h3 class="page-title">@lang('quickadmin.users.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.users.title')</h3> -->
     @can('user_create')
-    <p>
+    <p class="text-right">
         <a href="{{ route('admin.users.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
-        
     </p>
     @endcan
 
     
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_list')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.users.title')
         </div>
 
         <div class="panel-body table-responsive">
@@ -51,7 +50,7 @@
                                 <td field-key='status'>{{ $user->status }}</td>
                                                                 <td>
                                     @can('user_view')
-                                    <a href="{{ route('admin.users.show',[$user->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
+                                    <!-- <a href="{{ route('admin.users.show',[$user->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
                                     @endcan
                                     @can('user_edit')
                                     <a href="{{ route('admin.users.edit',[$user->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>

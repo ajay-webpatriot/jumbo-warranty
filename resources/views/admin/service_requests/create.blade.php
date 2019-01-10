@@ -16,12 +16,12 @@
             font-size: 12px!important;
         }
     </style>
-    <h3 class="page-title">@lang('quickadmin.service-request.title')</h3>
+    <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store']]) !!}
 
     <div class="panel panel-default">
-        <div class="panel-heading">
-            @lang('quickadmin.qa_create')
+        <div class="panel-heading headerTitle">
+            @lang('quickadmin.service-request.formTitle')
         </div>
 
         <div class="panel-body">
@@ -428,7 +428,7 @@
                                                 <div class="col-sm-8">
                                                     {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').'', ['class' => 'control-label fontweight fontsize']) !!}
                                                 
-                                                    {!! Form::text('additional_charges_title','for installation ' , ['class' => 'form-control', 'placeholder' => 'Charges for']) !!}
+                                                    {!! Form::text('additional_charges_title','' , ['class' => 'form-control', 'placeholder' => 'Charges for']) !!}
                                                         <p class="help-block"></p>
                                                         @if($errors->has('additional_charges'))
                                                             <p class="help-block">
