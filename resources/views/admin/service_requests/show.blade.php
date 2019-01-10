@@ -121,6 +121,10 @@
                             </td>
                         </tr>
                         <tr>
+                            <th>@lang('quickadmin.service-request.fields.charges_for')</th>
+                            <td field-key='additional_charges_title'>{{ $additional_charge_title }}</td>
+                        </tr>
+                        <tr>
                             <th>@lang('quickadmin.service-request.fields.additional-charges')</th>
                             <td field-key='additional_charges'>{{ $service_request->additional_charges }}</td>
                         </tr>

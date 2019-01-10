@@ -507,8 +507,24 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         $service_request = ServiceRequest::findOrFail($id);
+
+        $additional_charge_array=json_decode($service_request['additional_charges']);
+        $additional_charge_title="";
+        $additional_charges="";
+        if(!empty($additional_charge_array))
+        {
+            // Worked to display json value in edit page
+            foreach ($additional_charge_array as $key => $value) {
+                $additional_charge_title=str_replace('_empty_', '', $key);
+                $additional_charges=$value;
+            }
+        }
+        
+        $service_request['additional_charges']=$additional_charges;
+
+
         $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
-        return view('admin.service_requests.show', compact('service_request', 'service_request_logs'))->with('no', 1);
+        return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title'))->with('no', 1);
     }
 
 
