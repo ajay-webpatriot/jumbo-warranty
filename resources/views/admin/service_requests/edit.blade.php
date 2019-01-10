@@ -81,39 +81,43 @@
                         <div class="panel-body">
 
                             <div class="row">
-                                <!-- Company & Customer -->
-                                <div class="col-md-6">
-                                    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
-                                            {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
-                                            <p class="help-block"></p>
-                                            @if($errors->has('company_id'))
-                                                <p class="help-block">
-                                                    {{ $errors->first('company_id') }}
-                                                </p>
-                                            @endif
+                                <!-- Company & Customer  -->
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                    <!-- company will not visible to service center admin and technician -->
+                                    <div class="col-md-6">
+                                        @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
+                                                {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
+                                                {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
+                                                <p class="help-block"></p>
+                                                @if($errors->has('company_id'))
+                                                    <p class="help-block">
+                                                        {{ $errors->first('company_id') }}
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    @else
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
-                                            <p class="help-block"></p>
-                                            @if($errors->has('company_id'))
-                                                <p class="help-block">
-                                                    {{ $errors->first('company_id') }}
-                                                </p>
-                                            @endif
+                                        @else
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
+                                                {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
+                                                <p class="help-block"></p>
+                                                @if($errors->has('company_id'))
+                                                    <p class="help-block">
+                                                        {{ $errors->first('company_id') }}
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
+                                        @endif
                                     </div>
-                                    @endif
-                                </div>
-
-                                <div class="col-md-6">
+                                @else
+                                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
+                                @endif
+                                <div class="col-md-6"> 
                                     <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>
                                         <div class="col-xs-12 ">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
@@ -130,9 +134,11 @@
                             </div>
 
                             <div class="row">
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
                                 <div class="col-md-6">
-
+                                    <!--  added condition to set layput when company is not visible -->
                                 </div>
+                                @endif
 
                                 <div class="col-md-6">
                                     <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>

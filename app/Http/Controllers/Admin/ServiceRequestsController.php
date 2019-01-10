@@ -58,6 +58,10 @@ class ServiceRequestsController extends Controller
             {
                 $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
             }
+            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+            {
+                $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
+            }
             else
             {
                 $service_requests = ServiceRequest::all();
@@ -157,13 +161,29 @@ class ServiceRequestsController extends Controller
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
 
-        // service request log
+        // service request log for new request
         $insertServiceRequestLogArr = array(
-                                        'action_made'     =>   "Service request is created.", 
+                                        'action_made'     =>   "Service request is created.",
+                                        'action_made_company'     =>   "Service request is created.",
+                                        'action_made_service_center'     =>   "Service request is created.", 
                                         'service_request_id'   =>   $service_request->id,
                                         'user_id'   =>   auth()->user()->id
                                     );
         ServiceRequestLog::create($insertServiceRequestLogArr);
+
+        if($request['status'] == "Assigned")
+        {
+            // service request log for assigned status
+            $insertServiceRequestLogArr = array(
+                                        'action_made'     =>   "Status is changed from New to Assigned.",
+                                        'action_made_company'     =>   "Status is changed from New to Assigned.",
+                                        'action_made_service_center'     =>   "Status is changed from New to Assigned.", 
+                                        'service_request_id'   =>   $service_request->id,
+                                        'user_id'   =>   auth()->user()->id
+                                    );
+            ServiceRequestLog::create($insertServiceRequestLogArr);
+        }
+        
             
 
         return redirect()->route('admin.service_requests.index');
@@ -257,8 +277,22 @@ class ServiceRequestsController extends Controller
 
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
 
-        $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
-
+        // get service log accroding to logged in user
+        if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+        {
+            $service_request_logs = ServiceRequestLog::select('service_request_id','action_made_service_center as action_made','created_at','user_id')
+                                    ->where('service_request_id',$id)->get();
+        }
+        else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $service_request_logs = ServiceRequestLog::select('service_request_id','action_made_company as action_made','created_at','user_id')
+                                    ->where('service_request_id',$id)->get();
+        }
+        else
+        {
+            $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
+        }
+            
         return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData'))->with('no', 1);
     }
 
@@ -277,10 +311,63 @@ class ServiceRequestsController extends Controller
         // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
         $service_request = ServiceRequest::findOrFail($id);
 
+
         if(isset($service_request->status) && isset($request['status'])){
+
+           // insert service request log on status change 
            if($service_request->status !== $request['status']){
                 $insertServiceRequestLogArr =   array(
                                                     'action_made'     =>  "Status is changed from ".$service_request->status." to ".$request['status'].".", 
+                                                    'action_made_company'     =>  "Status is changed from ".$service_request->status." to ".$request['status'].".", 
+                                                    'action_made_service_center'     =>  "Status is changed from ".$service_request->status." to ".$request['status'].".", 
+                                                    'service_request_id'   =>   $id,
+                                                    'user_id'   =>   auth()->user()->id
+                                                );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+            }
+        }
+        if($request['company_id'] != "")
+        {
+            // insert service request log on company change 
+            if($service_request->company_id != $request['company_id']){
+
+                $company=\App\Company::where('id',$request['company_id'])->first();
+                $insertServiceRequestLogArr =   array(
+                                                    'action_made'     =>  "Company assigned(".$company->name.").", 
+                                                    'action_made_company'     =>  "Company assigned(".$company->name.").",
+                                                    'action_made_service_center'     =>  "Company assigned.", 
+                                                    'service_request_id'   =>   $id,
+                                                    'user_id'   =>   auth()->user()->id
+                                                );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+            }
+        }
+        if($request['customer_id'] != "")
+        {
+            // insert service request log on customer change 
+            if($service_request->customer_id != $request['customer_id']){
+
+                $customer=\App\Customer::where('id',$request['customer_id'])->first();
+                $insertServiceRequestLogArr =   array(
+                                                    'action_made'     =>  "Customer assigned(".$customer->firstname.' '.$customer->lastname.").",
+                                                    'action_made_company'     =>  "Customer assigned(".$customer->firstname.' '.$customer->lastname.").",
+                                                    'action_made_service_center'     =>  "Customer assigned.", 
+                                                    'service_request_id'   =>   $id,
+                                                    'user_id'   =>   auth()->user()->id
+                                                );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+            }
+        }
+        if($request['product_id'] != "")
+        {
+            // insert service request log on product change 
+            if($service_request->product_id != $request['product_id']){
+
+                $product=\App\Product::where('id',$request['product_id'])->first();
+                $insertServiceRequestLogArr =   array(
+                                                    'action_made'     =>  "Product assigned(".$product->name.").", 
+                                                    'action_made_company'     =>  "Product assigned(".$product->name.").", 
+                                                    'action_made_service_center'     => "Product assigned(".$product->name.").", 
                                                     'service_request_id'   =>   $id,
                                                     'user_id'   =>   auth()->user()->id
                                                 );
@@ -289,11 +376,14 @@ class ServiceRequestsController extends Controller
         }
         if($request['technician_id'] != "")
         {
+            // insert service request log on technician change 
             if($service_request->technician_id != $request['technician_id']){
 
                 $technician=\App\User::where('id',$request['technician_id'])->first();
                 $insertServiceRequestLogArr =   array(
-                                                    'action_made'     =>  "Technician is assigned to ".$technician->name.".", 
+                                                    'action_made'     =>  "Technician assigned(".$technician->name.").", 
+                                                    'action_made_company'     =>  "Technician assigned.",
+                                                    'action_made_service_center'     =>  "Technician assigned(".$technician->name.").", 
                                                     'service_request_id'   =>   $id,
                                                     'user_id'   =>   auth()->user()->id
                                                 );
@@ -302,15 +392,29 @@ class ServiceRequestsController extends Controller
         }
         if($request['service_center_id'] != "")
         {
+            
             if($service_request->status == "New")
             {
                 $request['status']="Assigned";
-            }
-            if($service_request->service_center_id != $request['service_center_id']){
 
+                // service request log for assigned status
+                $insertServiceRequestLogArr = array(
+                                            'action_made'     =>   "Status is changed from New to Assigned.",
+                                            'action_made_company'     =>   "Status is changed from New to Assigned.",
+                                            'action_made_service_center'     =>   "Status is changed from New to Assigned.", 
+                                            'service_request_id'   =>   $id,
+                                            'user_id'   =>   auth()->user()->id
+                                        );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+            }
+
+            if($service_request->service_center_id != $request['service_center_id']){
+                // insert service request log on service center change 
                 $service_center=\App\ServiceCenter::where('id',$request['service_center_id'])->first();
                 $insertServiceRequestLogArr =   array(
-                                                    'action_made'     =>  "Service center is assigned to ".$service_center->name.".", 
+                                                    'action_made'     =>  "Service center assigned(".$service_center->name.").", 
+                                                    'action_made_company'     =>  "Service center assigned.",
+                                                    'action_made_service_center'     =>  "Service center assigned(".$service_center->name.").",
                                                     'service_request_id'   =>   $id,
                                                     'user_id'   =>   auth()->user()->id
                                                 );
@@ -399,7 +503,17 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_delete')) {
             return abort(401);
         }
+
         $service_request = ServiceRequest::findOrFail($id);
+        if(isset($service_request->service_center_id))
+        {
+            if($service_request->service_center_id != "" && (auth()->user()->id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->id != config('constants.ADMIN_ROLE_ID')))
+            {
+                // if service center is assigned, company admin and company user can not delete request, ONLY admin or super admin can delete the request
+                return  redirect()->route('admin.service_requests.index')->withErrors("Service center is already assigned.");
+            }
+        }
+        
         $service_request->delete();
 
         return redirect()->route('admin.service_requests.index');
@@ -418,8 +532,22 @@ class ServiceRequestsController extends Controller
         if ($request->input('ids')) {
             $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
 
+            $not_deleted=0;
             foreach ($entries as $entry) {
-                $entry->delete();
+                if($entry->service_center_id != "" && (auth()->user()->id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->id != config('constants.ADMIN_ROLE_ID')))
+                {
+                    // if service center is assigned, company admin and company user can not delete request, ONLY admin or super admin can delete the request
+                    $not_deleted++;
+                }
+                else
+                {
+                    $entry->delete();
+
+                }
+            }
+            if($not_deleted > 0)
+            {
+                redirect()->route('admin.service_requests.index')->withErrors("Some request is not deleted.");
             }
         }
     }

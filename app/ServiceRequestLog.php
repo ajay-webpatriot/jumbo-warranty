@@ -40,7 +40,7 @@ class ServiceRequestLog extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['service_request_id', 'action_made', 'user_id'];
+    protected $fillable = ['service_request_id', 'action_made', 'action_made_company', 'action_made_service_center', 'user_id'];
     protected $hidden = [];
        
     public function user()

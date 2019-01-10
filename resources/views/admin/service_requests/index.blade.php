@@ -32,12 +32,15 @@
                         @can('service_request_delete')
                             @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" id="select-all" /></th>@endif
                         @endcan
-
+                        @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
                         <th>@lang('quickadmin.service-request.fields.company')</th>
+                        @endif
                         <th>@lang('quickadmin.service-request.fields.customer')</th>
                         <th>@lang('quickadmin.service-request.fields.service-type')</th>
+                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                         <th>@lang('quickadmin.service-request.fields.service-center')</th>
-                        <th>@lang('quickadmin.service-request.fields.technician')</th>
+                        @endif
+                        <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                         <th>@lang('quickadmin.service-request.fields.product')</th>
                         <th>@lang('quickadmin.service-request.fields.amount')</th>
                         <th>@lang('quickadmin.service-request.fields.status')</th>
@@ -57,11 +60,23 @@
                                     @if ( request('show_deleted') != 1 )<td></td>@endif
                                 @endcan
 
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
                                 <td field-key='company'>{{ $service_request->company->name or '' }}</td>
+                                @endif
                                 <td field-key='customer'>{{ $service_request->customer->firstname or '' }}</td>
                                 <td field-key='service_type'>{{ $service_request->service_type }}</td>
-                                <td field-key='service_center'>{{ $service_request->service_center->name or '' }}</td>
-                                <td field-key='technician'>{{ $service_request->technician->name or '' }}</td>
+
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                <td field-key='service_center'>{{ $service_request->service_center->name or '' }}
+                                    @if($service_request->technician_id != "")
+                                        <br/>
+                                        (
+                                            {{ $service_request->technician->name or '' }} 
+                                        )
+                                    @endif
+                                </td>
+                                @endif
+                                <!-- <td field-key='technician'>{{ $service_request->technician->name or '' }}</td> -->
                                 <td field-key='product'>{{ $service_request->product->name or '' }}</td>
                                 <td field-key='amount'>{{ $service_request->amount }}</td>
                                 <td field-key='status'>{{ $service_request->status }}</td>
