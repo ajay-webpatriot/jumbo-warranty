@@ -60,9 +60,6 @@
                                 <td field-key='email'>{{ $user->email }}</td>
                                 <td field-key='status'>{{ $user->status }}</td>
                                                                 <td>
-                                    @can('user_view')
-                                    <!-- <a href="{{ route('admin.technicians.show',[$user->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('user_edit')
                                     <a href="{{ route('admin.technicians.edit',[$user->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

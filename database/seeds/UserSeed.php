@@ -11,9 +11,14 @@ class UserSeed extends Seeder
      */
     public function run()
     {
+        // $items = [
+            
+        //     ['id' => 1, 'role_id' => 1, 'company_id' => null, 'service_center_id' => null, 'name' => 'Admin', 'phone' => null, 'address_1' => null, 'address_2' => null, 'location_address' => null, 'location_latitude' => null, 'location_longitude' => null, 'email' => 'admin@admin.com', 'password' => '$2y$10$a/ZNrp2/n8qyExiUbfzzAeZpqD.jw69J1GEtV86AAG8KqKOqiqav.', 'remember_token' => ''],
+
+        // ];
         $items = [
             
-            ['id' => 1, 'role_id' => 1, 'company_id' => null, 'service_center_id' => null, 'name' => 'Admin', 'phone' => null, 'address_1' => null, 'address_2' => null, 'location_address' => null, 'location_latitude' => null, 'location_longitude' => null, 'email' => 'admin@admin.com', 'password' => '$2y$10$a/ZNrp2/n8qyExiUbfzzAeZpqD.jw69J1GEtV86AAG8KqKOqiqav.', 'remember_token' => ''],
+            ['id' => 1, 'role_id' => 1, 'company_id' => null, 'service_center_id' => null, 'name' => 'Admin', 'phone' => null, 'address_1' => null, 'address_2' => null, 'location_latitude' => null, 'location_longitude' => null, 'email' => 'admin@admin.com', 'password' => '$2y$10$a/ZNrp2/n8qyExiUbfzzAeZpqD.jw69J1GEtV86AAG8KqKOqiqav.', 'remember_token' => ''],
 
         ];
 

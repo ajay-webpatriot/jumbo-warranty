@@ -22,7 +22,7 @@ class ServiceCenter extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'address_1', 'commission', 'address_2', 'city', 'state', 'zipcode', 'status', 'location_address', 'location_latitude', 'location_longitude'];
+    protected $fillable = ['name', 'address_1', 'commission', 'address_2', 'city', 'state', 'zipcode', 'status', 'location_latitude', 'location_longitude'];
     protected $hidden = [];
     
     

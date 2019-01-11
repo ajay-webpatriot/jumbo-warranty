@@ -24,7 +24,8 @@ class StoreUsersRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
+            // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
+            'phone' => 'required|min:11|max:11',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed',
             'status' => 'required',

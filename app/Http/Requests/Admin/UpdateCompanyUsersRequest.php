@@ -25,7 +25,8 @@ class UpdateCompanyUsersRequest extends FormRequest
         return [
             'company_id' => 'required',
             'name' => 'required',
-            'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
+            // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
+            'phone' => 'required|min:11|max:11',
             'email' => 'required|email|unique:users,email,'.$this->route('company_user'),
             'password' => 'confirmed',
             'status' => 'required',

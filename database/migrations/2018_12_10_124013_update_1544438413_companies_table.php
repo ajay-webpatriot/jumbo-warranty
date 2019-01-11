@@ -29,10 +29,10 @@ if (!Schema::hasColumn('companies', 'state')) {
 if (!Schema::hasColumn('companies', 'zipcode')) {
                 $table->string('zipcode')->nullable();
                 }
-if (!Schema::hasColumn('companies', 'location')) {
+/*if (!Schema::hasColumn('companies', 'location')) {
                 $table->string('location');
                 }
-        });
+        });*/
 
     }
 
@@ -49,7 +49,7 @@ if (!Schema::hasColumn('companies', 'location')) {
             $table->dropColumn('city');
             $table->dropColumn('state');
             $table->dropColumn('zipcode');
-            $table->dropColumn('location');
+            /*$table->dropColumn('location');*/
             
         });
 

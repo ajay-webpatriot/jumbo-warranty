@@ -43,9 +43,17 @@ class AssignProductsController extends Controller
             }
             $assign_products = AssignProduct::onlyTrashed()->get();
         } else {
-            $assign_products = AssignProduct::all();
-        }
 
+            if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                //get company admin's or user's own company assigned product if logged in user is company admin or user
+                $assign_products = AssignProduct::where('company_id',auth()->user()->company_id)->get();
+            }
+            else
+            {
+                $assign_products = AssignProduct::all();
+            }
+        }
         return view('admin.assign_products.index', compact('assign_products'));
     }
 

@@ -46,7 +46,17 @@ class CustomersController extends Controller
             }
             $customers = Customer::onlyTrashed()->get();
         } else {
-            $customers = Customer::all();
+
+            if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                //get company admin's or user's own company customers if logged in user is company admin or user
+                $customers = Customer::where('company_id',auth()->user()->company_id)->get();
+            }
+            else
+            {
+                $customers = Customer::all();
+            }
+            
         }
 
         return view('admin.customers.index', compact('customers'));

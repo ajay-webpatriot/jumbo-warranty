@@ -32,6 +32,7 @@ class UsersController extends Controller
      */
     public function index()
     {
+
         if (! Gate::allows('user_access')) {
             return abort(401);
         }

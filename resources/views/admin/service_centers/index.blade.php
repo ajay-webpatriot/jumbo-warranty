@@ -35,7 +35,7 @@
 
                         <th>@lang('quickadmin.service-center.fields.name')</th>
                         <th>@lang('quickadmin.service-center.fields.address-1')</th>
-                        <th>@lang('quickadmin.service-center.fields.location')</th>
+                        <!-- <th>@lang('quickadmin.service-center.fields.location')</th> -->
                         <th>@lang('quickadmin.service-center.fields.commission')</th>
                         <th>@lang('quickadmin.service-center.fields.address-2')</th>
                         <th>@lang('quickadmin.service-center.fields.city')</th>
@@ -60,7 +60,7 @@
 
                                 <td field-key='name'>{{ $service_center->name }}</td>
                                 <td field-key='address_1'>{{ $service_center->address_1 }}</td>
-                                <td field-key='location'>{{ $service_center->location_address }}</td>
+                                <!-- <td field-key='location'>{{ $service_center->location_address }}</td> -->
                                 <td field-key='commission'>{{ $service_center->commission }}</td>
                                 <td field-key='address_2'>{{ $service_center->address_2 }}</td>
                                 <td field-key='city'>{{ $service_center->city }}</td>
@@ -90,9 +90,6 @@
                                 </td>
                                 @else
                                 <td>
-                                    @can('service_center_view')
-                                    <!-- <a href="{{ route('admin.service_centers.show',[$service_center->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('service_center_edit')
                                     <a href="{{ route('admin.service_centers.edit',[$service_center->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

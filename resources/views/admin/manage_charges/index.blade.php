@@ -76,9 +76,6 @@
                                 </td>
                                 @else
                                 <td>
-                                    @can('manage_charge_view')
-                                    <!-- <a href="{{ route('admin.manage_charges.show',[$manage_charge->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('manage_charge_edit')
                                     <a href="{{ route('admin.manage_charges.edit',[$manage_charge->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

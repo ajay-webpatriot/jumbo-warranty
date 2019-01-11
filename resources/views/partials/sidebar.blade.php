@@ -10,27 +10,6 @@
                     <span class="title">@lang('quickadmin.qa_dashboard')</span>
                 </a>
             </li>
-            @can('permission_management_access')
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-users"></i>
-                    <span>@lang('quickadmin.permission-management.title')</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                   @can('permission_access')
-                    <li>
-                        <a href="{{ route('admin.permissions.index') }}">
-                            <i class="fa fa-briefcase"></i>
-                            <span>@lang('quickadmin.permissions.title')</span>
-                        </a>
-                    </li>
-                    @endcan
-                </ul>
-            </li>
-            @endcan
             @can('user_management_access')
             <!-- can('manageUser') -->
             <li class="treeview">
@@ -64,8 +43,8 @@
                     
                 </ul>
             </li>@endcan
-            
-            @can('product_management_access')
+            <!-- can('product_management_access') -->
+            @can('manageCategory','manageProduct','manageParts')
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-product-hunt"></i>
@@ -124,63 +103,73 @@
                 <ul class="treeview-menu">
                     <!-- can('company_access') -->
                     @can('manageCompany')
-                    <li>
-                        <a href="{{ route('admin.companies.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.company.title')</span>
-                        </a>
-                    </li>
-                    
-                    <!-- endcan -->
-                    
-                    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
-                    || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
-                    <li>
-                        <a href="{{ route('admin.company_admins.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.company-admins.title')</span>
-                        </a>
-                    </li>
-                    @endif
 
-                    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
-                    || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
-                    || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
-                    <li>
-                        <a href="{{ route('admin.company_users.index') }}">
-                            <i class="fa fa-user"></i>
-                            <span>@lang('quickadmin.company-users.title')</span>
-                        </a>
-                    </li>
-                    @endif
+                        @if(auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')
+                        || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+                        <li>
+                            <a href="{{ route('admin.companies.show',[auth()->user()->company_id]) }}">
+                                <i class="fa fa-gears"></i>
+                                <span>@lang('quickadmin.company.company-info')</span>
+                            </a>
+                        </li>
+                        @else
+                        <li>
+                            <a href="{{ route('admin.companies.index') }}">
+                                <i class="fa fa-gears"></i>
+                                <span>@lang('quickadmin.company.title')</span>
+                            </a>
+                        </li>
+                        @endif
+                        <!-- endcan -->
+                        
+                        @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
+                        || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                        <li>
+                            <a href="{{ route('admin.company_admins.index') }}">
+                                <i class="fa fa-gears"></i>
+                                <span>@lang('quickadmin.company-admins.menu-title')</span>
+                            </a>
+                        </li>
+                        @endif
 
-                    
-                    <!-- can('customer_access') -->
-                    <!-- can('manageCompany') -->
-                    <li>
-                        <a href="{{ route('admin.customers.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.customers.title')</span>
-                        </a>
-                    </li>
-                    <!-- endcan -->
-                    
-                    <!-- can('assign_product_access') -->
-                    <li>
-                        <a href="{{ route('admin.assign_products.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.assign-product.title')</span>
-                        </a>
-                    </li>
-                    <!-- endcan -->
-                    
-                    <!-- can('assign_part_access') -->
-                    <li>
-                        <a href="{{ route('admin.assign_parts.index') }}">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.assign-parts.title')</span>
-                        </a>
-                    </li>
+                        @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
+                        || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
+                        || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+                        <li>
+                            <a href="{{ route('admin.company_users.index') }}">
+                                <i class="fa fa-user"></i>
+                                <span>@lang('quickadmin.company-users.menu-title')</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        
+                        <!-- can('customer_access') -->
+                        <!-- can('manageCompany') -->
+                        <li>
+                            <a href="{{ route('admin.customers.index') }}">
+                                <i class="fa fa-gears"></i>
+                                <span>@lang('quickadmin.customers.title')</span>
+                            </a>
+                        </li>
+                        <!-- endcan -->
+                        
+                        <!-- can('assign_product_access') -->
+                        <li>
+                            <a href="{{ route('admin.assign_products.index') }}">
+                                <i class="fa fa-gears"></i>
+                                <span>@lang('quickadmin.assign-product.menu-title')</span>
+                            </a>
+                        </li>
+                        <!-- endcan -->
+                        
+                        <!-- can('assign_part_access') -->
+                        <li>
+                            <a href="{{ route('admin.assign_parts.index') }}">
+                                <i class="fa fa-gears"></i>
+                                <span>@lang('quickadmin.assign-parts.menu-title')</span>
+                            </a>
+                        </li>
                     @endcan
                     <!-- endcan -->
                     
@@ -268,12 +257,27 @@
                 </a>
             </li>@endcan
             
-
-            
-
-            
-
-
+            @can('permission_management_access')
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-users"></i>
+                    <span>@lang('quickadmin.permission-management.title')</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                   @can('permission_access')
+                    <li>
+                        <a href="{{ route('admin.permissions.index') }}">
+                            <i class="fa fa-briefcase"></i>
+                            <span>@lang('quickadmin.permissions.title')</span>
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcan
 
             <li class="{{ $request->segment(1) == 'change_password' ? 'active' : '' }}">
                 <a href="{{ route('auth.change_password') }}">

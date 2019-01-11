@@ -80,9 +80,6 @@
                                 </td>
                                 @else
                                 <td>
-                                    @can('assign_part_view')
-                                    <!-- <a href="{{ route('admin.assign_parts.show',[$assign_part->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('assign_part_edit')
                                     <a href="{{ route('admin.assign_parts.edit',[$assign_part->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

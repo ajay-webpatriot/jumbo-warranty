@@ -18,7 +18,7 @@ class Create1544196560ServiceCentersTable extends Migration
                 $table->string('name');
                 $table->string('address_1')->nullable();
                 $table->string('addres_2')->nullable();
-                $table->string('location_address');
+                /*$table->string('location_address');*/
                 $table->double('location_latitude');
                 $table->double('location_longitude');
                 

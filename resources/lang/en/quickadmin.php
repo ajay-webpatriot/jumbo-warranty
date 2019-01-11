@@ -7,7 +7,7 @@ return [
 		],
 	],
 	'permissions' => [
-		'title' => 'Permissions',
+		'title' => 'Role Management',
 		'fields' => [
 		],
 	],
@@ -97,6 +97,7 @@ return [
 	'company' => [
 		'title' => 'Companies',
 		'formTitle' => 'Company',
+		'company-info' => 'Company Info',
 		'fields' => [
 			'name' => 'Name',
 			'credit' => 'Credit',
@@ -113,6 +114,7 @@ return [
 	
 	'company-admins' => [
 		'title' => 'Company Admins',
+		'menu-title' => 'Admins',
 		'formTitle' => 'Company Admin',
 		'fields' => [
 		],
@@ -256,6 +258,7 @@ return [
 	
 	'company-users' => [
 		'title' => 'Company Users',
+		'menu-title' => 'Users',
 		'formTitle' => 'Company User',
 		'fields' => [
 		],
@@ -263,6 +266,7 @@ return [
 	
 	'assign-parts' => [
 		'title' => 'Assign Parts',
+		'menu-title' => 'Parts',
 		'formTitle' => 'Assign Part',
 		'fields' => [
 			'company' => 'Company',
@@ -281,6 +285,7 @@ return [
 	
 	'assign-product' => [
 		'title' => 'Assign Products',
+		'menu-title' => 'Products',
 		'formTitle' => 'Assign Product',
 		'fields' => [
 			'company' => 'Company',

@@ -47,7 +47,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('phone', trans('quickadmin.users.fields.phone').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','maxlength' => '10']) !!}
+                    {!! Form::text('phone', old('phone'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','minlength' => '11','maxlength' => '11']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('phone'))
                         <p class="help-block">

@@ -24,7 +24,7 @@ if (!Schema::hasColumn('users', 'address_2')) {
                 $table->string('address_2')->nullable();
                 }
 if (!Schema::hasColumn('users', 'location_address')) {
-                $table->string('location_address')->nullable();
+                /*$table->string('location_address')->nullable();*/
                 $table->double('location_latitude')->nullable();
                 $table->double('location_longitude')->nullable();
                 }
@@ -43,7 +43,7 @@ if (!Schema::hasColumn('users', 'location_address')) {
             $table->dropColumn('phone');
             $table->dropColumn('address_1');
             $table->dropColumn('address_2');
-            $table->dropColumn('location_address');
+            /*$table->dropColumn('location_address');*/
             $table->dropColumn('location_latitude');
             $table->dropColumn('location_longitude');
             

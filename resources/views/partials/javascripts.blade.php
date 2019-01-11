@@ -34,6 +34,8 @@
 <script src="{{ url('adminlte/plugins/fastclick/fastclick.js') }}"></script>
 <script src="{{ url('adminlte/js/app.min.js') }}"></script>
 
+<!-- input mask js -->
+<script src="{{ url('adminlte/plugins/jQuery-Mask-Plugin-master/src/jquery.mask.js') }}"></script>
 <!-- custom js -->
 <script src="{{ url('js/custom.js') }}"></script>
 
@@ -53,9 +55,15 @@
 
 <script>
     $(function(){
-        /** add active class and stay opened when selected */
-        var url = window.location;
+        var url = window.location;// set url variable to use in ajax function
 
+        // autofill off for email and password field
+        $('input[type=email]').attr('autocomplete','off');
+        $('input[type=password]').attr('autocomplete','off');
+
+        $("#phone").mask("99999-99999");// set mask for phone field
+
+        /** add active class and stay opened when selected */
         // for sidebar menu entirely but not cover treeview
         $('ul.sidebar-menu a').filter(function() {
             return this.href == url;

@@ -258,6 +258,7 @@ return [
 
         // custom helper
         'GoogleAPIHelper' => App\Helpers\GoogleAPI::class,
+        'SendMailHelper' => App\Helpers\SendMail::class,
         
     ],
 

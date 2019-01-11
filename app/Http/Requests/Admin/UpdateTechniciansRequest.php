@@ -25,7 +25,8 @@ class UpdateTechniciansRequest extends FormRequest
         return [
             'service_center_id' => 'required',
             'name' => 'required',
-            'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
+            // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
+            'phone' => 'required|min:11|max:11',
             'address_1' => 'required',
             'city' => 'required',
             'state' => 'required',

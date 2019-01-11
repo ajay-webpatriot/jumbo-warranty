@@ -78,9 +78,6 @@
                                 </td>
                                 @else
                                 <td>
-                                    @can('category_view')
-                                    <!-- <a href="{{ route('admin.categories.show',[$category->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('category_edit')
                                     <a href="{{ route('admin.categories.edit',[$category->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

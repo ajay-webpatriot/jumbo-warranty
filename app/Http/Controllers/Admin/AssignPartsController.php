@@ -45,7 +45,16 @@ class AssignPartsController extends Controller
             }
             $assign_parts = AssignPart::onlyTrashed()->get();
         } else {
-            $assign_parts = AssignPart::all();
+            if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                //get company admin's or user's own company assigned parts if logged in user is company admin or user
+                $assign_parts = AssignPart::where('company_id',auth()->user()->company_id)->get();
+            }
+            else
+            {
+                $assign_parts = AssignPart::all();
+            }
+            
         }
         
         foreach ($assign_parts as $key => $value) {

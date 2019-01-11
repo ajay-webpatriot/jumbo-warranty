@@ -19,6 +19,7 @@ use Spatie\Permission\Models\Permission as perm;
 // get lat long & distance
 use GoogleAPIHelper;
 use Dompdf\Dompdf;
+use SendMailHelper;
 
 class ServiceRequestsController extends Controller
 {
@@ -42,7 +43,7 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
-
+        
 
         if (request('show_deleted') == 1) {
             if (! Gate::allows('service_request_delete')) {
@@ -70,6 +71,14 @@ class ServiceRequestsController extends Controller
         }
         // echo "<pre>"; print_r ($service_requests); echo "</pre>"; exit();
         return view('admin.service_requests.index', compact('service_requests'));
+
+        // $data=array('subject' => 'Request Creation Receive',
+        //             'user_name' => 'Hinal patel'
+
+        //             );
+        // $subject="123";
+        // $user_name="1my name 23";
+        // return view('admin.emails.service_request', compact('subject','user_name'));
     }
 
     /**
@@ -117,11 +126,12 @@ class ServiceRequestsController extends Controller
         }
 
         // calculate total amount work start
-        $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        $total_amount=$request['installation_charge']+$request['service_charge']+($request['additional_charges'] == "")?0:$request['additional_charges'];
         // convert to json
         $request['additional_charges']= json_encode(array($request['additional_charges_title'] => $request['additional_charges']));
         $request['km_distance']=0;
         $request['km_charge']=0;
+        // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
         if($request['service_type'] == 'repair')
         {
             if($request['service_center_id'] != "" && $request['customer_id'] != "")
@@ -162,6 +172,7 @@ class ServiceRequestsController extends Controller
 
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
+        SendMailHelper::sendRequestCreationMail($service_request);
 
         // service request log for new request
         $insertServiceRequestLogArr = array(
@@ -203,7 +214,7 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_edit')) {
             return abort(401);
         }
-        
+        // SendMailHelper::sendRequestCreationMail($id);
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');

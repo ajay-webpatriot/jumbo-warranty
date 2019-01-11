@@ -24,7 +24,7 @@ class Customer extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['firstname', 'lastname', 'phone', 'address_1', 'address_2', 'city', 'state', 'zipcode', 'location','location_latitude','location_longitude', 'status', 'company_id'];
+    protected $fillable = ['firstname', 'lastname', 'phone', 'address_1', 'address_2', 'city', 'state', 'zipcode','location_latitude','location_longitude', 'status', 'company_id'];
     protected $hidden = [];
     
     

@@ -45,10 +45,6 @@
                             <td field-key='zipcode'>{{ $company->zipcode }}</td>
                         </tr>
                         <tr>
-                            <th>@lang('quickadmin.company.fields.location')</th>
-                            <td field-key='location'>{{ $company->location }}</td>
-                        </tr>
-                        <tr>
                             <th>@lang('quickadmin.company.fields.status')</th>
                             <td field-key='status'>{{ $company->status }}</td>
                         </tr>

@@ -57,7 +57,46 @@ $(document).ready(function () {
             },
         ]
     };
+
+    window.dtCustomOptions = {
+        retrieve: true,
+        dom: 'lBfrtip<"actions">',
+        columnDefs: [],
+        "iDisplayLength": 10,
+        "aaSorting": [],
+        buttons: [
+            {
+                extend: 'pdf',
+                text: window.pdfButtonTrans,
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+            {
+                extend: 'print',
+                text: window.printButtonTrans,
+                exportOptions: {
+                    columns: ':visible'
+                }
+            }
+        ]
+    };
     $('.datatable').each(function () {
+        if ($(this).hasClass('dt-select')) {
+            window.dtCustomOptions.select = {
+                style: 'multi',
+                selector: 'td:first-child'
+            };
+
+            window.dtCustomOptions.columnDefs.push({
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0
+            });
+        }
+        $(this).dataTable(window.dtCustomOptions);
+    });
+    $('.datatable_invoice').each(function () {
         if ($(this).hasClass('dt-select')) {
             window.dtDefaultOptions.select = {
                 style: 'multi',

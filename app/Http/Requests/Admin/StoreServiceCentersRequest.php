@@ -25,7 +25,6 @@ class StoreServiceCentersRequest extends FormRequest
         return [
             'name' => 'required',
             'address_1' => 'required',
-            'location_address'=>'required',
             'location_latitude'=>'required',
             'location_longitude'=>'required',
 

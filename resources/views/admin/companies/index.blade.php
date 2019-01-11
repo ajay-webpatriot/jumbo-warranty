@@ -90,9 +90,6 @@
                                 </td>
                                 @else
                                 <td>
-                                    @can('company_view')
-                                    <!-- <a href="{{ route('admin.companies.show',[$company->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('company_edit')
                                     <a href="{{ route('admin.companies.edit',[$company->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

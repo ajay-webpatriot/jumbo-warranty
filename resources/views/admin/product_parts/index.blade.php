@@ -76,9 +76,6 @@
                                 </td>
                                 @else
                                 <td>
-                                    @can('product_part_view')
-                                    <!-- <a href="{{ route('admin.product_parts.show',[$product_part->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('product_part_edit')
                                     <a href="{{ route('admin.product_parts.edit',[$product_part->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan

@@ -43,9 +43,6 @@
                                 <td field-key='title'>{{ $role->title }}</td>
                                 <td field-key='status'>{{ $role->status }}</td>
                                                                 <td>
-                                    @can('role_view')
-                                    <!-- <a href="{{ route('admin.roles.show',[$role->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a> -->
-                                    @endcan
                                     @can('role_edit')
                                     <a href="{{ route('admin.roles.edit',[$role->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
