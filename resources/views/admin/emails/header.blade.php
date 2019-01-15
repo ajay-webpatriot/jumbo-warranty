@@ -367,7 +367,7 @@
 <center>
     <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable" bgcolor="#f0efef">
         <tr>
-            <td align="center" valign="top">
+            <td align="center" valign="top"   bgcolor="#ffffff">
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background: #fff">
                     <tr>
                         <td align="center" height="50">

@@ -40,10 +40,11 @@ class ServiceRequestsController extends Controller
      */
     public function index()
     {
+        
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
-        
+        // SendMailHelper::sendRequestCreationMail(31);
 
         if (request('show_deleted') == 1) {
             if (! Gate::allows('service_request_delete')) {
@@ -126,7 +127,8 @@ class ServiceRequestsController extends Controller
         }
 
         // calculate total amount work start
-        $total_amount=$request['installation_charge']+$request['service_charge']+($request['additional_charges'] == "")?0:$request['additional_charges'];
+        $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:$request['additional_charges']);
+
         // convert to json
         $request['additional_charges']= json_encode(array($request['additional_charges_title'] => $request['additional_charges']));
         $request['km_distance']=0;
@@ -172,7 +174,7 @@ class ServiceRequestsController extends Controller
 
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
-        SendMailHelper::sendRequestCreationMail($service_request);
+        SendMailHelper::sendRequestCreationMail($service_request->id);
 
         // service request log for new request
         $insertServiceRequestLogArr = array(
@@ -228,10 +230,17 @@ class ServiceRequestsController extends Controller
                     $enum_priority = ServiceRequest::$enum_priority;
                     $enum_is_item_in_warrenty = ServiceRequest::$enum_is_item_in_warrenty;
                     $enum_mop = ServiceRequest::$enum_mop;
-                    $enum_status = ServiceRequest::$enum_status;
+                    // $enum_status = ServiceRequest::$enum_status;
             
         $service_request = ServiceRequest::findOrFail($id);
-        
+        if($service_request['service_type'] == "repair")
+        {
+            $enum_status = ServiceRequest::$enum_repair_status;
+        }
+        else
+        {
+            $enum_status = ServiceRequest::$enum_installation_status;
+        }
         $additional_charge_array=json_decode($service_request['additional_charges']);
         $additional_charge_title="";
         $additional_charges="";
@@ -320,6 +329,9 @@ class ServiceRequestsController extends Controller
         }
 
         return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title'))->with('no', 1);
+        // $user_name='user name';
+        // $subject='sub';
+        // return view('admin.emails.service_request', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);
     }
 
     /**
@@ -451,7 +463,7 @@ class ServiceRequestsController extends Controller
         }  
 
         // calculate total amount work start
-        $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:$request['additional_charges']);
 
         // convert to json
         $request['additional_charges']= json_encode(array($request['additional_charges_title'] => $request['additional_charges']));
@@ -486,13 +498,24 @@ class ServiceRequestsController extends Controller
                 }
             } 
         }
+
+
         $request['amount']=$total_amount;  
         // calculate total amount work end
 
 
+        if($service_request->status != $request['status'])
+        {
+            //send mail on every status change
+            $msg='Status is changed from '.$service_request->status.' to '.$request['status'].'.';
+            // echo $id;exit;
+            SendMailHelper::sendRequestUpdateMail($id,$msg);
+        }
+
         $service_request->update($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
 
+        
         if($request['status'] == "Closed")
         {
             // return $this->createReceiptPDF($request->all());
@@ -777,15 +800,35 @@ class ServiceRequestsController extends Controller
 
         $data['installation_charge']=0;
         $data['service_charge']=0;
-        if($details['serviceType'] == "installation" && $details['companyId'])
+        $data['statusOptions']="";
+        if($details['serviceType'] == "installation")
         {
-            $companyDetails=\App\Company::findOrFail($details['companyId']);
-            $data['installation_charge']=$companyDetails->installation_charge;
+            $enum_status = ServiceRequest::$enum_installation_status;
+            foreach($enum_status as $key => $value)
+            {
+                $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
+            } 
+            if($details['companyId'])
+            {
+                $companyDetails=\App\Company::findOrFail($details['companyId']);
+                $data['installation_charge']=$companyDetails->installation_charge;
+            }
+            
+
         }
-        else if($details['serviceType'] == "repair" && $details['productId'])
+        else if($details['serviceType'] == "repair")
         {
-            $productDetails=\App\Product::findOrFail($details['productId']);
-            $data['service_charge']=$productDetails->category->service_charge;
+            $enum_status = ServiceRequest::$enum_repair_status;
+            foreach($enum_status as $key => $value)
+            {
+                $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
+            } 
+            if($details['productId'])
+            {
+                $productDetails=\App\Product::findOrFail($details['productId']);
+                $data['service_charge']=$productDetails->category->service_charge;
+            }
+            
             
         }
         

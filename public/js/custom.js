@@ -131,6 +131,8 @@ function requestCharge(ele) {
 	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+(km_distance * km_charge)).toFixed(2);
 	          	$("#amount").val(total_amount);
 	          	$("#lbl_total_amount").html(total_amount);
+
+	          	$("#status").html(data.statusOptions);
 	       	}
 	    });
 	}

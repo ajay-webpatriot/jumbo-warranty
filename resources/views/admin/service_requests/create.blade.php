@@ -507,7 +507,7 @@
                                             @endif
                                         </div>
                                     </div> -->
-                                    {!! Form::hidden('status', 'New', ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
+                                    {!! Form::hidden('status', 'New', ['class' => 'form-control', 'placeholder' => '', 'id' => 'hiddenStatus']) !!}
                                 </div>
                             </div>
                         </div>  
