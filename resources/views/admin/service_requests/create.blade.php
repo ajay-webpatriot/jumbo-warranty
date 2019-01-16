@@ -17,7 +17,7 @@
         }
     </style>
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store']]) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store'], 'id' => 'formServiceRequest']) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -79,7 +79,7 @@
                                     <div class="row custDiv" style="display: none;">
                                         <div class="col-xs-12">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('customer_id', array('default' => trans('quickadmin.qa_please_select')), old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                            {!! Form::select('customer_id', array('' => trans('quickadmin.qa_please_select')), old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('customer_id'))
                                             <p class="help-block">
@@ -219,7 +219,7 @@
 
                                 <div class="form-group">
                                     {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'*', ['class' => 'control-label']) !!}
-                                    {!! Form::select('product_id', array('default' => trans('quickadmin.qa_please_select')), old('product_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
+                                    {!! Form::select('product_id', array('' => trans('quickadmin.qa_please_select')), old('product_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
                                     <p class="help-block"></p>
                                     @if($errors->has('product_id'))
                                     <p class="help-block">
@@ -292,7 +292,14 @@
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('bill_date', trans('quickadmin.service-request.fields.bill-date').'', ['class' => 'control-label']) !!}
-                                    {!! Form::text('bill_date', old('bill_date'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                                    
+
+                                    <div class="input-group">
+                                        {!! Form::text('bill_date', old('bill_date'), ['class' => 'form-control date', 'placeholder' => '']) !!}
+                                        <label class="input-group-addon btn" for="completion_date">
+                                            <span class="fa fa-calendar"></span>
+                                        </label>
+                                    </div>
                                     <p class="help-block"></p>
                                     @if($errors->has('bill_date'))
                                     <p class="help-block">
@@ -428,18 +435,18 @@
                                                 <div class="col-sm-8">
                                                     {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').'', ['class' => 'control-label fontweight fontsize']) !!}
                                                 
-                                                    {!! Form::text('additional_charges_title','' , ['class' => 'form-control', 'placeholder' => 'Charges for']) !!}
+                                                    {!! Form::text('additional_charges_title','' , ['class' => 'form-control', 'placeholder' => 'Charges for', 'id' => 'additional_charges_title']) !!}
                                                         <p class="help-block"></p>
-                                                        @if($errors->has('additional_charges'))
+                                                        @if($errors->has('additional_charges_title'))
                                                             <p class="help-block">
-                                                                {{ $errors->first('additional_charges') }}
+                                                                {{ $errors->first('additional_charges_title') }}
                                                             </p>
                                                         @endif
                                                 </div>
 
                                                 <div class="col-sm-4">
-                                                    {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').'', ['class' => 'control-label']) !!}
-                                                    {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                    {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !!}
+                                                    {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
                                                     <p class="help-block"></p>
                                                     @if($errors->has('additional_charges'))
                                                     <p class="help-block">

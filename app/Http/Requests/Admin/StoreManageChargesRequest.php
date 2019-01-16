@@ -23,7 +23,7 @@ class StoreManageChargesRequest extends FormRequest
     public function rules()
     {
         return [
-            'km_charge' => 'required',
+            'km_charge' => 'required|numeric',
             'status' => 'required',
         ];
     }

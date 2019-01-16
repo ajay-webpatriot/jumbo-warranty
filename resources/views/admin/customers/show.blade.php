@@ -25,6 +25,10 @@
                             <td field-key='phone'>{{ $customer->phone }}</td>
                         </tr>
                         <tr>
+                            <th>@lang('quickadmin.customers.fields.email')</th>
+                            <td field-key='phone'>{{ $customer->email }}</td>
+                        </tr>
+                        <tr>
                             <th>@lang('quickadmin.customers.fields.company')</th>
                             <td field-key='company'>{{ $customer->company->name or '' }}</td>
                         </tr>

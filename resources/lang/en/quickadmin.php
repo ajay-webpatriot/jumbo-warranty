@@ -127,6 +127,7 @@ return [
 			'firstname' => 'First Name',
 			'lastname' => 'Last Name',
 			'phone' => 'Phone',
+			'email' => 'Email',
 			'company' => 'Company',
 			'address-1' => 'Address 1',
 			'address-2' => 'Address 2',

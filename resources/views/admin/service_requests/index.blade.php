@@ -78,7 +78,7 @@
                                 @endif
                                 <!-- <td field-key='technician'>{{ $service_request->technician->name or '' }}</td> -->
                                 <td field-key='product'>{{ $service_request->product->name or '' }}</td>
-                                <td field-key='amount'>{{ $service_request->amount }}</td>
+                                <td field-key='amount'>{{ number_format($service_request->amount,2) }}</td>
                                 <td field-key='status'>{{ $service_request->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

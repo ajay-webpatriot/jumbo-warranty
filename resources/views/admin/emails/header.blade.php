@@ -372,7 +372,7 @@
                     <tr>
                         <td align="center" height="50">
                             <img src="{{url('adminlte/img/logo.png')}}"
-                                 alt="GoModels" />
+                                 alt="Jumbo-Warranty" />
                         </td>
                     </tr>
 

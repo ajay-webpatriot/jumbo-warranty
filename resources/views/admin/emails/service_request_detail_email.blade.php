@@ -48,7 +48,7 @@
                                                         ">
                                                         {!! Form::label('service_type', trans('quickadmin.service-request.fields.service-type').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
 
-                                                        {!! Form::label('service_type', $service_request->service_type, ['class' => 'control-label fontweight']) !!}
+                                                        {!! Form::label('service_type', ucfirst($service_request->service_type), ['class' => 'control-label fontweight']) !!}
 
 
                                                         
@@ -60,7 +60,7 @@
                                                         padding-right: 15px;
                                                         padding-left: 15px;">
                                                         {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
-                                                        {!! Form::label('created_date', '08-01-2018', ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
+                                                        {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -91,10 +91,10 @@
                                             border-top-left-radius: 3px;
                                             border-top-right-radius: 3px;
                                             ">
-                                            <a data-toggle="collapse" href="#collapseCompany" style="color: #3c8dbc;text-decoration: none;">Company & Customer</a>
+                                            <span style="color: #3c8dbc;text-decoration: none;">Company & Customer</span>
                                         </div>
 
-                                        <div id="collapseCompany" class="panel-collapse in" role="tabpanel">
+                                        <div class="panel-collapse in" role="tabpanel">
                                             <div class="panel-body" style="border-top-color: #ddd;border-top: 1px solid #ddd;padding: 15px;height:140px;">
 
                                                 <div class="row">
@@ -150,8 +150,10 @@
                                                                 <div class="custAddress">
                                                                     {{$service_request->customer->address_1}}
                                                                     <br/>
+                                                                    @if(!empty($service_request->customer->address_2))
                                                                     {{$service_request->customer->address_2}}
                                                                     <br/>
+                                                                    @endif
                                                                     {{$service_request->customer->city}}
                                                                     <br/>
                                                                     {{$service_request->customer->state." - ".$service_request->customer->zipcode}}
@@ -179,7 +181,7 @@
                                             border-top-left-radius: 3px;
                                             border-top-right-radius: 3px;
                                             ">
-                                            <a data-toggle="collapse" style="color: #3c8dbc;text-decoration: none;" href="#collapseServiceCenter">Service Center</a>
+                                            <span style="color: #3c8dbc;text-decoration: none;">Service Center</span>
                                         </div>
                                         <div id="collapseServiceCenter" class="panel-collapse in">
                                             <div class="panel-body" style="border-top-color: #ddd;border-top: 1px solid #ddd;padding: 15px;height:40px;">
@@ -237,7 +239,7 @@
                                             padding: 10px 15px;
                                             border-top-left-radius: 3px;
                                             border-top-right-radius: 3px;
-                                            "> <a data-toggle="collapse" style="color: #3c8dbc;text-decoration: none;" href="#collapseCallDetail">Call Detail</a></div>
+                                            "> <span style="color: #3c8dbc;text-decoration: none;" >Call Detail</span></div>
                                         <div id="collapseCallDetail" class="panel-collapse in">
                                             <div class="panel-body" style="border-top-color: #ddd;border-top: 1px solid #ddd;padding: 15px;height:40px;">
 
@@ -289,7 +291,7 @@
                                             padding: 10px 15px;
                                             border-top-left-radius: 3px;
                                             border-top-right-radius: 3px;
-                                            "> <a data-toggle="collapse" style="color: #3c8dbc;text-decoration: none;" href="#collapseProduct">Product</a></div>
+                                            "> <span style="color: #3c8dbc;text-decoration: none;">Product</span></div>
                                         <div id="collapseProduct" class="panel-collapse in">
                                             <div class="panel-body" style="border-top-color: #ddd;border-top: 1px solid #ddd;padding: 15px;height:140px;">
                                                 <div class="row">
@@ -308,7 +310,19 @@
                                                             <div class="form-group">
                                                                 {!! Form::label('parts', trans('quickadmin.service-request.fields.parts').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 @foreach ($service_request->parts as $singleParts)
-                                                                    <span class="label label-info label-many">{{ $singleParts->name }}</span>
+                                                                    <span class="label label-info label-many" style="
+                                                                    margin-right: 5px;
+                                                                    margin-bottom: 5px!important;
+                                                                    display: inline-block;
+                                                                    background-color: #00c0ef!important;
+                                                                    border-radius: .25em;
+                                                                    padding: .2em .6em .3em;
+                                                                    color: #fff;
+                                                                    margin-top: 5px;
+                                                                    text-align: center;
+                                                                    white-space: nowrap;
+                                                                    vertical-align: baseline;
+                                                                    line-height: 1;">{{ $singleParts->name }}</span>
                                                                 @endforeach
                                                             </div>
                                                         </div>
@@ -342,7 +356,7 @@
 
                                                         <div class="form-group">
                                                             {!! Form::label('bill_date', trans('quickadmin.service-request.fields.bill-date').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
-                                                            {!! Form::label('', $service_request->bill_date, ['class' => 'control-label fontweight']) !!}
+                                                            {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->bill_date), ['class' => 'control-label fontweight']) !!}
                                                         </div>
 
                                                         <div class="form-group">
@@ -380,7 +394,7 @@
                                             padding: 10px 15px;
                                             border-top-left-radius: 3px;
                                             border-top-right-radius: 3px;
-                                            "> <a data-toggle="collapse" style="color: #3c8dbc;text-decoration: none;" href="#collapseOther">Other</a></div>
+                                            "> <span style="color: #3c8dbc;text-decoration: none;" >Other</span></div>
                                         <div id="collapseOther" class="panel-collapse in">
                                             <div class="panel-body" style="border-top-color: #ddd;border-top: 1px solid #ddd;padding: 15px;height:210px;">
 
@@ -401,7 +415,7 @@
                                                         padding-right: 15px;
                                                         ">
                                                         {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
-                                                        {!! Form::label('', $service_request->completion_date, ['class' => 'control-label fontweight']) !!}
+                                                        {!! Form::label('',App\Helpers\CommonFunctions::setDateFormat( $service_request->completion_date), ['class' => 'control-label fontweight']) !!}
                                                     </div>
 
                                                     <div class="col-md-6" style="width:45%;float: left;    
@@ -414,7 +428,7 @@
                                                                 {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
 
                                                                 <!-- service charge value label -->
-                                                                {!! Form::label('', $service_request->service_charge, ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge', 'style' => 'float:right;']) !!}
+                                                                {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge', 'style' => 'float:right;']) !!}
 
                                                             </div>
                                                         </div>
@@ -424,11 +438,11 @@
                                                                 {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
                                                                 
                                                                 <!-- installation charge value label -->
-                                                                {!! Form::label('', $service_request->installation_charge, ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge','style' => 'float:right;']) !!}
+                                                                {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge','style' => 'float:right;']) !!}
                                                                 
                                                             </div>
                                                         </div>
-
+                                                        @if(!empty($service_request->additional_charges))
                                                         <div class="row">
                                                             <div class="col-md-12" style="width: 100%;float: left;">
                                                                 <div class="row">
@@ -437,33 +451,21 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-sm-8" style="
-                                                                        width: 66.66666667%;
-                                                                        float: left;
-                                                                        ">
-                                                                        {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').': ', ['class' => 'control-label fontsize', 'style' => 'font-weight:bold;']) !!}
-                                                                    
-                                                                        {!! Form::label('', $service_request->additional_charges_title, ['class' => 'control-label lablemargin fontweight','id' => 'lbl_installation_charge']) !!}
-                                                                        
-                                                                    </div>
-
-                                                                    <div class="col-sm-4 lablemargin" style="
-                                                                            width: 33.33333333%;
-                                                                            float: right;
-                                                                        ">
+                                                                    <div class="col-sm-12">
                                                                         <div class="pull-left" style="width:50%;float:left;">
-                                                                        {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').': ', ['class' => 'control-label fontsize', 'style' => 'font-weight:bold;']) !!}
-
+                                                                        {!! Form::label('', $service_request->additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !!}
+                                                                    
                                                                         </div>
                                                                         <div class="pull-right" style="float:right;">
-                                                                            {{$service_request->additional_charges}}
+                                                                            {{number_format($service_request->additional_charges,2)}}
                                                                         
                                                                         </div>
                                                                     </div>
+                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                        @endif
                                                         <hr style="margin-top: 10px !important;
                                                                 margin-bottom: 10px !important;
                                                                 height: 0;
@@ -474,13 +476,18 @@
                                                                     {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 
                                                                     <!-- total amount value label -->
-                                                                    {!! Form::label('',$service_request->amount, ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount', 'style' => 'float:right;']) !!}
+                                                                    {!! Form::label('',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount', 'style' => 'float:right;']) !!}
                                                             </div>
                                                         </div>
                                                         
                                                     </div>
                                                 </div>
-
+                                                <div class="row">
+                                                    <div class="col-xs-12 form-group" style="width: 100%;float: left;height:30px;">
+                                                        
+                                                        
+                                                    </div>
+                                                </div>
                                                 <div class="row">
                                                     <div class="col-xs-12 form-group" style="width: 100%;float: left;">
                                                         {!! Form::label('note', trans('quickadmin.service-request.fields.note').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}

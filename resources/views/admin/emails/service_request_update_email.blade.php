@@ -17,7 +17,15 @@
                     </tr>
                     <tr>
                         <td class="bodyContent" bgcolor="#ffffff">
-                        {{$update_message}}
+                        
+
+                            <div>
+                                <h3>Service Request</h3>
+                                <span>{{$update_message}}</span>
+                            </div>
+                            <div>
+                                <a href="{{ route('admin.service_requests.show',[$service_request->id]) }}" class="btn btn-xs btn-primary">Click here for more detail</a>
+                            </div>
                         </td>
                     </tr>
 

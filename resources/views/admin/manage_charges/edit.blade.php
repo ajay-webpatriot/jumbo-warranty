@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('km_charge', trans('quickadmin.manage-charges.fields.km-charge').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::text('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('km_charge'))
                         <p class="help-block">

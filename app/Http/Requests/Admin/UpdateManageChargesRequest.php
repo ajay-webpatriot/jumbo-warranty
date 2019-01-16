@@ -24,7 +24,7 @@ class UpdateManageChargesRequest extends FormRequest
     {
         return [
             
-            'km_charge' => 'required',
+            'km_charge' => 'required|numeric',
             'status' => 'required',
         ];
     }

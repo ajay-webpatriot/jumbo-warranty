@@ -32,7 +32,7 @@
                                 <div class="col-md-6">
                                     {!! Form::label('service_type', trans('quickadmin.service-request.fields.service-type').': ', ['class' => 'control-label']) !!}
 
-                                    {!! Form::label('service_type', $service_request->service_type, ['class' => 'control-label fontweight']) !!}
+                                    {!! Form::label('service_type', ucfirst($service_request->service_type), ['class' => 'control-label fontweight']) !!}
 
 
                                     
@@ -40,7 +40,7 @@
 
                                 <div class="col-md-6">
                                     {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').': ', ['class' => 'control-label lablemargin','readonly' => '']) !!}
-                                    {!! Form::label('created_date', '08-01-2018', ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
+                                    {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
                                 </div>
                             </div>
                         </div>
@@ -103,8 +103,10 @@
                                             <div class="custAddress">
                                                 {{$service_request->customer->address_1}}
                                                 <br/>
+                                                @if(!empty($service_request->customer->address_2))
                                                 {{$service_request->customer->address_2}}
                                                 <br/>
+                                                @endif
                                                 {{$service_request->customer->city}}
                                                 <br/>
                                                 {{$service_request->customer->state." - ".$service_request->customer->zipcode}}
@@ -243,7 +245,7 @@
 
                                     <div class="form-group">
                                         {!! Form::label('bill_date', trans('quickadmin.service-request.fields.bill-date').': ', ['class' => 'control-label']) !!}
-                                        {!! Form::label('', $service_request->bill_date, ['class' => 'control-label fontweight']) !!}
+                                        {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->bill_date), ['class' => 'control-label fontweight']) !!}
                                     </div>
 
                                     <div class="form-group">
@@ -286,7 +288,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').': ', ['class' => 'control-label']) !!}
-                                    {!! Form::label('', $service_request->completion_date, ['class' => 'control-label fontweight']) !!}
+                                    {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->completion_date), ['class' => 'control-label fontweight']) !!}
                                 </div>
 
                                 <div class="col-md-6">
@@ -295,7 +297,7 @@
                                             {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin']) !!}
 
                                             <!-- service charge value label -->
-                                            {!! Form::label('', $service_request->service_charge, ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge']) !!}
+                                            {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge']) !!}
 
                                         </div>
                                     </div>
@@ -305,11 +307,11 @@
                                             {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').': ', ['class' => 'control-label lablemargin']) !!}
                                             
                                             <!-- installation charge value label -->
-                                            {!! Form::label('', $service_request->installation_charge, ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge']) !!}
+                                            {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge']) !!}
                                             
                                         </div>
                                     </div>
-
+                                    @if(!empty($additional_charge_title) && !empty($service_request->additional_charges))
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">
@@ -318,27 +320,22 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-sm-8">
-                                                    {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').': ', ['class' => 'control-label fontsize']) !!}
-                                                
-                                                    {!! Form::label('', $additional_charge_title, ['class' => 'control-label lablemargin fontweight','id' => 'lbl_installation_charge']) !!}
-                                                    
-                                                </div>
-
-                                                <div class="col-sm-4 lablemargin">
+                                                <div class="col-sm-12">
                                                     <div class="pull-left">
-                                                    {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').': ', ['class' => 'control-label fontsize']) !!}
-
+                                                    {!! Form::label('', $additional_charge_title.': ', ['class' => 'control-label fontsize fontweight']) !!}
                                                     </div>
                                                     <div class="pull-right">
-                                                        {{$service_request->additional_charges}}
+                                                        {{number_format($service_request->additional_charges,2)}}
                                                     
                                                     </div>
+                                                    
                                                 </div>
+
+                                                
                                             </div>
                                         </div>
                                     </div>
-
+                                    @endif
                                     <hr/>
 
                                     <div class="row">
@@ -346,13 +343,18 @@
                                                 {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
                                             
                                                 <!-- total amount value label -->
-                                                {!! Form::label('',$service_request->amount, ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
+                                                {!! Form::label('',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
                                         </div>
                                     </div>
                                     
                                 </div>
                             </div>
-
+                            <div class="row">
+                                <div class="col-xs-12 form-group" style="width: 100%;float: left;height:30px;">
+                                    
+                                    
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-xs-12 form-group">
                                     {!! Form::label('note', trans('quickadmin.service-request.fields.note').': ', ['class' => 'control-label']) !!}
@@ -393,7 +395,7 @@
                             <td field-key='serial_no'>{{ $no++ }}</td>
                             <td field-key='name'>{{ $service_request_log->action_made or '' }}</td>
                             <td field-key='email'>{{ $service_request_log->user->name or '' }}</td>
-                            <td field-key='created_at'>{{ $service_request_log->created_at or '' }}</td>
+                            <td field-key='created_at'>{{ (!empty($service_request_log->created_at))?App\Helpers\CommonFunctions::setDateTimeFormat($service_request_log->created_at) : '' }}</td>
                         </tr>
                     @endforeach
                 @else

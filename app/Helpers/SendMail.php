@@ -37,7 +37,6 @@ class SendMail
         $service_request['additional_charges']=$additional_charges;
         $service_request['additional_charges_title']=$additional_charge_title;
 
-        // echo "<pre>"; print_r ($service_request); echo "</pre>"; exit();
     		$company_admin= \App\User::where('company_id',$service_request->company_id)->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->get()->first();
     		$company_admin_email=$company_admin->email;
 
@@ -72,15 +71,15 @@ class SendMail
             $username ='hinal patel';
           }
           $to_email=$value;
-          $data=array('subject' => 'Request Creation Receive',
-                'user_name' => $username,
+          $data=array('subject' => 'New Service Request Created',
+                'user_name' => ucwords($username),
                 'service_request' => $service_request,
                 'receiver_email' => $value
                 );
       
           Mail::send('admin.emails.service_request_detail_email',$data, function ($message)  use ( $to_email,$username){
                     $message->to($to_email,$username)
-                      ->subject('Request Create Receive')
+                      ->subject('New Service Request Created')
                       ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
                       // here comes what you want
                       // ->setBody('Hi, welcome user!'); // assuming text/plain
@@ -94,13 +93,8 @@ class SendMail
   public static function sendRequestUpdateMail($request_id,$update_message){
 
         $service_request = ServiceRequest::findOrFail($request_id);
-        if($service_request['additional_charges'] == "Closed")
-        {
-          $company_admin= \App\User::where('company_id',$service_request->company_id)->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->get()->first();
-          $company_admin_email=$company_admin->email;
-        }
+        
        
-
         $customer= \App\Customer::where('id',$service_request->customer_id)->get()->first();
         $customer_email=$customer->email;
 
@@ -115,6 +109,21 @@ class SendMail
                               'customer' => $customer_email,
                               'other' => 'hinal.webpatriot@gmail.com'
                             );
+        if($service_request->status == "Closed")
+        {
+          $company_admin= \App\User::where('company_id',$service_request->company_id)->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->get()->first();
+          $company_admin_email=$company_admin->email;
+          $receiver_email['company_admin'] = $company_admin_email;
+
+          $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))->get()->first();
+          $service_center_admin_email=$service_center_admin->email;
+          $receiver_email['service_center_admin'] = $service_center_admin_email;
+
+          $technician= \App\User::where('id',$service_request->technician_id)->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->first();
+          $technician_email=$technician->email;
+          $receiver_email['technician'] = $technician_email;
+        }
+       
         foreach ($receiver_email as $key => $value) {
 
           if($key == 'admin')
@@ -124,6 +133,12 @@ class SendMail
           else if($key == 'company_admin'){
             $username = $company_admin->name;
           }
+          else if($key == 'service_center_admin'){
+            $username = $service_center_admin->name;
+          }
+          else if($key == 'technician'){
+            $username = $technician->name;
+          }
           else if($key == 'customer'){
             $username = $customer->firstname.' '.$customer->lastname;
           }
@@ -132,8 +147,8 @@ class SendMail
             $username ='hinal patel';
           }
           $to_email=$value;
-          $data=array('subject' => 'Request Status update',
-                'user_name' => $username,
+          $data=array('subject' => 'Service Request Status Changed',
+                'user_name' => ucwords($username),
                 'service_request' => $service_request,
                 'receiver_email' => $value,
                 'update_message' => $update_message
@@ -141,7 +156,7 @@ class SendMail
       
           Mail::send('admin.emails.service_request_update_email',$data, function ($message)  use ( $to_email,$username){
                     $message->to($to_email,$username)
-                      ->subject('Request Create Receive')
+                      ->subject('Service Request Status Changed')
                       ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
                       // here comes what you want
                       // ->setBody('Hi, welcome user!'); // assuming text/plain

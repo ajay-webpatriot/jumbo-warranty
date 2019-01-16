@@ -24,7 +24,8 @@ class StoreProductsRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:products,name,'.$this->route('product'),
-            'price' => 'required',
+            'price' => 'required|numeric',
+            'category_id' => 'required',
             'status' => 'required',
         ];
     }

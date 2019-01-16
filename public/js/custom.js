@@ -70,7 +70,25 @@ $(document).ready(function(){
 	       	}
 	    });
 	});
+	$(document).on('submit','#formServiceRequest',function (){
 
+		// validate additional charges title and amount on form submit in add/edit service request page
+		var status = true;
+		$("#additional_charges_title").next(".help-block").html("");
+		$("#additional_charges").next(".help-block").html("");
+		if($("#additional_charges_title").val().trim() != "" && $("#additional_charges").val().trim() == "")
+		{
+			$("#additional_charges").next(".help-block").html("The additional charges field is required when additional charges title is present.");
+			status = false;
+		}
+		else if($("#additional_charges_title").val().trim() == "" && $("#additional_charges").val().trim() != "")
+        {
+        	$("#additional_charges_title").next(".help-block").html("The additional charges title field is required when additional charges is present.");
+        	status = false;
+        }
+        
+        return status;
+	});
 });
 function requestCharge(ele) {
 
@@ -119,10 +137,12 @@ function requestCharge(ele) {
 	       	success:function(data) {
 	       		
 	       		$("#installation_charge").val(data.installation_charge);
-	       		$("#lbl_installation_charge").html(data.installation_charge);
 	       		
+	       		$("#lbl_installation_charge").html((parseFloat(data.installation_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+	       		 
 	       		$("#service_charge").val(data.service_charge);
-	       		$("#lbl_service_charge").html(data.service_charge);
+
+	       		$("#lbl_service_charge").html((parseFloat(data.service_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') );
 
 	       		var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
 	       		var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
@@ -130,7 +150,7 @@ function requestCharge(ele) {
 
 	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+(km_distance * km_charge)).toFixed(2);
 	          	$("#amount").val(total_amount);
-	          	$("#lbl_total_amount").html(total_amount);
+	          	$("#lbl_total_amount").html((parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
 	          	$("#status").html(data.statusOptions);
 	       	}
@@ -150,5 +170,30 @@ function totalServiceAmount() {
 	var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge)).toFixed(2);
   	
   	$("#amount").val(total_amount);
-  	$("#lbl_total_amount").html(total_amount);
+  	$("#lbl_total_amount").html((parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+}
+
+function checkIsDecimalNumber(ele, evt) {
+	// check amount field to allow number and single decimal point
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    
+    if (charCode == 46) {
+        //Check if the text already contains the . character
+
+        console.log(ele.value);
+        if (ele.value.indexOf('.') === -1) {
+        	return true;
+        } else {
+            return false;
+        }
+    } else {
+        if (charCode > 31
+             && (charCode < 48 || charCode > 57))
+        {
+        	// check if text values is character
+        	return false;
+        }
+            
+    }
+    return true;
 }
