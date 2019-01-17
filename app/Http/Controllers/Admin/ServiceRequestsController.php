@@ -40,6 +40,51 @@ class ServiceRequestsController extends Controller
      */
     public function index()
     {
+        // if (! Gate::allows('service_request_access')) {
+        //     return abort(401);
+        // }
+        
+
+        // if (request('show_deleted') == 1) {
+        //     if (! Gate::allows('service_request_delete')) {
+        //         return abort(401);
+        //     }
+        //     $service_requests = ServiceRequest::onlyTrashed()->get();
+        // } else {
+        //     if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+        //     }
+        //     else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+        //     }
+        //     else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
+        //     }
+        //     else
+        //     {
+        //         $service_requests = ServiceRequest::all();
+        //     }
+            
+        // }
+
+        // echo "<pre>"; print_r ($service_requests); echo "</pre>"; exit();
+        return view('admin.service_requests.index');
+        // return view('admin.service_requests.index', compact('service_requests'));
+
+        // $data=array('subject' => 'Request Creation Receive',
+        //             'user_name' => 'Hinal patel'
+
+        //             );
+        // $subject="123";
+        // $user_name="1my name 23";
+        // return view('admin.emails.service_request', compact('subject','user_name'));
+    }
+
+    public function DataTableServiceRequestAjax(Request $request)
+    {
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
@@ -53,7 +98,7 @@ class ServiceRequestsController extends Controller
         } else {
             if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             {
-                $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+                $service_requests = ServiceRequest::where('ersvice_center_id',auth()->user()->service_center_id)->get();
             }
             else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
@@ -69,16 +114,24 @@ class ServiceRequestsController extends Controller
             }
             
         }
-        // echo "<pre>"; print_r ($service_requests); echo "</pre>"; exit();
-        return view('admin.service_requests.index', compact('service_requests'));
 
-        // $data=array('subject' => 'Request Creation Receive',
-        //             'user_name' => 'Hinal patel'
+        $tableField = [];
+        
+        if(!empty($service_requests)){
+            foreach ($service_requests as $key => $SingleServiceRequest) {
+                $tableField['company_name'] =$SingleServiceRequest->company->name;
+                $tableField['customer'] = $SingleServiceRequest->customer->firstname;
+                $tableField['service_type'] =$SingleServiceRequest->service_type ;
+                $tableField['service_center'] =$SingleServiceRequest->service_center->name ;
+                $tableField['product'] =$SingleServiceRequest->product->name;
+                $tableField['amount'] =$SingleServiceRequest->amount;
+                $tableField['request_status'] =$SingleServiceRequest->status;
+               
+            
+            }
 
-        //             );
-        // $subject="123";
-        // $user_name="1my name 23";
-        // return view('admin.emails.service_request', compact('subject','user_name'));
+        }
+        // return json_encode($service_requests);
     }
 
     /**

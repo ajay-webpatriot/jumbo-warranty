@@ -95,5 +95,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::get('/getCompanyDetails','Admin\ServiceRequestsController@getCompanyDetails');
     Route::get('/getCustomerAddress','Admin\CustomersController@getCustomerAddress');
 
+    //service request ajax
+    Route::get('/DataTableServiceRequestAjax','Admin\ServiceRequestsController@DataTableServiceRequestAjax');
+
 });
   
