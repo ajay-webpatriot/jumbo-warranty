@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('credit', trans('quickadmin.company.fields.credit').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('credit', old('credit'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::text('credit', old('credit'), ['class' => 'form-control', 'placeholder' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('credit'))
                         <p class="help-block">
@@ -57,7 +57,7 @@
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('installation_charge', trans('quickadmin.company.fields.installation-charge').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::text('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('installation_charge'))
                         <p class="help-block">

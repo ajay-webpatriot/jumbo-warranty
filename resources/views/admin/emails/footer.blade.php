@@ -47,7 +47,7 @@
 
 <div class="copyright">
  <div class="wraper">
-  <p><span>Copyright 2015</span>All rights reserved by JUMBOWARRANTY</p>
+  <p><span>Copyright 2015 | </span>All rights reserved by <a target="_blank" href="{{ config('app.url')}}">JUMBOWARRANTY</a></p>
  </div>
 </div>
 </center>

@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('service_charge', trans('quickadmin.categories.fields.service-charge').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::text('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('service_charge'))
                         <p class="help-block">
@@ -50,38 +50,6 @@
             
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Products
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>@lang('quickadmin.products.fields.name')</th>
-                        <th>@lang('quickadmin.products.fields.price')</th>
-                        
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody id="products">
-                    @forelse(old('products', []) as $index => $data)
-                        @include('admin.categories.products_row', [
-                            'index' => $index
-                        ])
-                    @empty
-                        @foreach($category->products as $item)
-                            @include('admin.categories.products_row', [
-                                'index' => 'id-' . $item->id,
-                                'field' => $item
-                            ])
-                        @endforeach
-                    @endforelse
-                </tbody>
-            </table>
-            <a href="#" class="btn btn-success pull-right add-new">@lang('quickadmin.qa_add_new')</a>
-        </div>
-    </div>
 
     {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
     <a href="{{ route('admin.categories.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
@@ -91,7 +59,7 @@
 @section('javascript')
     @parent
 
-    <script type="text/html" id="products-template">
+    <!-- <script type="text/html" id="products-template">
         @include('admin.categories.products_row',
                 [
                     'index' => '_INDEX_',
@@ -114,5 +82,5 @@
             row.remove();
             return false;
         });
-        </script>
+        </script> -->
 @stop

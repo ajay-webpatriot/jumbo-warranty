@@ -166,42 +166,7 @@
             
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Service request
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>@lang('quickadmin.service-request.fields.make')</th>
-                        <th>@lang('quickadmin.service-request.fields.model-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-date')</th>
-                        <th>@lang('quickadmin.service-request.fields.serial-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.purchase-from')</th>
-                        <th>@lang('quickadmin.service-request.fields.adavance-amount')</th>
-                        <th>@lang('quickadmin.service-request.fields.service-charge')</th>
-                        <th>@lang('quickadmin.service-request.fields.service-tag')</th>
-                        <th>@lang('quickadmin.service-request.fields.note')</th>
-                        <th>@lang('quickadmin.service-request.fields.additional-charges')</th>
-                        <th>@lang('quickadmin.service-request.fields.amount')</th>
-                        
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody id="service-request">
-                    @foreach(old('service_requests', []) as $index => $data)
-                        @include('admin.users.service_requests_row', [
-                            'index' => $index
-                        ])
-                    @endforeach
-                </tbody>
-            </table>
-            <a href="#" class="btn btn-success pull-right add-new">@lang('quickadmin.qa_add_new')</a>
-        </div>
-    </div>
-
+    
     {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
     <a href="{{ route('admin.technicians.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
@@ -209,7 +174,7 @@
 
 @section('javascript')
     @parent
-   <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
+   <!-- <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
    <script src="/adminlte/js/mapInput.js"></script>
 
     <script type="text/html" id="service-request-template">
@@ -236,5 +201,5 @@
             return false;
         });
 
-        </script>
+        </script> -->
 @stop

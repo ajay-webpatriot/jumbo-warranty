@@ -18,7 +18,7 @@
     </style>
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     
-    {!! Form::model($service_request, ['method' => 'PUT', 'route' => ['admin.service_requests.update', $service_request->id]]) !!}
+    {!! Form::model($service_request, ['method' => 'PUT', 'route' => ['admin.service_requests.update', $service_request->id], 'id' => 'formServiceRequest']) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -45,7 +45,7 @@
 
                                 <div class="col-md-6 form-group">
                                     {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').':', ['class' => 'control-label lablemargin','readonly' => '']) !!}
-                                    {!! Form::label('created_date', '08-01-2018', ['class' => 'control-label lablemargin','readonly' => '']) !!}
+                                    {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
                                 </div>
                             </div>
                         </div>
@@ -148,8 +148,10 @@
                                                 @if(count($custAddressData) > 0)
                                                 {{$custAddressData->address_1}}
                                                 <br/>
-                                                {{$custAddressData->address_2}}
+                                                @if(!empty($service_request->customer->address_2))
+                                                {{$service_request->customer->address_2}}
                                                 <br/>
+                                                @endif
                                                 {{$custAddressData->city}}
                                                 <br/>
                                                 {{$custAddressData->state." - ".$custAddressData->zipcode}}
@@ -363,7 +365,13 @@
 
                                     <div class="form-group">
                                         {!! Form::label('bill_date', trans('quickadmin.service-request.fields.bill-date').'', ['class' => 'control-label']) !!}
-                                        {!! Form::text('bill_date',  $service_request->bill_date, ['class' => 'form-control', 'placeholder' => '']) !!}
+                                        
+                                        <div class="input-group">
+                                        {!! Form::text('bill_date', old('bill_date'), ['class' => 'form-control date', 'placeholder' => '']) !!}
+                                        <label class="input-group-addon btn" for="completion_date">
+                                            <span class="fa fa-calendar"></span>
+                                        </label>
+                                    </div>
                                         <p class="help-block"></p>
                                         @if($errors->has('bill_date'))
                                             <p class="help-block">
@@ -464,7 +472,7 @@
                                             {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label lablemargin']) !!}
 
                                             <!-- service charge value label -->
-                                            {!! Form::label('', $service_request->service_charge, ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !!}
+                                            {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !!}
 
                                             <!-- service charge hidden field -->
                                             {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
@@ -482,7 +490,7 @@
                                             {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').':', ['class' => 'control-label lablemargin']) !!}
                                             
                                             <!-- installation charge value label -->
-                                            {!! Form::label('', $service_request->installation_charge, ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
+                                            {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
                                             
                                             <!-- installation charge hidden field -->
                                             {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
@@ -506,11 +514,11 @@
                                                 <div class="col-sm-8">
                                                     {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').'', ['class' => 'control-label fontweight fontsize']) !!}
                                                 
-                                                    {!! Form::text('additional_charges_title',$additional_charge_title, ['class' => 'form-control', 'placeholder' => 'Charges for']) !!}
+                                                    {!! Form::text('additional_charges_title',$additional_charge_title, ['class' => 'form-control', 'placeholder' => 'Charges for', 'id' => 'additional_charges_title']) !!}
                                                         <p class="help-block"></p>
-                                                        @if($errors->has('additional_charges'))
+                                                        @if($errors->has('additional_charges_title'))
                                                             <p class="help-block">
-                                                                {{ $errors->first('additional_charges') }}
+                                                                {{ $errors->first('additional_charges_title') }}
                                                             </p>
                                                         @endif
                                                 </div>
@@ -518,7 +526,7 @@
                                                 <div class="col-sm-4">
                                                     {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !!}
 
-                                                    {!! Form::text('additional_charges', $service_request->additional_charges, ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                    {!! Form::text('additional_charges', $service_request->additional_charges, ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
 
                                                     <p class="help-block"></p>
                                                     @if($errors->has('additional_charges'))
@@ -538,7 +546,7 @@
                                             {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
 
                                             <!-- total amount value label -->
-                                            {!! Form::label('totalamount',$service_request->amount, ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
+                                            {!! Form::label('totalamount',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
 
                                             <!-- total amount hidden field -->
                                             {!! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
@@ -627,7 +635,7 @@
                                     <td field-key='serial_no'>{{ $no++ }}</td>
                                     <td field-key='name'>{{ $service_request_log->action_made or '' }}</td>
                                     <td field-key='email'>{{ $service_request_log->user->name or '' }}</td>
-                                    <td field-key='created_at'>{{ $service_request_log->created_at or '' }}</td>
+                                    <td field-key='created_at'>{{ (!empty($service_request_log->created_at))?App\Helpers\CommonFunctions::setDateTimeFormat($service_request_log->created_at) : '' }}</td>
                                 </tr>
                             @endforeach
                         @else

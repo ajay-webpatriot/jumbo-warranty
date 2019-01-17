@@ -76,9 +76,9 @@ class CategoriesController extends Controller
         }
         $category = Category::create($request->all());
 
-        foreach ($request->input('products', []) as $data) {
-            $category->products()->create($data);
-        }
+        // foreach ($request->input('products', []) as $data) {
+        //     $category->products()->create($data);
+        // }
 
 
         return redirect()->route('admin.categories.index');
@@ -117,23 +117,23 @@ class CategoriesController extends Controller
         $category = Category::findOrFail($id);
         $category->update($request->all());
 
-        $products           = $category->products;
-        $currentProductData = [];
-        foreach ($request->input('products', []) as $index => $data) {
-            if (is_integer($index)) {
-                $category->products()->create($data);
-            } else {
-                $id                          = explode('-', $index)[1];
-                $currentProductData[$id] = $data;
-            }
-        }
-        foreach ($products as $item) {
-            if (isset($currentProductData[$item->id])) {
-                $item->update($currentProductData[$item->id]);
-            } else {
-                $item->delete();
-            }
-        }
+        // $products           = $category->products;
+        // $currentProductData = [];
+        // foreach ($request->input('products', []) as $index => $data) {
+        //     if (is_integer($index)) {
+        //         $category->products()->create($data);
+        //     } else {
+        //         $id                          = explode('-', $index)[1];
+        //         $currentProductData[$id] = $data;
+        //     }
+        // }
+        // foreach ($products as $item) {
+        //     if (isset($currentProductData[$item->id])) {
+        //         $item->update($currentProductData[$item->id]);
+        //     } else {
+        //         $item->delete();
+        //     }
+        // }
 
 
         return redirect()->route('admin.categories.index');

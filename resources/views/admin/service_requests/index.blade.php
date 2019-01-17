@@ -51,7 +51,84 @@
                         @endif
                     </tr>
                 </thead>
-			</table>
+
+                <tbody>
+                    @if (count($service_requests) > 0)
+                        @foreach ($service_requests as $service_request)
+                            <tr data-entry-id="{{ $service_request->id }}">
+                                @can('service_request_delete')
+                                    @if ( request('show_deleted') != 1 )<td></td>@endif
+                                @endcan
+
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                <td field-key='company'>{{ $service_request->company->name or '' }}</td>
+                                @endif
+                                <td field-key='customer'>{{ $service_request->customer->firstname or '' }}</td>
+                                <td field-key='service_type'>{{ $service_request->service_type }}</td>
+
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                <td field-key='service_center'>{{ $service_request->service_center->name or '' }}
+                                    @if($service_request->technician_id != "")
+                                        <br/>
+                                        (
+                                            {{ $service_request->technician->name or '' }} 
+                                        )
+                                    @endif
+                                </td>
+                                @endif
+                                <!-- <td field-key='technician'>{{ $service_request->technician->name or '' }}</td> -->
+                                <td field-key='product'>{{ $service_request->product->name or '' }}</td>
+                                <td field-key='amount'>{{ number_format($service_request->amount,2) }}</td>
+                                <td field-key='status'>{{ $service_request->status }}</td>
+                                @if( request('show_deleted') == 1 )
+                                <td>
+                                    @can('service_request_delete')
+                                                                        {!! Form::open(array(
+                                        'style' => 'display: inline-block;',
+                                        'method' => 'POST',
+                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
+                                        'route' => ['admin.service_requests.restore', $service_request->id])) !!}
+                                    {!! Form::submit(trans('quickadmin.qa_restore'), array('class' => 'btn btn-xs btn-success')) !!}
+                                    {!! Form::close() !!}
+                                @endcan
+                                    @can('service_request_delete')
+                                                                        {!! Form::open(array(
+                                        'style' => 'display: inline-block;',
+                                        'method' => 'DELETE',
+                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
+                                        'route' => ['admin.service_requests.perma_del', $service_request->id])) !!}
+                                    {!! Form::submit(trans('quickadmin.qa_permadel'), array('class' => 'btn btn-xs btn-danger')) !!}
+                                    {!! Form::close() !!}
+                                @endcan
+                                </td>
+                                @else
+                                <td>
+                                    @can('service_request_view')
+                                    <a href="{{ route('admin.service_requests.show',[$service_request->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
+                                    @endcan
+                                    @can('service_request_edit')
+                                    <a href="{{ route('admin.service_requests.edit',[$service_request->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
+                                    @endcan
+                                    @can('service_request_delete')
+{!! Form::open(array(
+                                        'style' => 'display: inline-block;',
+                                        'method' => 'DELETE',
+                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
+                                        'route' => ['admin.service_requests.destroy', $service_request->id])) !!}
+                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
+                                    {!! Form::close() !!}
+                                    @endcan
+                                </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="32">@lang('quickadmin.qa_no_entries_in_table')</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
         </div>
     </div>
 @stop

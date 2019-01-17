@@ -78,9 +78,9 @@ class TechniciansController extends Controller
         $data['role_id'] = config('constants.TECHNICIAN_ROLE_ID');
         $user = User::create($data);
 
-        foreach ($request->input('service_requests', []) as $data) {
-            $user->service_requests()->create($data);
-        }
+        // foreach ($request->input('service_requests', []) as $data) {
+        //     $user->service_requests()->create($data);
+        // }
 
 
         return redirect()->route('admin.technicians.index');
@@ -124,23 +124,23 @@ class TechniciansController extends Controller
         $user = User::findOrFail($id);
         $user->update($request->all());
 
-        $serviceRequests           = $user->service_requests;
-        $currentServiceRequestData = [];
-        foreach ($request->input('service_requests', []) as $index => $data) {
-            if (is_integer($index)) {
-                $user->service_requests()->create($data);
-            } else {
-                $id                          = explode('-', $index)[1];
-                $currentServiceRequestData[$id] = $data;
-            }
-        }
-        foreach ($serviceRequests as $item) {
-            if (isset($currentServiceRequestData[$item->id])) {
-                $item->update($currentServiceRequestData[$item->id]);
-            } else {
-                $item->delete();
-            }
-        }
+        // $serviceRequests           = $user->service_requests;
+        // $currentServiceRequestData = [];
+        // foreach ($request->input('service_requests', []) as $index => $data) {
+        //     if (is_integer($index)) {
+        //         $user->service_requests()->create($data);
+        //     } else {
+        //         $id                          = explode('-', $index)[1];
+        //         $currentServiceRequestData[$id] = $data;
+        //     }
+        // }
+        // foreach ($serviceRequests as $item) {
+        //     if (isset($currentServiceRequestData[$item->id])) {
+        //         $item->update($currentServiceRequestData[$item->id]);
+        //     } else {
+        //         $item->delete();
+        //     }
+        // }
 
         return redirect()->route('admin.technicians.index');
     }

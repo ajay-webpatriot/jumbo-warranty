@@ -80,6 +80,29 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
+                    {!! Form::label('email', trans('quickadmin.customers.fields.email').'*', ['class' => 'control-label']) !!}
+                    {!! Form::email('email', old('email'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('email'))
+                        <p class="help-block">
+                            {{ $errors->first('email') }}
+                        </p>
+                    @endif
+                </div>
+                
+                <div class="col-xs-6">
+                    {!! Form::label('state', trans('quickadmin.customers.fields.state').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('state', old('state'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('state'))
+                        <p class="help-block">
+                            {{ $errors->first('state') }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
                     {!! Form::label('company_id', trans('quickadmin.customers.fields.company').'*', ['class' => 'control-label']) !!}
                     {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                     <p class="help-block"></p>
@@ -90,12 +113,12 @@
                     @endif
                 </div>
                 <div class="col-xs-6">
-                    {!! Form::label('state', trans('quickadmin.customers.fields.state').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('state', old('state'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::label('zipcode', trans('quickadmin.customers.fields.zipcode').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('state'))
+                    @if($errors->has('zipcode'))
                         <p class="help-block">
-                            {{ $errors->first('state') }}
+                            {{ $errors->first('zipcode') }}
                         </p>
                     @endif
                 </div>
@@ -111,52 +134,7 @@
                         </p>
                     @endif
                 </div>
-                <div class="col-xs-6">
-                    {!! Form::label('zipcode', trans('quickadmin.customers.fields.zipcode').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('zipcode'))
-                        <p class="help-block">
-                            {{ $errors->first('zipcode') }}
-                        </p>
-                    @endif
-                </div>
             </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Service request
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>@lang('quickadmin.service-request.fields.make')</th>
-                        <th>@lang('quickadmin.service-request.fields.model-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.bill-date')</th>
-                        <th>@lang('quickadmin.service-request.fields.serial-no')</th>
-                        <th>@lang('quickadmin.service-request.fields.purchase-from')</th>
-                        <th>@lang('quickadmin.service-request.fields.adavance-amount')</th>
-                        <th>@lang('quickadmin.service-request.fields.service-charge')</th>
-                        <th>@lang('quickadmin.service-request.fields.service-tag')</th>
-                        <th>@lang('quickadmin.service-request.fields.note')</th>
-                        <th>@lang('quickadmin.service-request.fields.additional-charges')</th>
-                        <th>@lang('quickadmin.service-request.fields.amount')</th>
-                        
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody id="service-request">
-                    @foreach(old('service_requests', []) as $index => $data)
-                        @include('admin.customers.service_requests_row', [
-                            'index' => $index
-                        ])
-                    @endforeach
-                </tbody>
-            </table>
-            <a href="#" class="btn btn-success pull-right add-new">@lang('quickadmin.qa_add_new')</a>
         </div>
     </div>
 
@@ -168,7 +146,7 @@
 @section('javascript')
     @parent
 
-    <script type="text/html" id="service-request-template">
+    <!-- <script type="text/html" id="service-request-template">
         @include('admin.customers.service_requests_row',
                 [
                     'index' => '_INDEX_',
@@ -191,5 +169,5 @@
             row.remove();
             return false;
         });
-        </script>
+        </script> -->
 @stop

@@ -33,6 +33,8 @@ class StoreServiceRequestsRequest extends FormRequest
             'completion_date' => 'required|date_format:'.config('app.date_format'),
             'parts.*' => 'exists:product_parts,id',
             'status' => 'required',
+            'additional_charges_title' => 'required_with:additional_charges',
+            'additional_charges' => 'required_with:additional_charges_title'
         ];
     }
 }

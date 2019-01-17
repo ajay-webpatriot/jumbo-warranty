@@ -23,12 +23,11 @@ class UpdateCategoriesRequest extends FormRequest
     public function rules()
     {
         return [
-            
             'name' => 'required|unique:categories,name,'.$this->route('category'),
-            'service_charge' => 'required',
+            'service_charge' => 'required|numeric',
             'status' => 'required',
-            'products.*.name' => 'required|unique:products,name,'.$this->route('product'),
-            'products.*.price' => 'required',
+            // 'products.*.name' => 'required|unique:products,name,'.$this->route('product'),
+            // 'products.*.price' => 'required',
         ];
     }
 }

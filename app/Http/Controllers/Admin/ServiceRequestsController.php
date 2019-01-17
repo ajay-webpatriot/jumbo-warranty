@@ -40,39 +40,39 @@ class ServiceRequestsController extends Controller
      */
     public function index()
     {
-        // if (! Gate::allows('service_request_access')) {
-        //     return abort(401);
-        // }
+        if (! Gate::allows('service_request_access')) {
+            return abort(401);
+        }
         
 
-        // if (request('show_deleted') == 1) {
-        //     if (! Gate::allows('service_request_delete')) {
-        //         return abort(401);
-        //     }
-        //     $service_requests = ServiceRequest::onlyTrashed()->get();
-        // } else {
-        //     if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-        //     {
-        //         $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
-        //     }
-        //     else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
-        //     {
-        //         $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
-        //     }
-        //     else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-        //     {
-        //         $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
-        //     }
-        //     else
-        //     {
-        //         $service_requests = ServiceRequest::all();
-        //     }
+        if (request('show_deleted') == 1) {
+            if (! Gate::allows('service_request_delete')) {
+                return abort(401);
+            }
+            $service_requests = ServiceRequest::onlyTrashed()->get();
+        } else {
+            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+            {
+                $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+            }
+            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+            {
+                $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+            }
+            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
+            }
+            else
+            {
+                $service_requests = ServiceRequest::all();
+            }
             
-        // }
+        }
 
         // echo "<pre>"; print_r ($service_requests); echo "</pre>"; exit();
-        return view('admin.service_requests.index');
-        // return view('admin.service_requests.index', compact('service_requests'));
+        // return view('admin.service_requests.index');
+        return view('admin.service_requests.index', compact('service_requests'));
 
         // $data=array('subject' => 'Request Creation Receive',
         //             'user_name' => 'Hinal patel'
@@ -88,7 +88,7 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
-        
+        // SendMailHelper::sendRequestCreationMail(5);
 
         if (request('show_deleted') == 1) {
             if (! Gate::allows('service_request_delete')) {
@@ -179,9 +179,10 @@ class ServiceRequestsController extends Controller
         }
 
         // calculate total amount work start
-        $total_amount=$request['installation_charge']+$request['service_charge']+($request['additional_charges'] == "")?0:$request['additional_charges'];
+        $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
+
         // convert to json
-        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => $request['additional_charges']));
+        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
         $request['km_distance']=0;
         $request['km_charge']=0;
         // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
@@ -225,7 +226,7 @@ class ServiceRequestsController extends Controller
 
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
-        SendMailHelper::sendRequestCreationMail($service_request);
+        SendMailHelper::sendRequestCreationMail($service_request->id);
 
         // service request log for new request
         $insertServiceRequestLogArr = array(
@@ -281,10 +282,17 @@ class ServiceRequestsController extends Controller
                     $enum_priority = ServiceRequest::$enum_priority;
                     $enum_is_item_in_warrenty = ServiceRequest::$enum_is_item_in_warrenty;
                     $enum_mop = ServiceRequest::$enum_mop;
-                    $enum_status = ServiceRequest::$enum_status;
+                    // $enum_status = ServiceRequest::$enum_status;
             
         $service_request = ServiceRequest::findOrFail($id);
-        
+        if($service_request['service_type'] == "repair")
+        {
+            $enum_status = ServiceRequest::$enum_repair_status;
+        }
+        else
+        {
+            $enum_status = ServiceRequest::$enum_installation_status;
+        }
         $additional_charge_array=json_decode($service_request['additional_charges']);
         $additional_charge_title="";
         $additional_charges="";
@@ -373,6 +381,9 @@ class ServiceRequestsController extends Controller
         }
 
         return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title'))->with('no', 1);
+        // $user_name=ucwords('user name');
+        // $subject='sub';
+        // return view('admin.emails.service_request_detail_email', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);
     }
 
     /**
@@ -504,10 +515,10 @@ class ServiceRequestsController extends Controller
         }  
 
         // calculate total amount work start
-        $total_amount=$request['installation_charge']+$request['service_charge']+$request['additional_charges'];
+        $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
 
         // convert to json
-        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => $request['additional_charges']));
+        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
         $request['km_distance']=0;
         $request['km_charge']=0;
         if($request['service_type'] == 'repair')
@@ -539,13 +550,24 @@ class ServiceRequestsController extends Controller
                 }
             } 
         }
+
+
         $request['amount']=$total_amount;  
         // calculate total amount work end
 
+        $request_status=$service_request->status;
+        
 
         $service_request->update($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
-
+        if($request_status != $request['status'])
+        {
+            //send mail on every status change
+            $msg='Status is changed from '.$request_status.' to '.$request['status'].'.';
+            // echo $id;exit;
+            SendMailHelper::sendRequestUpdateMail($id,$msg);
+        }
+        
         if($request['status'] == "Closed")
         {
             // return $this->createReceiptPDF($request->all());
@@ -553,7 +575,7 @@ class ServiceRequestsController extends Controller
         }
         else
         {
-             return redirect()->route('admin.service_requests.index');
+            return redirect()->route('admin.service_requests.index');
         }
         // return redirect()->route('admin.service_requests.index');
     }
@@ -708,6 +730,7 @@ class ServiceRequestsController extends Controller
             $compCustHTML="<div style='float:left;width:50%;'>
                     <b>Company: ".$companyDetail->name."</b>
                     <div>".$companyDetail->address_1."</div>
+                    <div>".$companyDetail->address_2."</div>
                     <div>".$companyDetail->city.",".$companyDetail->state." - ".$companyDetail->zipcode."</div>
                     <b>Customer: ".$customerDetail->firstname." ".$customerDetail->lastname."</b>
                     <div>".$customerDetail->address_1."</div>
@@ -720,6 +743,7 @@ class ServiceRequestsController extends Controller
             $centerHTML="<div style='float:left;width:50%;'>
                             <b>Service Center: ".$centerDetail->name."</b>
                             <div>".$centerDetail->address_1."</div>
+                            <div>".$centerDetail->address_2."</div>
                             <div>".$centerDetail->city.",".$centerDetail->state." - ".$centerDetail->zipcode."</div>
                             ".$technician."
                         </div>";
@@ -728,7 +752,7 @@ class ServiceRequestsController extends Controller
 
             $service_charge=($request['service_charge'] != "" && $request['service_charge'] != 0)? "<tr><td colspan='2'>Service Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['service_charge'],2)."</td></tr>":"";
 
-            $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".number_format($request['km_distance'],2)."</td></tr>":"";
+            $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".$request['km_distance']."</td></tr>":"";
 
             $km_charge="";
             if($request['km_distance'] != "" && $request['km_distance'] != 0)
@@ -761,7 +785,7 @@ class ServiceRequestsController extends Controller
                                     <tr>
                                         <td>".$productDetail->name."</td>
                                         <td>".$productDetail->category->name."</td>
-                                        <td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".$productDetail->price."</td>
+                                        <td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($productDetail->price,2)."</td>
                                     </tr>
                                     <tr>
                                     <td style='border:0;'></td>
@@ -830,15 +854,35 @@ class ServiceRequestsController extends Controller
 
         $data['installation_charge']=0;
         $data['service_charge']=0;
-        if($details['serviceType'] == "installation" && $details['companyId'])
+        $data['statusOptions']="";
+        if($details['serviceType'] == "installation")
         {
-            $companyDetails=\App\Company::findOrFail($details['companyId']);
-            $data['installation_charge']=$companyDetails->installation_charge;
+            $enum_status = ServiceRequest::$enum_installation_status;
+            foreach($enum_status as $key => $value)
+            {
+                $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
+            } 
+            if($details['companyId'])
+            {
+                $companyDetails=\App\Company::findOrFail($details['companyId']);
+                $data['installation_charge']=$companyDetails->installation_charge;
+            }
+            
+
         }
-        else if($details['serviceType'] == "repair" && $details['productId'])
+        else if($details['serviceType'] == "repair")
         {
-            $productDetails=\App\Product::findOrFail($details['productId']);
-            $data['service_charge']=$productDetails->category->service_charge;
+            $enum_status = ServiceRequest::$enum_repair_status;
+            foreach($enum_status as $key => $value)
+            {
+                $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
+            } 
+            if($details['productId'])
+            {
+                $productDetails=\App\Product::findOrFail($details['productId']);
+                $data['service_charge']=$productDetails->category->service_charge;
+            }
+            
             
         }
         

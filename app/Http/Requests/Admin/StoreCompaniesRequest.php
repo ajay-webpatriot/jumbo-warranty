@@ -24,7 +24,7 @@ class StoreCompaniesRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:companies,name,'.$this->route('company'),
-            'installation_charge' => 'required',
+            'installation_charge' => 'required|numeric',
             'address_1' => 'required',
             'city' => 'required',
             'state' => 'required',

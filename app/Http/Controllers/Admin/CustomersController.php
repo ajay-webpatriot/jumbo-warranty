@@ -107,9 +107,9 @@ class CustomersController extends Controller
 
         $customer = Customer::create($request->all());
 
-        foreach ($request->input('service_requests', []) as $data) {
-            $customer->service_requests()->create($data);
-        }
+        // foreach ($request->input('service_requests', []) as $data) {
+        //     $customer->service_requests()->create($data);
+        // }
 
 
         return redirect()->route('admin.customers.index');
@@ -172,23 +172,23 @@ class CustomersController extends Controller
         // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
         $customer->update($request->all());
 
-        $serviceRequests           = $customer->service_requests;
-        $currentServiceRequestData = [];
-        foreach ($request->input('service_requests', []) as $index => $data) {
-            if (is_integer($index)) {
-                $customer->service_requests()->create($data);
-            } else {
-                $id                          = explode('-', $index)[1];
-                $currentServiceRequestData[$id] = $data;
-            }
-        }
-        foreach ($serviceRequests as $item) {
-            if (isset($currentServiceRequestData[$item->id])) {
-                $item->update($currentServiceRequestData[$item->id]);
-            } else {
-                $item->delete();
-            }
-        }
+        // $serviceRequests           = $customer->service_requests;
+        // $currentServiceRequestData = [];
+        // foreach ($request->input('service_requests', []) as $index => $data) {
+        //     if (is_integer($index)) {
+        //         $customer->service_requests()->create($data);
+        //     } else {
+        //         $id                          = explode('-', $index)[1];
+        //         $currentServiceRequestData[$id] = $data;
+        //     }
+        // }
+        // foreach ($serviceRequests as $item) {
+        //     if (isset($currentServiceRequestData[$item->id])) {
+        //         $item->update($currentServiceRequestData[$item->id]);
+        //     } else {
+        //         $item->delete();
+        //     }
+        // }
 
 
         return redirect()->route('admin.customers.index');
@@ -299,7 +299,12 @@ class CustomersController extends Controller
             // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
             if(count($customer) > 0)
             {
-                $data['address'].=$customer->address_1."<br/>".$customer->address_2."<br/>".$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
+                $data['address'].=$customer->address_1."<br/>";
+                if(!empty($customer->address_2))
+                {
+                    $data['address'].=$customer->address_2."<br/>";
+                }
+                $data['address'].=$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
             }
         }
         echo json_encode($data);
