@@ -34,14 +34,16 @@
                         @endcan
 
                         <th>@lang('quickadmin.service-center.fields.name')</th>
-                        <th>@lang('quickadmin.service-center.fields.address-1')</th>
-                        <!-- <th>@lang('quickadmin.service-center.fields.location')</th> -->
                         <th>@lang('quickadmin.service-center.fields.commission')</th>
+                        <th>@lang('quickadmin.service-center.fields.status')</th>
+                        <!-- <th>@lang('quickadmin.service-center.fields.address-1')</th>
+                        <th>@lang('quickadmin.service-center.fields.location')</th>
+                        
                         <th>@lang('quickadmin.service-center.fields.address-2')</th>
                         <th>@lang('quickadmin.service-center.fields.city')</th>
                         <th>@lang('quickadmin.service-center.fields.state')</th>
-                        <th>@lang('quickadmin.service-center.fields.zipcode')</th>
-                        <th>@lang('quickadmin.service-center.fields.status')</th>
+                        <th>@lang('quickadmin.service-center.fields.zipcode')</th> -->
+                        
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
@@ -59,14 +61,16 @@
                                 @endcan
 
                                 <td field-key='name'>{{ $service_center->name }}</td>
-                                <td field-key='address_1'>{{ $service_center->address_1 }}</td>
-                                <!-- <td field-key='location'>{{ $service_center->location_address }}</td> -->
                                 <td field-key='commission'>{{ $service_center->commission }}</td>
+                                <td field-key='status'>{{ $service_center->status }}</td>
+                                <!-- <td field-key='address_1'>{{ $service_center->address_1 }}</td>
+                                <td field-key='location'>{{ $service_center->location_address }}</td>
+
                                 <td field-key='address_2'>{{ $service_center->address_2 }}</td>
                                 <td field-key='city'>{{ $service_center->city }}</td>
                                 <td field-key='state'>{{ $service_center->state }}</td>
-                                <td field-key='zipcode'>{{ $service_center->zipcode }}</td>
-                                <td field-key='status'>{{ $service_center->status }}</td>
+                                <td field-key='zipcode'>{{ $service_center->zipcode }}</td> -->
+                                
                                 @if( request('show_deleted') == 1 )
                                 <td>
                                     @can('service_center_delete')

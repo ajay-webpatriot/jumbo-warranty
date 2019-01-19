@@ -22,11 +22,11 @@
                 <thead>
                     <tr>
                         <th style="text-align:center;"><input type="checkbox" id="select-all" /></th>
+                        <th>@lang('quickadmin.users.fields.name')</th>
                         @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
                         || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
                             <th>@lang('quickadmin.users.fields.service-center')</th>
                         @endif
-                        <th>@lang('quickadmin.users.fields.name')</th>
                         <th>@lang('quickadmin.users.fields.phone')</th>
                         <!-- <th>@lang('quickadmin.users.fields.address-1')</th> -->
                         <!-- <th>@lang('quickadmin.users.fields.address-2')</th> -->
@@ -45,11 +45,11 @@
                         @foreach ($users as $user)
                             <tr data-entry-id="{{ $user->id }}">
                                 <td></td>
+                                <td field-key='name'>{{ $user->name }}</td>
                                 @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
                                 || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
                                     <td field-key='service_center'>{{ $user->service_center->name or '' }}</td>
                                 @endif
-                                <td field-key='name'>{{ $user->name }}</td>
                                 <td field-key='phone'>{{ $user->phone }}</td>
                                 <!-- <td field-key='address_1'>{{ $user->address_1 }}</td> -->
                                 <!-- <td field-key='address_2'>{{ $user->address_2 }}</td> -->
