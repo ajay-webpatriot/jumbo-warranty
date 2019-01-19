@@ -120,13 +120,13 @@ class AuthServiceProvider extends ServiceProvider
 
         // Auth gates for: Permission management
         Gate::define('permission_management_access', function ($user) {
-            return in_array($user->role_id, [1,3]);
+            return in_array($user->role_id, [1]);
         });
 
         // Auth gates for: Permissions
         Gate::define('permission_access', function ($user) {
 
-            return in_array($user->role_id, [1,3]);
+            return in_array($user->role_id, [1]);
         });
 
         // Auth gates for: User management

@@ -100,7 +100,7 @@
                 </ul>
             </li>@endcan
             
-            @can('company_management_access')
+            @can('manageCompany')
             <!-- can('company_management_access') -->
             <li class="treeview">
                 <a href="#">
