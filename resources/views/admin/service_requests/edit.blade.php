@@ -469,19 +469,19 @@
                                 <div class="col-md-6">
                                     <div class="row serviceChargeDiv" {{ ($service_request->service_type != "repair") ? 'style=display:none' : ''}}>
                                         <div class="col-md-12">
-                                            {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label lablemargin']) !!}
+                                            {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').':', ['class' => 'control-label lablemargin']) !!}
 
                                             <!-- service charge value label -->
                                             {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !!}
 
                                             <!-- service charge hidden field -->
                                             {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
-                                            <p class="help-block"></p>
+                                            <!-- <p class="help-block"></p>
                                             @if($errors->has('service_charge'))
                                                 <p class="help-block">
                                                     {{ $errors->first('service_charge') }}
                                                 </p>
-                                            @endif
+                                            @endif -->
                                         </div>
                                     </div>
                                    
@@ -494,19 +494,19 @@
                                             
                                             <!-- installation charge hidden field -->
                                             {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
-                                            <p class="help-block"></p>
+                                            <!-- <p class="help-block"></p>
                                             @if($errors->has('installation_charge'))
                                                 <p class="help-block">
                                                     {{ $errors->first('installation_charge') }}
                                                 </p>
-                                            @endif
+                                            @endif -->
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                                 {!! Form::label('transportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
                                             
-                                                <!-- total amount value label -->
+                                                <!-- transportation amount value label -->
                                                 {!! Form::label('', number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
                                         </div>
                                     </div>
