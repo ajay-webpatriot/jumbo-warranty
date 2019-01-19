@@ -11,12 +11,12 @@
     @endcan
 
     @can('service_request_delete')
-    <p>
+    <!-- <p>
         <ul class="list-inline">
             <li><a href="{{ route('admin.service_requests.index') }}" style="{{ request('show_deleted') == 1 ? '' : 'font-weight: 700' }}">@lang('quickadmin.qa_all')</a></li> |
             <li><a href="{{ route('admin.service_requests.index') }}?show_deleted=1" style="{{ request('show_deleted') == 1 ? 'font-weight: 700' : '' }}">@lang('quickadmin.qa_trash')</a></li>
         </ul>
-    </p>
+    </p> -->
     @endcan
 
 
@@ -26,7 +26,7 @@
         </div>
 
         <div class="panel-body table-responsive">
-            <table id="serviceRequest" class="display" width="100%">
+            <table class="table table-bordered table-striped {{ count($service_requests) > 0 ? 'datatable' : '' }} @can('service_request_delete') @if ( request('show_deleted') != 1 ) dt-select @endif @endcan">
 				<thead>
                     <tr>
                         @can('service_request_delete')
@@ -139,48 +139,8 @@
             @if ( request('show_deleted') != 1 ) window.route_mass_crud_entries_destroy = '{{ route('admin.service_requests.mass_destroy') }}'; @endif
         @endcan
 
-        $('#serviceRequest').DataTable({
-		"processing": false,
-		"serverSide": true,
-	//   "initComplete":function(){onint();},
-		"ajax":{
-			url: APP_URL+"/admin/DataTableServiceRequestAjax",
-			type:"GET",
-		  data:function(dtp){
-			// change the return value to what your server is expecting
-			// here is the path to the search value in the textbox
-			// var searchValue = dtp.search.value;
-				console.log("=====Data Table=====");
-				console.log(dtp);
-			
-			
-				// return dtp;
-			}
-		},"columns": [
-		{ "data": "company_name" },
-		{ "data": "customer" },
-		{ "data": "service_type" },
-		{ "data": "service_center" },
-		{ "data": "product" },
-		{ "data": "amount" },
-		{ "data": "request_status" }
-		]
-	});
+       
 
-	function onint(){
-		// take off all events from the searchfield
-		//$("#serviceRequest_wrapper input[type='search']").off();
-		// Use return key to trigger search
-		// $("#serviceRequest_wrapper input[type='search']").on("keydown", function(evt){
-		// 	 if(evt.keyCode == 13){
-		// 	   $("#serviceRequest").DataTable().search($("input[type='search']").val()).draw();
-		// 	 }
-		// });
-		// $("#btnexample_search").button().on("click", function(){
-		// 	  $("#example").DataTable().search($("input[type='search']").val()).draw();
-   
-		// });
-	  }
 
     </script>
 @endsection

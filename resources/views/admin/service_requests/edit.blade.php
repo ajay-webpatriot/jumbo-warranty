@@ -502,6 +502,18 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                            {!! Form::label('transportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label lablemargin']) !!}
+                                            
+                                            <!-- transportation charge value label -->
+                                            {!! Form::label('', number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
+                                            </div></div>
+                                            
+                                        </div>
+                                    </div>
 
                                     <div class="row">
                                         <div class="col-md-12">

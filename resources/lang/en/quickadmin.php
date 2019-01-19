@@ -162,6 +162,7 @@ return [
 			'mop' => 'MOP',
 			'purchase-from' => 'Purchase From',
 			'adavance-amount' => 'Adavance Amount',
+			'transportation-charge' => 'Transportation Charges',
 			'installation-charge' => 'Installation Charges',
 			'service-charge' => 'Service Charge',
 			'distance' => 'Distance (km)',

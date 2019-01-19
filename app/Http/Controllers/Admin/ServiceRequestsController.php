@@ -147,12 +147,54 @@ class ServiceRequestsController extends Controller
         
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        // $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $parts=array();
+            $products=array(''=>trans('quickadmin.qa_please_select')); 
+
+            $customers = \App\Customer::where('company_id',auth()->user()->company_id)
+                                        ->where('status','Active')
+                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                                        
+            $product_parts = \App\AssignPart::where('company_id',auth()->user()->company_id)
+                                ->with('product_parts')->get();
+
+            $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
+                                ->with('product_id')->get();
+            if(count($product_parts) > 0)
+            {
+                foreach($product_parts as $key => $value)
+                {
+                    $parts[$value->product_parts->id]=$value->product_parts->name;
+                }   
+            }
+            if(count($company_products) > 0)
+            {
+                foreach($company_products as $key => $value)
+                {
+                    foreach($value->product_id as $details)
+                    {
+                        $products[$details->id]=$details->name;
+                    }
+                }
+            }                            
+
+
+        }
+        else
+        {
+            $customers=array(''=>trans('quickadmin.qa_please_select'));
+            $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $parts = \App\ProductPart::get()->pluck('name', 'id');
+        }
+
+
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $parts = \App\ProductPart::get()->pluck('name', 'id');
+        
 
         $enum_service_type = ServiceRequest::$enum_service_type;
                     $enum_call_type = ServiceRequest::$enum_call_type;
@@ -625,14 +667,16 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_delete')) {
             return abort(401);
         }
-
         $service_request = ServiceRequest::findOrFail($id);
         if(isset($service_request->service_center_id))
         {
-            if($service_request->service_center_id != "" && (auth()->user()->id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->id != config('constants.ADMIN_ROLE_ID')))
-            {
-                // if service center is assigned, company admin and company user can not delete request, ONLY admin or super admin can delete the request
-                return  redirect()->route('admin.service_requests.index')->withErrors("Service center is already assigned.");
+            if($service_request->service_center_id != "" )
+            {    
+                if(auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID'))
+                {
+                    // if service center is assigned, company admin and company user can not delete request, ONLY admin or super admin can delete the request
+                    return  redirect()->route('admin.service_requests.index')->withErrors("Service center is already assigned.");
+                }
             }
         }
         
@@ -651,15 +695,27 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_delete')) {
             return abort(401);
         }
+        
         if ($request->input('ids')) {
             $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
 
             $not_deleted=0;
             foreach ($entries as $entry) {
-                if($entry->service_center_id != "" && (auth()->user()->id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->id != config('constants.ADMIN_ROLE_ID')))
+
+                if($entry->service_center_id != "")
                 {
+
                     // if service center is assigned, company admin and company user can not delete request, ONLY admin or super admin can delete the request
-                    $not_deleted++;
+                    if(auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID'))
+                    {
+                        $not_deleted++;  
+                    }
+                    else
+                    {
+                        $entry->delete();
+                    }
+                    
+                    
                 }
                 else
                 {

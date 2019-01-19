@@ -76,7 +76,21 @@
                                     @endif
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="row custDiv" style="display: none;">
+                                    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                    <div class="row custDiv">
+                                        <div class="col-xs-12">
+                                            {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
+                                            {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                            <p class="help-block"></p>
+                                            @if($errors->has('customer_id'))
+                                            <p class="help-block">
+                                                {{ $errors->first('customer_id') }}
+                                            </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="row custDiv" style="display: none;"> 
                                         <div class="col-xs-12">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
                                             {!! Form::select('customer_id', array('' => trans('quickadmin.qa_please_select')), old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
@@ -87,7 +101,9 @@
                                             </p>
                                             @endif
                                         </div>
-                                    </div>
+                                    </div> 
+                                    @endif  
+                                        
                                 </div>
                             </div>
                             <div class="row">
@@ -217,6 +233,18 @@
                         <div class="row">
                             <div class="col-md-6">
 
+                                @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                <div class="form-group">
+                                    {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'*', ['class' => 'control-label']) !!}
+                                    {!! Form::select('product_id', $products, old('product_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
+                                    <p class="help-block"></p>
+                                    @if($errors->has('product_id'))
+                                    <p class="help-block">
+                                        {{ $errors->first('product_id') }}
+                                    </p>
+                                    @endif
+                                </div>
+                                @else
                                 <div class="form-group">
                                     {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'*', ['class' => 'control-label']) !!}
                                     {!! Form::select('product_id', array('' => trans('quickadmin.qa_please_select')), old('product_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
@@ -227,9 +255,29 @@
                                     </p>
                                     @endif
                                 </div>
+                                @endif
 
                             
                                 <div class="partsDiv" style="display: none;">
+
+                                    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                    <div class="form-group">
+                                        {!! Form::label('parts', trans('quickadmin.service-request.fields.parts').'', ['class' => 'control-label']) !!}
+                                        <button type="button" class="btn btn-primary btn-xs" id="selectbtn-parts">
+                                            {{ trans('quickadmin.qa_select_all') }}
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs" id="deselectbtn-parts">
+                                            {{ trans('quickadmin.qa_deselect_all') }}
+                                        </button>
+                                        {!! Form::select('parts[]', $parts, old('parts'), ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-parts' ]) !!}
+                                        <p class="help-block"></p>
+                                        @if($errors->has('parts'))
+                                        <p class="help-block">
+                                            {{ $errors->first('parts') }}
+                                        </p>
+                                        @endif
+                                    </div>
+                                    @else
                                     <div class="form-group">
                                         {!! Form::label('parts', trans('quickadmin.service-request.fields.parts').'', ['class' => 'control-label']) !!}
                                         <button type="button" class="btn btn-primary btn-xs" id="selectbtn-parts">
@@ -246,6 +294,7 @@
                                         </p>
                                         @endif
                                     </div>
+                                    @endif
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('make', trans('quickadmin.service-request.fields.make').'', ['class' => 'control-label']) !!}

@@ -11,12 +11,12 @@
     @endcan
 
     @can('company_delete')
-    <p>
+    <!-- <p>
         <ul class="list-inline">
             <li><a href="{{ route('admin.companies.index') }}" style="{{ request('show_deleted') == 1 ? '' : 'font-weight: 700' }}">@lang('quickadmin.qa_all')</a></li> |
             <li><a href="{{ route('admin.companies.index') }}?show_deleted=1" style="{{ request('show_deleted') == 1 ? 'font-weight: 700' : '' }}">@lang('quickadmin.qa_trash')</a></li>
         </ul>
-    </p>
+    </p> -->
     @endcan
 
 

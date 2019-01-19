@@ -179,8 +179,6 @@ function checkIsDecimalNumber(ele, evt) {
     
     if (charCode == 46) {
         //Check if the text already contains the . character
-
-        console.log(ele.value);
         if (ele.value.indexOf('.') === -1) {
         	return true;
         } else {
