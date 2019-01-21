@@ -502,15 +502,20 @@
                                             @endif -->
                                         </div>
                                     </div>
+                                    @if($service_request->km_distance > 0)
                                     <div class="row">
                                         <div class="col-md-12">
                                                 {!! Form::label('transportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
                                             
                                                 <!-- transportation amount value label -->
-                                                {!! Form::label('', number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+                                                {!! Form::label('',number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+                                        </div>
+                                        <div class="col-md-12">
+
+                                            {!! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_trans_amount']) !!}
                                         </div>
                                     </div>
-
+                                    @endif
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">

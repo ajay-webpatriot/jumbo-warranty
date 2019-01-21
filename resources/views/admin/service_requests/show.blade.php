@@ -311,14 +311,20 @@
                                             
                                         </div>
                                     </div>
+                                    @if($service_request->km_distance > 0)
                                     <div class="row">
                                         <div class="col-md-12">
                                                 {!! Form::label('transportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
                                             
-                                                <!-- total amount value label -->
-                                                {!! Form::label('', number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+                                                <!-- transportation amount value label -->
+                                                {!! Form::label('', number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right fontweight', 'id' => 'lbl_trans_amount']) !!}
+                                        </div>
+                                        <div class="col-md-12">
+
+                                            {!! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize fontweight', 'id' => 'lbl_trans_amount']) !!}
                                         </div>
                                     </div>
+                                    @endif
                                     @if(!empty($additional_charge_title) && !empty($service_request->additional_charges))
                                     <div class="row">
                                         <div class="col-md-12">

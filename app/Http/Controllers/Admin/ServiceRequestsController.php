@@ -808,12 +808,12 @@ class ServiceRequestsController extends Controller
 
             $service_charge=($request['service_charge'] != "" && $request['service_charge'] != 0)? "<tr><td colspan='2'>Service Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['service_charge'],2)."</td></tr>":"";
 
-            $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".$request['km_distance']."</td></tr>":"";
+            // $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".$request['km_distance']."</td></tr>":"";
 
             $km_charge="";
             if($request['km_distance'] != "" && $request['km_distance'] != 0)
             {
-                $km_charge=($request['km_charge'] != "" && $request['km_charge'] != 0)? "<tr><td colspan='2'>Charge per km</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['km_charge'],2)."</td></tr>":"";
+                $km_charge=($request['km_charge'] != "" && $request['km_charge'] != 0)? "<tr><td colspan='2'>Transportation Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['km_charge'] * $request['km_distance'],2)."<br/>(".number_format($request['km_charge'],2)." rs per km)</td></tr>":"";
             }    
             
 
@@ -854,7 +854,6 @@ class ServiceRequestsController extends Controller
                                     ".$parts_used."
                                     ".$installation_charge."
                                     ".$service_charge."
-                                    ".$km_distance."
                                     ".$km_charge."
                                     ".$additional_charges."
                                     
@@ -868,9 +867,9 @@ class ServiceRequestsController extends Controller
                     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
                         <style type='text/css'>
                            
-                            .price{
+                            /* .price{
                                 color:#120CEA;
-                            }
+                            } */
                         </style>
                     </head>";
             $html.="<body>

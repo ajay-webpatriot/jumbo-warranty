@@ -29,8 +29,11 @@ class SendMail
         {
             // Worked to display json value in edit page
             foreach ($additional_charge_array as $key => $value) {
-                $additional_charge_title=str_replace('_empty_', '', $key);
-                $additional_charges=$value;
+                if (strpos($key,'_empty_') === false) {
+
+                  $additional_charge_title=str_replace('_empty_', '', $key);
+                  $additional_charges=$value;
+                }
             }
         }
        
