@@ -67,7 +67,7 @@
 
                             <div class="row">
                                 <!-- Company & Customer  -->
-                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
                                 <div class="col-md-6">
                                     
                                     <div class="row">
@@ -90,7 +90,7 @@
                             </div>
 
                             <div class="row">
-                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
                                 <div class="col-md-6">
                                     <!--  added condition to set layput when company is not visible -->
                                 </div>
@@ -119,7 +119,8 @@
                         </div>
                     </div>
                 </div>
-                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                <!-- Service center and technician will not be visible to company user and admin -->
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <a data-toggle="collapse" href="#collapseServiceCenter">Service Center</a>
@@ -211,7 +212,7 @@
                                         {!! Form::label('', (!empty($service_request->product->name))?$service_request->product->name:'', ['class' => 'control-label fontweight']) !!}
                                     </div>
 
-                                    <div class="partsDiv" {{ ($service_request->service_type != "repair") ? 'style=display:none' : ''}}>
+                                    <div class="partsDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
                                         <div class="form-group">
                                             {!! Form::label('parts', trans('quickadmin.service-request.fields.parts').': ', ['class' => 'control-label']) !!}
                                             @foreach ($service_request->parts as $singleParts)
@@ -245,7 +246,7 @@
 
                                     <div class="form-group">
                                         {!! Form::label('bill_date', trans('quickadmin.service-request.fields.bill-date').': ', ['class' => 'control-label']) !!}
-                                        {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->bill_date), ['class' => 'control-label fontweight']) !!}
+                                        {!! Form::label('', ($service_request->bill_date != "")?App\Helpers\CommonFunctions::setDateFormat($service_request->bill_date):"", ['class' => 'control-label fontweight']) !!}
                                     </div>
 
                                     <div class="form-group">
@@ -292,7 +293,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="row serviceChargeDiv" {{ ($service_request->service_type != "repair") ? 'style=display:none' : ''}}>
+                                    <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
                                         <div class="col-md-12">
                                             {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin']) !!}
 
@@ -302,7 +303,7 @@
                                         </div>
                                     </div>
                                    
-                                    <div class="row installationChargeDiv" {{ ($service_request->service_type != "installation") ? 'style=display:none' : ''}}>
+                                    <div class="row installationChargeDiv" {{ ($service_request->service_type == "repair") ? 'style=display:none' : ''}}>
                                         <div class="col-md-12">
                                             {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').': ', ['class' => 'control-label lablemargin']) !!}
                                             

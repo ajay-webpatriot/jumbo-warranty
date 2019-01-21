@@ -130,7 +130,7 @@
                         </div>
                     </div>
                 </div> 
-                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
                 <div class="panel panel-default">
                     <div class="panel-heading"> <a data-toggle="collapse" href="#collapseServiceCenter">Service Center</a></div>
                     <div id="collapseServiceCenter" class="panel-collapse in">
@@ -162,6 +162,23 @@
                                             @if($errors->has('technician_id'))
                                             <p class="help-block">
                                                 {{ $errors->first('technician_id') }}
+                                            </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row suggestedServiceCenterDiv" style="display: none;">
+                                <!-- suggested service center -->
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.suggested-service-center').'', ['class' => 'control-label']) !!}
+                                            <div id="suggestedHTML"></div>
+                                            <p class="help-block"></p>
+                                            @if($errors->has('service_center_id'))
+                                            <p class="help-block">
+                                                {{ $errors->first('service_center_id') }}
                                             </p>
                                             @endif
                                         </div>

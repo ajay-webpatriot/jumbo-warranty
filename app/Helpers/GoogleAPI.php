@@ -40,7 +40,7 @@ class GoogleAPI
 			$dist = acos($dist);
 			$dist = rad2deg($dist);
 			$miles = $dist * 60 * 1.1515;
-			$unit = strtoupper($unit);
+			// $unit = strtoupper($unit);
 
 			// if ($unit == "K") {
 				return round(($miles * 1.609344),2);

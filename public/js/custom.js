@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
 
-	$(document).on("keypress","input[name=phone]",function(evt)
+	$(document).on("keypress","input[name=phone], input[name=zipcode]",function(evt)
 	{
 		// allows only number for phone number field
 		evt = (evt) ? evt : window.event;
@@ -67,6 +67,7 @@ $(document).ready(function(){
 	       	success:function(data) {
 	       		$(".custDiv").show();
 	       		$(".custAddress").html(data.address);
+	       		getSuggestedServiceCenter(customerId);
 	       	}
 	    });
 	});
@@ -90,6 +91,32 @@ $(document).ready(function(){
         return status;
 	});
 });
+function getSuggestedServiceCenter(customerId) {
+	$.ajax({
+	       	type:'GET',
+	       	url:APP_URL+'/admin/getSuggestedServiceCenter',
+	       	data:{
+	       		'customerId':customerId
+	       	},
+	       	dataType: "json",
+	       	success:function(data) {
+	       		suggestedServiceCenters = "";
+	       		if(data.service_centers.length > 0)
+	       		{
+	       			$(".suggestedServiceCenterDiv").show();
+	                $.each(data.service_centers, function(key, value) {
+	                        suggestedServiceCenters+='<div><input type="radio" name="suggested_service_center" value="'+ value.id +'"><label class="control-label lblSuggestedCenter fontweight">'+value.name+'</label></div>';
+	                });
+	       		}
+	       		else
+	       		{
+	       			$(".suggestedServiceCenterDiv").hide();
+	       		}
+	       		$("#suggestedHTML").html(suggestedServiceCenters);	
+	       		
+	       	}
+	    });
+}
 function requestCharge(ele) {
 
 	// display charges for service and installation in service request
@@ -184,6 +211,24 @@ function checkIsDecimalNumber(ele, evt) {
         } else {
             return false;
         }
+    } else {
+        if (charCode > 31
+             && (charCode < 48 || charCode > 57))
+        {
+        	// check if text values is character
+        	return false;
+        }
+            
+    }
+    return true;
+}
+function allowNumberWithComma(ele, evt) {
+	// check number field to allow number and comma
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    
+    if (charCode == 44) {
+        //Check if the value is comma(,)
+        return true;
     } else {
         if (charCode > 31
              && (charCode < 48 || charCode > 57))

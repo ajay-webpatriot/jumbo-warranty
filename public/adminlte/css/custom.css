@@ -8,3 +8,9 @@
 {
 	font-weight: bold;
 }
+.lblSuggestedCenter
+{
+	/* service request suggested service center */
+	vertical-align: middle;
+    margin-left: 2%;
+}

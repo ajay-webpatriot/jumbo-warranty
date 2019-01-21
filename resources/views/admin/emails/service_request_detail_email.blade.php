@@ -166,7 +166,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                     <div class="panel panel-default" style="margin-bottom: 20px;
                                 background-color: #fff;
                                 border: 1px solid transparent;
@@ -225,7 +224,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @endif
                                     <div class="panel panel-default" style="margin-bottom: 20px;
                                 background-color: #fff;
                                 border: 1px solid transparent;
@@ -306,7 +304,7 @@
                                                             {!! Form::label('', (!empty($service_request->product->name))?$service_request->product->name:'', ['class' => 'control-label fontweight']) !!}
                                                         </div>
 
-                                                        <div class="partsDiv" {{ ($service_request->service_type != "repair") ? 'style=display:none' : ''}}>
+                                                        <div class="partsDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
                                                             <div class="form-group">
                                                                 {!! Form::label('parts', trans('quickadmin.service-request.fields.parts').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 @foreach ($service_request->parts as $singleParts)
@@ -356,7 +354,7 @@
 
                                                         <div class="form-group">
                                                             {!! Form::label('bill_date', trans('quickadmin.service-request.fields.bill-date').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
-                                                            {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->bill_date), ['class' => 'control-label fontweight']) !!}
+                                                            {!! Form::label('', ($service_request->bill_date != "")?App\Helpers\CommonFunctions::setDateFormat($service_request->bill_date):"", ['class' => 'control-label fontweight']) !!}
                                                         </div>
 
                                                         <div class="form-group">
@@ -423,7 +421,7 @@
                                                         min-height: 1px;
                                                         padding-right: 15px;
                                                         padding-left: 15px;">
-                                                        <div class="row serviceChargeDiv" {{ ($service_request->service_type != "repair") ? 'style=display:none' : ''}}>
+                                                        <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
                                                             <div class="col-md-12" style="width: 100%;float: left;">
                                                                 {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
 
@@ -433,7 +431,7 @@
                                                             </div>
                                                         </div>
                                                        
-                                                        <div class="row installationChargeDiv" {{ ($service_request->service_type != "installation") ? 'style=display:none' : ''}}>
+                                                        <div class="row installationChargeDiv" {{ ($service_request->service_type == "repair") ? 'style=display:none' : ''}}>
                                                             <div class="col-md-12" style="width: 100%;float: left;">
                                                                 {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
                                                                 

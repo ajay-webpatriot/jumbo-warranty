@@ -105,7 +105,7 @@
                 </div>
                 <div class="col-xs-6">
                     {!! Form::label('zipcode', trans('quickadmin.company.fields.zipcode').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','minlength' => '6','maxlength' => '6']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('zipcode'))
                         <p class="help-block">

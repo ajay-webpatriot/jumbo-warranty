@@ -32,7 +32,7 @@ class StoreCustomersRequest extends FormRequest
             'address_1' => 'required',
             'city' => 'required',
             'state' => 'required',
-            'zipcode' => 'required',
+            'zipcode' => 'required|min:6|max:6',
             'status' => 'required',
         ];
     }

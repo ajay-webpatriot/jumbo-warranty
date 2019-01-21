@@ -31,7 +31,8 @@ class StoreServiceCentersRequest extends FormRequest
             'commission' => 'max:2147483647|required|numeric',
             'city' => 'required',
             'state' => 'required',
-            'zipcode' => 'required',
+            'zipcode' => 'required|min:6|max:6',
+            'supported_zipcode' => 'required',
             'status' => 'required',
         ];
     }

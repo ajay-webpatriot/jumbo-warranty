@@ -32,6 +32,9 @@ if (!Schema::hasColumn('service_centers', 'state')) {
 if (!Schema::hasColumn('service_centers', 'zipcode')) {
                 $table->string('zipcode');
                 }
+if (!Schema::hasColumn('service_centers', 'supported_zipcode')) {
+                $table->string('supported_zipcode');
+                }
 if (!Schema::hasColumn('service_centers', 'status')) {
                 $table->enum('status', array('Active', 'Inactive'))->nullable();
                 }

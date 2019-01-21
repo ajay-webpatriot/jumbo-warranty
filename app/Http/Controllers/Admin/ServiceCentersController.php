@@ -238,4 +238,27 @@ class ServiceCentersController extends Controller
 
         return redirect()->route('admin.service_centers.index');
     }
+
+    public function getSuggestedServiceCenter(Request $request)
+    {
+        
+        // ajx function to get suggested service center for particular customer
+        $details=$request->all();
+        $data['service_centers']=array();
+        if($details['customerId'] != "")
+        {
+            $customer = \App\Customer::where('id',$details['customerId'])
+                                ->where('status','Active')->get()->first();
+
+           
+            // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
+            if(count($customer) > 0)
+            {
+                $data['service_centers'] = ServiceCenter::Where('supported_zipcode', 'like', '%' . $customer->zipcode . '%')->get();
+            }
+        }
+        echo json_encode($data);
+        exit;
+    
+    }
 }

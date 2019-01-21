@@ -219,6 +219,13 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_create')) {
             return abort(401);
         }
+        if($request['service_center_id'] == "" && isset($request['suggested_service_center']))
+        {
+            if($request['suggested_service_center'] != "")
+            {
+                $request['service_center_id'] = $request['suggested_service_center'];
+            }
+        }
 
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
@@ -232,13 +239,15 @@ class ServiceRequestsController extends Controller
         {
             if($request['service_center_id'] != "" && $request['customer_id'] != "")
             {
-                // calculate repair charges for different city
+                // calculate transportation charges
 
                 $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
                 $customerDetail=\App\Customer::findOrFail($request['customer_id']);
 
-                if($customerDetail->zipcode != $centerDetail->zipcode)
+                $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$request['service_center_id'])->get();
+                if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
                 {
+                    // calculate transportation charges for unsupported zipcode
                     $customer_latitude=$customerDetail->location_latitude;
                     $customer_longitude=$customerDetail->location_longitude;
 
@@ -252,9 +261,7 @@ class ServiceRequestsController extends Controller
                     $distance_charge=\App\ManageCharge::get()->first();
                     $request['km_charge']=$distance_charge->km_charge;
                     $total_amount+=($distance*$distance_charge->km_charge);
-                   
                 }
-                
             } 
         }
         if($request['service_center_id'] != "")
@@ -445,7 +452,13 @@ class ServiceRequestsController extends Controller
         
         $service_request = ServiceRequest::findOrFail($id);
 
-
+        if($request['service_center_id'] == "" && isset($request['suggested_service_center']))
+        {
+            if($request['suggested_service_center'] != "")
+            {
+                $request['service_center_id'] = $request['suggested_service_center'];
+            }
+        }
         if(isset($service_request->status) && isset($request['status'])){
 
            // insert service request log on status change 
@@ -567,13 +580,15 @@ class ServiceRequestsController extends Controller
         {
             if($request['service_center_id'] != "" && $request['customer_id'] != "")
             {
-                // calculate repair charges for different city
+                // calculate transportation charges for different city
 
                 $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
                 $customerDetail=\App\Customer::findOrFail($request['customer_id']);
                 
-                if($customerDetail->zipcode != $centerDetail->zipcode)
+                $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$request['service_center_id'])->get();
+                if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
                 {
+                    // calculate transportation charges for unsupported zipcode
                     $customer_latitude=$customerDetail->location_latitude;
                     $customer_longitude=$customerDetail->location_longitude;
 
