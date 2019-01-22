@@ -440,13 +440,13 @@
                                                                 
                                                             </div>
                                                         </div>
-                                                        @if($service_request->km_distance > 0)
+                                                        @if($service_request->transportation_charge > 0)
                                                         <div class="row">
                                                             <div class="col-md-12"  style="width: 100%;float: left;">
                                                                     {!! Form::label('transportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 
                                                                     <!-- total amount value label -->
-                                                                    {!! Form::label('', number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount','style' => 'float:right;']) !!}
+                                                                    {!! Form::label('', number_format(($service_request->transportation_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount','style' => 'float:right;']) !!}
                                                             </div>
                                                             <div class="col-md-12"  style="width: 100%;float: left;">
 

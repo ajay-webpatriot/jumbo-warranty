@@ -27,6 +27,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12">
+                    {!! Form::hidden('loggedUser_role_id',auth()->user()->role_id, ['class' => 'form-control', 'placeholder' => '','id' => 'loggedUser_role_id']) !!}
+
                     {!! Form::label('service_type', trans('quickadmin.service-request.fields.service-type').'*', ['class' => 'control-label']) !!}
                     {!! Form::select('service_type', $enum_service_type, old('service_type'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
                     <p class="help-block"></p>
@@ -454,7 +456,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row serviceChargeDiv" style="display: none;">
-                                        <div class="col-xs-12 form-group">
+                                        <div class="col-xs-12">
                                             {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label lablemargin']) !!}
 
                                             <!-- service charge value label -->
@@ -462,16 +464,16 @@
 
                                             <!-- service charge hidden field -->
                                             {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','readonly' => '']) !!}
-                                            <p class="help-block"></p>
+                                            <!-- <p class="help-block"></p>
                                             @if($errors->has('service_charge'))
                                             <p class="help-block">
                                                 {{ $errors->first('service_charge') }}
                                             </p>
-                                            @endif
+                                            @endif -->
                                         </div>
                                     </div>
                                     <div class="row installationChargeDiv">
-                                        <div class="col-xs-12 form-group">
+                                        <div class="col-xs-12">
                                             {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').'', ['class' => 'control-label lablemargin']) !!}
                                             
                                             <!-- installation charge value label -->
@@ -480,16 +482,41 @@
                                             <!-- installation charge hidden field -->
                                             {!! Form::hidden('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
 
-
+<!-- 
                                             <p class="help-block"></p>
                                             @if($errors->has('installation_charge'))
                                             <p class="help-block">
                                                 {{ $errors->first('installation_charge') }}
                                             </p>
-                                            @endif
+                                            @endif -->
                                         </div>
                                     </div>
-                                
+                                    <div class="row transportationDiv" style="display: none;">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                {!! Form::label('lbltransportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
+                                                </div>
+                                                <!-- transportation amount value label -->
+                                                <div class="col-sm-4 transportationField">
+                                                    @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
+
+                                                    {!! Form::text('transportation_charge','', ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+
+                                                    @else
+
+                                                    {!! Form::label('','', ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+                                                
+                                                    {!! Form::hidden('transportation_charge','', ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+
+                                            {!! Form::label('', '('.number_format($km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge']) !!}
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">

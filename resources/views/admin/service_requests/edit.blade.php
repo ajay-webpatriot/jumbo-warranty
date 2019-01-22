@@ -28,7 +28,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-
+                    {!! Form::hidden('loggedUser_role_id',auth()->user()->role_id, ['class' => 'form-control', 'placeholder' => '','id' => 'loggedUser_role_id']) !!}
+                    
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
@@ -521,20 +522,68 @@
                                             @endif -->
                                         </div>
                                     </div>
-                                    @if($service_request->km_distance > 0)
+                                    <!-- @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                     <div class="row">
                                         <div class="col-md-12">
-                                                {!! Form::label('transportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
-                                            
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                {!! Form::label('lbltransportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
+                                                </div>
                                                 <!-- transportation amount value label -->
-                                                {!! Form::label('',number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+                                                <!--<div class="col-sm-4">
+                                                {!! Form::text('transportation_charge',number_format(($service_request->km_charge),2,'.',''), ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-md-12">
 
                                             {!! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_trans_amount']) !!}
                                         </div>
                                     </div>
-                                    @endif
+                                    @elseif($service_request->km_distance > 0)
+                                    <div class="row serviceChargeDiv">
+                                        <div class="col-md-12">
+                                                {!! Form::label('lbltransportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
+                                            
+                                                <!-- transportation amount value label -->
+                                               <!-- {!! Form::label('',number_format(($service_request->km_distance * $service_request->km_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+
+                                                {!! Form::hidden('transportation_charge',($service_request->km_distance * $service_request->km_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
+
+                                        </div>
+                                        <div class="col-md-12">
+
+                                            {!! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_trans_amount']) !!}
+                                        </div>
+                                    </div>
+                                    @endif -->
+
+                                    <div class="row transportationDiv" {{ ($service_request->transportation_charge <= 0) ? 'style=display:none' : ''}}>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                {!! Form::label('lbltransportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label']) !!}
+                                                </div>
+                                                <!-- transportation amount value label -->
+                                                <div class="col-sm-4 transportationField">
+                                                    @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
+
+                                                    {!! Form::text('transportation_charge',number_format($service_request->transportation_charge,2,'.',''), ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+
+                                                    @else
+
+                                                    {!! Form::label('',number_format($service_request->transportation_charge,2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+                                                
+                                                    {!! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+
+                                            {!! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge']) !!}
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">

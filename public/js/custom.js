@@ -14,22 +14,22 @@ $(document).ready(function(){
 
 	$(document).on("change","#service_center_id",function(evt)
 	{
-		// get technician according to service center for service request 
 		var serviceCenterId = $(this).val();
 
-		$.ajax({
-	       	type:'GET',
-	       	url:APP_URL+'/admin/getTechnicians',
-	       	data:{
-	       		'serviceCenterId':serviceCenterId
-	       	},
-	       	dataType: "json",
-	       	success:function(data) {
-	       		$(".techDiv").show();
-	       		$(".techDiv").find(".select2").select2();
-	       		$("#technician_id").html(data.options);
-	       	}
-	    });
+		// deselect radio if same service center is not available in radio button
+		if($("input[name='suggested_service_center'][value='"+serviceCenterId+"']").length <= 0)
+		{
+			$("input[name='suggested_service_center']").attr('checked', false);
+		}
+		// get technician according to service center for service request 
+		getTechnicians(serviceCenterId);
+	
+	});
+	$(document).on("click","input[name='suggested_service_center']",function(evt)
+	{
+		// set selected service center dropdown on click of suggested radio button
+		$("#service_center_id").val($(this).val()).trigger("change");
+		
 	});
 	$(document).on("change","#company_id",function(evt)
 	{
@@ -68,6 +68,8 @@ $(document).ready(function(){
 	       		$(".custDiv").show();
 	       		$(".custAddress").html(data.address);
 	       		getSuggestedServiceCenter(customerId);
+
+	       		
 	       	}
 	    });
 	});
@@ -91,6 +93,22 @@ $(document).ready(function(){
         return status;
 	});
 });
+function getTechnicians(serviceCenterId) {
+	$.ajax({
+       	type:'GET',
+       	url:APP_URL+'/admin/getTechnicians',
+       	data:{
+       		'serviceCenterId':serviceCenterId
+       	},
+       	dataType: "json",
+       	success:function(data) {
+       		$(".techDiv").show();
+       		$(".techDiv").find(".select2").select2();
+       		$("#technician_id").html(data.options);
+       	}
+    });
+	    getTransporationCharge();
+}
 function getSuggestedServiceCenter(customerId) {
 	$.ajax({
 	       	type:'GET',
@@ -100,20 +118,25 @@ function getSuggestedServiceCenter(customerId) {
 	       	},
 	       	dataType: "json",
 	       	success:function(data) {
-	       		suggestedServiceCenters = "";
-	       		if(data.service_centers.length > 0)
-	       		{
-	       			$(".suggestedServiceCenterDiv").show();
-	                $.each(data.service_centers, function(key, value) {
-	                        suggestedServiceCenters+='<div><input type="radio" name="suggested_service_center" value="'+ value.id +'"><label class="control-label lblSuggestedCenter fontweight">'+value.name+'</label></div>';
-	                });
-	       		}
-	       		else
-	       		{
-	       			$(".suggestedServiceCenterDiv").hide();
-	       		}
-	       		$("#suggestedHTML").html(suggestedServiceCenters);	
+
+	       		if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID || $("#loggedUser_role_id").val() == SUPER_ADMIN_ROLE_ID)
+				{
+					suggestedServiceCenters = "";
+		       		if(data.service_centers.length > 0)
+		       		{
+		       			$(".suggestedServiceCenterDiv").show();
+		                $.each(data.service_centers, function(key, value) {
+		                        suggestedServiceCenters+='<div><input type="radio" name="suggested_service_center" value="'+ value.id +'"><label class="control-label lblSuggestedCenter fontweight">'+value.name+'</label></div>';
+		                });
+		       		}
+		       		else
+		       		{
+		       			$(".suggestedServiceCenterDiv").hide();
+		       		}
+		       		$("#suggestedHTML").html(suggestedServiceCenters);	
+				}
 	       		
+	       		getTransporationCharge();
 	       	}
 	    });
 }
@@ -194,7 +217,15 @@ function totalServiceAmount() {
 	var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
 	var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
 	var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
-	var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge)).toFixed(2);
+
+
+	// if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID)
+	// {
+
+	// }
+	var transportation_charge = isNaN(parseFloat($("#transportation_charge").val()))?0:parseFloat($("#transportation_charge").val());
+	// var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge)).toFixed(2);
+	var total_amount=(installation_charge+service_charge+additional_amount+transportation_charge).toFixed(2);
   	
   	$("#amount").val(total_amount);
   	$("#lbl_total_amount").html((parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
@@ -239,4 +270,66 @@ function allowNumberWithComma(ele, evt) {
             
     }
     return true;
+}
+
+function getTransporationCharge() {
+
+	var customerId = $("#customer_id").val();
+
+	var serviceCenterId = $("#service_center_id").val();
+
+	if(typeof serviceCenterId === "undefined")
+	{
+		return false;
+	}
+	if(serviceCenterId == "")
+	{
+		if(typeof $("input[name='suggested_service_center']:checked").val() !== "undefined")
+		{
+			serviceCenterId=$("input[name='suggested_service_center']:checked").val();
+		}
+	}
+	$("#transportation_charge").val('');
+	$("#km_distance").val('');
+	$("#km_charge").val('');
+	$("#lbl_trans_amount").html('');
+
+	if(customerId != "" && serviceCenterId != "")
+	{
+
+		$.ajax({
+		       	type:'GET',
+		       	url:APP_URL+'/admin/getTransporationCharge',
+		       	data:{
+		       		'customerId':customerId,
+		       		'serviceCenterId' : serviceCenterId
+		       	},
+		       	dataType: "json",
+		       	success:function(data) {
+
+		       		if(!data.supported)
+		       		{
+		       			if($("#loggedUser_role_id").val() != ADMIN_ROLE_ID && $("#loggedUser_role_id").val() != SUPER_ADMIN_ROLE_ID)
+						{
+							$("#lbl_trans_amount").html((parseFloat(data.transportation_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+						}
+						$("#transportation_charge").val(data.transportation_amount);
+						$("#km_distance").val(data.km_distance);
+						$("#km_charge").val(data.km_charge);
+						$(".transportationDiv").show();
+
+						totalServiceAmount();
+		       		}
+		       		else
+		       		{
+		       			$(".transportationDiv").hide();
+		       		}
+		       		
+		       	}
+	    });
+	}
+	else
+	{
+		$(".transportationDiv").hide();
+	}
 }

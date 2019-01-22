@@ -190,6 +190,8 @@ class ServiceRequestsController extends Controller
             $parts = \App\ProductPart::get()->pluck('name', 'id');
         }
 
+        $distance_charge=\App\ManageCharge::get()->first();
+        $km_charge =$distance_charge->km_charge;
 
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
@@ -205,7 +207,7 @@ class ServiceRequestsController extends Controller
                     $enum_status = ServiceRequest::$enum_status;
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         
-        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName'));
+        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge'));
     }
 
     /**
@@ -232,38 +234,44 @@ class ServiceRequestsController extends Controller
 
         // convert to json
         $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
-        $request['km_distance']=0;
-        $request['km_charge']=0;
+
+        $distance_charge=\App\ManageCharge::get()->first();
+
+        $request['km_distance'] = ($request['km_distance'] == "") ? 0 : number_format((float)$request['km_distance'], 2, '.', '');
+        $request['km_charge'] = ($request['km_charge'] == "") ? number_format((float)$distance_charge->km_charge, 2, '.', '') : number_format((float)$request['km_charge'], 2, '.', '');
+
+        $request['transportation_charge'] = ($request['transportation_charge'] == "") ? 0 : number_format((float)$request['transportation_charge'], 2, '.', '');
         // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
-        if($request['service_type'] == 'repair')
-        {
-            if($request['service_center_id'] != "" && $request['customer_id'] != "")
-            {
-                // calculate transportation charges
+        
+        // if($request['service_center_id'] != "" && $request['customer_id'] != "")
+        // {
+        //     // calculate transportation charges
 
-                $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
-                $customerDetail=\App\Customer::findOrFail($request['customer_id']);
+        //     $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
+        //     $customerDetail=\App\Customer::findOrFail($request['customer_id']);
 
-                $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$request['service_center_id'])->get();
-                if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
-                {
-                    // calculate transportation charges for unsupported zipcode
-                    $customer_latitude=$customerDetail->location_latitude;
-                    $customer_longitude=$customerDetail->location_longitude;
+        //     $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$request['service_center_id'])->get();
+        //     if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
+        //     {
 
-                    $center_latitude=$centerDetail->location_latitude;
-                    $center_longitude=$centerDetail->location_longitude;
-                    
-                    $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
+        //         // calculate transportation charges for unsupported zipcode
+        //         $customer_latitude=$customerDetail->location_latitude;
+        //         $customer_longitude=$customerDetail->location_longitude;
 
-                    $request['km_distance']=$distance;
+        //         $center_latitude=$centerDetail->location_latitude;
+        //         $center_longitude=$centerDetail->location_longitude;
+                
+        //         $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
 
-                    $distance_charge=\App\ManageCharge::get()->first();
-                    $request['km_charge']=$distance_charge->km_charge;
-                    $total_amount+=($distance*$distance_charge->km_charge);
-                }
-            } 
-        }
+        //         $request['km_distance']=$distance;
+
+        //         $distance_charge=\App\ManageCharge::get()->first();
+        //         $request['km_charge']=$distance_charge->km_charge;
+        //         $total_amount+=($distance*$distance_charge->km_charge);
+        //     }
+        // }
+
+        $total_amount+=$request['transportation_charge'];
         if($request['service_center_id'] != "")
         {
             $request['status'] ="Assigned";
@@ -574,39 +582,47 @@ class ServiceRequestsController extends Controller
 
         // convert to json
         $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
-        $request['km_distance']=0;
-        $request['km_charge']=0;
-        if($request['service_type'] == 'repair')
-        {
-            if($request['service_center_id'] != "" && $request['customer_id'] != "")
-            {
-                // calculate transportation charges for different city
 
-                $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
-                $customerDetail=\App\Customer::findOrFail($request['customer_id']);
+
+        $distance_charge=\App\ManageCharge::get()->first();
+
+        $request['km_distance'] = ($request['km_distance'] == "") ? 0 : number_format((float)$request['km_distance'], 2, '.', '');
+        $request['km_charge'] = ($request['km_charge'] == "") ? number_format((float)$distance_charge->km_charge, 2, '.', '') : number_format((float)$request['km_charge'], 2, '.', '');
+
+        $request['transportation_charge'] = ($request['transportation_charge'] == "") ? 0 : number_format((float)$request['transportation_charge'], 2, '.', '');
+
+        $total_amount+=$request['transportation_charge'];
+        // if($request['service_type'] == 'repair')
+        // {
+        //     if($request['service_center_id'] != "" && $request['customer_id'] != "")
+        //     {
+        //         // calculate transportation charges for different city
+
+        //         $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
+        //         $customerDetail=\App\Customer::findOrFail($request['customer_id']);
                 
-                $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$request['service_center_id'])->get();
-                if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
-                {
-                    // calculate transportation charges for unsupported zipcode
-                    $customer_latitude=$customerDetail->location_latitude;
-                    $customer_longitude=$customerDetail->location_longitude;
+        //         $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$request['service_center_id'])->get();
+        //         if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
+        //         {
+        //             // calculate transportation charges for unsupported zipcode
+        //             $customer_latitude=$customerDetail->location_latitude;
+        //             $customer_longitude=$customerDetail->location_longitude;
 
-                    $center_latitude=$centerDetail->location_latitude;
-                    $center_longitude=$centerDetail->location_longitude;
+        //             $center_latitude=$centerDetail->location_latitude;
+        //             $center_longitude=$centerDetail->location_longitude;
                     
-                    $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
+        //             $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
 
-                    $request['km_distance']=$distance;
+        //             $request['km_distance']=$distance;
 
-                    $distance_charge=\App\ManageCharge::get()->first();
-                    $request['km_charge']=$distance_charge->km_charge;
-                    $total_amount+=($distance*$distance_charge->km_charge);
+        //             $distance_charge=\App\ManageCharge::get()->first();
+        //             $request['km_charge']=$distance_charge->km_charge;
+        //             $total_amount+=($distance*$distance_charge->km_charge);
                     
                    
-                }
-            } 
-        }
+        //         }
+        //     } 
+        // }
 
 
         $request['amount']=$total_amount;  
@@ -1007,6 +1023,48 @@ class ServiceRequestsController extends Controller
                         $data['productOptions'].="<option value='".$details->id."'>".$details->name."</option>";   
                     }
                 }   
+            }
+        }
+        echo json_encode($data);
+        exit;
+    }
+    public function getTransporationCharge(Request $request)
+    {
+        // ajx function to get transportation charges if customer is in supported zipcode area
+        
+        $details=$request->all();
+
+        if($details['customerId'] != "" && $details['serviceCenterId'] != "")
+        {
+            $centerDetail=\App\ServiceCenter::findOrFail($details['serviceCenterId']);
+            $customerDetail=\App\Customer::findOrFail($details['customerId']);
+            
+            $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$details['serviceCenterId'])->get();
+
+            $distance_charge=\App\ManageCharge::get()->first();
+            $data['km_charge']=$distance_charge->km_charge;
+
+            if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
+            {
+                // calculate transportation charges for unsupported zipcode
+                $customer_latitude=$customerDetail->location_latitude;
+                $customer_longitude=$customerDetail->location_longitude;
+
+                $center_latitude=$centerDetail->location_latitude;
+                $center_longitude=$centerDetail->location_longitude;
+                
+                $distance=GoogleAPIHelper::distance($center_latitude,$center_longitude,$customer_latitude,$customer_longitude);
+
+                $data['km_distance']=$distance;
+
+                
+                $data['transportation_amount']=($distance*$distance_charge->km_charge);
+                $data['supported'] = false;
+               
+            }
+            else
+            {
+                $data['supported'] = true;
             }
         }
         echo json_encode($data);
