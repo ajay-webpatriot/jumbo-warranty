@@ -1070,4 +1070,89 @@ class ServiceRequestsController extends Controller
         echo json_encode($data);
         exit;
     }
+
+    public function getSuggestedServiceCenter(Request $request)
+    {
+        
+        // ajx function to get suggested service center for particular customer
+        $details=$request->all();
+        $data['service_centers']=array();
+        if($details['customerId'] != "")
+        {
+            $customer = \App\Customer::where('id',$details['customerId'])
+                                ->where('status','Active')->get()->first();
+
+           
+            // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
+            if(count($customer) > 0)
+            {
+                $data['service_centers'] = \App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customer->zipcode . '%')->get();
+            }
+        }
+        echo json_encode($data);
+        exit;
+    
+    }
+
+    public function getCustomerAddress(Request $request)
+    {
+        
+        // ajx function to get customer address
+        
+        $details=$request->all();
+        $data['address']="";
+        if($details['customerId'] != "")
+        {
+            $customer = \App\Customer::where('id',$details['customerId'])
+                                ->where('status','Active')->get()->first();
+            // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
+            if(count($customer) > 0)
+            {
+                $data['address'].=$customer->address_1."<br/>";
+                if(!empty($customer->address_2))
+                {
+                    $data['address'].=$customer->address_2."<br/>";
+                }
+                $data['address'].=$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
+            }
+        }
+        echo json_encode($data);
+        exit;
+    
+    }
+
+    public function getTechnicians(Request $request)
+    {
+        
+        // ajx function to get technicians of particular service center
+        
+        $details=$request->all();
+        $data['options']="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
+        if($details['serviceCenterId'] != "")
+        {
+            $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                        ->orderby('name');
+
+            $query->where('service_center_id',$details['serviceCenterId']);
+            $query->where('status','Active');
+            
+            $technicians = $query->get();
+            if(count($technicians) > 0)
+            {
+                foreach($technicians as $key => $value)
+                {
+                    $data['options'].="<option value='".$value->id."'>".$value->name."</option>";
+                    
+                }
+                
+            }
+        }
+        echo json_encode($data);
+        exit;
+    
+    }
+
+
+
+
 }
