@@ -45,33 +45,31 @@ class ServiceRequestsController extends Controller
         }
         
 
-        if (request('show_deleted') == 1) {
-            if (! Gate::allows('service_request_delete')) {
-                return abort(401);
-            }
-            $service_requests = ServiceRequest::onlyTrashed()->get();
-        } else {
-            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-            {
-                $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
-            }
-            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
-            {
-                $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
-            }
-            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
-            }
-            else
-            {
-                $service_requests = ServiceRequest::all();
-            }
+        // if (request('show_deleted') == 1) {
+        //     if (! Gate::allows('service_request_delete')) {
+        //         return abort(401);
+        //     }
+        //     $service_requests = ServiceRequest::onlyTrashed()->get();
+        // } else {
+        //     if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+        //     }
+        //     else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+        //     }
+        //     else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
+        //     }
+        //     else
+        //     {
+        //         $service_requests = ServiceRequest::all();
+        //     }
             
-        }
+        // }
 
-        // echo "<pre>"; print_r ($service_requests); echo "</pre>"; exit();
-        // return view('admin.service_requests.index');
         return view('admin.service_requests.index', compact('service_requests'));
 
         // $data=array('subject' => 'Request Creation Receive',
@@ -84,54 +82,200 @@ class ServiceRequestsController extends Controller
     }
 
     public function DataTableServiceRequestAjax(Request $request)
-    {
+    { 
+          
+        $columnArray = array();
+        // echo "<pre>";
+        // print_r(auth()->user()->role_id);
+        // echo "</pre>";
+        // exit();
+        
+        if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+            $columnArray = array(
+                0 => 'service_requests.id',
+                1 =>'customers.firstname' ,
+                2 =>'service_requests.service_type' ,
+                3 =>'service_centers.name' ,
+                4 =>'products.name' ,
+                5 =>'service_requests.amount' ,
+                6 =>'service_requests.status'
+            );
+        }else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
+            
+            // 0 offset is skipped for checkbox
+            $columnArray = array(
+                1 => 'service_requests.id',
+                2 =>'companies.name' ,
+                3 =>'customers.firstname' ,
+                4 =>'service_requests.service_type' ,
+                5 =>'products.name' ,
+                6 =>'service_requests.amount' ,
+                7 =>'service_requests.status'
+            );
+        }else{
+            // admin and super admin
+
+            // 0 offset is skipped for checkbox
+            $columnArray = array(
+                1 => 'service_requests.id',
+                2 =>'companies.name' ,
+                3 =>'customers.firstname' ,
+                4 =>'service_requests.service_type' ,
+                5 =>'service_centers.name' ,
+                6 =>'products.name' ,
+                7 =>'service_requests.amount' ,
+                8 =>'service_requests.status'
+            );
+        }
+        
+        
+        $limit = $request->input('length');
+
+        $start = $request->input('start');
+        $order = $columnArray[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+// echo $order;exit;
+        // $order = $request->input('order');
+        // echo "<pre>";
+        // print_r($request->all());
+        // echo "</pre>";
+        // exit();
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
-        // SendMailHelper::sendRequestCreationMail(5);
 
         if (request('show_deleted') == 1) {
             if (! Gate::allows('service_request_delete')) {
                 return abort(401);
             }
             $service_requests = ServiceRequest::onlyTrashed()->get();
-        } else {
-            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-            {
-                $service_requests = ServiceRequest::where('ersvice_center_id',auth()->user()->service_center_id)->get();
-            }
-            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
-            {
-                $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
-            }
-            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
-            }
-            else
-            {
-                $service_requests = ServiceRequest::all();
+        } else{
+        // else {
+        //     if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+        //     }
+        //     else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+        //     }
+        //     else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        //     {
+        //         $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
+        //     }
+        //     else
+        //     {
+        //         $service_requests = ServiceRequest::all();
+        //     }
+            
+        // }
+
+            $tableFieldData = [];
+            $ViewButtons = '';
+            $EditButtons = '';
+            $DeleteButtons = '';
+
+            $service_requestsQuery = ServiceRequest::select('customers.firstname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id')
+            ->leftjoin('companies','service_requests.company_id','=','companies.id')
+            ->leftjoin('roles','service_requests.technician_id','=','roles.id')
+            ->leftjoin('customers','service_requests.customer_id','=','customers.id')
+            ->leftjoin('products','service_requests.product_id','=','products.id')
+            ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id')
+            ->offset($start)
+            ->limit($limit)
+            ->orderBy($order,$dir);
+
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                {
+                    $service_requestsQuery->orWhere('companies.name', 'like', '%' . $request['search']['value'] . '%');
+
+                }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+                    $service_requestsQuery->orWhere('service_centers.name', 'like', '%' . $request['search']['value'] . '%');
+
+                }else{
+
+                    $service_requestsQuery->orWhere('companies.name', 'like', '%' . $request['search']['value'] . '%');
+                    $service_requestsQuery->orWhere('service_centers.name', 'like', '%' . $request['search']['value'] . '%');
+                }
+                $service_requestsQuery->orWhere('customers.firstname', 'like', '%' . $request['search']['value'] . '%');
+                $service_requestsQuery->orWhere('products.name', 'like', '%' . $request['search']['value'] . '%');
+                $service_requestsQuery->orWhere('service_requests.amount', 'like', '%' . $request['search']['value'] . '%');
+                $service_requestsQuery->orWhere('service_requests.service_type', 'like', '%' . $request['search']['value'] . '%');
             }
             
+            $service_requests = $service_requestsQuery->get();
+            
         }
-
-        $tableField = [];
-        
         if(!empty($service_requests)){
+
+            $countRecoard = ServiceRequest::count();
+
             foreach ($service_requests as $key => $SingleServiceRequest) {
-                $tableField['company_name'] =$SingleServiceRequest->company->name;
-                $tableField['customer'] = $SingleServiceRequest->customer->firstname;
-                $tableField['service_type'] =$SingleServiceRequest->service_type ;
-                $tableField['service_center'] =$SingleServiceRequest->service_center->name ;
-                $tableField['product'] =$SingleServiceRequest->product->name;
+
+                if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
+
+                    $tableField['company_name'] =$SingleServiceRequest->cname;
+                    if (Gate::allows('service_request_delete')) {
+                        // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';
+                        $tableField['checkbox'] = '';
+                    }
+
+                }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+                    $tableField['service_center'] =$SingleServiceRequest->sname;
+
+                }else{
+                    $tableField['service_center'] =$SingleServiceRequest->sname;
+                    $tableField['company_name'] =$SingleServiceRequest->cname;
+
+                    if (Gate::allows('service_request_delete')) {
+                        // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';
+                        $tableField['checkbox'] = '';
+                    }
+                }
+                $tableField['sr_no'] = $SingleServiceRequest->id;
+                $tableField['customer'] = $SingleServiceRequest->firstname;
+                $tableField['service_type'] =$SingleServiceRequest->service_type;
+                $tableField['product'] =$SingleServiceRequest->pname;
                 $tableField['amount'] =$SingleServiceRequest->amount;
                 $tableField['request_status'] =$SingleServiceRequest->status;
-               
-            
-            }
 
+                if (Gate::allows('service_request_view')) {
+                    $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
+                }
+                if (Gate::allows('service_request_edit')) {
+                    $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info">Edit</a>';
+                }
+                if (Gate::allows('service_request_delete')) {
+                    $DeleteButtons = '<form action="'.route('admin.service_requests.destroy',$SingleServiceRequest->id).'" method="post" onsubmit="return confirm(\'Are you sure ?\');" style="display: inline-block;">
+
+                    <input name="_method" type="hidden" value="DELETE">
+                    <input type="hidden"
+                               name="_token"
+                               value="'.csrf_token().'">
+                    <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+                    </form>';
+                }
+
+                $tableField['action'] = $ViewButtons.' '.$EditButtons.' '.$DeleteButtons;
+                $tableFieldData[] = $tableField;
+            }
+           
         }
-        // return json_encode($service_requests);
+               
+        $json_data = array(
+            "draw"            => intval($request['draw']),  
+            "recordsTotal"    => intval($countRecoard),  
+            "recordsFiltered" => intval($countRecoard),
+            "data"            => $tableFieldData   
+            );
+
+        echo json_encode($json_data);
+    
     }
 
     /**
@@ -726,7 +870,6 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_delete')) {
             return abort(401);
         }
-        
         if ($request->input('ids')) {
             $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
 

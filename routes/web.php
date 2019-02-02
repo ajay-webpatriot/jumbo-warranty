@@ -99,7 +99,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::get('/getTransporationCharge','Admin\ServiceRequestsController@getTransporationCharge');
 
     //service request ajax
-    Route::get('/DataTableServiceRequestAjax','Admin\ServiceRequestsController@DataTableServiceRequestAjax');
-    
+    Route::post('/DataTableServiceRequestAjax','Admin\ServiceRequestsController@DataTableServiceRequestAjax');
 });
   

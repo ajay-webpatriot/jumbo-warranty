@@ -92,6 +92,31 @@ $(document).ready(function(){
         
         return status;
 	});
+	$(document).on('click','#serviceRequest.datatable .select-checkbox, #company.datatable .select-checkbox',function (){
+		// service request check single checkbox work
+		if($(this).closest('tr').hasClass('selected'))
+		{
+			$(this).closest('tr').removeClass('selected');
+		}	
+		else
+		{
+			$(this).closest('tr').addClass('selected');
+		}
+			
+	});
+
+	$(document).on('click','#serviceRequest.datatable #select-all, #company.datatable #select-all',function (){
+		// service request check multiple checkbox work
+		var selected = $(this).is(':checked');
+        $(this).closest('table.datatable, table.ajaxTable').find('td:first-child').each(function () {
+            if (selected != $(this).closest('tr').hasClass('selected')) {
+                $(this).click();
+            }
+        });
+	});
+
+
+	
 });
 function getTechnicians(serviceCenterId) {
 	$.ajax({
