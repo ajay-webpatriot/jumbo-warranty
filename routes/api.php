@@ -19,3 +19,6 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
         Route::resource('invoices', 'InvoicesController', ['except' => ['create', 'edit']]);
 
 });
+Route::group(['prefix' => '/technician', 'namespace' => 'Api\Technician', 'as' => 'api.'], function () {
+       Route::post('/login','LoginApiController@loginApi');
+});
