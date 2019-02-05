@@ -169,7 +169,40 @@ class SendMail
         }
         
   
-  } 
+  }
+  
+  public static function forgotpasswordApiMail($email,$OTP)
+  { 
+    $query = \App\User::select('name','email')
+    ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+    ->where('email',$email)
+    ->first();
+
+    $response = 1;
+
+    $to_email = $query->email;
+    $name     = $query->name;
+
+    $data = array(
+      'subject' => 'Forgot password OTP',
+      'user_name' => ucwords($name),
+      'receiver_email' => $query->email,
+      'OTP' => $OTP
+    );
+$to_email = "rajdip.webpatriot@gmail.com";
+    Mail::send('admin.emails.otp',$data, function ($message)  use ( $to_email,$name){
+      $message->to($to_email,$name)
+      ->subject('Forgot password OTP')
+      ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+    });
+
+    if (Mail::failures()) {
+      $response = 0;
+    }
+    
+    return $response;
+    
+  }
 
 
 	

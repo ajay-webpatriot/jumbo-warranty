@@ -20,5 +20,7 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
 
 });
 Route::group(['prefix' => '/technician', 'namespace' => 'Api\Technician', 'as' => 'api.'], function () {
-       Route::post('/login','LoginApiController@loginApi');
+       Route::post('/login','LoginApiController@login');
+       Route::post('/forgotpassword','LoginApiController@forgotpassword');
+       Route::post('/otp','LoginApiController@verifyotp');
 });
