@@ -189,7 +189,7 @@ class SendMail
       'receiver_email' => $query->email,
       'OTP' => $OTP
     );
-$to_email = "rajdip.webpatriot@gmail.com";
+
     Mail::send('admin.emails.otp',$data, function ($message)  use ( $to_email,$name){
       $message->to($to_email,$name)
       ->subject('Forgot password OTP')

@@ -18,18 +18,22 @@ class LoginApiController extends Controller
 {
     public function login(Request $request)
     { 
-        $email      = $request['email'];
-        $password   = $request['password'];
-
         $validator = Validator::make($request->all(), [
             'email'     => 'required|email',
             'password'  => 'required',
         ]);
 
         if($validator->fails()){
-            return $validator->errors();
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Email or Password is not valid!',
+                'token'     => ''
+            ]);
         }
 
+        $email      = $request['email'];
+        $password   = $request['password'];
+        
         $success    = false;
         $message    = 'Email or Password is not valid!';
         $token      = '';
@@ -75,16 +79,19 @@ class LoginApiController extends Controller
 
     public function forgotpassword(Request $request)
     {
-        $email = $request['email'];
-       
         //validate email
         $validator = Validator::make($request->all(), [
             'email' => 'required|email'
         ]);
 
         if($validator->fails()){
-            return $validator->errors();
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Email is not valid!'
+            ]);
         }
+
+        $email = $request['email'];
 
         $ForgotPasswordQuery = User::select('email','id')
         ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
@@ -117,7 +124,7 @@ class LoginApiController extends Controller
             }
         }else{
             $success = false;
-            $message = 'Email or Password is not valid!';
+            $message = 'Email is not valid!';
         }
 
         return response()->json([
@@ -127,7 +134,18 @@ class LoginApiController extends Controller
     }
 
     public function verifyotp(Request $request)
-    {
+    {   
+        $validator = Validator::make($request->all(), [
+            'otp'     => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'success'   => false,
+                'message'   => 'OTP is not valid!'
+            ]);
+        }
+
         $otp = $request['otp'];
 
         $VerifyOtpQuery = User::select('otp')
