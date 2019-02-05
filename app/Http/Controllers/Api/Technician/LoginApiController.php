@@ -70,7 +70,7 @@ class LoginApiController extends Controller
             'success'   => $success,
             'message'   => $message,
             'token'     => $token
-        ], 200);
+        ]);
     }
 
     public function forgotpassword(Request $request)
@@ -123,21 +123,30 @@ class LoginApiController extends Controller
         return response()->json([
             'success'   => $success,
             'message'   => $message
-        ], 200);
+        ]);
     }
 
-    // public function verifyotp(Request $request)
-    // {
-    //     $otp = $request['otp'];
+    public function verifyotp(Request $request)
+    {
+        $otp = $request['otp'];
 
-    //     $VerifyOtpQuery = User::select('otp')
-    //     ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-    //     ->where('otp',$otp)
-    //     ->first();
+        $VerifyOtpQuery = User::select('otp')
+        ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+        ->where('otp',$otp)
+        ->first();
+        
+        $success = false;
+        $message = 'OTP is not valid!';
 
-    //     if(!empty($VerifyOtpQuery) && $VerifyOtpQuery != ''){
+        if(!empty($VerifyOtpQuery) && $VerifyOtpQuery != ''){
+            $success = true;
+            $message = 'Successfully verify OTP';
+        }
 
-    //     }
-    // }
+        return response()->json([
+            'success'   => $success,
+            'message'   => $message
+        ]);
+    }
 
 }
