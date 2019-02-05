@@ -109,7 +109,7 @@ class LoginApiController extends Controller
 
                 if($InsertNewOtpInTable == 1){
                     $success = true;
-                    $message = 'Successfully sent OTP please check you email!';
+                    $message = 'Successfully sent OTP please check your email!';
                 }
             }else{
                 $success = false;
