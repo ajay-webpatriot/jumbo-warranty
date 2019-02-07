@@ -23,4 +23,5 @@ Route::group(['prefix' => '/technician', 'namespace' => 'Api\Technician', 'as' =
        Route::post('/login','LoginApiController@login');
        Route::post('/forgotpassword','LoginApiController@forgotpassword');
        Route::post('/otp','LoginApiController@verifyotp');
+       Route::post('/setpassword','LoginApiController@setpassword');
 });
