@@ -129,7 +129,6 @@ class ServiceRequestsController extends Controller
 
     public function DataTableServiceRequestAjax(Request $request)
     { 
-          
         $columnArray = array();
         // echo "<pre>";
         // print_r(auth()->user()->role_id);
@@ -221,6 +220,9 @@ class ServiceRequestsController extends Controller
             $EditButtons = '';
             $DeleteButtons = '';
 
+            $serviceRequestObj = new ServiceRequest();  
+            $requestFilterCount =  $serviceRequestObj->getFilterRequestsCount($request->all());
+            
             $service_requestsQuery = ServiceRequest::select('customers.firstname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id')
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
@@ -359,7 +361,7 @@ class ServiceRequestsController extends Controller
         $json_data = array(
             "draw"            => intval($request['draw']),  
             "recordsTotal"    => intval($countRecord),  
-            "recordsFiltered" => intval(count($service_requests)),
+            "recordsFiltered" => intval($requestFilterCount),
             "data"            => $tableFieldData   
             );
 

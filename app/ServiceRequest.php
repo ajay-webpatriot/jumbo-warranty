@@ -197,4 +197,78 @@ class ServiceRequest extends Model
         return $this->belongsToMany(ProductPart::class, 'product_part_service_request')->withTrashed();
     }
     
+    public function getFilterRequestsCount($request)
+    {
+        // get total filter request list count
+        $service_requestsQuery = ServiceRequest::select('customers.firstname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id')
+            ->leftjoin('companies','service_requests.company_id','=','companies.id')
+            ->leftjoin('roles','service_requests.technician_id','=','roles.id')
+            ->leftjoin('customers','service_requests.customer_id','=','customers.id')
+            ->leftjoin('products','service_requests.product_id','=','products.id')
+            ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id');
+            
+            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+            {
+                $service_requestsQuery->Where('service_requests.service_center_id', auth()->user()->service_center_id);
+            }
+            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+            {
+                $service_requestsQuery->Where('service_requests.technician_id', auth()->user()->id);
+            }
+            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $service_requestsQuery->Where('service_requests.company_id', auth()->user()->company_id);
+            }
+
+            // filter data from table
+            if(!empty($request['company']))
+            {   
+                 $service_requestsQuery->Where('service_requests.company_id', $request['company']);
+            }
+            if(!empty($request['customer']))
+            {   
+                 $service_requestsQuery->Where('service_requests.customer_id', $request['customer']);
+            }
+            if(!empty($request['product']))
+            {   
+                 $service_requestsQuery->Where('service_requests.product_id', $request['product']);
+            }
+            if(!empty($request['serviceCenter']))
+            {   
+                 $service_requestsQuery->Where('service_requests.service_center_id', $request['serviceCenter']);
+            }
+            if(!empty($request['technician']))
+            {   
+                 $service_requestsQuery->Where('service_requests.technician_id', $request['technician']);
+            }
+
+            //Search from table
+            if(!empty($request['search']['value']))
+            { 
+                $searchVal = $request['search']['value'];
+                $service_requestsQuery->where(function ($query) use ($searchVal) {
+
+                    if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    {
+                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+
+                    }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+                        $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
+
+                    }else{
+
+                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                        $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
+                    }
+                    $query->orWhere('customers.firstname', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
+
+                });
+            }
+
+            return $service_requestsQuery->count('service_requests.id');
+    }
 }
