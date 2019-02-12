@@ -19,12 +19,125 @@
     </p> -->
     @endcan
 
+    <!-- Filter portion start -->
+    <div class="panel panel-default">
+        <div class="panel-heading headerTitle">
+            <a data-toggle="collapse" href="#collapseAdvanceFilter">Advance Filters</a>
+        </div>
+        <div id="collapseAdvanceFilter" class="panel-collapse in" role="tabpanel">
+            <div class="panel-body">
+                <div class="row">
+                    <!-- Company & Customer -->
+                    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'', ['class' => 'control-label']) !!}
 
+                                @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                    {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
+                                    {!! Form::hidden('filter_company', auth()->user()->company_id, ['class' => 'form-control', 'id' => 'filter_company']) !!}
+                                @else
+                                    {!! Form::select('filter_company', $companies, old('filter_company'), ['class' => 'form-control select2','onchange' => 'requestCustomerFilter(this)', 'id' => 'filter_company']) !!}
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    <div class="filterCompanyDetails">
+                    @else
+                    <div class="filterCompanyDetails" style="display: none;">
+                    @endif    
+                        <div class="col-md-4">
+                            <div class="row"> 
+                                <div class="col-xs-12">
+                                    {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'', ['class' => 'control-label']) !!}
+                                    {!! Form::select('filter_customer', $customers, old('filter_customer'), ['class' => 'form-control select2', 'id' => 'filter_customer']) !!}
+                                    <p class="help-block"></p>
+                                    @if($errors->has('customer_id'))
+                                    <p class="help-block">
+                                        {{ $errors->first('customer_id') }}
+                                    </p>
+                                    @endif
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="col-md-4">
+                            <div class="col-xs-12">
+                                {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'', ['class' => 'control-label']) !!}
+                                {!! Form::select('filter_product', $products,old('filter_product'), ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    <div class="col-md-6">
+                        <div class="row"> 
+                            <div class="col-xs-12">
+                                {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'', ['class' => 'control-label']) !!}
+                                {!! Form::select('filter_customer', $customers, old('filter_customer'), ['class' => 'form-control select2', 'id' => 'filter_customer']) !!}
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'', ['class' => 'control-label']) !!}
+                                {!! Form::select('filter_product', $products, old('filter_product'), ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    
+                </div>
+
+                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                <div class="row">
+                    <!-- service center and technician filter -->
+                    <div class="col-md-6">
+                        <div class="row"> 
+                            <div class="col-xs-12">
+                                {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
+                                @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                                    {!! Form::text('service_center_name', $serviceCenterName[0], ['class' => 'form-control', 'placeholder' => 'Service Center Name','disabled' => '']) !!}
+                                    {!! Form::hidden('servicew_center_id', auth()->user()->service_center_id, ['class' => 'form-control', 'id' => 'filter_service_center']) !!}
+                                @else
+                                    {!! Form::select('filter_service_center', $service_centers, old('filter_service_center'), ['class' => 'form-control select2','onchange' => 'requestTechnicianFilter(this)', 'id' => 'filter_service_center']) !!}
+                                @endif
+                            </div>
+                        </div> 
+                    </div>
+                    @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                        <div class="col-md-6 filterTechnicianDiv">
+                    @else
+                        <div class="col-md-6 filterTechnicianDiv" style="display: none;">
+                    @endif
+                        <div class="row"> 
+                            <div class="col-xs-12">
+                                {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
+
+                                @if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                                    {!! Form::text('technician_name', auth()->user()->name, ['class' => 'form-control', 'placeholder' => 'Service Center Name','disabled' => '']) !!}
+                                    {!! Form::hidden('filter_technician', auth()->user()->id, ['class' => 'form-control', 'id' => 'filter_technician']) !!}
+                                @else
+                                    {!! Form::select('filter_technician', $technicians, old('filter_technician_id'), ['class' => 'form-control select2', 'id' => 'filter_technician']) !!}
+                                @endif
+
+
+                                
+                                
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    <!-- Filter portion end -->
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
             @lang('quickadmin.service-request.title')
         </div>
-
         <div class="panel-body table-responsive">
             @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             
@@ -118,7 +231,7 @@
         
         @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             // service center admin and technician
-            $('#technician').DataTable({
+            var tableServiceRequest = $('#technician').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "order": [[ 0, "desc" ]],
@@ -147,7 +260,16 @@
                         "url": APP_URL+"/admin/DataTableServiceRequestAjax",
                         "type":"POST",
                         "dataType": "json",
-                        "data":{"_token": "{{csrf_token()}}"}
+                        // "data":{"_token": "{{csrf_token()}}"}
+                        "data":function(data) {
+                            data.company = $('#filter_company').val();
+                            data.customer = $('#filter_customer').val();
+                            data.product = $('#filter_product').val();
+                            data.serviceCenter = $('#filter_service_center').val();
+                            data.technician = $('#filter_technician').val();
+                            data._token = "{{csrf_token()}}";
+
+                        },
                     },
                 "columns": [
                     { "data": "sr_no" },
@@ -194,7 +316,7 @@
             
         @elseif(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
             // company admin and company user
-            $('#company').DataTable({
+            var tableServiceRequest = $('#company').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "order": [[ 1, "desc" ]],
@@ -223,7 +345,14 @@
                         "url": APP_URL+"/admin/DataTableServiceRequestAjax",
                         "type":"POST",
                         "dataType": "json",
-                        "data":{"_token": "{{csrf_token()}}"}
+                        // "data":{"_token": "{{csrf_token()}}"}
+                        "data":function(data) {
+                            data.company = $('#filter_company').val();
+                            data.customer = $('#filter_customer').val();
+                            data.product = $('#filter_product').val();
+                            data._token = "{{csrf_token()}}";
+
+                        },
                     },
                 "columns": [
                     
@@ -277,7 +406,7 @@
 
         @else
             // admin and super admin
-            $('#serviceRequest').DataTable({
+            var tableServiceRequest = $('#serviceRequest').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "order": [[ 1, "desc" ]],
@@ -306,7 +435,16 @@
                         "url": APP_URL+"/admin/DataTableServiceRequestAjax",
                         "type":"POST",
                         "dataType": "json",
-                        "data":{"_token": "{{csrf_token()}}"}
+                        // "data":{"_token": "{{csrf_token()}}"}
+                        "data":function(data) {
+                            data.company = $('#filter_company').val();
+                            data.customer = $('#filter_customer').val();
+                            data.product = $('#filter_product').val();
+                            data.serviceCenter = $('#filter_service_center').val();
+                            data.technician = $('#filter_technician').val();
+                            data._token = "{{csrf_token()}}";
+
+                        },
                     },
                 "columns": [
                     
@@ -373,5 +511,51 @@
         //             $('#serviceRequest').parent().append('<div class="actions"><a href="' + window.route_mass_crud_entries_destroy + '" class="btn btn-xs btn-danger js-delete-selected" style="margin-top:0.755em;margin-left: 20px;">'+window.deleteButtonTrans+'</a></div>');
         //         }
         // } );
+        function requestCustomerFilter(ele) {
+
+            // get customers and product in company filter change from service request list page
+            var companyId = $(ele).val();
+            $.ajax({
+                type:'GET',
+                url:APP_URL+'/admin/getCompanyDetails',
+                data:{
+                    'companyId':companyId
+                },
+                dataType: "json",
+                success:function(data) {
+                    $(".filterCompanyDetails").show();
+                    $(".filterCompanyDetails").find(".select2").select2();
+                    $("#filter_customer").html(data.custOptions);
+                    $("#filter_product").html(data.productOptions);
+
+                    tableServiceRequest.draw();
+                }
+            });
+            
+        }
+
+        function requestTechnicianFilter(ele) {
+
+            var serviceCenterId = $(ele).val();
+            $.ajax({
+                type:'GET',
+                url:APP_URL+'/admin/getTechnicians',
+                data:{
+                    'serviceCenterId':serviceCenterId
+                },
+                dataType: "json",
+                success:function(data) {
+                    $(".filterTechnicianDiv").show();
+                    $(".filterTechnicianDiv").find(".select2").select2();
+                    $("#filter_technician").html(data.options);
+
+                    tableServiceRequest.draw();
+                }
+            });
+        }
+
+        $(document).on("change","#filter_customer, #filter_product, #filter_technician",function(evt){
+            tableServiceRequest.draw();
+        });
     </script>
 @endsection

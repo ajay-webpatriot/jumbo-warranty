@@ -70,7 +70,53 @@ class ServiceRequestsController extends Controller
             
         // }
 
-        return view('admin.service_requests.index', compact('service_requests'));
+        // filter dropdown details
+
+        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $products=array(''=>trans('quickadmin.qa_please_select')); 
+            $customers = \App\Customer::where('company_id',auth()->user()->company_id)
+                                        ->where('status','Active')
+                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                                        
+            $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
+                                ->with('product_id')->get();
+            
+            if(count($company_products) > 0)
+            {
+                foreach($company_products as $key => $value)
+                {
+                    foreach($value->product_id as $details)
+                    {
+                        $products[$details->id]=$details->name;
+                    }
+                }
+            }             
+        }
+        else
+        {
+            $customers=\App\Customer::where('status','Active')
+                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+
+            $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        }
+        $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->get()->pluck('name');
+        if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+        {
+            $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                                    ->where('status','Active')
+                                    ->where('service_center_id',auth()->user()->service_center_id)
+                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        }
+        else
+        {
+            $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $technicians=array(''=>trans('quickadmin.qa_please_select'));
+        }
+        
+        return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians'));
 
         // $data=array('subject' => 'Request Creation Receive',
         //             'user_name' => 'Hinal patel'
@@ -185,26 +231,53 @@ class ServiceRequestsController extends Controller
             ->limit($limit)
             ->orderBy($order,$dir);
 
+            // filter data from table
+            if(!empty($request->input('company')))
+            {   
+                 $service_requestsQuery->Where('service_requests.company_id', $request['company']);
+            }
+            if(!empty($request->input('customer')))
+            {   
+                 $service_requestsQuery->Where('service_requests.customer_id', $request['customer']);
+            }
+            if(!empty($request->input('product')))
+            {   
+                 $service_requestsQuery->Where('service_requests.product_id', $request['product']);
+            }
+            if(!empty($request->input('serviceCenter')))
+            {   
+                 $service_requestsQuery->Where('service_requests.service_center_id', $request['serviceCenter']);
+            }
+            if(!empty($request->input('technician')))
+            {   
+                 $service_requestsQuery->Where('service_requests.technician_id', $request['technician']);
+            }
+
             //Search from table
             if(!empty($request->input('search.value')))
             { 
-                if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                {
-                    $service_requestsQuery->orWhere('companies.name', 'like', '%' . $request['search']['value'] . '%');
+                $searchVal = $request['search']['value'];
+                $service_requestsQuery->where(function ($query) use ($searchVal) {
 
-                }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+                    if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    {
+                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
 
-                    $service_requestsQuery->orWhere('service_centers.name', 'like', '%' . $request['search']['value'] . '%');
+                    }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
 
-                }else{
+                        $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
 
-                    $service_requestsQuery->orWhere('companies.name', 'like', '%' . $request['search']['value'] . '%');
-                    $service_requestsQuery->orWhere('service_centers.name', 'like', '%' . $request['search']['value'] . '%');
-                }
-                $service_requestsQuery->orWhere('customers.firstname', 'like', '%' . $request['search']['value'] . '%');
-                $service_requestsQuery->orWhere('products.name', 'like', '%' . $request['search']['value'] . '%');
-                $service_requestsQuery->orWhere('service_requests.amount', 'like', '%' . $request['search']['value'] . '%');
-                $service_requestsQuery->orWhere('service_requests.service_type', 'like', '%' . $request['search']['value'] . '%');
+                    }else{
+
+                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                        $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
+                    }
+                    $query->orWhere('customers.firstname', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
+
+                });
             }
             
             $service_requests = $service_requestsQuery->get();
@@ -212,7 +285,23 @@ class ServiceRequestsController extends Controller
         }
         if(!empty($service_requests)){
 
-            $countRecoard = ServiceRequest::count();
+            
+            // fetch total count according to logged in user
+            $countRecordQuery = ServiceRequest::select('*');
+            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+            {
+                $countRecordQuery->Where('service_requests.service_center_id', auth()->user()->service_center_id);
+            }
+            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+            {
+                $countRecordQuery->Where('service_requests.technician_id', auth()->user()->id);
+            }
+            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $countRecordQuery->Where('service_requests.company_id', auth()->user()->company_id);
+            }
+            $countRecord = $countRecordQuery->count('id');
+
 
             foreach ($service_requests as $key => $SingleServiceRequest) {
 
@@ -269,8 +358,8 @@ class ServiceRequestsController extends Controller
                
         $json_data = array(
             "draw"            => intval($request['draw']),  
-            "recordsTotal"    => intval($countRecoard),  
-            "recordsFiltered" => intval($countRecoard),
+            "recordsTotal"    => intval($countRecord),  
+            "recordsFiltered" => intval(count($service_requests)),
             "data"            => $tableFieldData   
             );
 
