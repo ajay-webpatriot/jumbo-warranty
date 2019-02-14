@@ -90,7 +90,6 @@ class LoginApiController extends Controller
                             'phone',
                             'address_1',
                             'address_2',
-                            'location_address',
                             'city',
                             'state',
                             'zipcode'
@@ -186,7 +185,6 @@ class LoginApiController extends Controller
                         'phone',
                         'address_1',
                         'address_2',
-                        'location_address',
                         'city',
                         'state',
                         'zipcode'
@@ -265,7 +263,6 @@ class LoginApiController extends Controller
                 'phone',
                 'address_1',
                 'address_2',
-                'location_address',
                 'city',
                 'state',
                 'zipcode'
@@ -363,7 +360,6 @@ class LoginApiController extends Controller
                             'phone',
                             'address_1',
                             'address_2',
-                            'location_address',
                             'city',
                             'state',
                             'zipcode'
