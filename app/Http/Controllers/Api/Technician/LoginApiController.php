@@ -16,29 +16,38 @@ use App\Http\Requests\Admin\UpdateLoginApiController;
 
 class LoginApiController extends Controller
 {
-    public function login(Request $request)
+    public function login()
     { 
-        $validator = Validator::make($request->all(), [
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later.";
+        $response  = (object)array();
+        $UserArray = '';
+
+        $json  = json_decode(file_get_contents("php://input"),true);
+
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => ''
+            ]);
+        }
+
+        $validator = Validator::make($json, [
             'email'     => 'required|email',
             'password'  => 'required',
         ]);
 
         if($validator->fails()){
             return response()->json([
-                'success'   => false,
+                'status'    => $status,
                 'message'   => 'Email or Password is not valid!',
-                'data'     => ''
+                'data'      => ''
             ]);
         }
 
-        $email          = $request['email'];
-        $password       = $request['password'];
-        
-        $success        = false;
-        $message        = 'Email or Password is not valid!';
-        
-        $UserArray      = array();
-        $TechicianData  = '';
+        $email    = $json['email'];
+        $password = $json['password'];
 
         //User object
         $user = new User();
@@ -47,79 +56,99 @@ class LoginApiController extends Controller
         ->where('email',$email)
         ->where('status','Active')
         ->first();
-        
-        // password hash check with database
-        $passwordExist = Hash::check($password, $LoginQueryResult->password);
 
-        if($passwordExist == 1){
+        if(!empty($LoginQueryResult)){
 
-            //generate token
-            $token = CommonFunctions::getHashCode();
+            $passwordExist = Hash::check($password, $LoginQueryResult->password);
 
-            if(!empty($token) && $token != ''){
+            if($passwordExist == 1){
+            
+                //First time login set value
+                if($LoginQueryResult->is_first_login == 0){
+                    $LoginQueryResult->is_first_login = 1;
+                }
 
-                //update access token in database
-                $LoginQueryResult->access_token = $token;
-                $LoginQueryResult->save();
+                //Generate Token
+                $token = CommonFunctions::getHashCode();
 
-                if($LoginQueryResult){
+                if(!empty($token) && $token != ''){
 
-                    //Get technician all data
-                    $UserArray = $user->select(
-                        'id',
-                        'name',
-                        'access_token',
-                        'role_id',
-                        'company_id',
-                        'service_center_id',
-                        'phone',
-                        'address_1',
-                        'address_2',
-                        'location_address',
-                        'city',
-                        'state',
-                        'zipcode'
-                    )
-                    ->where('id',$LoginQueryResult->id)->first();
-                    
-                    $success        = true;
-                    $message        = 'You are successfully login';
-                    $TechicianData  = $UserArray;
+                    $LoginQueryResult->access_token = $token;
+                    $LoginQueryResult->save();
+
+                    if($LoginQueryResult){
+
+                        //Get technician all data
+                        $response->UserArray = $user->select(
+                            'id',
+                            'name',
+                            'access_token',
+                            'role_id',
+                            'company_id',
+                            'is_first_login',
+                            'service_center_id',
+                            'phone',
+                            'address_1',
+                            'address_2',
+                            'city',
+                            'state',
+                            'zipcode'
+                        )
+                        ->where('id',$LoginQueryResult->id)->first();
+
+                        $UserArray  = $response->UserArray;
+                        $status     = 1;
+                        $message    = "Successfully Login.";
+                    }
+                }else{
+                    $message = "Invalid token!";
                 }
             }else{
-                $message        = 'Token is not valid';
-                $success        = false;
-                $TechicianData  = '';
+                $message = "Wrong password!";
             }
+        }else{
+            $message = "Email is not valid!";
         }
 
         return response()->json([
-            'success'   => $success,
+            'status'   => $status,
             'message'   => $message,
-            'data'      => $TechicianData
+            'data'      => $UserArray
 
         ]);
     }
 
-    public function forgotpassword(Request $request)
+    public function forgotpassword()
     {
-        //validate email
-        $validator = Validator::make($request->all(), [
+
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later.";
+        $response  = (object)array();
+        $UserArray = '';
+
+        $json  = json_decode(file_get_contents("php://input"),true);
+
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => ''
+            ]);
+        }
+
+        $validator = Validator::make($json, [
             'email' => 'required|email'
         ]);
 
         if($validator->fails()){
             return response()->json([
-                'success'   => false,
+                'status'    => $status,
                 'message'   => 'Email is not valid!',
                 'data'      => ''
             ]);
         }
 
-        $email = $request['email'];
-
-        $UserArray      = array();
-        $TechicianData  = '';
+        $email = $json['email'];
 
         //User object
         $user = new User();
@@ -129,8 +158,8 @@ class LoginApiController extends Controller
         ->where('email',$email)
         ->where('status','Active')
         ->first();
-
-        if(!empty($ForgotPasswordQuery) && $ForgotPasswordQuery != ''){
+        
+        if(!empty($ForgotPasswordQuery)){
             
             //generate 6 digit otp string
             $otp = CommonFunctions::getHashCode(6);
@@ -146,7 +175,7 @@ class LoginApiController extends Controller
 
                 if($ForgotPasswordQuery){
 
-                    $UserArray = $user->select(
+                    $response->UserArray = $user->select(
                         'id',
                         'name',
                         'access_token',
@@ -156,67 +185,75 @@ class LoginApiController extends Controller
                         'phone',
                         'address_1',
                         'address_2',
-                        'location_address',
                         'city',
                         'state',
                         'zipcode'
                     )
                     ->where('id',$ForgotPasswordQuery->id)->first();
-
-                    $success        = true;
-                    $message        = 'Successfully sent OTP please check your email!';
-                    $TechicianData  = $UserArray;
+                    
+                    $UserArray = $response->UserArray;
+                    $status    = 1;
+                    $message   = 'Successfully sent OTP please check your email!';                   
                 }
             }else{
-                $success        = false;
-                $message        = 'Erro sending OTP!';
-                $TechicianData  = '';
+                $message = 'Error sending OTP!';
             }
         }else{
-            $success        = false;
-            $message        = 'Email is not valid!';
-            $TechicianData  = '';
+            $message = 'Email is not valid!';
         }
 
         return response()->json([
-            'success'   => $success,
+            'success'   => $status,
             'message'   => $message,
-            'data'      => $TechicianData
+            'data'      => $UserArray
         ]);
     }
 
-    public function verifyotp(Request $request)
+    public function verifyotp()
     {   
-        $validator = Validator::make($request->all(), [
-            'otp'  => 'required'
+        $status    = 0;
+        $message   = 'Some error occurred. Please try again later.';
+        $response  = (object)array();
+        $UserArray = '';
+
+        $json  = json_decode(file_get_contents("php://input"),true);
+
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => ''
+            ]);
+        }
+
+        $validator = Validator::make($json, [
+            'otp'  => 'required',
+            'email' => 'required|email'
         ]);
 
         if($validator->fails()){
             return response()->json([
-                'success'   => false,
-                'message'   => 'OTP is not valid!'
+                'success'   => $status,
+                'message'   => $message,
+                'data'      => ''
             ]);
         }
 
-        $otp  = $request['otp'];
-
-        $UserArray      = array();
-        $TechicianData  = '';
-
-        $success = false;
-        $message = 'OTP is not valid!';
+        $otp  = $json['otp'];
+        $email  = $json['email'];
 
         //User object
         $user = new User();
 
         $VerifyOtpQuery = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
         ->where('otp',$otp)
+        ->where('email',$email)
         ->where('status','Active')
         ->first();
+        
+        if(!empty($VerifyOtpQuery)){
 
-        if(!empty($VerifyOtpQuery) && $VerifyOtpQuery != ''){
-
-            $UserArray  = $VerifyOtpQuery->select(
+            $response->UserArray  = $VerifyOtpQuery->select(
                 'id',
                 'name',
                 'access_token',
@@ -226,7 +263,6 @@ class LoginApiController extends Controller
                 'phone',
                 'address_1',
                 'address_2',
-                'location_address',
                 'city',
                 'state',
                 'zipcode'
@@ -234,39 +270,56 @@ class LoginApiController extends Controller
             ->where('otp',$otp)
             ->first();
 
-            $success        = true;
-            $message        = 'Successfully verify OTP';
-            $TechicianData  = $UserArray;
+            $status     = 1;
+            $message    = 'Successfully verify OTP';
+            $UserArray  = $response->UserArray;
+
+            //Reset OTP
+            $VerifyOtpQuery->otp = '';
+            $VerifyOtpQuery->save();
+
         }
 
         return response()->json([
-            'success'   => $success,
+            'status'    => $status,
             'message'   => $message,
-            'data'      => $TechicianData
+            'data'      => $UserArray
         ]);
     }
 
-    public function setpassword(Request $request)
+    public function setpassword()
     {
-        $validator = Validator::make($request->all(), [
+        $status    = 0;
+        $message   = 'Some error occurred. Please try again later.';
+        $response  = (object)array();
+        $UserArray = '';
+
+        $json  = json_decode(file_get_contents("php://input"),true);
+
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => ''
+            ]);
+        }
+        
+        $validator = Validator::make($json, [
             'new_password'     => 'required',
             'confirm_password' => 'required'
         ]);
 
         if($validator->fails()){
             return response()->json([
-                'success'   => false,
+                'status'   => 0,
                 'message'   => 'Please fill the fields!',
                 'data'      => ''
             ]);
         }
             
-        $userId = $request['user_id'];
-        $NewPassword = $request['new_password'];
-        $ConfirmPassword = $request['confirm_password'];
-
-        $UserArray      = array();
-        $TechicianData  = '';
+        $userId = $json['user_id'];
+        $NewPassword = $json['new_password'];
+        $ConfirmPassword = $json['confirm_password'];
 
         //User object
         $user = new User();
@@ -284,13 +337,20 @@ class LoginApiController extends Controller
                 ->first();
                 
                 if($SetNewPasswordQuery){
+
+                    if($SetNewPasswordQuery->is_first_login == 0){
+                        $SetNewPasswordQuery->is_first_login = 1;
+                        $SetNewPasswordQuery->update();
+                    }
+                    
+                    //Update New Password
                     $updatePassword = User::find($userId);
                     $updatePassword->password = $NewPassword;
                     $updatePassword->update();
+                    
+                    if($updatePassword != ''){
 
-                    if($SetNewPasswordQuery){
-
-                        $UserArray  = $user->select(
+                        $response->UserArray  = $user->select(
                             'id',
                             'name',
                             'access_token',
@@ -300,7 +360,6 @@ class LoginApiController extends Controller
                             'phone',
                             'address_1',
                             'address_2',
-                            'location_address',
                             'city',
                             'state',
                             'zipcode'
@@ -308,35 +367,31 @@ class LoginApiController extends Controller
                         ->where('id',$userId)
                         ->first();
             
-                        $success        = true;
-                        $message        = 'Successfully change password';
-                        $TechicianData  = $UserArray;
+                        $status     = 1;
+                        $message    = 'Successfully change password';
+                        $UserArray  = $response->UserArray;
+
                     }else{
-                        $success        = false;
-                        $message        = 'Error updating OTP!';
-                        $TechicianData  = '';
+
+                        $message = 'Error updating password!';
                     }
                 }else{
-                    $success        = false;
-                    $message        = 'User is not valid!';
-                    $TechicianData  = '';
+
+                    $message = 'User is not valid!';
                 }
             }else{
-                $success        = false;
-                $message        = 'Password is not matched';
-                $TechicianData  = '';
+
+                $message = 'Password is not matched';
             }
         }else{
-            $success        = false;
-            $message        = 'User is not valid!';
-            $TechicianData  = '';
+
+            $message = 'User is not valid!';
         }
 
         return response()->json([
-            'success'   => $success,
+            'status'   => $status,
             'message'   => $message,
-            'data'      => $TechicianData
+            'data'      => $UserArray
         ]);
     }
-
 }
