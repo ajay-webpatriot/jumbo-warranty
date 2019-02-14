@@ -19,7 +19,7 @@ class LoginApiController extends Controller
     public function login()
     { 
         $status    = 0;
-        $message   = "Some error occurred. Please try again later.";
+        $message   = "Please fill required fields!";
         $response  = (object)array();
         $UserArray = '';
 
@@ -122,7 +122,7 @@ class LoginApiController extends Controller
     {
 
         $status    = 0;
-        $message   = "Some error occurred. Please try again later.";
+        $message   = "Please fill required fields!";
         $response  = (object)array();
         $UserArray = '';
 
@@ -193,7 +193,7 @@ class LoginApiController extends Controller
                     
                     $UserArray = $response->UserArray;
                     $status    = 1;
-                    $message   = 'Successfully sent OTP please check your email!';                   
+                    $message   = 'OTP sent successfully, please check your email.';                   
                 }
             }else{
                 $message = 'Error sending OTP!';
@@ -212,7 +212,7 @@ class LoginApiController extends Controller
     public function verifyotp()
     {   
         $status    = 0;
-        $message   = 'Some error occurred. Please try again later.';
+        $message   = "Please fill required fields!";
         $response  = (object)array();
         $UserArray = '';
 
@@ -271,13 +271,17 @@ class LoginApiController extends Controller
             ->first();
 
             $status     = 1;
-            $message    = 'Successfully verify OTP';
+            $message    = 'OTP is verifed successfully.';
             $UserArray  = $response->UserArray;
 
             //Reset OTP
             $VerifyOtpQuery->otp = '';
             $VerifyOtpQuery->save();
 
+        }
+        else
+        {
+            $message = "Please enter valid OTP!";
         }
 
         return response()->json([
@@ -290,7 +294,7 @@ class LoginApiController extends Controller
     public function setpassword()
     {
         $status    = 0;
-        $message   = 'Some error occurred. Please try again later.';
+        $message   = "Please fill required fields!";
         $response  = (object)array();
         $UserArray = '';
 
@@ -312,7 +316,7 @@ class LoginApiController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'   => 0,
-                'message'   => 'Please fill the fields!',
+                'message'   => 'Please fill required fields!',
                 'data'      => ''
             ]);
         }
@@ -368,7 +372,7 @@ class LoginApiController extends Controller
                         ->first();
             
                         $status     = 1;
-                        $message    = 'Successfully change password';
+                        $message    = 'Password is changed successfully.';
                         $UserArray  = $response->UserArray;
 
                     }else{
@@ -381,7 +385,7 @@ class LoginApiController extends Controller
                 }
             }else{
 
-                $message = 'Password is not matched';
+                $message = 'Password is not matched!';
             }
         }else{
 
