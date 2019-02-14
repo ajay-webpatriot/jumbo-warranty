@@ -38,12 +38,12 @@
                                     {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
                                     {!! Form::hidden('filter_company', auth()->user()->company_id, ['class' => 'form-control', 'id' => 'filter_company']) !!}
                                 @else
-                                    {!! Form::select('filter_company', $companies, old('filter_company'), ['class' => 'form-control select2','onchange' => 'requestCustomerFilter(this)', 'id' => 'filter_company']) !!}
+                                    {!! Form::select('filter_company', $companies, ($request->session()->has('filter_company'))? $request->session()->get('filter_company'):'', ['class' => 'form-control select2','onchange' => 'requestCustomerFilter(this)', 'id' => 'filter_company']) !!}
                                 @endif
                             </div>
                         </div>
                     </div>
-                    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    @if((auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')) || $request->session()->has('filter_company'))
                     <div class="filterCompanyDetails">
                     @else
                     <div class="filterCompanyDetails" style="display: none;">
@@ -52,7 +52,7 @@
                             <div class="row"> 
                                 <div class="col-xs-12">
                                     {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'', ['class' => 'control-label']) !!}
-                                    {!! Form::select('filter_customer', $customers, old('filter_customer'), ['class' => 'form-control select2', 'id' => 'filter_customer']) !!}
+                                    {!! Form::select('filter_customer', $customers, ($request->session()->has('filter_customer'))? $request->session()->get('filter_customer'):'', ['class' => 'form-control select2', 'id' => 'filter_customer']) !!}
                                     <p class="help-block"></p>
                                     @if($errors->has('customer_id'))
                                     <p class="help-block">
@@ -65,7 +65,7 @@
                         <div class="col-md-4">
                             <div class="col-xs-12">
                                 {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'', ['class' => 'control-label']) !!}
-                                {!! Form::select('filter_product', $products,old('filter_product'), ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
+                                {!! Form::select('filter_product', $products,($request->session()->has('filter_product'))? $request->session()->get('filter_product'):'', ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
                             </div>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                         <div class="row"> 
                             <div class="col-xs-12">
                                 {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'', ['class' => 'control-label']) !!}
-                                {!! Form::select('filter_customer', $customers, old('filter_customer'), ['class' => 'form-control select2', 'id' => 'filter_customer']) !!}
+                                {!! Form::select('filter_customer', $customers, ($request->session()->has('filter_customer'))? $request->session()->get('filter_customer'):'', ['class' => 'form-control select2', 'id' => 'filter_customer']) !!}
                             </div>
                         </div> 
                     </div>
@@ -82,7 +82,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'', ['class' => 'control-label']) !!}
-                                {!! Form::select('filter_product', $products, old('filter_product'), ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
+                                {!! Form::select('filter_product', $products, ($request->session()->has('filter_product'))? $request->session()->get('filter_product'):'', ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
                             </div>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                 </div>
 
                 @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
-                <div class="row">
+                <div class="row form-group">
                     <!-- service center and technician filter -->
                     <div class="col-md-6">
                         <div class="row"> 
@@ -101,12 +101,12 @@
                                     {!! Form::text('service_center_name', $serviceCenterName[0], ['class' => 'form-control', 'placeholder' => 'Service Center Name','disabled' => '']) !!}
                                     {!! Form::hidden('servicew_center_id', auth()->user()->service_center_id, ['class' => 'form-control', 'id' => 'filter_service_center']) !!}
                                 @else
-                                    {!! Form::select('filter_service_center', $service_centers, old('filter_service_center'), ['class' => 'form-control select2','onchange' => 'requestTechnicianFilter(this)', 'id' => 'filter_service_center']) !!}
+                                    {!! Form::select('filter_service_center', $service_centers, ($request->session()->has('filter_service_center'))? $request->session()->get('filter_service_center'):'', ['class' => 'form-control select2','onchange' => 'requestTechnicianFilter(this)', 'id' => 'filter_service_center']) !!}
                                 @endif
                             </div>
                         </div> 
                     </div>
-                    @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                    @if((auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')) || $request->session()->has('filter_service_center'))
                         <div class="col-md-6 filterTechnicianDiv">
                     @else
                         <div class="col-md-6 filterTechnicianDiv" style="display: none;">
@@ -119,17 +119,21 @@
                                     {!! Form::text('technician_name', auth()->user()->name, ['class' => 'form-control', 'placeholder' => 'Service Center Name','disabled' => '']) !!}
                                     {!! Form::hidden('filter_technician', auth()->user()->id, ['class' => 'form-control', 'id' => 'filter_technician']) !!}
                                 @else
-                                    {!! Form::select('filter_technician', $technicians, old('filter_technician_id'), ['class' => 'form-control select2', 'id' => 'filter_technician']) !!}
+                                    {!! Form::select('filter_technician', $technicians, ($request->session()->has('filter_technician'))? $request->session()->get('filter_technician'):'', ['class' => 'form-control select2', 'id' => 'filter_technician']) !!}
                                 @endif
-
-
-                                
-                                
                             </div>
                         </div> 
                     </div>
                 </div>
                 @endif
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p class="text-right">
+                            <a href="{{url('/admin/clearRequestFilterAjax')}}"  id="clearRequestFilter" class="btn btn-danger">@lang('quickadmin.service-request.clear-filter')</a>
+                            
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -523,7 +527,10 @@
                 },
                 dataType: "json",
                 success:function(data) {
-                    $(".filterCompanyDetails").show();
+                    if(companyId != "")
+                    {
+                        $(".filterCompanyDetails").show();
+                    }
                     $(".filterCompanyDetails").find(".select2").select2();
                     $("#filter_customer").html(data.custOptions);
                     $("#filter_product").html(data.productOptions);
@@ -545,11 +552,32 @@
                 },
                 dataType: "json",
                 success:function(data) {
-                    $(".filterTechnicianDiv").show();
+                    if(serviceCenterId != ""){
+                        $(".filterTechnicianDiv").show();
+                    }
                     $(".filterTechnicianDiv").find(".select2").select2();
                     $("#filter_technician").html(data.options);
 
                     tableServiceRequest.draw();
+                }
+            });
+        }
+        function clearRequestFilter() {
+            // clear service request list filter and set dropdown value to null
+            $.ajax({
+                type:'POST',
+                url:APP_URL+'/admin/clearRequestFilterAjax',
+                data:{
+                    "_token": "{{csrf_token()}}"
+                },
+                dataType: "json",
+                success:function(data) {
+                    $("#filter_company").val('').select2().trigger("change");
+                    $("#filter_customer").val('').select2();
+                    $("#filter_product").val('').select2();
+
+                    $("#filter_service_center").val('').select2().trigger("change");
+                    $("#filter_technician").val('').select2();
                 }
             });
         }

@@ -20,6 +20,7 @@ use Spatie\Permission\Models\Permission as perm;
 use GoogleAPIHelper;
 use Dompdf\Dompdf;
 use SendMailHelper;
+use Session;
 
 class ServiceRequestsController extends Controller
 {
@@ -43,7 +44,9 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
-        
+        // echo "<pre>"; 
+        // print_r(session::all());exit;
+        // echo "<pre>"; print_r (session::all()); echo "</pre>"; exit();
 
         // if (request('show_deleted') == 1) {
         //     if (! Gate::allows('service_request_delete')) {
@@ -97,10 +100,37 @@ class ServiceRequestsController extends Controller
         }
         else
         {
-            $customers=\App\Customer::where('status','Active')
+            // if($request->session()->has('filter_company')){
+            if(!empty(session('filter_company'))){
+
+                $customers=\App\Customer::where('status','Active')
+                                        ->where('company_id',session('filter_company'))
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
-            $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                $products=array(''=>trans('quickadmin.qa_please_select')); 
+                $company_products = \App\AssignProduct::where('company_id',session('filter_company'))
+                ->with('product_id')->get();
+                
+                if(count($company_products) > 0)
+                {
+                    foreach($company_products as $key => $value)
+                    {
+                        foreach($value->product_id as $details)
+                        {
+                            $products[$details->id]=$details->name;
+                        }
+                    }
+                } 
+            }
+            else
+            {
+                $customers=\App\Customer::where('status','Active')
+                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            }
+            
+
+            
         }
         $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->get()->pluck('name');
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
@@ -113,7 +143,18 @@ class ServiceRequestsController extends Controller
         else
         {
             $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-            $technicians=array(''=>trans('quickadmin.qa_please_select'));
+            if(!empty(session('filter_service_center')))
+            {
+                $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                                    ->where('status','Active')
+                                    ->where('service_center_id',session('filter_service_center'))
+                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            }
+            else
+            {
+                $technicians=array(''=>trans('quickadmin.qa_please_select'));
+            }
+            
         }
         
         return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians'));
@@ -236,23 +277,28 @@ class ServiceRequestsController extends Controller
             // filter data from table
             if(!empty($request->input('company')))
             {   
-                 $service_requestsQuery->Where('service_requests.company_id', $request['company']);
+                $request->session()->put('filter_company', $request['company']);
+                $service_requestsQuery->Where('service_requests.company_id', $request['company']);
             }
             if(!empty($request->input('customer')))
             {   
-                 $service_requestsQuery->Where('service_requests.customer_id', $request['customer']);
+                $request->session()->put('filter_customer', $request['customer']);
+                $service_requestsQuery->Where('service_requests.customer_id', $request['customer']);
             }
             if(!empty($request->input('product')))
             {   
-                 $service_requestsQuery->Where('service_requests.product_id', $request['product']);
+                $request->session()->put('filter_product', $request['product']);
+                $service_requestsQuery->Where('service_requests.product_id', $request['product']);
             }
             if(!empty($request->input('serviceCenter')))
             {   
-                 $service_requestsQuery->Where('service_requests.service_center_id', $request['serviceCenter']);
+                $request->session()->put('filter_service_center', $request['serviceCenter']);
+                $service_requestsQuery->Where('service_requests.service_center_id', $request['serviceCenter']);
             }
             if(!empty($request->input('technician')))
             {   
-                 $service_requestsQuery->Where('service_requests.technician_id', $request['technician']);
+                $request->session()->put('filter_technician', $request['technician']);
+                $service_requestsQuery->Where('service_requests.technician_id', $request['technician']);
             }
 
             //Search from table
@@ -1385,7 +1431,13 @@ class ServiceRequestsController extends Controller
         exit;
     
     }
-
+    public function clearRequestFilterAjax(Request $request)
+    {
+        // clear service request list filter dropdown
+        $request->session()->forget(['filter_company', 'filter_customer', 'filter_product', 'filter_service_center', 'filter_technician']);
+        
+        return redirect()->route('admin.service_requests.index');
+    }
 
 
 

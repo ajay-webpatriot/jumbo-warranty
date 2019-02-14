@@ -142,6 +142,7 @@ return [
 	'service-request' => [
 		'title' => 'Service Requests',
 		'formTitle' => 'Service Request',
+		'clear-filter' => 'Clear Filter',
 		'fields' => [
 			'company' => 'Company',
 			'customer' => 'Customer',
