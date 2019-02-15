@@ -51,7 +51,7 @@
                                     @if ( request('show_deleted') != 1 )<td></td>@endif
                                 @endcan
 
-                                <td field-key='km_charge'>{{ $manage_charge->km_charge }}</td>
+                                <td class="text-right" field-key='km_charge'>{{ number_format($manage_charge->km_charge,2) }}</td>
                                 <td field-key='status'>{{ $manage_charge->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

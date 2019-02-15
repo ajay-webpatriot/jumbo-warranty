@@ -14,3 +14,10 @@
 	vertical-align: middle;
     margin-left: 2%;
 }
+.paddingFormele
+{
+	padding:6px 12px;
+}
+.datatable th{
+	text-align: center !important;
+}

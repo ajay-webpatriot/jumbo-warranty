@@ -59,8 +59,8 @@
                                 @endcan
 
                                 <td field-key='name'>{{ $company->name }}</td>
-                                <td field-key='credit'>{{ $company->credit }}</td>
-                                <td field-key='installation_charge'>{{ $company->installation_charge }}</td>
+                                <td class="text-right" field-key='credit'>{{ number_format($company->credit,2) }}</td>
+                                <td class="text-right" field-key='installation_charge'>{{ number_format($company->installation_charge,2) }}</td>
                                 <td field-key='address_1'>{{ $company->address_1 }}</td>
                                 <td field-key='address_2'>{{ $company->address_2 }}</td>
                                 <td field-key='city'>{{ $company->city }}</td>

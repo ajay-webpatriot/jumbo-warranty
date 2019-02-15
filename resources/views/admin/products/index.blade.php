@@ -55,7 +55,7 @@
 
                                 <td field-key='name'>{{ $product->name }}</td>
                                 <td field-key='category'>{{ $product->category->name or '' }}</td>
-                                <td field-key='price'>{{ $product->price }}</td>
+                                <td class="text-right" field-key='price'>{{ number_format($product->price,2) }}</td>
                                 <td field-key='status'>{{ $product->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

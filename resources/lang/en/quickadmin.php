@@ -522,6 +522,7 @@ return [
 	'qa_if_you_are_having_trouble' => 'If you’re having trouble clicking the',
 	'qa_copy_paste_url_bellow' => 'button, copy and paste the URL below into your web browser:',
 	'qa_please_select' => 'Please select',
+	'qa_show_all' => 'Show All',
 	'qa_register' => 'Register',
 	'qa_registration' => 'Registration',
 	'qa_not_approved_title' => 'You are not approved',

@@ -75,14 +75,14 @@ class ServiceRequestsController extends Controller
 
         // filter dropdown details
 
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
-            $products=array(''=>trans('quickadmin.qa_please_select')); 
+            $products=array(''=>trans('quickadmin.qa_show_all')); 
             $customers = \App\Customer::where('company_id',auth()->user()->company_id)
                                         ->where('status','Active')
-                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
                                         
             $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
                                 ->with('product_id')->get();
@@ -100,14 +100,16 @@ class ServiceRequestsController extends Controller
         }
         else
         {
+            $customers=array(''=>trans('quickadmin.qa_show_all'));
+            $products=array(''=>trans('quickadmin.qa_show_all'));
             // if($request->session()->has('filter_company')){
             if(!empty(session('filter_company'))){
 
                 $customers=\App\Customer::where('status','Active')
                                         ->where('company_id',session('filter_company'))
-                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
 
-                $products=array(''=>trans('quickadmin.qa_please_select')); 
+                $products=array(''=>trans('quickadmin.qa_show_all')); 
                 $company_products = \App\AssignProduct::where('company_id',session('filter_company'))
                 ->with('product_id')->get();
                 
@@ -122,11 +124,31 @@ class ServiceRequestsController extends Controller
                     }
                 } 
             }
-            else
+            else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             {
-                $customers=\App\Customer::where('status','Active')
-                                        ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-                $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                // fetch product and customer of assigned request to service center admin for filter functionality
+                $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+                if(count($service_requests) > 0)
+                {
+                    foreach($service_requests as $key => $value)
+                    {
+                        $customers[$value->customer_id]=$value->customer->firstname;
+                        $products[$value->product_id]=$value->product->name;
+                    }
+                }   
+            }
+            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+            {
+                // fetch product and customer of assigned request to technician for filter functionality
+                $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+                if(count($service_requests) > 0)
+                {
+                    foreach($service_requests as $key => $value)
+                    {
+                        $customers[$value->customer_id]=$value->customer->firstname;
+                        $products[$value->product_id]=$value->product->name;
+                    }
+                }  
             }
             
 
@@ -138,21 +160,21 @@ class ServiceRequestsController extends Controller
             $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
                                     ->where('status','Active')
                                     ->where('service_center_id',auth()->user()->service_center_id)
-                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         }
         else
         {
-            $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             if(!empty(session('filter_service_center')))
             {
                 $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
                                     ->where('status','Active')
                                     ->where('service_center_id',session('filter_service_center'))
-                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             }
             else
             {
-                $technicians=array(''=>trans('quickadmin.qa_please_select'));
+                $technicians=array(''=>trans('quickadmin.qa_show_all'));
             }
             
         }
@@ -274,6 +296,20 @@ class ServiceRequestsController extends Controller
             ->limit($limit)
             ->orderBy($order,$dir);
 
+            // fetch service request according to logged in user
+            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+            {
+                $service_requestsQuery->Where('service_requests.service_center_id', auth()->user()->service_center_id);
+            }
+            else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+            {
+                $service_requestsQuery->Where('service_requests.technician_id', auth()->user()->id);
+            }
+            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $service_requestsQuery->Where('service_requests.company_id', auth()->user()->company_id);
+            }
+
             // filter data from table and store into session variable
             if(!empty($request->input('company')))
             {   
@@ -282,7 +318,7 @@ class ServiceRequestsController extends Controller
             }
             else
             {
-                $request->session()->put('filter_company', '');
+                $request->session()->forget('filter_company');
             }
             if(!empty($request->input('customer')))
             {   
@@ -291,7 +327,7 @@ class ServiceRequestsController extends Controller
             }
             else
             {
-                $request->session()->put('filter_customer', '');
+                $request->session()->forget('filter_customer');
             }
             if(!empty($request->input('product')))
             {   
@@ -300,7 +336,7 @@ class ServiceRequestsController extends Controller
             }
             else
             {
-                $request->session()->put('filter_product', '');
+                $request->session()->forget('filter_product');
             }
             if(!empty($request->input('serviceCenter')))
             {   
@@ -309,7 +345,7 @@ class ServiceRequestsController extends Controller
             }
             else
             {
-                $request->session()->put('filter_service_center', '');
+                $request->session()->forget('filter_service_center');
             }
             if(!empty($request->input('technician')))
             {   
@@ -318,7 +354,7 @@ class ServiceRequestsController extends Controller
             }
             else
             {
-                $request->session()->put('filter_technician', '');
+                $request->session()->forget('filter_technician');
             }
 
             //Search from table
@@ -398,7 +434,7 @@ class ServiceRequestsController extends Controller
                 $tableField['customer'] = $SingleServiceRequest->firstname;
                 $tableField['service_type'] =$SingleServiceRequest->service_type;
                 $tableField['product'] =$SingleServiceRequest->pname;
-                $tableField['amount'] =$SingleServiceRequest->amount;
+                $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
                 $tableField['request_status'] =$SingleServiceRequest->status;
 
                 if (Gate::allows('service_request_view')) {
@@ -1458,7 +1494,89 @@ class ServiceRequestsController extends Controller
         
         return redirect()->route('admin.service_requests.index');
     }
+    public function getFilterCompanyDetails(Request $request)
+    {
+        
+        // ajx function to get customers, product and parts of particular company
+        
+        $details=$request->all();
 
+        $data['custOptions']="<option value=''>".trans('quickadmin.qa_show_all')."</option>";
+        $data['partOptions']="";
+        $data['productOptions']="<option value=''>".trans('quickadmin.qa_show_all')."</option>";
+
+        if($details['companyId'] != "")
+        {
+            $customers = \App\Customer::where('company_id',$details['companyId'])
+                                ->where('status','Active')->get();
+
+            $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
+                                ->with('product_parts')->get();
+
+            $products = \App\AssignProduct::where('company_id',$details['companyId'])
+                                ->with('product_id')->get();
+            // echo count($product_parts);
+            //             echo "<pre>"; print_r ($product_parts); echo "</pre>"; exit();        
+            if(count($customers) > 0)
+            {
+                foreach($customers as $key => $value)
+                {
+                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname.' '.$value->lastname."</option>";   
+                }   
+            }
+            if(count($product_parts) > 0)
+            {
+                foreach($product_parts as $key => $value)
+                {
+                    $data['partOptions'].="<option value='".$value->product_parts->id."'>".$value->product_parts->name."</option>";   
+                    
+                }   
+            }
+            if(count($products) > 0)
+            {
+                foreach($products as $key => $value)
+                {
+                    // echo "<pre>"; print_r ($value->product_id); echo "</pre>"; exit();
+                    foreach($value->product_id as $details)
+                    {
+                        $data['productOptions'].="<option value='".$details->id."'>".$details->name."</option>";   
+                    }
+                }   
+            }
+        }
+        echo json_encode($data);
+        exit;
+    }
+    public function getFilterTechnicians(Request $request)
+    {
+        
+        // ajx function to get technicians of particular service center
+        
+        $details=$request->all();
+        $data['options']="<option value=''>".trans('quickadmin.qa_show_all')."</option>";
+        if($details['serviceCenterId'] != "")
+        {
+            $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                        ->orderby('name');
+
+            $query->where('service_center_id',$details['serviceCenterId']);
+            $query->where('status','Active');
+            
+            $technicians = $query->get();
+            if(count($technicians) > 0)
+            {
+                foreach($technicians as $key => $value)
+                {
+                    $data['options'].="<option value='".$value->id."'>".$value->name."</option>";
+                    
+                }
+                
+            }
+        }
+        echo json_encode($data);
+        exit;
+    
+    }
 
 
 }

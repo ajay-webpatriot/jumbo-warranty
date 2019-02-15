@@ -53,7 +53,7 @@
                                 @endcan
 
                                 <td field-key='name'>{{ $category->name }}</td>
-                                <td field-key='service_charge'>{{ $category->service_charge }}</td>
+                                <td class="text-right" field-key='service_charge'>{{ number_format($category->service_charge,2) }}</td>
                                 <td field-key='status'>{{ $category->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

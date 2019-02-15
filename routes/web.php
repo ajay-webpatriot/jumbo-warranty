@@ -101,7 +101,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     //service request ajax
     Route::post('/DataTableServiceRequestAjax','Admin\ServiceRequestsController@DataTableServiceRequestAjax');
 
+    // service request filter
     Route::get('/clearRequestFilterAjax','Admin\ServiceRequestsController@clearRequestFilterAjax');
+    Route::get('/getFilterCompanyDetails','Admin\ServiceRequestsController@getFilterCompanyDetails');
+    Route::get('/getFilterTechnicians','Admin\ServiceRequestsController@getFilterTechnicians');
     
 });
   
