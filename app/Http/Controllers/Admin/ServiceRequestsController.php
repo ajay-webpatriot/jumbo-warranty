@@ -274,31 +274,51 @@ class ServiceRequestsController extends Controller
             ->limit($limit)
             ->orderBy($order,$dir);
 
-            // filter data from table
+            // filter data from table and store into session variable
             if(!empty($request->input('company')))
             {   
                 $request->session()->put('filter_company', $request['company']);
                 $service_requestsQuery->Where('service_requests.company_id', $request['company']);
+            }
+            else
+            {
+                $request->session()->put('filter_company', '');
             }
             if(!empty($request->input('customer')))
             {   
                 $request->session()->put('filter_customer', $request['customer']);
                 $service_requestsQuery->Where('service_requests.customer_id', $request['customer']);
             }
+            else
+            {
+                $request->session()->put('filter_customer', '');
+            }
             if(!empty($request->input('product')))
             {   
                 $request->session()->put('filter_product', $request['product']);
                 $service_requestsQuery->Where('service_requests.product_id', $request['product']);
+            }
+            else
+            {
+                $request->session()->put('filter_product', '');
             }
             if(!empty($request->input('serviceCenter')))
             {   
                 $request->session()->put('filter_service_center', $request['serviceCenter']);
                 $service_requestsQuery->Where('service_requests.service_center_id', $request['serviceCenter']);
             }
+            else
+            {
+                $request->session()->put('filter_service_center', '');
+            }
             if(!empty($request->input('technician')))
             {   
                 $request->session()->put('filter_technician', $request['technician']);
                 $service_requestsQuery->Where('service_requests.technician_id', $request['technician']);
+            }
+            else
+            {
+                $request->session()->put('filter_technician', '');
             }
 
             //Search from table
