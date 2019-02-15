@@ -59,9 +59,11 @@
                             </div> 
                         </div>
                         <div class="col-md-4">
-                            <div class="col-xs-12">
-                                {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'', ['class' => 'control-label']) !!}
-                                {!! Form::select('filter_product', $products,($request->session()->has('filter_product'))? $request->session()->get('filter_product'):'', ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
+                            <div class="row"> 
+                                <div class="col-xs-12">
+                                    {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'', ['class' => 'control-label']) !!}
+                                    {!! Form::select('filter_product', $products,($request->session()->has('filter_product'))? $request->session()->get('filter_product'):'', ['class' => 'form-control select2', 'id' => 'filter_product']) !!}
+                                </div>
                             </div>
                         </div>
                     </div>
