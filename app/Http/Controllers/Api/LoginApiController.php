@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Technician;
+namespace App\Http\Controllers\Api;
 
 use App\User;
 use App\Helpers\CommonFunctions;
@@ -8,11 +8,7 @@ use App\Helpers\SendMail;
 use Hash;
 use Validator;
 use App\ServiceRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreLoginApiController;
-use App\Http\Requests\Admin\UpdateLoginApiController;
-
 
 class LoginApiController extends Controller
 {
@@ -21,18 +17,20 @@ class LoginApiController extends Controller
         $status    = 0;
         $message   = "Please fill required fields!";
         $response  = (object)array();
-        $UserArray = '';
+        $UserArray = (object)array();
 
+        /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
 
         if($json == null || count($json) == 0 || empty($json)) {
             return response()->json([
                 'status'    => $status,
                 'message'   => $message,
-                'data'      => ''
+                'data'      => (object)array()
             ]);
         }
 
+        /* Validate input */
         $validator = Validator::make($json, [
             'email'     => 'required|email',
             'password'  => 'required',
@@ -42,14 +40,14 @@ class LoginApiController extends Controller
             return response()->json([
                 'status'    => $status,
                 'message'   => 'Email or Password is not valid!',
-                'data'      => ''
+                'data'      => (object)array()
             ]);
         }
 
         $email    = $json['email'];
         $password = $json['password'];
 
-        //User object
+        /* User object */
         $user = new User();
 
         $LoginQueryResult = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
@@ -62,30 +60,25 @@ class LoginApiController extends Controller
             $passwordExist = Hash::check($password, $LoginQueryResult->password);
 
             if($passwordExist == 1){
-            
-                //First time login set value
-                if($LoginQueryResult->is_first_login == 0){
-                    $LoginQueryResult->is_first_login = 1;
-                }
 
-                //Generate Token
+                /* Generate token */
                 $token = CommonFunctions::getHashCode();
 
                 if(!empty($token) && $token != ''){
 
+                    /* Insert new Access token */
                     $LoginQueryResult->access_token = $token;
                     $LoginQueryResult->save();
 
                     if($LoginQueryResult){
 
-                        //Get technician all data
+                        /* Get technician all data */
                         $response->UserArray = $user->select(
                             'id',
                             'name',
                             'access_token',
                             'role_id',
                             'company_id',
-                            'is_first_login',
                             'service_center_id',
                             'phone',
                             'address_1',
@@ -110,8 +103,9 @@ class LoginApiController extends Controller
             $message = "Email is not valid!";
         }
 
+        /* Json response */
         return response()->json([
-            'status'   => $status,
+            'status'    => $status,
             'message'   => $message,
             'data'      => $UserArray
 
@@ -126,6 +120,7 @@ class LoginApiController extends Controller
         $response  = (object)array();
         $UserArray = '';
 
+        /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
 
         if($json == null || count($json) == 0 || empty($json)) {
@@ -136,7 +131,8 @@ class LoginApiController extends Controller
             ]);
         }
 
-        $validator = Validator::make($json, [
+        /* Validate input */
+        $validator  = Validator::make($json, [
             'email' => 'required|email'
         ]);
 
@@ -150,7 +146,7 @@ class LoginApiController extends Controller
 
         $email = $json['email'];
 
-        //User object
+        /* User object */
         $user = new User();
 
         $ForgotPasswordQuery = $user->select('email','id')
@@ -161,20 +157,21 @@ class LoginApiController extends Controller
         
         if(!empty($ForgotPasswordQuery)){
             
-            //generate 6 digit otp string
+            /* Generate 6 digit otp string */
             $otp = CommonFunctions::getHashCode(6);
 
-            //send otp email
+            /* Send otp email */
             $EmailSendResponse = SendMail::forgotpasswordApiMail($ForgotPasswordQuery->email,$otp);
                
             if($EmailSendResponse == 1){
 
-                //update otp in table
+                /* Update otp in table */
                 $ForgotPasswordQuery->otp = $otp;
                 $ForgotPasswordQuery->save();
 
                 if($ForgotPasswordQuery){
 
+                    /* Get technician all data */
                     $response->UserArray = $user->select(
                         'id',
                         'name',
@@ -202,6 +199,7 @@ class LoginApiController extends Controller
             $message = 'Email is not valid!';
         }
 
+        /* Json response */
         return response()->json([
             'success'   => $status,
             'message'   => $message,
@@ -216,6 +214,7 @@ class LoginApiController extends Controller
         $response  = (object)array();
         $UserArray = '';
 
+        /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
 
         if($json == null || count($json) == 0 || empty($json)) {
@@ -226,8 +225,9 @@ class LoginApiController extends Controller
             ]);
         }
 
-        $validator = Validator::make($json, [
-            'otp'  => 'required',
+        /* Validate input */
+        $validator  = Validator::make($json, [
+            'otp'   => 'required',
             'email' => 'required|email'
         ]);
 
@@ -239,10 +239,10 @@ class LoginApiController extends Controller
             ]);
         }
 
-        $otp  = $json['otp'];
+        $otp    = $json['otp'];
         $email  = $json['email'];
 
-        //User object
+        /* User object */
         $user = new User();
 
         $VerifyOtpQuery = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
@@ -253,6 +253,7 @@ class LoginApiController extends Controller
         
         if(!empty($VerifyOtpQuery)){
 
+            /* Get technician all data */
             $response->UserArray  = $VerifyOtpQuery->select(
                 'id',
                 'name',
@@ -274,16 +275,15 @@ class LoginApiController extends Controller
             $message    = 'OTP is verifed successfully.';
             $UserArray  = $response->UserArray;
 
-            //Reset OTP
+            /* Reset OTP */
             $VerifyOtpQuery->otp = '';
             $VerifyOtpQuery->save();
 
-        }
-        else
-        {
+        }else{
             $message = "Please enter valid OTP!";
         }
 
+        /* Json response */
         return response()->json([
             'status'    => $status,
             'message'   => $message,
@@ -298,6 +298,7 @@ class LoginApiController extends Controller
         $response  = (object)array();
         $UserArray = '';
 
+        /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
 
         if($json == null || count($json) == 0 || empty($json)) {
@@ -308,6 +309,7 @@ class LoginApiController extends Controller
             ]);
         }
         
+        /* Validate input */
         $validator = Validator::make($json, [
             'new_password'     => 'required',
             'confirm_password' => 'required'
@@ -315,22 +317,22 @@ class LoginApiController extends Controller
 
         if($validator->fails()){
             return response()->json([
-                'status'   => 0,
+                'status'    => 0,
                 'message'   => 'Please fill required fields!',
                 'data'      => ''
             ]);
         }
             
-        $userId = $json['user_id'];
-        $NewPassword = $json['new_password'];
+        $userId          = $json['user_id'];
+        $NewPassword     = $json['new_password'];
         $ConfirmPassword = $json['confirm_password'];
 
-        //User object
+        /* User object */
         $user = new User();
                  
         if(isset($userId)){
 
-            //Match both password is equal or not
+            /* Match both password is equal or not */
             $MatchPassword = strcmp($NewPassword,$ConfirmPassword);
 
             if($MatchPassword == 0){
@@ -341,19 +343,15 @@ class LoginApiController extends Controller
                 ->first();
                 
                 if($SetNewPasswordQuery){
-
-                    if($SetNewPasswordQuery->is_first_login == 0){
-                        $SetNewPasswordQuery->is_first_login = 1;
-                        $SetNewPasswordQuery->update();
-                    }
                     
-                    //Update New Password
+                    /* Update New Password */
                     $updatePassword = User::find($userId);
                     $updatePassword->password = $NewPassword;
                     $updatePassword->update();
                     
                     if($updatePassword != ''){
 
+                        /* Get technician all data */
                         $response->UserArray  = $user->select(
                             'id',
                             'name',
@@ -392,8 +390,107 @@ class LoginApiController extends Controller
             $message = 'User is not valid!';
         }
 
+        /* Json response */
         return response()->json([
-            'status'   => $status,
+            'status'    => $status,
+            'message'   => $message,
+            'data'      => $UserArray
+        ]);
+    }
+
+    public function dashboard()
+    {
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later!";
+        $response  = (object)array();
+        $UserArray = '';
+
+        /* Json input */
+        $json  = json_decode(file_get_contents("php://input"),true);
+
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => ''
+            ]);
+        }
+        
+        /* Validate input */
+        $validator = Validator::make($json, [
+            'user_id' => 'required',
+            'token'   => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Some error occurred. Please try again later!',
+                'data'      => ''
+            ]);
+        }
+
+        $userId = $json['user_id'];
+        $token  = $json['token'];
+        
+        /* All count response */
+        $CountResult                    = 0;
+        $response->AssignedCount = 0;
+        $response->todayDueCount      = 0;
+        $response->overDueCount  = 0;
+        $response->ResolvedCount = 0;
+
+        $TodayDate = date('Y-m-d H:i:s');
+
+        /* User object */
+        $user = new User();
+                 
+        if(isset($userId)){
+
+            $DashBoardQuery = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+            ->where('id',$userId)
+            ->Where('access_token', 'like', '%' . $token . '%')
+            ->where('status','Active')
+            ->first();
+            
+            if(!empty($DashBoardQuery)){
+
+                /* Service request object */
+                $serviceRequest = new ServiceRequest();
+
+                /* Assigned request count */
+                $response->AssignedCount  = $serviceRequest->AssignedRequest($userId,'count');
+
+                /* Assigned request list */
+                $response->AssignedList   = $serviceRequest->AssignedRequest($userId);
+
+                /* TodayDue request count */
+                $response->todayDueCount  = $serviceRequest->getTechnicianDueRequest($userId,'todaydue','count');
+                
+                /* OverDue request count */
+                $response->overDueCount   = $serviceRequest->getTechnicianDueRequest($userId,'overdue','count');
+
+                /* TodayDue request List */
+                $response->todayDueList   = $serviceRequest->getTechnicianDueRequest($userId,'todaydue');
+
+                /* OverDue request List */
+                $response->overDueList    = $serviceRequest->getTechnicianDueRequest($userId,'overdue');
+
+                /* Resolved request list */
+                $response->ResolvedList   = $serviceRequest->ResolvedRequest($userId);
+
+                /* Resolved request count */
+                $response->ResolvedCount   = $serviceRequest->ResolvedRequest($userId,'count');
+
+                $status     = 1;
+                $UserArray  = $response;
+                $message    = '';
+            }
+        }
+
+        /* Json response */
+        return response()->json([
+            'status'    => $status,
             'message'   => $message,
             'data'      => $UserArray
         ]);

@@ -19,9 +19,15 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
         Route::resource('invoices', 'InvoicesController', ['except' => ['create', 'edit']]);
 
 });
-Route::group(['prefix' => '/technician', 'namespace' => 'Api\Technician', 'as' => 'api.'], function () {
+Route::group(['namespace' => 'Api', 'as' => 'api.'], function () {
        Route::post('/login','LoginApiController@login');
        Route::post('/forgotpassword','LoginApiController@forgotpassword');
        Route::post('/otp','LoginApiController@verifyotp');
        Route::post('/setpassword','LoginApiController@setpassword');
+       Route::post('/dashboard','ServiceRequestApiController@dashboard');
+       Route::post('/getassignedrequestlist','ServiceRequestApiController@getAssignedRequestList');
+       Route::post('/gettodayduerequestlist','ServiceRequestApiController@getTodayDueRequestList');
+       Route::post('/getoverduerequestlist','ServiceRequestApiController@getOverDueRequestList');
+       Route::post('/getresolvedrequestlist','ServiceRequestApiController@getResolvedRequestList');
+
 });

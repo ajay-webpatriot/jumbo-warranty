@@ -271,4 +271,81 @@ class ServiceRequest extends Model
 
             return $service_requestsQuery->count('service_requests.id');
     }
+
+    public function getTechnicianAssignedRequest($technicianId,$type = NULL)
+    {   
+        $assignedRequest = ServiceRequest::where('service_requests.technician_id',$technicianId)
+        ->where('service_requests.status','!=','Closed');
+      
+        if($type == 'count'){
+            return $assignedRequest->count();
+        }else{
+
+            /* select parameters */
+            $assignedRequest->select('service_requests.id','service_requests.service_type',
+                'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
+                DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+                DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+                LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+                'service_requests.is_accepted'
+            )
+            ->join('customers','service_requests.customer_id','=','customers.id')
+            ->join('products','service_requests.product_id','=','products.id');
+            
+            return $assignedRequest->get()->toArray();
+        }
+    }
+
+    public function getTechnicianDueRequest($technicianId,$duration,$type = NULL)
+    {
+        $todayDate = date('Y-m-d');
+        
+        $dueRequest = ServiceRequest::where('technician_id',$technicianId)
+        ->where('service_requests.is_accepted',1)
+        ->where('service_requests.status','!=','Closed');
+        
+        if($duration == 'todaydue'){
+            $dueRequest->whereRaw("DATE_FORMAT(completion_date, '%Y-%m-%d') = '".$todayDate."'");
+        }else if($duration == 'overdue'){
+            $dueRequest->whereRaw("DATE_FORMAT(completion_date, '%Y-%m-%d') < '".$todayDate."'");
+        }
+        
+        if($type == 'count'){
+            return $dueRequest->count();
+        }else{
+            $dueRequest->select('service_requests.id','service_requests.service_type',
+                'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
+                DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+                DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+                LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+                'service_requests.is_accepted'
+            )
+            ->join('customers','service_requests.customer_id','=','customers.id')
+            ->join('products','service_requests.product_id','=','products.id');
+            return $dueRequest->get();
+        }
+    }
+
+    public function getTechnicianResolvedRequest($technicianId,$type = NULL)
+    {   
+        $resolvedRequest = ServiceRequest::where('technician_id',$technicianId)
+        ->where('service_requests.is_accepted',1)
+        ->where('service_requests.status','=','Closed');
+
+        if($type == 'count'){
+            return $resolvedRequest->count();
+        }
+        else{
+            $resolvedRequest->select('service_requests.id','service_requests.service_type',
+                'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
+                DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+                DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+                LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+                'service_requests.is_accepted'
+            )
+            ->join('customers','service_requests.customer_id','=','customers.id')
+            ->join('products','service_requests.product_id','=','products.id');
+            return $resolvedRequest->get();
+        }
+    }
 }
