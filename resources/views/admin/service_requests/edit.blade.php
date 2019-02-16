@@ -677,14 +677,25 @@
     </div>
 
    <!-- Form Buttons -->
-    <div class="row">
-        <div class="col-md-12 form-group">
-            {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate']) !!}
-            <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
-            {!! Form::close() !!}
+    @if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && !$service_request->is_accepted)
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <a href="{{ route('admin.service_request.accept',[$service_request->id]) }}" 
+                     class="btn btn-danger">
+                @lang('quickadmin.qa_accept')</a>
+                <a href="{{ route('admin.service_request.reject',[$service_request->id]) }}" class="btn btn-default">@lang('quickadmin.qa_reject')</a>
+                {!! Form::close() !!}
+            </div>
         </div>
-    </div>
-    
+    @else
+        <div class="row">
+            <div class="col-md-12 form-group">
+                {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate']) !!}
+                <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    @endif
     <div class="panel panel-default">
        
 
@@ -773,11 +784,12 @@
                 $("textarea").prop("readonly", true);
                 $("select").prop("disabled", true);
 
-                $("#adavance_amount").prop("readonly", false);
-                $("#service_charge").prop("readonly", false);
-                $("#service_tag").prop("readonly", false);
+                // $("#adavance_amount").prop("readonly", false);
+                // $("#service_charge").prop("readonly", false);
+                // $("#service_tag").prop("readonly", false);
+                $("#additional_charges_title").prop("readonly", false);
                 $("#additional_charges").prop("readonly", false);
-                $("#amount").prop("readonly", false);
+                // $("#amount").prop("readonly", false);
 
                 $("#selectall-parts").prop("disabled", false);
                 $("#status").prop("disabled", false);

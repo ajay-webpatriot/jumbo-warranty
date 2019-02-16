@@ -106,5 +106,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::get('/getFilterCompanyDetails','Admin\ServiceRequestsController@getFilterCompanyDetails');
     Route::get('/getFilterTechnicians','Admin\ServiceRequestsController@getFilterTechnicians');
     
+    Route::get('service_request_accept/{id}', ['uses' => 'Admin\ServiceRequestsController@acceptServiceRequest', 'as' => 'service_request.accept']);
+    Route::get('service_request_reject/{id}', ['uses' => 'Admin\ServiceRequestsController@rejectServiceRequest', 'as' => 'service_request.reject']);
+
 });
   

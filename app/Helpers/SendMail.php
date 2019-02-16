@@ -170,6 +170,68 @@ class SendMail
         
   
   }
+
+  public static function sendRequestAcceptRejectMail($request_id){
+        // send mail to service center admin and admin
+        $service_request = ServiceRequest::findOrFail($request_id);
+        
+        $technician= \App\User::where('id',$service_request->technician_id)->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->first();
+        $technician_name=ucwords($technician->name);
+
+        $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))->get()->first();
+        $service_center_admin_email=$service_center_admin->email;
+
+        $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))->get()->first();
+        $admin_email=$admin->email;
+
+        if($service_request->is_accepted){
+          $subject = "Service Request Accepted";
+          $update_message = $technician_name." has accepted service request.";
+        }
+        else
+        {
+          $subject = "Service Request Rejected";
+          $update_message = $technician_name." has rejected service request.";
+        }
+    
+
+        $receiver_email=array('admin' => $admin_email,
+                              'service_center_admin' => $service_center_admin_email,
+                              'other' => 'hinal.webpatriot@gmail.com'
+                            );
+       
+        foreach ($receiver_email as $key => $value) {
+
+          if($key == 'admin')
+          {
+            $username = $admin->name;
+          }
+          else if($key == 'service_center_admin'){
+            $username = $service_center_admin->name;
+          }
+          else
+          {
+            $username ='hinal patel';
+          }
+          $to_email=$value;
+          $data=array('subject' => 'Service Request',
+                'user_name' => ucwords($username),
+                'service_request' => $service_request,
+                'receiver_email' => $value,
+                'update_message' => $update_message
+                );
+      
+          Mail::send('admin.emails.service_request_acceptReject_email',$data, function ($message)  use ( $to_email,$username,$subject){
+                    $message->to($to_email,$username)
+                      ->subject($subject)
+                      ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+                      // here comes what you want
+                      // ->setBody('Hi, welcome user!'); // assuming text/plain
+                      // or:
+                      // ->setBody('<h1>Hi, welcome user!</h1>', 'text/html'); // for HTML rich messages
+              });        
+        }
+  }
   
   public static function forgotpasswordApiMail($email,$OTP)
   { 

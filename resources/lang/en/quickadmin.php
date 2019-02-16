@@ -307,6 +307,8 @@ return [
 	'qa_trash' => 'Trash',
 	'qa_view' => 'View',
 	'qa_update' => 'Update',
+	'qa_accept' => 'Accept',
+	'qa_reject' => 'Reject',
 	'qa_list' => 'List',
 	'qa_no_entries_in_table' => 'No entries in table',
 	'qa_custom_controller_index' => 'Custom controller index.',

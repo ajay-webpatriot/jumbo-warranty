@@ -989,6 +989,27 @@ class ServiceRequestsController extends Controller
         }
         // return redirect()->route('admin.service_requests.index');
     }
+    public function acceptServiceRequest($id)
+    {
+        
+        $request = ServiceRequest::find($id);
+        if($request) {
+            $request->is_accepted = 1;
+            $request->save();
+        }
+        SendMailHelper::sendRequestAcceptRejectMail($id);
+        return redirect()->route('admin.service_requests.index');
+    }
+    public function rejectServiceRequest($id)
+    {
+        SendMailHelper::sendRequestAcceptRejectMail($id);
+        $request = ServiceRequest::find($id);
+        if($request) {
+            $request->technician_id = NULL;
+            $request->save();
+        }
+        return redirect()->route('admin.service_requests.index');
+    }
 
 
     /**
