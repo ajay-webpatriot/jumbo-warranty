@@ -115,19 +115,19 @@ class ServiceRequestApiController extends Controller
         /* Validate input */
         $validator = Validator::make($json, [
             'user_id' => 'required',
-            'token'   => 'required'
+            'access_token'   => 'required'
         ]);
 
         if($validator->fails()){
             return response()->json([
                 'status'    => 0,
-                'message'   => 'Parameter missing: user_id,token.',
+                'message'   => 'Parameter missing: user_id,access_token.',
                 'data'      => (object)array()
             ]);
         }
 
         $user_id = trim($json['user_id']);
-        $token  = trim($json['token']);
+        $token  = trim($json['access_token']);
 
         $valid = $this->validateToken($user_id,$token);
         if(!$valid){
