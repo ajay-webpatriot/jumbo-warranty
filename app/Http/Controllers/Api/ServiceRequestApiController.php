@@ -143,7 +143,7 @@ class ServiceRequestApiController extends Controller
 
         /* Assigned request list */
         $response = $serviceRequest->getTechnicianAssignedRequest($user_id);
-        
+
         return response()->json([
             'status'    => 1,
             'message'   => '',
@@ -172,7 +172,7 @@ class ServiceRequestApiController extends Controller
         /* Validate input */
         $validator = Validator::make($json, [
             'user_id' => 'required',
-            'token'   => 'required'
+            'access_token'   => 'required'
         ]);
 
         if($validator->fails()){
@@ -184,7 +184,7 @@ class ServiceRequestApiController extends Controller
         }
         
         $user_id = trim($json['user_id']);
-        $token  = trim($json['token']);
+        $token  = trim($json['access_token']);
 
         $valid = $this->validateToken($user_id,$token);
         if(!$valid){
@@ -229,7 +229,7 @@ class ServiceRequestApiController extends Controller
         /* Validate input */
         $validator = Validator::make($json, [
             'user_id' => 'required',
-            'token'   => 'required'
+            'access_token'   => 'required'
         ]);
 
         if($validator->fails()){
@@ -241,7 +241,7 @@ class ServiceRequestApiController extends Controller
         }
         
         $user_id = trim($json['user_id']);
-        $token  = trim($json['token']);
+        $token  = trim($json['access_token']);
 
         $valid = $this->validateToken($user_id,$token);
         if(!$valid){
@@ -286,7 +286,7 @@ class ServiceRequestApiController extends Controller
         /* Validate input */
         $validator = Validator::make($json, [
             'user_id' => 'required',
-            'token'   => 'required'
+            'access_token'   => 'required'
         ]);
 
         if($validator->fails()){
@@ -298,7 +298,7 @@ class ServiceRequestApiController extends Controller
         }
         
         $user_id = trim($json['user_id']);
-        $token  = trim($json['token']);
+        $token  = trim($json['access_token']);
 
         $valid = $this->validateToken($user_id,$token);
         if(!$valid){
