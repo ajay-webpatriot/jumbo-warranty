@@ -330,7 +330,7 @@ class LoginApiController extends Controller
         /* User object */
         $user = new User();
                  
-        if(isset($userId) && !empty($user_id)){
+        if(isset($userId) && $userId != 0){
 
             /* Match both password is equal or not */
             $MatchPassword = strcmp($NewPassword,$ConfirmPassword);

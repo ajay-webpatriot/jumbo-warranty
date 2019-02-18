@@ -441,16 +441,88 @@ class ServiceRequestApiController extends Controller
         }
 
         if(isset($serviceRequestId) && $serviceRequestId != '' && $serviceRequestId != 0){
-            $serviceRequestDetail =   ServiceRequest::findOrFail($serviceRequestId);
 
+            /* Service request object, all data */
+            $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
+            
+            /* Service additional charge */
+            $additional_charge_array=json_decode($serviceRequestDetail['additional_charges']);
+            $additional_charge_title="";
+            $additional_charges="";
+
+            if(!empty($additional_charge_array))
+            {
+                /* Worked to display json value in edit page */ 
+                foreach ($additional_charge_array as $key => $value) {
+                    $additional_charge_title = str_replace('_empty_', '', $key);
+                    $additional_charges=$value;
+                }
+            }
+
+            $serviceRequestDetail->additional_charges = $additional_charges;
+
+            if(!empty($additional_charge_title) && !empty($service_request->additional_charges)){
+                $response->additionalCharges = $serviceRequestDetail->additional_charges;
+            }
+
+            /* Ttransportation charge */
+            if($serviceRequestDetail->transportation_charge > 0){
+                $response->transportationCharges = $serviceRequestDetail->transportation_charge;
+                $response->kilometersCharges = $serviceRequestDetail->km_charge;
+            }
+
+            $address_1 = '';
+            $address_2 = '';
+            $city      = '';
+            $state     = '';
+            $zipcode   = '';
+
+            /* Check blank address line one */
+            if($serviceRequestDetail->customer->address_1 != '' || $serviceRequestDetail->customer->address_1 != NULL){
+                $address_1 = $serviceRequestDetail->customer->address_1.',';
+            }
+
+            /* Check blank address line two */
+            if($serviceRequestDetail->customer->address_2 != '' || $serviceRequestDetail->customer->address_2 != NULL){
+                $address_2 = $serviceRequestDetail->customer->address_2.',';
+            }
+
+            /* Check blank city */
+            if($serviceRequestDetail->customer->city != '' || $serviceRequestDetail->customer->city != NULL){
+                $city = $serviceRequestDetail->customer->city.',';
+            }
+
+            /* Check blank state */
+            if($serviceRequestDetail->customer->state != '' || $serviceRequestDetail->customer->state != NULL){
+                $state = $serviceRequestDetail->customer->state.',';
+            }
+
+            /* Check blank zipcode */
+            if($serviceRequestDetail->customer->zipcode != '' || $serviceRequestDetail->customer->zipcode != NULL){
+                $state = $serviceRequestDetail->customer->zipcode.'.';
+            }
+            
             /* Overview data */
             $overview = (object)array(
                 "product_title" => ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name,
-                "created_at"    => $serviceRequestDetail->created_at,
-                "address"       => $serviceRequestDetail->customer->address_1.','.$serviceRequestDetail->customer->address_2.','.$serviceRequestDetail->customer->city.','.$serviceRequestDetail->customer->state.','.$serviceRequestDetail->customer->zipcode
-            );  
-            $response->overview = $overview;
+                "created_at"    => date('Y-m-d H:i:s',strtotime($serviceRequestDetail->created_at)),
+                "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode)
+            );   
             
+            $response->overview = $overview;
+
+            /* Unset customer data */
+            unset($serviceRequestDetail->customer->created_at);
+            unset($serviceRequestDetail->customer->updated_at);
+
+            /* Unset service center data */
+            unset($serviceRequestDetail->service_center->created_at);
+            unset($serviceRequestDetail->service_center->updated_at);
+
+            /* Unset product data */
+            unset($serviceRequestDetail->product->created_at);
+            unset($serviceRequestDetail->product->updated_at);
+
             /* Customer data */
             $customer = $serviceRequestDetail->customer;
             $response->customer = $customer;
@@ -475,12 +547,19 @@ class ServiceRequestApiController extends Controller
             $servicerequestlog = $serviceRequestDetail->servicerequestlog;  
             $response->serviceRequestLog = (object)$servicerequestlog;
 
+            /* Service total amount */
+            $response->totalAmount = $serviceRequestDetail->amount;
+
+            /* Service request status */
+            $response->serviceRequestStatus = $serviceRequestDetail->status;
+
             $status = 1;
+            $message = '';
         }
 
         return response()->json([
             'status'    => $status,
-            'message'   => '',
+            'message'   => $message,
             'data'      => $response
         ]);
     }
