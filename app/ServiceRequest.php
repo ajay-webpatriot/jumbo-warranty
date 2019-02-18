@@ -196,6 +196,11 @@ class ServiceRequest extends Model
     {
         return $this->belongsToMany(ProductPart::class, 'product_part_service_request')->withTrashed();
     }
+
+    public function servicerequestlog()
+    {
+        return $this->hasMany(ServiceRequestLog::class,'service_request_id');
+    }
     
     public function getFilterRequestsCount($request)
     {
@@ -348,4 +353,29 @@ class ServiceRequest extends Model
             return $resolvedRequest->get();
         }
     }
+
+    public function requestStatus($requestId,$status)
+    {   
+        $response = 0;
+        if($status == 1){
+           
+            $updateArray = array(
+                'is_accepted'  => 1,
+                'status'       =>'Started'
+            );
+        }else{
+            $updateArray = array(
+                'is_accepted'   => 0,
+                'technician_id' => NULL,
+                'status'        =>'Cancelled'
+            );
+        }
+        $requestStatus = ServiceRequest::where('id',$requestId)
+        ->where('status','!=','Closed')->update($updateArray);
+
+        if($requestStatus == 1){
+            $response = 1;
+        }
+        return $response;
+    } 
 }

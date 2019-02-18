@@ -1040,7 +1040,7 @@ class ServiceRequestsController extends Controller
         $service_request['additional_charges']=$additional_charges;
 
 
-        $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
+        $service_request_logs = $service_request->servicerequestlog;
         return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title'))->with('no', 1);
     }
 

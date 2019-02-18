@@ -300,7 +300,9 @@ class ServiceRequestApiController extends Controller
         $user_id = trim($json['user_id']);
         $token  = trim($json['access_token']);
 
+        /* Validate token and user id*/
         $valid = $this->validateToken($user_id,$token);
+
         if(!$valid){
             return response()->json([
                 'status'    => 0,
@@ -321,5 +323,165 @@ class ServiceRequestApiController extends Controller
             'data'      => $response
         ]);
        
+    }
+
+    public function getRequestStatus()
+    {
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later!";
+        $response  = (object)array();
+
+        /* Json input */
+        $json  = json_decode(file_get_contents("php://input"),true);
+
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => (object)array()
+            ]);
+        }
+        
+        /* Validate input */
+        $validator = Validator::make($json, [
+            'is_accept' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Parameter missing: is_accept',
+                'data'      => (object)array()
+            ]);
+        }
+
+        $user_id = trim($json['user_id']);
+        $token  = trim($json['access_token']);
+
+        /* Validate token and user id*/
+        $valid = $this->validateToken($user_id,$token);
+
+        $status = $json['is_accept'];
+        $request_id = $json['service_request_id'];
+
+        /* Service request object */
+        $serviceRequest = new ServiceRequest();
+
+        if(!$valid){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Invalid access token!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        /* Request status */
+        $response = $serviceRequest->requestStatus($request_id,$status);
+        
+        if($response == 1){
+            $status  = 1;
+            $message = 'Request status change';
+            $data    = (object)array();
+        }
+
+        return response()->json([
+            'status'    => $status,
+            'message'   => $message,
+            'data'      => (object)array()
+        ]);
+
+    }
+
+    public function getRequestDetail()
+    {
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later!";
+        $response  = (object)array();
+
+        /* Json input */
+        $json  = json_decode(file_get_contents("php://input"),true);
+        
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => (object)array()
+            ]);
+        }
+
+        /* Validate input */
+        $validator = Validator::make($json, [
+            'service_request_id' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Parameter missing: service_request_id!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        $user_id = trim($json['user_id']);
+        $token  = trim($json['access_token']);
+
+        /* Validate token and user id*/
+        $valid = $this->validateToken($user_id,$token);
+
+        $serviceRequestId = trim($json['service_request_id']);
+       
+        $serviceRequest = new ServiceRequest();
+
+        if(!$valid){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Invalid access token!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        if(isset($serviceRequestId) && $serviceRequestId != '' && $serviceRequestId != 0){
+            $serviceRequestDetail =   ServiceRequest::findOrFail($serviceRequestId);
+
+            /* Overview data */
+            $overview = (object)array(
+                "product_title" => ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name,
+                "created_at"    => $serviceRequestDetail->created_at,
+                "address"       => $serviceRequestDetail->customer->address_1.','.$serviceRequestDetail->customer->address_2.','.$serviceRequestDetail->customer->city.','.$serviceRequestDetail->customer->state.','.$serviceRequestDetail->customer->zipcode
+            );  
+            $response->overview = $overview;
+            
+            /* Customer data */
+            $customer = $serviceRequestDetail->customer;
+            $response->customer = $customer;
+
+            /* Service center data */
+            $serviceCenter = $serviceRequestDetail->service_center;
+            $response->serviceCenter = $serviceCenter;
+
+            /* Product data */
+            $product = $serviceRequestDetail->product;
+            $response->product = $product;
+
+            /* Complain data */
+            $complain = $serviceRequestDetail->complain_details;  
+            $response->complain = $complain;
+
+            /* Service charge data */
+            $service_charge = $serviceRequestDetail->service_charge;  
+            $response->serviceCharge = $service_charge;
+
+            /* Service request log data */
+            $servicerequestlog = $serviceRequestDetail->servicerequestlog;  
+            $response->serviceRequestLog = (object)$servicerequestlog;
+
+            $status = 1;
+        }
+
+        return response()->json([
+            'status'    => $status,
+            'message'   => '',
+            'data'      => $response
+        ]);
     }
 }
