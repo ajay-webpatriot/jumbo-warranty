@@ -12,16 +12,44 @@ use App\Http\Controllers\Controller;
 
 class LoginApiController extends Controller
 {
+    public function userData($user_id)
+    {  
+        $getUserData = '';
+        if(isset($user_id) && !empty($user_id) && $user_id != 0){
+
+            $getUserData = User::select(
+                'id',
+                'name',
+                'access_token',
+                'role_id',
+                'company_id',
+                'service_center_id',
+                'phone',
+                'address_1',
+                'address_2',
+                'city',
+                'state',
+                'zipcode'
+            )
+            ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+            ->where('id',$user_id)
+            ->where('status','Active')
+            ->first();
+        }
+       
+       return $getUserData;
+        
+    }
     public function login()
     { 
         $status    = 0;
-        $message   = "Please fill required fields!";
+        $message   = "Some error occurred. Please try again later!";
         $response  = (object)array();
         $UserArray = (object)array();
 
         /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
-
+        
         if($json == null || count($json) == 0 || empty($json)) {
             return response()->json([
                 'status'    => $status,
@@ -38,8 +66,8 @@ class LoginApiController extends Controller
 
         if($validator->fails()){
             return response()->json([
-                'status'    => $status,
-                'message'   => 'Email or Password is not valid!',
+                'status'    => 0,
+                'message'   => 'Parameter missing: email,password!',
                 'data'      => (object)array()
             ]);
         }
@@ -73,21 +101,7 @@ class LoginApiController extends Controller
                     if($LoginQueryResult){
 
                         /* Get technician all data */
-                        $response->UserArray = $user->select(
-                            'id',
-                            'name',
-                            'access_token',
-                            'role_id',
-                            'company_id',
-                            'service_center_id',
-                            'phone',
-                            'address_1',
-                            'address_2',
-                            'city',
-                            'state',
-                            'zipcode'
-                        )
-                        ->where('id',$LoginQueryResult->id)->first();
+                        $response->UserArray = $this->userData($LoginQueryResult->id);
 
                         $UserArray  = $response->UserArray;
                         $status     = 1;
@@ -116,9 +130,9 @@ class LoginApiController extends Controller
     {
 
         $status    = 0;
-        $message   = "Please fill required fields!";
+        $message   = "Some error occurred. Please try again later!";
         $response  = (object)array();
-        $UserArray = '';
+        $UserArray = (object)array();
 
         /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
@@ -127,7 +141,7 @@ class LoginApiController extends Controller
             return response()->json([
                 'status'    => $status,
                 'message'   => $message,
-                'data'      => ''
+                'data'      => (object)array()
             ]);
         }
 
@@ -139,8 +153,8 @@ class LoginApiController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'    => $status,
-                'message'   => 'Email is not valid!',
-                'data'      => ''
+                'message'   => 'Parameter missing: email!',
+                'data'      => (object)array()
             ]);
         }
 
@@ -172,21 +186,7 @@ class LoginApiController extends Controller
                 if($ForgotPasswordQuery){
 
                     /* Get technician all data */
-                    $response->UserArray = $user->select(
-                        'id',
-                        'name',
-                        'access_token',
-                        'role_id',
-                        'company_id',
-                        'service_center_id',
-                        'phone',
-                        'address_1',
-                        'address_2',
-                        'city',
-                        'state',
-                        'zipcode'
-                    )
-                    ->where('id',$ForgotPasswordQuery->id)->first();
+                    $response->UserArray = $this->userData($ForgotPasswordQuery->id);
                     
                     $UserArray = $response->UserArray;
                     $status    = 1;
@@ -210,9 +210,9 @@ class LoginApiController extends Controller
     public function verifyotp()
     {   
         $status    = 0;
-        $message   = "Please fill required fields!";
+        $message   = "Some error occurred. Please try again later!";
         $response  = (object)array();
-        $UserArray = '';
+        $UserArray = (object)array();
 
         /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
@@ -221,7 +221,7 @@ class LoginApiController extends Controller
             return response()->json([
                 'status'    => $status,
                 'message'   => $message,
-                'data'      => ''
+                'data'      => (object)array()
             ]);
         }
 
@@ -234,8 +234,8 @@ class LoginApiController extends Controller
         if($validator->fails()){
             return response()->json([
                 'success'   => $status,
-                'message'   => $message,
-                'data'      => ''
+                'message'   => 'Parameter missing: email!',
+                'data'      => (object)array()
             ]);
         }
 
@@ -296,7 +296,7 @@ class LoginApiController extends Controller
         $status    = 0;
         $message   = "Please fill required fields!";
         $response  = (object)array();
-        $UserArray = '';
+        $UserArray = (object)array();
 
         /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
@@ -305,7 +305,7 @@ class LoginApiController extends Controller
             return response()->json([
                 'status'    => $status,
                 'message'   => $message,
-                'data'      => ''
+                'data'      => (object)array()
             ]);
         }
         
@@ -319,7 +319,7 @@ class LoginApiController extends Controller
             return response()->json([
                 'status'    => 0,
                 'message'   => 'Please fill required fields!',
-                'data'      => ''
+                'data'      => (object)array()
             ]);
         }
             
@@ -330,7 +330,7 @@ class LoginApiController extends Controller
         /* User object */
         $user = new User();
                  
-        if(isset($userId)){
+        if(isset($userId) && $userId != 0){
 
             /* Match both password is equal or not */
             $MatchPassword = strcmp($NewPassword,$ConfirmPassword);
@@ -352,22 +352,7 @@ class LoginApiController extends Controller
                     if($updatePassword != ''){
 
                         /* Get technician all data */
-                        $response->UserArray  = $user->select(
-                            'id',
-                            'name',
-                            'access_token',
-                            'role_id',
-                            'company_id',
-                            'service_center_id',
-                            'phone',
-                            'address_1',
-                            'address_2',
-                            'city',
-                            'state',
-                            'zipcode'
-                        )
-                        ->where('id',$userId)
-                        ->first();
+                        $response->UserArray = $this->userData($userId);
             
                         $status     = 1;
                         $message    = 'Password is changed successfully.';
@@ -398,101 +383,4 @@ class LoginApiController extends Controller
         ]);
     }
 
-    public function dashboard()
-    {
-        $status    = 0;
-        $message   = "Some error occurred. Please try again later!";
-        $response  = (object)array();
-        $UserArray = '';
-
-        /* Json input */
-        $json  = json_decode(file_get_contents("php://input"),true);
-
-        if($json == null || count($json) == 0 || empty($json)) {
-            return response()->json([
-                'status'    => $status,
-                'message'   => $message,
-                'data'      => ''
-            ]);
-        }
-        
-        /* Validate input */
-        $validator = Validator::make($json, [
-            'user_id' => 'required',
-            'token'   => 'required'
-        ]);
-
-        if($validator->fails()){
-            return response()->json([
-                'status'    => 0,
-                'message'   => 'Some error occurred. Please try again later!',
-                'data'      => ''
-            ]);
-        }
-
-        $userId = $json['user_id'];
-        $token  = $json['token'];
-        
-        /* All count response */
-        $CountResult                    = 0;
-        $response->AssignedCount = 0;
-        $response->todayDueCount      = 0;
-        $response->overDueCount  = 0;
-        $response->ResolvedCount = 0;
-
-        $TodayDate = date('Y-m-d H:i:s');
-
-        /* User object */
-        $user = new User();
-                 
-        if(isset($userId)){
-
-            $DashBoardQuery = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-            ->where('id',$userId)
-            ->Where('access_token', 'like', '%' . $token . '%')
-            ->where('status','Active')
-            ->first();
-            
-            if(!empty($DashBoardQuery)){
-
-                /* Service request object */
-                $serviceRequest = new ServiceRequest();
-
-                /* Assigned request count */
-                $response->AssignedCount  = $serviceRequest->AssignedRequest($userId,'count');
-
-                /* Assigned request list */
-                $response->AssignedList   = $serviceRequest->AssignedRequest($userId);
-
-                /* TodayDue request count */
-                $response->todayDueCount  = $serviceRequest->getTechnicianDueRequest($userId,'todaydue','count');
-                
-                /* OverDue request count */
-                $response->overDueCount   = $serviceRequest->getTechnicianDueRequest($userId,'overdue','count');
-
-                /* TodayDue request List */
-                $response->todayDueList   = $serviceRequest->getTechnicianDueRequest($userId,'todaydue');
-
-                /* OverDue request List */
-                $response->overDueList    = $serviceRequest->getTechnicianDueRequest($userId,'overdue');
-
-                /* Resolved request list */
-                $response->ResolvedList   = $serviceRequest->ResolvedRequest($userId);
-
-                /* Resolved request count */
-                $response->ResolvedCount   = $serviceRequest->ResolvedRequest($userId,'count');
-
-                $status     = 1;
-                $UserArray  = $response;
-                $message    = '';
-            }
-        }
-
-        /* Json response */
-        return response()->json([
-            'status'    => $status,
-            'message'   => $message,
-            'data'      => $UserArray
-        ]);
-    }
 }
