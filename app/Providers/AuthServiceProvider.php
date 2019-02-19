@@ -357,7 +357,7 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_id, [1, 3]);
         });
         Gate::define('service_center_view', function ($user) {
-            return in_array($user->role_id, [1, 3, 5]);
+            return in_array($user->role_id, [1, 3, 5, 6]);
         });
         Gate::define('service_center_delete', function ($user) {
             return in_array($user->role_id, [1, 3]);

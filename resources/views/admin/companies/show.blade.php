@@ -446,7 +446,7 @@
 
             <p>&nbsp;</p>
 
-            <a href="{{ route('admin.companies.index') }}" class="btn btn-default">@lang('quickadmin.qa_back_to_list')</a>
+            <!-- <a href="{{ route('admin.companies.index') }}" class="btn btn-default">@lang('quickadmin.qa_back_to_list')</a> -->
         </div>
     </div>
 @stop

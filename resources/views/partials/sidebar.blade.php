@@ -211,12 +211,23 @@
                 </a>
                 <ul class="treeview-menu">
                     <!-- can('service_center_access') -->
+                    @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')
+                        || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                    <li>
+                        <!-- service center admin and technician can only view details -->
+                        <a href="{{ route('admin.service_centers.show',[auth()->user()->service_center_id]) }}">
+                            <i class="fa fa-circle-o"></i>
+                            <span>@lang('quickadmin.service-center.service-center-info')</span>
+                        </a>
+                    </li>
+                    @else
                     <li>
                         <a href="{{ route('admin.service_centers.index') }}">
                             <i class="fa fa-circle-o"></i>
                             <span>@lang('quickadmin.service-center.title')</span>
                         </a>
                     </li>
+                    @endif
                     <!-- endcan -->
                     @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
                     || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))

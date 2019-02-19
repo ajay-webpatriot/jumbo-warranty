@@ -191,6 +191,7 @@ return [
 	
 	'service-center' => [
 		'title' => 'Service Centers',
+		'service-center-info' => 'Service Center Info',
 		'formTitle' => 'Service Center',
 		'fields' => [
 			'name' => 'Name',
