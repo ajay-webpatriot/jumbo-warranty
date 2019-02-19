@@ -234,7 +234,7 @@ class LoginApiController extends Controller
         if($validator->fails()){
             return response()->json([
                 'success'   => $status,
-                'message'   => 'Parameter missing: email!',
+                'message'   => 'Parameter missing',
                 'data'      => (object)array()
             ]);
         }
@@ -245,44 +245,50 @@ class LoginApiController extends Controller
         /* User object */
         $user = new User();
 
-        $VerifyOtpQuery = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-        ->where('otp',$otp)
+        $VerifyEmailQuery = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
         ->where('email',$email)
         ->where('status','Active')
         ->first();
-        
-        if(!empty($VerifyOtpQuery)){
 
-            /* Get technician all data */
-            $response->UserArray  = $VerifyOtpQuery->select(
-                'id',
-                'name',
-                'access_token',
-                'role_id',
-                'company_id',
-                'service_center_id',
-                'phone',
-                'address_1',
-                'address_2',
-                'city',
-                'state',
-                'zipcode'
-            )
+        if(!empty($VerifyEmailQuery)){
+
+            $VerifyOtpQuery = $user->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
             ->where('otp',$otp)
+            ->where('email',$email)
+            ->where('status','Active')
             ->first();
 
-            $status     = 1;
-            $message    = 'OTP is verifed successfully.';
-            $UserArray  = $response->UserArray;
+            if(!empty($VerifyOtpQuery)){
 
-            /* Reset OTP */
-            $VerifyOtpQuery->otp = '';
-            $VerifyOtpQuery->save();
+                /* Get technician all data */
+                $response->UserArray  = $VerifyOtpQuery->select(
+                    'id',
+                    'name',
+                    'access_token',
+                    'role_id',
+                    'company_id',
+                    'service_center_id',
+                    'phone',
+                    'address_1',
+                    'address_2',
+                    'city',
+                    'state',
+                    'zipcode'
+                )
+                ->where('otp',$otp)
+                ->first();
 
-        }else{
-            $message = "Please enter valid OTP!";
+                $status     = 1;
+                $message    = 'OTP is verifed successfully.';
+                $UserArray  = $response->UserArray;
+
+                /* Reset OTP */
+                $VerifyOtpQuery->otp = '';
+                $VerifyOtpQuery->save();
+            }else{
+                $message = "Please enter valid OTP!";
+            }
         }
-
         /* Json response */
         return response()->json([
             'status'    => $status,
@@ -294,7 +300,7 @@ class LoginApiController extends Controller
     public function setpassword()
     {
         $status    = 0;
-        $message   = "Please fill required fields!";
+        $message   = "Some error occurred. Please try again later!";
         $response  = (object)array();
         $UserArray = (object)array();
 
