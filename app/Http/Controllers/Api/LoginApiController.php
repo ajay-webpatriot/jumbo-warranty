@@ -365,11 +365,11 @@ class LoginApiController extends Controller
                     if($updatePassword != ''){
 
                         /* Get technician all data */
-                        $response->UserArray = $this->userData($userId);
+                        // $response->UserArray = $this->userData($userId);
             
                         $status     = 1;
                         $message    = 'Password is changed successfully.';
-                        $UserArray  = $response->UserArray;
+                        // $UserArray  = $response->UserArray;
 
                     }else{
 
