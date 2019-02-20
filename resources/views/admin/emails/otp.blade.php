@@ -6,17 +6,17 @@
 
         <tr>
             <td align="center" valign="top" class="bodyContent" bgcolor="#ffffff">
-                <div>
-                    <h2>Hello {{ $user_name }}!</h2>
+                
+                    <h2 style="background:none;">Hello {{ $user_name }}!</h2>
                     <span class="divider">―</span>
-                </div>
+                
             </td>
         </tr>
         <tr>
-            <td class="bodyContent" bgcolor="#ffffff">
-                <div>
-                    <span>Your Otp for this {{$receiver_email}} is: <h2>{{$OTP}}</h2></span>
-                </div>
+            <td align="center" class="bodyContent" bgcolor="#ffffff">
+                
+                    <span>Your one time password is: <b style="font-weight: bold;font-size: 18px;color: #3a4a6b;display:inline !important;background:none;">{{$OTP}}</b></span>
+                
             </td>
         </tr>
 
