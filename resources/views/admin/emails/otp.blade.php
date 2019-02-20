@@ -15,9 +15,7 @@
         <tr>
             <td class="bodyContent" bgcolor="#ffffff">
                 <div>
-                    <h3>OTP</h3>
-                    <span>Your Otp for this {{$receiver_email}} is below</span>
-                    <h2>{{$OTP}}</h2>
+                    <span>Your Otp for this {{$receiver_email}} is: <h2>{{$OTP}}</h2></span>
                 </div>
             </td>
         </tr>
