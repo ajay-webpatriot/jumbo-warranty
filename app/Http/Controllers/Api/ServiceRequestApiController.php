@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\User;
 use Validator;
+use Hash;
 use App\ServiceRequest;
 use App\Http\Controllers\Controller;
 
@@ -322,7 +323,6 @@ class ServiceRequestApiController extends Controller
             'message'   => '',
             'data'      => $response
         ]);
-       
     }
 
     public function getRequestStatus()
@@ -389,7 +389,6 @@ class ServiceRequestApiController extends Controller
             'message'   => $message,
             'data'      => (object)array()
         ]);
-
     }
 
     public function getRequestDetail()
@@ -423,7 +422,7 @@ class ServiceRequestApiController extends Controller
         }
 
         $user_id = trim($json['user_id']);
-        $token  = trim($json['access_token']);
+        $token   = trim($json['access_token']);
 
         /* Validate token and user id*/
         $valid = $this->validateToken($user_id,$token);
@@ -562,5 +561,160 @@ class ServiceRequestApiController extends Controller
             'message'   => $message,
             'data'      => $response
         ]);
+    }
+
+    public function changepassword()
+    {
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later!";
+        $response  = (object)array();
+
+        /* Json input */
+        $json  = json_decode(file_get_contents("php://input"),true);
+
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => (object)array()
+            ]);
+        }
+        
+        /* Validate input */
+        $validator = Validator::make($json, [
+            'new_password'  => 'required',
+            'old_password'  => 'required',
+            'user_id'       => 'required',
+            'access_token'  => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Parameters missing!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        /* Validate token and user id*/
+        $valid = $this->validateToken(trim($json['user_id']),trim($json['access_token']));
+        
+        if(!$valid){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Invalid access token!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        $user_id     = trim($json['user_id']);
+        $token       = trim($json['access_token']);
+        $oldPassword = trim($json['old_password']);
+        $newPassword = trim($json['new_password']);
+        
+        $checkOldPassword = User::where('id',$user_id)
+        ->where('access_token',$token)
+        ->first();
+
+        /* Old password check */
+        $passwordExist = Hash::check($oldPassword, $checkOldPassword->password);
+        
+        if($passwordExist == 1){
+
+            /* Update password */
+            $updateArray = array(
+                'password' => Hash::make($newPassword)
+            );
+
+            /* Update query */
+            $updateOldpassword = User::where('id',$user_id)
+            ->where('access_token',$token)
+            ->update($updateArray);
+
+            if($updateOldpassword == 1){
+                $status  = 1;
+                $message = 'Password change successfully.';
+                $response = (object)array();
+            }
+            
+        }else{
+            $message = "Incorrect Old password!";
+        }
+
+        return response()->json([
+            'status'    => $status,
+            'message'   => $message,
+            'data'      => $response
+        ]);
+    }
+
+    public function setfirebasetoken()
+    {
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later!";
+        $response  = (object)array();
+
+        /* Json input */
+        $json  = json_decode(file_get_contents("php://input"),true);
+        
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => (object)array()
+            ]);
+        }
+        
+        /* Validate input */
+        $validator = Validator::make($json, [
+            'firebase_token'  => 'required',
+            'user_id'         => 'required',
+            'access_token'    => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Parameters missing!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        $user_id        = trim($json['user_id']);
+        $token          = trim($json['access_token']);
+        $firebaseToken  = trim($json['firebase_token']);
+
+        /* Validate token and user id*/
+        $valid = $this->validateToken($user_id,$token);
+        
+        if(!$valid){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Invalid access token!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        /* Update firebase token */
+        $updateArray = array(
+            'firebase_token' => $firebaseToken
+        );
+
+        $updateFirbaseToken = User::where('id',$user_id)
+        ->where('access_token',$token)
+        ->update($updateArray);
+
+        if($updateFirbaseToken == 1){
+            $status  = 1;
+            $message = 'Successfully set firebase token';
+            $response = (object)array();
+        }
+
+        return response()->json([
+            'status'    => $status,
+            'message'   => $message,
+            'data'      => $response
+        ]);
+
     }
 }

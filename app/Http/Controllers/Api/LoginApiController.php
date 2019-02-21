@@ -202,8 +202,8 @@ class LoginApiController extends Controller
         /* Json response */
         return response()->json([
             'status'   => $status,
-            'message'   => $message,
-            'data'      => $UserArray
+            'message'  => $message,
+            'data'     => $UserArray
         ]);
     }
 
@@ -219,9 +219,9 @@ class LoginApiController extends Controller
 
         if($json == null || count($json) == 0 || empty($json)) {
             return response()->json([
-                'status'    => $status,
-                'message'   => $message,
-                'data'      => (object)array()
+                'status'   => $status,
+                'message'  => $message,
+                'data'     => (object)array()
             ]);
         }
 
@@ -233,8 +233,8 @@ class LoginApiController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'   => $status,
-                'message'   => 'Parameter missing',
-                'data'      => (object)array()
+                'message'  => 'Parameter missing',
+                'data'     => (object)array()
             ]);
         }
 
