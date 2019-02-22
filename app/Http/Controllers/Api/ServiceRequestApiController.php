@@ -522,35 +522,53 @@ class ServiceRequestApiController extends Controller
             unset($serviceRequestDetail->product->created_at);
             unset($serviceRequestDetail->product->updated_at);
 
-            /* Company data */
-            $response->companyName = $serviceRequestDetail->company->name;
-
             /* Customer data */
-            $customer = $serviceRequestDetail->customer;
+            $customer           = $serviceRequestDetail->customer;
             $response->customer = $customer;
 
             /* Service center data */
-            $serviceCenter = $serviceRequestDetail->service_center;
+            $serviceCenter           = $serviceRequestDetail->service_center;
             $response->serviceCenter = $serviceCenter;
 
+            /* Technician data */
+            $response->technician_name = $serviceRequestDetail->technician->name;
+
+            /* Call data */
+            $response->call_type     = $serviceRequestDetail->call_type;
+            $response->call_location = $serviceRequestDetail->call_location;
+            $response->callPriority  = $serviceRequestDetail->priority;
+
             /* Product data */
-            $product = $serviceRequestDetail->product;
+            $product           = $serviceRequestDetail->product;
             $response->product = $product;
+
+            /* Other data */
+            $response->is_item_in_warrenty  = $serviceRequestDetail->is_item_in_warrenty;
+            $response->model_no             = $serviceRequestDetail->model_no;
+            $response->serial_no            = $serviceRequestDetail->serial_no;
+            $response->mop                  = $serviceRequestDetail->mop;
+            $response->purchase_from        = $serviceRequestDetail->purchase_from;
+            $response->make                 = $serviceRequestDetail->make;
+            $response->bill_date            = $serviceRequestDetail->bill_date;
+            $response->note                 = $serviceRequestDetail->note;
 
             /* Complain data */
             $complain = $serviceRequestDetail->complain_details;  
             $response->complain = $complain;
 
             /* Service charge data */
-            $service_charge = $serviceRequestDetail->service_charge;  
+            $service_charge          = $serviceRequestDetail->service_charge;  
             $response->serviceCharge = $service_charge;
 
             /* Service request log data */
-            $servicerequestlog = $serviceRequestDetail->servicerequestlog;  
+            $servicerequestlog           = $serviceRequestDetail->servicerequestlog;  
             $response->serviceRequestLog = (object)$servicerequestlog;
 
             /* Service total amount */
             $response->totalAmount = $serviceRequestDetail->amount;
+
+            /* Service request installation charge */
+            $response->installation_charge = $serviceRequestDetail->installation_charge;
 
             /* Service request status */
             $response->serviceRequestStatus = $serviceRequestDetail->status;
