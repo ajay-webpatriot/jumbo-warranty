@@ -443,7 +443,11 @@ class ServiceRequestApiController extends Controller
 
             /* Service request object, all data */
             $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
-
+            // echo "<pre>";
+            // print_r($serviceRequestDetail->serviceRequestLog);
+            // echo "</pre>";
+            // exit();
+            
             /* Service additional charge */
             $additional_charge_array=json_decode($serviceRequestDetail['additional_charges']);
             $additional_charge_title="";
@@ -462,12 +466,18 @@ class ServiceRequestApiController extends Controller
 
             if(!empty($additional_charge_title) && !empty($service_request->additional_charges)){
                 $response->additionalCharges = $serviceRequestDetail->additional_charges;
+            }else{
+                $response->additionalCharges = 0;
             }
 
             /* Ttransportation charge */
             if($serviceRequestDetail->transportation_charge > 0){
                 $response->transportationCharges = $serviceRequestDetail->transportation_charge;
                 $response->kilometersCharges = $serviceRequestDetail->km_charge;
+            }else{
+                $response->transportationCharges             = 0;
+                $response->kilometersCharges                 = 0;
+                $serviceRequestDetail->transportation_charge = 0;
             }
 
             $address_1 = '';
@@ -522,6 +532,20 @@ class ServiceRequestApiController extends Controller
             unset($serviceRequestDetail->product->created_at);
             unset($serviceRequestDetail->product->updated_at);
 
+            /* Unset product data */
+            foreach ($serviceRequestDetail->servicerequestlog as $key => $unsetvalue) {
+                unset($unsetvalue->action_made);
+                unset($unsetvalue->action_made_company);
+            }
+            $response->username = $serviceRequestDetail->servicerequestlog;
+
+            /* Service request log data */
+            $servicerequestlog           = $serviceRequestDetail->servicerequestlog;
+              foreach ($servicerequestlog as $key => $servicerequestlogSingleValue) {
+                $servicerequestlog[$key]->action_taken_by = $servicerequestlogSingleValue->user->name;
+              }
+            $response->serviceRequestLog = (object)$servicerequestlog;
+            
             /* Customer data */
             $customer           = $serviceRequestDetail->customer;
             $response->customer = $customer;
@@ -556,19 +580,18 @@ class ServiceRequestApiController extends Controller
             $complain = $serviceRequestDetail->complain_details;  
             $response->complain = $complain;
 
+            /* Completion date */
+            $response->completion_date = $serviceRequestDetail->completion_date;
+
             /* Service charge data */
             $service_charge          = $serviceRequestDetail->service_charge;  
             $response->serviceCharge = $service_charge;
-
-            /* Service request log data */
-            $servicerequestlog           = $serviceRequestDetail->servicerequestlog;  
-            $response->serviceRequestLog = (object)$servicerequestlog;
 
             /* Service total amount */
             $response->totalAmount = $serviceRequestDetail->amount;
 
             /* Service request installation charge */
-            $response->installation_charge = $serviceRequestDetail->installation_charge;
+            $response->installationCharge = $serviceRequestDetail->installation_charge;
 
             /* Service request status */
             $response->serviceRequestStatus = $serviceRequestDetail->status;
