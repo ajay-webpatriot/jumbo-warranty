@@ -31,7 +31,7 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function () {
        Route::post('/gettodayduerequestlist','ServiceRequestApiController@getTodayDueRequestList');
        Route::post('/getoverduerequestlist','ServiceRequestApiController@getOverDueRequestList');
        Route::post('/getresolvedrequestlist','ServiceRequestApiController@getResolvedRequestList');
-       Route::post('/getRequestStatus','ServiceRequestApiController@getRequestStatus');
+       Route::post('/setRequestStatus','ServiceRequestApiController@setRequestStatus');
        Route::post('/getRequestDetail','ServiceRequestApiController@getRequestDetail');
        
 

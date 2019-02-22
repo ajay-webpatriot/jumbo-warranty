@@ -325,7 +325,7 @@ class ServiceRequestApiController extends Controller
         ]);
     }
 
-    public function getRequestStatus()
+    public function setRequestStatus()
     {
         $status    = 0;
         $message   = "Some error occurred. Please try again later!";
