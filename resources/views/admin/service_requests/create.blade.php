@@ -364,7 +364,7 @@
 
                                     <div class="input-group">
                                         {!! Form::text('bill_date', old('bill_date'), ['class' => 'form-control date', 'placeholder' => '']) !!}
-                                        <label class="input-group-addon btn" for="completion_date">
+                                        <label class="input-group-addon btn" for="bill_date">
                                             <span class="fa fa-calendar"></span>
                                         </label>
                                     </div>
