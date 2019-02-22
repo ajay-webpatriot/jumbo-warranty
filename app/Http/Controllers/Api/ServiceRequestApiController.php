@@ -443,7 +443,7 @@ class ServiceRequestApiController extends Controller
 
             /* Service request object, all data */
             $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
-            
+
             /* Service additional charge */
             $additional_charge_array=json_decode($serviceRequestDetail['additional_charges']);
             $additional_charge_title="";
@@ -521,6 +521,9 @@ class ServiceRequestApiController extends Controller
             /* Unset product data */
             unset($serviceRequestDetail->product->created_at);
             unset($serviceRequestDetail->product->updated_at);
+
+            /* Company data */
+            $response->companyName = $serviceRequestDetail->company->name;
 
             /* Customer data */
             $customer = $serviceRequestDetail->customer;
