@@ -465,13 +465,23 @@ class ServiceRequestApiController extends Controller
             if($serviceRequestDetail->service_type == 'installation'){
 
                 /* Service request status (Type = 'installation') */
-                $response->serviceRequestStatusList = ServiceRequest::$enum_installation_status;
+                $changeKey = ServiceRequest::$enum_installation_status;
+                $newStatusarray = array_values($changeKey);
 
             }else if($serviceRequestDetail->service_type == 'repair'){
 
                 /* Service request status (Type = 'repair') */
-                $response->serviceRequestStatusList = ServiceRequest::$enum_repair_status;
+                $changeKey = ServiceRequest::$enum_repair_status;
+                $newStatusarray = array_values($changeKey);
             }
+
+            $newStatusArrayChangeKey = array();
+
+            for ($i=0; $i <count($newStatusarray) ; $i++) { 
+                $newStatusArrayChangeKey[$i] = $newStatusarray[$i];
+            }
+
+            $response->serviceRequestStatusList = (object)$newStatusArrayChangeKey;
 
             /* Unset customer data */
             unset($serviceRequestDetail->customer->created_at);
@@ -521,6 +531,7 @@ class ServiceRequestApiController extends Controller
             $response->bill_date            = $serviceRequestDetail->bill_date;
             $response->note                 = $serviceRequestDetail->note;
             $response->service_type         = $serviceRequestDetail->service_type;
+            $response->bill_no              = $serviceRequestDetail->bill_no;
 
             /* Complain data */
             $complain = $serviceRequestDetail->complain_details;  
@@ -696,14 +707,24 @@ class ServiceRequestApiController extends Controller
             if($serviceRequestDetail->service_type == 'installation'){
 
                 /* Service request status (Type = 'installation') */
-                $response->serviceRequestStatusList = ServiceRequest::$enum_installation_status;
+                $changeKey = ServiceRequest::$enum_installation_status;
+                $newStatusarray = array_values($changeKey);
 
             }else if($serviceRequestDetail->service_type == 'repair'){
 
                 /* Service request status (Type = 'repair') */
-                $response->serviceRequestStatusList = ServiceRequest::$enum_repair_status;
+                $changeKey = ServiceRequest::$enum_repair_status;
+                $newStatusarray = array_values($changeKey);
             }
 
+            $newStatusArrayChangeKey = array();
+
+            for ($i=0; $i <count($newStatusarray) ; $i++) { 
+                $newStatusArrayChangeKey[$i] = $newStatusarray[$i];
+            }
+
+            $response->serviceRequestStatusList = (object)$newStatusArrayChangeKey;
+           
             /* Unset customer data */
             unset($serviceRequestDetail->customer->created_at);
             unset($serviceRequestDetail->customer->updated_at);
@@ -752,6 +773,7 @@ class ServiceRequestApiController extends Controller
             $response->bill_date            = $serviceRequestDetail->bill_date;
             $response->note                 = $serviceRequestDetail->note;
             $response->service_type         = $serviceRequestDetail->service_type;
+            $response->bill_no              = $serviceRequestDetail->bill_no;
 
             /* Complain data */
             $complain = $serviceRequestDetail->complain_details;  
