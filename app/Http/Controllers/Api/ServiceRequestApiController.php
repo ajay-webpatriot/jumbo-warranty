@@ -344,13 +344,16 @@ class ServiceRequestApiController extends Controller
         
         /* Validate input */
         $validator = Validator::make($json, [
-            'is_accept' => 'required'
+            'is_accept'          => 'required',
+            'service_request_id' => 'required',
+            'user_id'            => 'required',
+            'access_token'       => 'required'
         ]);
 
         if($validator->fails()){
             return response()->json([
                 'status'    => 0,
-                'message'   => 'Parameter missing: is_accept',
+                'message'   => 'Parameter missing',
                 'data'      => (object)array()
             ]);
         }
@@ -361,8 +364,8 @@ class ServiceRequestApiController extends Controller
         /* Validate token and user id*/
         $valid = $this->validateToken($user_id,$token);
 
-        $status = $json['is_accept'];
-        $request_id = $json['service_request_id'];
+        $is_Accept = $json['is_accept'];
+        $serviceRequestId = $json['service_request_id'];
 
         /* Service request object */
         $serviceRequest = new ServiceRequest();
@@ -376,193 +379,16 @@ class ServiceRequestApiController extends Controller
         }
 
         /* Request status */
-        $StatusChangeResponse = $serviceRequest->requestStatus($request_id,$status);
+        $StatusChangeResponse = $serviceRequest->requestStatus($serviceRequestId,$is_Accept);
         
         if($StatusChangeResponse == 1){
 
-            /* Service request object, all data */
-            $serviceRequestDetail = ServiceRequest::findOrFail($request_id);
-
-            /* Service additional charge */
-            $additional_charge_array=json_decode($serviceRequestDetail['additional_charges']);
-            $additional_charge_title="";
-            $additional_charges="";
-
-            if(!empty($additional_charge_array))
-            {
-                /* Worked to display json value in edit page */ 
-                foreach ($additional_charge_array as $key => $value) {
-                    $additional_charge_title = str_replace('_empty_', '', $key);
-                    $additional_charges      = $value;
-                }
+            $requestdetail = $this->getRequestDetailJson($serviceRequestId);
+            if($requestdetail != ''){
+                $status = 1;
+                $message = 'Request status change';
+                $response = $requestdetail;
             }
-            
-            $serviceRequestDetail->additional_charges = $additional_charges;
-
-            if(!empty($additional_charge_title) && !empty($service_request->additional_charges)){
-                $additionalCharges = $serviceRequestDetail->additional_charges;
-                $response->additionalChargesFor = $serviceRequestDetail->additional_chargesFor;
-            }else{
-                $additionalCharges = 0;
-                $response->additionalChargesFor = '';
-            }
-
-            /* Ttransportation charge */
-            if($serviceRequestDetail->transportation_charge > 0){
-                $transportationCharges  = $serviceRequestDetail->transportation_charge;
-                $kilometersCharges      = $serviceRequestDetail->km_charge;
-            }else{
-                $transportationCharges  = 0;
-                $kilometersCharges      = 0;
-            }
-
-            $address_1 = '';
-            $address_2 = '';
-            $city      = '';
-            $state     = '';
-            $zipcode   = '';
-
-            /* Check blank address line one */
-            if($serviceRequestDetail->customer->address_1 != '' || $serviceRequestDetail->customer->address_1 != NULL){
-                $address_1 = $serviceRequestDetail->customer->address_1.',';
-            }
-
-            /* Check blank address line two */
-            if($serviceRequestDetail->customer->address_2 != '' || $serviceRequestDetail->customer->address_2 != NULL){
-                $address_2 = $serviceRequestDetail->customer->address_2.',';
-            }
-
-            /* Check blank city */
-            if($serviceRequestDetail->customer->city != '' || $serviceRequestDetail->customer->city != NULL){
-                $city = $serviceRequestDetail->customer->city.',';
-            }
-
-            /* Check blank state */
-            if($serviceRequestDetail->customer->state != '' || $serviceRequestDetail->customer->state != NULL){
-                $state = $serviceRequestDetail->customer->state.',';
-            }
-
-            /* Check blank zipcode */
-            if($serviceRequestDetail->customer->zipcode != '' || $serviceRequestDetail->customer->zipcode != NULL){
-                $state = $serviceRequestDetail->customer->zipcode.'.';
-            }
-            
-            /* Overview data */
-            $overview = (object)array(
-                "product_title" => ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name,
-                "created_at"    => date('Y-m-d H:i:s',strtotime($serviceRequestDetail->created_at)),
-                "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode)
-            );   
-            
-            $response->overview = $overview;
-
-            /* Service request status */
-            $response->serviceRequestCurrentStatus = $serviceRequestDetail->status;
-
-            $response->serviceRequestStatusList = (object)array();
-
-            /* Service request type according to service request status */
-            if($serviceRequestDetail->service_type == 'installation'){
-
-                /* Service request status (Type = 'installation') */
-                $changeKey = ServiceRequest::$enum_installation_status;
-                $newStatusarray = array_values($changeKey);
-
-            }else if($serviceRequestDetail->service_type == 'repair'){
-
-                /* Service request status (Type = 'repair') */
-                $changeKey = ServiceRequest::$enum_repair_status;
-                $newStatusarray = array_values($changeKey);
-            }
-
-            $newStatusArrayChangeKey = array();
-
-            for ($i=0; $i <count($newStatusarray) ; $i++) { 
-                $newStatusArrayChangeKey[$i] = $newStatusarray[$i];
-            }
-
-            $response->serviceRequestStatusList = (object)$newStatusArrayChangeKey;
-
-            /* Unset customer data */
-            unset($serviceRequestDetail->customer->created_at);
-            unset($serviceRequestDetail->customer->updated_at);
-
-            /* Unset service center data */
-            unset($serviceRequestDetail->service_center->created_at);
-            unset($serviceRequestDetail->service_center->updated_at);
-
-            /* Unset product data */
-            unset($serviceRequestDetail->product->created_at);
-            unset($serviceRequestDetail->product->updated_at);
-
-            /* Unset product data */
-            foreach ($serviceRequestDetail->servicerequestlog as $key => $unsetvalue) {
-                unset($unsetvalue->action_made);
-                unset($unsetvalue->action_made_company);
-            }
-            
-            /* Customer data */
-            $customer           = $serviceRequestDetail->customer;
-            $response->customer = $customer;
-
-            /* Service center data */
-            $serviceCenter           = $serviceRequestDetail->service_center;
-            $response->serviceCenter = $serviceCenter;
-
-            /* Technician data */
-            $response->technician_name = $serviceRequestDetail->technician->name;
-
-            /* Call data */
-            $response->call_type     = $serviceRequestDetail->call_type;
-            $response->call_location = $serviceRequestDetail->call_location;
-            $response->callPriority  = $serviceRequestDetail->priority;
-
-            /* Product data */
-            $product           = $serviceRequestDetail->product;
-            $response->product = $product;
-
-            /* Other data */
-            $response->is_item_in_warrenty  = $serviceRequestDetail->is_item_in_warrenty;
-            $response->model_no             = $serviceRequestDetail->model_no;
-            $response->serial_no            = $serviceRequestDetail->serial_no;
-            $response->mop                  = $serviceRequestDetail->mop;
-            $response->purchase_from        = $serviceRequestDetail->purchase_from;
-            $response->make                 = $serviceRequestDetail->make;
-            $response->bill_date            = $serviceRequestDetail->bill_date;
-            $response->note                 = $serviceRequestDetail->note;
-            $response->service_type         = $serviceRequestDetail->service_type;
-            $response->bill_no              = $serviceRequestDetail->bill_no;
-
-            /* Complain data */
-            $complain = $serviceRequestDetail->complain_details;  
-            $response->complain = $complain;
-
-            /* Completion date */
-            $response->completion_date = $serviceRequestDetail->completion_date;
-
-            /* Service request log data */
-            $servicerequestlog = $serviceRequestDetail->servicerequestlog;
-
-            foreach ($servicerequestlog as $key => $servicerequestlogSingleValue) {
-                $servicerequestlog[$key]->action_taken_by = $servicerequestlogSingleValue->user->name;
-            }
-
-            $response->serviceRequestLog = (object)$servicerequestlog;
-
-            /* All charges */
-            $charges = (object)array(
-                "serviceCharge"             => $serviceRequestDetail->service_charge,
-                "installationCharge"        => $serviceRequestDetail->installation_charge,
-                "kilometersCharges"         => $kilometersCharges,
-                "transportationCharges"     => $transportationCharges,
-                "additionalCharges"         => $additionalCharges,
-                "totalAmount"               => $serviceRequestDetail->amount
-            );
-
-            $response->charges = $charges;
-
-            $status  = 1;
-            $message = 'Request status change';
         }
 
         return response()->json([
@@ -622,189 +448,13 @@ class ServiceRequestApiController extends Controller
 
         if(isset($serviceRequestId) && $serviceRequestId != '' && $serviceRequestId != 0){
 
-            /* Service request object, all data */
-            $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
-
-            /* Service additional charge */
-            $additional_charge_array=json_decode($serviceRequestDetail['additional_charges']);
-            $additional_charge_title="";
-            $additional_charges="";
-
-            if(!empty($additional_charge_array))
-            {
-                /* Worked to display json value in edit page */ 
-                foreach ($additional_charge_array as $key => $value) {
-                    $additional_charge_title = str_replace('_empty_', '', $key);
-                    $additional_charges      = $value;
-                }
+            /* Get request data */
+            $requestdetail = $this->getRequestDetailJson($serviceRequestId);
+            if($requestdetail != ''){
+                $status = 1;
+                $message = '';
+                $response = $requestdetail;
             }
-            
-            $serviceRequestDetail->additional_charges = $additional_charges;
-
-            if(!empty($additional_charge_title) && !empty($service_request->additional_charges)){
-                $additionalCharges = $serviceRequestDetail->additional_charges;
-                $response->additionalChargesFor = $serviceRequestDetail->additional_chargesFor;
-            }else{
-                $additionalCharges = 0;
-                $response->additionalChargesFor = '';
-            }
-
-            /* Ttransportation charge */
-            if($serviceRequestDetail->transportation_charge > 0){
-                $transportationCharges  = $serviceRequestDetail->transportation_charge;
-                $kilometersCharges      = $serviceRequestDetail->km_charge;
-            }else{
-                $transportationCharges  = 0;
-                $kilometersCharges      = 0;
-            }
-
-            $address_1 = '';
-            $address_2 = '';
-            $city      = '';
-            $state     = '';
-            $zipcode   = '';
-
-            /* Check blank address line one */
-            if($serviceRequestDetail->customer->address_1 != '' || $serviceRequestDetail->customer->address_1 != NULL){
-                $address_1 = $serviceRequestDetail->customer->address_1.',';
-            }
-
-            /* Check blank address line two */
-            if($serviceRequestDetail->customer->address_2 != '' || $serviceRequestDetail->customer->address_2 != NULL){
-                $address_2 = $serviceRequestDetail->customer->address_2.',';
-            }
-
-            /* Check blank city */
-            if($serviceRequestDetail->customer->city != '' || $serviceRequestDetail->customer->city != NULL){
-                $city = $serviceRequestDetail->customer->city.',';
-            }
-
-            /* Check blank state */
-            if($serviceRequestDetail->customer->state != '' || $serviceRequestDetail->customer->state != NULL){
-                $state = $serviceRequestDetail->customer->state.',';
-            }
-
-            /* Check blank zipcode */
-            if($serviceRequestDetail->customer->zipcode != '' || $serviceRequestDetail->customer->zipcode != NULL){
-                $state = $serviceRequestDetail->customer->zipcode.'.';
-            }
-            
-            /* Overview data */
-            $overview = (object)array(
-                "product_title" => ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name,
-                "created_at"    => date('Y-m-d H:i:s',strtotime($serviceRequestDetail->created_at)),
-                "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode)
-            );   
-            
-            $response->overview = $overview;
-
-            /* Service request status */
-            $response->serviceRequestCurrentStatus = $serviceRequestDetail->status;
-
-            $response->serviceRequestStatusList = (object)array();
-
-            /* Service request type according to service request status */
-            if($serviceRequestDetail->service_type == 'installation'){
-
-                /* Service request status (Type = 'installation') */
-                $changeKey = ServiceRequest::$enum_installation_status;
-                $newStatusarray = array_values($changeKey);
-
-            }else if($serviceRequestDetail->service_type == 'repair'){
-
-                /* Service request status (Type = 'repair') */
-                $changeKey = ServiceRequest::$enum_repair_status;
-                $newStatusarray = array_values($changeKey);
-            }
-
-            $newStatusArrayChangeKey = array();
-
-            for ($i=0; $i <count($newStatusarray) ; $i++) { 
-                $newStatusArrayChangeKey[$i] = $newStatusarray[$i];
-            }
-
-            $response->serviceRequestStatusList = (object)$newStatusArrayChangeKey;
-           
-            /* Unset customer data */
-            unset($serviceRequestDetail->customer->created_at);
-            unset($serviceRequestDetail->customer->updated_at);
-
-            /* Unset service center data */
-            unset($serviceRequestDetail->service_center->created_at);
-            unset($serviceRequestDetail->service_center->updated_at);
-
-            /* Unset product data */
-            unset($serviceRequestDetail->product->created_at);
-            unset($serviceRequestDetail->product->updated_at);
-
-            /* Unset product data */
-            foreach ($serviceRequestDetail->servicerequestlog as $key => $unsetvalue) {
-                unset($unsetvalue->action_made);
-                unset($unsetvalue->action_made_company);
-            }
-            
-            /* Customer data */
-            $customer           = $serviceRequestDetail->customer;
-            $response->customer = $customer;
-
-            /* Service center data */
-            $serviceCenter           = $serviceRequestDetail->service_center;
-            $response->serviceCenter = $serviceCenter;
-
-            /* Technician data */
-            $response->technician_name = $serviceRequestDetail->technician->name;
-
-            /* Call data */
-            $response->call_type     = $serviceRequestDetail->call_type;
-            $response->call_location = $serviceRequestDetail->call_location;
-            $response->callPriority  = $serviceRequestDetail->priority;
-
-            /* Product data */
-            $product           = $serviceRequestDetail->product;
-            $response->product = $product;
-
-            /* Other data */
-            $response->is_item_in_warrenty  = $serviceRequestDetail->is_item_in_warrenty;
-            $response->model_no             = $serviceRequestDetail->model_no;
-            $response->serial_no            = $serviceRequestDetail->serial_no;
-            $response->mop                  = $serviceRequestDetail->mop;
-            $response->purchase_from        = $serviceRequestDetail->purchase_from;
-            $response->make                 = $serviceRequestDetail->make;
-            $response->bill_date            = $serviceRequestDetail->bill_date;
-            $response->note                 = $serviceRequestDetail->note;
-            $response->service_type         = $serviceRequestDetail->service_type;
-            $response->bill_no              = $serviceRequestDetail->bill_no;
-
-            /* Complain data */
-            $complain = $serviceRequestDetail->complain_details;  
-            $response->complain = $complain;
-
-            /* Completion date */
-            $response->completion_date = $serviceRequestDetail->completion_date;
-
-            /* Service request log data */
-            $servicerequestlog = $serviceRequestDetail->servicerequestlog;
-
-            foreach ($servicerequestlog as $key => $servicerequestlogSingleValue) {
-                $servicerequestlog[$key]->action_taken_by = $servicerequestlogSingleValue->user->name;
-            }
-
-            $response->serviceRequestLog = (object)$servicerequestlog;
-
-            /* All charges */
-            $charges = (object)array(
-                "serviceCharge"             => $serviceRequestDetail->service_charge,
-                "installationCharge"        => $serviceRequestDetail->installation_charge,
-                "kilometersCharges"         => $kilometersCharges,
-                "transportationCharges"     => $transportationCharges,
-                "additionalCharges"         => $additionalCharges,
-                "totalAmount"               => $serviceRequestDetail->amount
-            );
-
-            $response->charges = $charges;
-
-            $status = 1;
-            $message = '';
         }
 
         return response()->json([
@@ -967,5 +617,293 @@ class ServiceRequestApiController extends Controller
             'data'      => $response
         ]);
 
+    }
+
+    public function updateRequestDetail()
+    {
+        $status    = 0;
+        $message   = "Some error occurred. Please try again later!";
+        $response  = (object)array();
+
+        /* Json input */
+        $json  = json_decode(file_get_contents("php://input"),true);
+        
+        if($json == null || count($json) == 0 || empty($json)) {
+            return response()->json([
+                'status'    => $status,
+                'message'   => $message,
+                'data'      => (object)array()
+            ]);
+        }
+        
+        /* Validate input */
+        $validator = Validator::make($json, [
+            'service_request_id'  => 'required',
+            'request_status'      => 'required',
+            'access_token'        => 'required',
+            'user_id'             => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Parameters missing!',
+                'data'      => (object)array()
+            ]);
+        }
+        $user_id        = trim($json['user_id']);
+        $access_token   = trim($json['access_token']);
+        $request_status = trim($json['request_status']);
+
+        /* Validate token and user id*/
+        $valid = $this->validateToken($user_id,$access_token);
+        
+        if(!$valid){
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Invalid access token!',
+                'data'      => (object)array()
+            ]);
+        }
+
+        $serviceRequestId = trim($json['service_request_id']);
+        
+        /* Service request object, all data */
+        $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
+
+        $additional_charges = 0;
+        $total_amount       = 0;
+
+        if(isset($json['additionalChargesFor']) && !empty($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
+            if(isset($json['additionalCharges']) && !empty($json['additionalCharges']) && $json['additionalCharges'] != 0){
+
+                $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge +(($json['additionalCharges'] == "")?0:number_format((float)$json['additionalCharges'], 2, '.', ''));
+
+                $total_amount += $serviceRequestDetail->transportation_charge;
+                
+                $additional_charges= json_encode(array($json['additionalChargesFor'] => number_format((float)$json['additionalCharges'], 2, '.', '')));
+               
+                $serviceRequestDetail->additional_charges = $additional_charges;
+                $serviceRequestDetail->amount = $total_amount;
+                $serviceRequestDetail->update();
+            }
+        }
+
+        /* Update service request status */
+        $serviceRequestDetailStatusUpdate = ServiceRequest::findOrFail($serviceRequestId);
+        $serviceRequestDetail->status = $request_status;
+        $serviceRequestDetail->update();
+
+        /* Get request data */
+        $requestdetail = $this->getRequestDetailJson($serviceRequestId);
+
+        if($requestdetail != ''){
+            $status = 1;
+            $message = '';
+            $response = $requestdetail;
+        }
+
+        return response()->json([
+            'status'    => $status,
+            'message'   => $message,
+            'data'      => $response
+        ]);
+    }
+
+    public function getRequestDetailJson($serviceRequestId)
+    {
+        if(!isset($serviceRequestId) && empty($serviceRequestId)){
+            return response()->json([
+                'data' => (object)array()
+            ]);
+        }
+
+        $response  = (object)array();
+
+        /* Service request object, all data */
+        $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
+
+        /* Service additional charge */
+        $additional_charge_title="";
+        $additional_charges="";
+        $additional_charge_array=json_decode($serviceRequestDetail['additional_charges']);
+
+        if(!empty($additional_charge_array))
+        {
+            /* Worked to display json value in edit page */ 
+            foreach ($additional_charge_array as $key => $value) {
+                $additional_charge_title = str_replace('_empty_', '', $key);
+                $additional_charges      = $value;
+            }
+        }
+        
+        $serviceRequestDetail->additional_charges = $additional_charges;
+
+        if(!empty($additional_charge_title) && !empty($serviceRequestDetail->additional_charges)){
+            $additionalCharges = $serviceRequestDetail->additional_charges;
+            $response->additionalChargesFor = $additional_charge_title;
+        }else{
+            $additionalCharges = 0;
+            $response->additionalChargesFor = '';
+        }
+
+        /* Ttransportation charge */
+        if($serviceRequestDetail->transportation_charge > 0){
+            $transportationCharges  = $serviceRequestDetail->transportation_charge;
+            $kilometersCharges      = $serviceRequestDetail->km_charge;
+        }else{
+            $transportationCharges  = 0;
+            $kilometersCharges      = 0;
+        }
+
+        $address_1 = '';
+        $address_2 = '';
+        $city      = '';
+        $state     = '';
+        $zipcode   = '';
+
+        /* Check blank address line one */
+        if($serviceRequestDetail->customer->address_1 != '' || $serviceRequestDetail->customer->address_1 != NULL){
+            $address_1 = $serviceRequestDetail->customer->address_1.',';
+        }
+
+        /* Check blank address line two */
+        if($serviceRequestDetail->customer->address_2 != '' || $serviceRequestDetail->customer->address_2 != NULL){
+            $address_2 = $serviceRequestDetail->customer->address_2.',';
+        }
+
+        /* Check blank city */
+        if($serviceRequestDetail->customer->city != '' || $serviceRequestDetail->customer->city != NULL){
+            $city = $serviceRequestDetail->customer->city.',';
+        }
+
+        /* Check blank state */
+        if($serviceRequestDetail->customer->state != '' || $serviceRequestDetail->customer->state != NULL){
+            $state = $serviceRequestDetail->customer->state.',';
+        }
+
+        /* Check blank zipcode */
+        if($serviceRequestDetail->customer->zipcode != '' || $serviceRequestDetail->customer->zipcode != NULL){
+            $state = $serviceRequestDetail->customer->zipcode.'.';
+        }
+        
+        /* Overview data */
+        $overview = (object)array(
+            "product_title" => ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name,
+            "created_at"    => date('Y-m-d H:i:s',strtotime($serviceRequestDetail->created_at)),
+            "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode)
+        );   
+        
+        $response->overview = $overview;
+
+        /* Service request status */
+        $response->serviceRequestCurrentStatus = $serviceRequestDetail->status;
+
+        $response->serviceRequestStatusList = (object)array();
+
+        /* Service request type according to service request status */
+        if($serviceRequestDetail->service_type == 'installation'){
+
+            /* Service request status (Type = 'installation') */
+            $changeKey = ServiceRequest::$enum_installation_status;
+            $newStatusarray = array_values($changeKey);
+
+        }else if($serviceRequestDetail->service_type == 'repair'){
+
+            /* Service request status (Type = 'repair') */
+            $changeKey = ServiceRequest::$enum_repair_status;
+            $newStatusarray = array_values($changeKey);
+        }
+
+        $newStatusArrayChangeKey = array();
+
+        for ($i=0; $i <count($newStatusarray) ; $i++) { 
+            $newStatusArrayChangeKey[$i] = $newStatusarray[$i];
+        }
+
+        $response->serviceRequestStatusList = (object)$newStatusArrayChangeKey;
+
+        /* Unset customer data */
+        unset($serviceRequestDetail->customer->created_at);
+        unset($serviceRequestDetail->customer->updated_at);
+
+        /* Unset service center data */
+        unset($serviceRequestDetail->service_center->created_at);
+        unset($serviceRequestDetail->service_center->updated_at);
+
+        /* Unset product data */
+        unset($serviceRequestDetail->product->created_at);
+        unset($serviceRequestDetail->product->updated_at);
+
+        /* Unset product data */
+        foreach ($serviceRequestDetail->servicerequestlog as $key => $unsetvalue) {
+            unset($unsetvalue->action_made);
+            unset($unsetvalue->action_made_company);
+        }
+        
+        /* Customer data */
+        $customer           = $serviceRequestDetail->customer;
+        $response->customer = $customer;
+
+        /* Service center data */
+        $serviceCenter           = $serviceRequestDetail->service_center;
+        $response->serviceCenter = $serviceCenter;
+
+        /* Technician data */
+        $response->technician_name = '';
+        if(!empty($serviceRequestDetail->technician)){
+            $response->technician_name = $serviceRequestDetail->technician->name;
+        }
+
+        /* Call data */
+        $response->call_type     = $serviceRequestDetail->call_type;
+        $response->call_location = $serviceRequestDetail->call_location;
+        $response->callPriority  = $serviceRequestDetail->priority;
+
+        /* Product data */
+        $product           = $serviceRequestDetail->product;
+        $response->product = $product;
+
+        /* Other data */
+        $response->is_item_in_warrenty  = $serviceRequestDetail->is_item_in_warrenty;
+        $response->model_no             = $serviceRequestDetail->model_no;
+        $response->serial_no            = $serviceRequestDetail->serial_no;
+        $response->mop                  = $serviceRequestDetail->mop;
+        $response->purchase_from        = $serviceRequestDetail->purchase_from;
+        $response->make                 = $serviceRequestDetail->make;
+        $response->bill_date            = $serviceRequestDetail->bill_date;
+        $response->note                 = $serviceRequestDetail->note;
+        $response->service_type         = $serviceRequestDetail->service_type;
+        $response->bill_no              = $serviceRequestDetail->bill_no;
+
+        /* Complain data */
+        $complain = $serviceRequestDetail->complain_details;  
+        $response->complain = $complain;
+
+        /* Completion date */
+        $response->completion_date = $serviceRequestDetail->completion_date;
+
+        /* Service request log data */
+        $servicerequestlog = $serviceRequestDetail->servicerequestlog;
+
+        foreach ($servicerequestlog as $key => $servicerequestlogSingleValue) {
+            $servicerequestlog[$key]->action_taken_by = $servicerequestlogSingleValue->user->name;
+        }
+
+        $response->serviceRequestLog = (object)$servicerequestlog;
+
+        /* All charges */
+        $charges = (object)array(
+            "serviceCharge"             => $serviceRequestDetail->service_charge,
+            "installationCharge"        => $serviceRequestDetail->installation_charge,
+            "kilometersCharges"         => $kilometersCharges,
+            "transportationCharges"     => $transportationCharges,
+            "additionalCharges"         => $additionalCharges,
+            "totalAmount"               => $serviceRequestDetail->amount
+        );
+
+        $response->charges = $charges;
+
+        return $response;
     }
 }
