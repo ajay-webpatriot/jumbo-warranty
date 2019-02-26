@@ -699,7 +699,7 @@ class ServiceRequestApiController extends Controller
 
         if($requestdetail != ''){
             $status = 1;
-            $message = '';
+            $message = 'Request status changed';
             $response = $requestdetail;
         }
 
