@@ -723,6 +723,12 @@ class ServiceRequestApiController extends Controller
         /* Service request object, all data */
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
 
+        // echo "<pre>";
+        // print_r($serviceRequestDetail->is_accepted);
+        // echo "</pre>";
+        // exit();
+        
+
         /* Service additional charge */
         $additional_charge_title="";
         $additional_charges="";
@@ -798,6 +804,9 @@ class ServiceRequestApiController extends Controller
 
         /* Service request status */
         $response->serviceRequestCurrentStatus = $serviceRequestDetail->status;
+
+        /* Service request status is accepted */
+        $response->is_accepted = $serviceRequestDetail->is_accepted;
 
         $response->serviceRequestStatusList = (object)array();
 
