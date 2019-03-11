@@ -357,25 +357,29 @@ class ServiceRequest extends Model
     public function requestStatus($requestId,$status)
     {   
         $response = 0;
-        if($status == 1){
-           
-            $updateArray = array(
-                'is_accepted'  => 1,
-                'status'       =>'Started'
-            );
-        }else{
-            $updateArray = array(
-                'is_accepted'   => 0,
-                'technician_id' => NULL,
-                'status'        =>'Cancelled'
-            );
-        }
-        $requestStatus = ServiceRequest::where('id',$requestId)
-        ->where('status','!=','Closed')->update($updateArray);
 
-        if($requestStatus == 1){
-            $response = 1;
+        if(isset($requestId) && $requestId != '' && $requestId != 0){
+            if($status == 1){
+            
+                $updateArray = array(
+                    'is_accepted'  => 1,
+                    'status'       =>'Started'
+                );
+            }else{
+                $updateArray = array(
+                    'is_accepted'   => 0,
+                    'technician_id' => NULL,
+                    'status'        =>'Cancelled'
+                );
+            }
+            $requestStatus = ServiceRequest::where('id',$requestId)
+            ->where('status','!=','Closed')->update($updateArray);
+
+            if($requestStatus == 1){
+                $response = 1;
+            }
         }
+        
         return $response;
     } 
 }

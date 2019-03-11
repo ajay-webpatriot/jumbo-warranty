@@ -24,13 +24,16 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function () {
        Route::post('/forgotpassword','LoginApiController@forgotpassword');
        Route::post('/otp','LoginApiController@verifyotp');
        Route::post('/setpassword','LoginApiController@setpassword');
+       Route::post('/changepassword','ServiceRequestApiController@changepassword');
+       Route::post('/setfirebasetoken','ServiceRequestApiController@setfirebasetoken');
        Route::post('/dashboard','ServiceRequestApiController@dashboard');
        Route::post('/getassignedrequestlist','ServiceRequestApiController@getAssignedRequestList');
        Route::post('/gettodayduerequestlist','ServiceRequestApiController@getTodayDueRequestList');
        Route::post('/getoverduerequestlist','ServiceRequestApiController@getOverDueRequestList');
        Route::post('/getresolvedrequestlist','ServiceRequestApiController@getResolvedRequestList');
-       Route::post('/getRequestStatus','ServiceRequestApiController@getRequestStatus');
+       Route::post('/setRequestStatus','ServiceRequestApiController@setRequestStatus');
        Route::post('/getRequestDetail','ServiceRequestApiController@getRequestDetail');
+       Route::post('updateRequestDetail','ServiceRequestApiController@updateRequestDetail');
        
 
 });

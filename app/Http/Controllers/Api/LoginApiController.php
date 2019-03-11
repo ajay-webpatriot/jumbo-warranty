@@ -201,9 +201,9 @@ class LoginApiController extends Controller
 
         /* Json response */
         return response()->json([
-            'success'   => $status,
-            'message'   => $message,
-            'data'      => $UserArray
+            'status'   => $status,
+            'message'  => $message,
+            'data'     => $UserArray
         ]);
     }
 
@@ -219,9 +219,9 @@ class LoginApiController extends Controller
 
         if($json == null || count($json) == 0 || empty($json)) {
             return response()->json([
-                'status'    => $status,
-                'message'   => $message,
-                'data'      => (object)array()
+                'status'   => $status,
+                'message'  => $message,
+                'data'     => (object)array()
             ]);
         }
 
@@ -232,9 +232,9 @@ class LoginApiController extends Controller
 
         if($validator->fails()){
             return response()->json([
-                'success'   => $status,
-                'message'   => 'Parameter missing',
-                'data'      => (object)array()
+                'status'   => $status,
+                'message'  => 'Parameter missing',
+                'data'     => (object)array()
             ]);
         }
 
@@ -365,11 +365,11 @@ class LoginApiController extends Controller
                     if($updatePassword != ''){
 
                         /* Get technician all data */
-                        $response->UserArray = $this->userData($userId);
+                        // $response->UserArray = $this->userData($userId);
             
                         $status     = 1;
                         $message    = 'Password is changed successfully.';
-                        $UserArray  = $response->UserArray;
+                        // $UserArray  = $response->UserArray;
 
                     }else{
 
