@@ -1205,7 +1205,22 @@ class ServiceRequestsController extends Controller
             }    
             
 
-            $additional_charges=($request['additional_charges'] != "" && $request['additional_charges'] != 0)? "<tr><td colspan='2'>Additional Charge </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['additional_charges'],2)."</td></tr>":"";
+            // $additional_charges=($request['additional_charges'] != "" && $request['additional_charges'] != 0)? "<tr><td colspan='2'>Additional Charge </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['additional_charges'],2)."</td></tr>":"";
+            $additional_charge_array=json_decode($request['additional_charges']);
+            $additional_charges="";
+            if(!empty($additional_charge_array))
+            {
+                // Worked to display json value in edit page
+                foreach ($additional_charge_array as $key => $value) {
+
+                    $additional_charge_title=str_replace('_empty_', '', $key);
+                    if(!empty($additional_charge_title) && !empty($value))
+                    {
+                        $additional_charges="<tr><td colspan='2'>".$additional_charge_title." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
+                    }
+                    
+                }
+            }
 
             $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['amount'],2)."</b></td></tr>";
 

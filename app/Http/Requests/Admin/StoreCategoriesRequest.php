@@ -23,7 +23,7 @@ class StoreCategoriesRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:categories,name,'.$this->route('category'),
+            'name' => 'required|unique:categories,name,'.$this->route('category').',id,deleted_at,NULL',
             'service_charge' => 'required|numeric',
             'status' => 'required',
             // 'products.*.name' => 'required|unique:products,name,'.$this->route('product'),

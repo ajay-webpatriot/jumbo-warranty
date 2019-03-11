@@ -24,7 +24,7 @@ class UpdateProductPartsRequest extends FormRequest
     {
         return [
             
-            'name' => 'required|unique:product_parts,name,'.$this->route('product_part'),
+            'name' => 'required|unique:product_parts,name,'.$this->route('product_part').',id,deleted_at,NULL',
             'status' => 'required',
         ];
     }

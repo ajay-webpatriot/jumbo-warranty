@@ -23,7 +23,7 @@ class StoreProductPartsRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:product_parts,name,'.$this->route('product_part'),
+            'name' => 'required|unique:product_parts,name,'.$this->route('product_part').',id,deleted_at,NULL',
             'status' => 'required',
         ];
     }

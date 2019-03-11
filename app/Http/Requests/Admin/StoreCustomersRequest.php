@@ -27,7 +27,7 @@ class StoreCustomersRequest extends FormRequest
             'lastname' => 'required',
             // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'phone' => 'required|min:11|max:11',
-            'email' => 'required|email|unique:customers,email',
+            'email' => 'required|email|unique:customers,email,'.$this->route('customers').',id,deleted_at,NULL',
             'company_id' => 'required',
             'address_1' => 'required',
             'city' => 'required',

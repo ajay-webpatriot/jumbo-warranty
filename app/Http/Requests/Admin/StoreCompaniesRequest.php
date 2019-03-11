@@ -23,7 +23,7 @@ class StoreCompaniesRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:companies,name,'.$this->route('company'),
+            'name' => 'required|unique:companies,name,'.$this->route('company').',id,deleted_at,NULL',
             'installation_charge' => 'required|numeric',
             'address_1' => 'required',
             'city' => 'required',
