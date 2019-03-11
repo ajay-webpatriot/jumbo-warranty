@@ -42,20 +42,27 @@
                             if( isset($role) ) {
                                 // $per_found = $role->hasPermissionTo($perm->name);
                                 
-                                if($role->title == "Technician")
+                                // if($role->title == "Technician")
+                                // {
+                                //     if($perm->name == "Company Management")
+                                //     {
+                                //         $options="disabled";
+                                //     }
+                                //     else if($perm->name == "User Management")
+                                //     {
+                                //         $options="disabled";
+                                //     }
+                                // } 
+                                if($role->title == "Service Center Admin" || $role->title == "Technician")
                                 {
                                     if($perm->name == "Company Management")
                                     {
                                         $options="disabled";
                                     }
-                                    else if($perm->name == "User Management")
-                                    {
-                                        $options="disabled";
-                                    }
-                                } 
-                                else if($role->title == "Service Center Admin")
+                                }
+                                else if($role->title == "Company Admin" || $role->title == "Company Users")
                                 {
-                                    if($perm->name == "Company Management")
+                                    if($perm->name == "Service Center Management")
                                     {
                                         $options="disabled";
                                     }

@@ -147,7 +147,7 @@
                                         <div class="col-xs-12">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer-address').'', ['class' => 'control-label']) !!}
                                             <div class="custAddress">
-                                                @if(count($custAddressData) > 0)
+                                                @if(!empty($custAddressData))
                                                 {{$custAddressData->address_1}}
                                                 <br/>
                                                 @if(!empty($service_request->customer->address_2))

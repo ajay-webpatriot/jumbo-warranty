@@ -1220,15 +1220,15 @@ class ServiceRequestsController extends Controller
             $productHTML="<div><table class='table' style='width:100%;'>
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
-                                        <th>Category</th>
-                                        <th>Price</th>
+                                        <th class='align-text-center'>Product</th>
+                                        <th class='align-text-center'>Category</th>
+                                        <th class='price'>Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>".$productDetail->name."</td>
-                                        <td>".$productDetail->category->name."</td>
+                                        <td class='align-text-center'>".$productDetail->name."</td>
+                                        <td class='align-text-center'>".$productDetail->category->name."</td>
                                         <td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($productDetail->price,2)."</td>
                                     </tr>
                                     <tr>
@@ -1258,6 +1258,12 @@ class ServiceRequestsController extends Controller
                             /* .price{
                                 color:#120CEA;
                             } */
+                            .price{
+                                text-align:right;
+                            }
+                            .align-text-center{
+                                text-align:center;
+                            }
                         </style>
                     </head>";
             $html.="<body>
