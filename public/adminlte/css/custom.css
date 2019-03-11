@@ -21,3 +21,9 @@
 .datatable th, .dataTable th{
 	text-align: center !important;
 }
+
+.help-block
+{
+	/* set css for error message */
+	color: #FF0000 !important;
+}
