@@ -87,13 +87,21 @@ class PermissionsController extends Controller
             'permissions_role'=>'bail|required'
         ]);
 
+
+        // revoke permission from all roles
+        $roles = Role::all();
+        foreach ($roles as $key => $value) {
+            $role = RoleModel::findById($value->id);
+                $role->permissions()->sync([]);
+        }
+
         if(isset($request['permissions_role']))
         {
             foreach ($request['permissions_role'] as $roleKey => $roleValue) {
 
                 $role = RoleModel::findByRoleName($roleKey);
+                // $role->permissions()->sync([]);
 
-                $role->permissions()->sync([]);
                 foreach ($roleValue as $key => $value) {
                    $role->givePermissionTo($value);
                     // $role->syncPermissions($value);
