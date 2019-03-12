@@ -378,6 +378,11 @@
                                     
                                 </div>
                             </div>
+                            @if($service_request->status == "Closed")
+                            <div class="col-xs-12 form-group pull-right">
+                                <a href="{{ route('admin.service_request.invoice',[$service_request->id]) }}" class="btn btn-xl btn-primary pull-right">View Invoice</a>
+                            </div> 
+                            @endif
                             
                         </div>
                     </div>
