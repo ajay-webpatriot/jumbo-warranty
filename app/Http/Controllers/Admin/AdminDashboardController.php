@@ -10,6 +10,10 @@ use DB;
 
 class AdminDashboardController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index(Request $request)
     {
         $PandingComplainCount       = 0;
