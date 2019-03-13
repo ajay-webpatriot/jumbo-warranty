@@ -1,5 +1,5 @@
 <?php
-Route::get('/', function () { return redirect('/admin/home'); });
+Route::get('/', function () { return redirect('/admin/dashboard'); });
 
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');
@@ -109,5 +109,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::get('service_request_accept/{id}', ['uses' => 'Admin\ServiceRequestsController@acceptServiceRequest', 'as' => 'service_request.accept']);
     Route::get('service_request_reject/{id}', ['uses' => 'Admin\ServiceRequestsController@rejectServiceRequest', 'as' => 'service_request.reject']);
 
+    /* admin dashboard route */
+    Route::get('dashboard','Admin\AdminDashboardController@index')->name('index');
+    Route::get('getCompanyDashboardRequestCount','Admin\AdminDashboardController@getCompanyDashboardRequestCount')->name('getCompanyDashboardRequestCount');
+    
 });
   

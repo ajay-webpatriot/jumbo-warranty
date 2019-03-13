@@ -5,7 +5,7 @@
     <section class="sidebar">
         <ul class="sidebar-menu">
             <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
-                <a href="{{ url('/') }}">
+                <a href="{{ route('admin.index') }}">
                     <i class="fa fa-wrench"></i>
                     <span class="title">@lang('quickadmin.qa_dashboard')</span>
                 </a>
