@@ -59,12 +59,37 @@ class AdminDashboardController extends Controller
         ->limit(10)
         ->get();
         
-        
+        if($request->ajax())
+        {
+            $startDate          = $request->startDate;
+            $endDate            = $request->endDate;
+            $SelectedCompanyId  = $request->SelectedCompanyId;
+
+            /*Total Installation count*/
+            $installationToday = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"installation_today");
+
+            /*Total Repair count*/
+            $repairToday       = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"repair_today");
+            
+            /*Total Delayed count*/
+            $delayedRequest    = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"delayed_request");
+
+            /*Total Closed count*/
+            $closededRequest   = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"closed_request");
+            
+            return response()->json([
+                'installationToday' => $installationToday,
+                'repairToday'       => $repairToday,
+                'delayedRequest'    => $delayedRequest,
+                'closededRequest'   => $closededRequest
+            ]);
+            exit();
+        }
 
         $CompaninesName = DB::table('companies')->select('companies.name as CompanyName','companies.status as CompanyStatus','companies.id as CompanyId')
         ->where('status','=','Active')->get();
        
-        return view('admin.admin_dashboard',compact('PandingComplainCount','SolvedComplainCount','PandingInstallationCount','SolvedInstallationCount','ServiceTypeDetails','CompaninesName','installationToday','repairToday','delayedRequest','closededRequest'));
+        return view('admin.admin_dashboard',compact('PandingComplainCount','SolvedComplainCount','PandingInstallationCount','SolvedInstallationCount','ServiceTypeDetails','CompaninesName'));
     }
 
     public function getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,$type)
@@ -126,32 +151,32 @@ class AdminDashboardController extends Controller
         }
     }
 
-    public function getCompanyDashboardRequestCount()
-    {
-        $GetFilterValue = Input::all();
+    // public function getCompanyDashboardRequestCount()
+    // {
+    //     $GetFilterValue = Input::all();
 
-        $startDate          = $GetFilterValue['startDate'];
-        $endDate            = $GetFilterValue['endDate'];
-        $SelectedCompanyId  = $GetFilterValue['SelectedCompanyId'];
+    //     $startDate          = $GetFilterValue['startDate'];
+    //     $endDate            = $GetFilterValue['endDate'];
+    //     $SelectedCompanyId  = $GetFilterValue['SelectedCompanyId'];
 
-        /*Total Installation count*/
-        $installationToday = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"installation_today");
+    //     /*Total Installation count*/
+    //     $installationToday = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"installation_today");
 
-        /*Total Repair count*/
-        $repairToday       = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"repair_today");
+    //     /*Total Repair count*/
+    //     $repairToday       = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"repair_today");
         
-        /*Total Delayed count*/
-        $delayedRequest    = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"delayed_request");
+    //     /*Total Delayed count*/
+    //     $delayedRequest    = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"delayed_request");
 
-        /*Total Closed count*/
-        $closededRequest   = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"closed_request");
+    //     /*Total Closed count*/
+    //     $closededRequest   = $this->getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,"closed_request");
         
-        return response()->json([
-            'installationToday' => $installationToday,
-            'repairToday'       => $repairToday,
-            'delayedRequest'    => $delayedRequest,
-            'closededRequest'   => $closededRequest
-        ]);
-    }
+    //     return response()->json([
+    //         'installationToday' => $installationToday,
+    //         'repairToday'       => $repairToday,
+    //         'delayedRequest'    => $delayedRequest,
+    //         'closededRequest'   => $closededRequest
+    //     ]);
+    // }
 }
 ?>

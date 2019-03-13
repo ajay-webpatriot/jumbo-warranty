@@ -237,7 +237,7 @@
 
             $.ajax({
                 type:'GET',
-                url:APP_URL+'/admin/getCompanyDashboardRequestCount',
+                url:APP_URL+'/admin/dashboard',
                 data:{
                     'startDate':startDate,
                     'endDate':endDate,
