@@ -21,6 +21,7 @@ use GoogleAPIHelper;
 use Dompdf\Dompdf;
 use SendMailHelper;
 use Session;
+use DB;
 
 class ServiceRequestsController extends Controller
 {
@@ -630,7 +631,7 @@ class ServiceRequestsController extends Controller
                                         'service_request_id'   =>   $service_request->id,
                                         'user_id'   =>   auth()->user()->id
                                     );
-        ServiceRequestLog::create($insertServiceRequestLogArr);
+        $LastInsertedId = ServiceRequestLog::create($insertServiceRequestLogArr);
 
         if($request['status'] == "Assigned")
         {
@@ -642,7 +643,17 @@ class ServiceRequestsController extends Controller
                                         'service_request_id'   =>   $service_request->id,
                                         'user_id'   =>   auth()->user()->id
                                     );
-            ServiceRequestLog::create($insertServiceRequestLogArr);
+            $LastInsertedId = ServiceRequestLog::create($insertServiceRequestLogArr);
+                                   
+            
+        }
+
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            if($request->technician_id != '' && $request->technician_id != 0 && !empty($request->technician_id) && $request->technician_id != NULL){
+                $this->sendPushNotificationTechnician($request->technician_id,$LastInsertedId->service_request_id);
+            }
+
         }
         
             
@@ -713,6 +724,10 @@ class ServiceRequestsController extends Controller
         {
             $technicians=array(''=>trans('quickadmin.qa_please_select'));
         }
+// echo "<pre>";
+// print_r($technicians);
+// echo "</pre>";
+// exit();
 
         $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
                                         ->where('status','Active')
@@ -773,6 +788,14 @@ class ServiceRequestsController extends Controller
         {
             $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
         }
+
+        // if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            // if($request->technician_id != '' && $request->technician_id != 0 && !empty($request->technician_id) && $request->technician_id != NULL){
+                $this->sendPushNotificationTechnician();
+            // }
+
+        // }
 
         return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title'))->with('no', 1);
         // $user_name=ucwords('user name');
@@ -1620,5 +1643,85 @@ class ServiceRequestsController extends Controller
     
     }
 
+    // public function sendPushNotificationTechnician($technicianId,$lastInsertedId)
+    // {
+    public function sendPushNotificationTechnician()
+    {
+        // if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
 
+        //     if($technicianId != '' && $technicianId != 0 && !empty($technicianId) && $technicianId != NULL){
+
+        //         $assignedRequest = ServiceRequest::select('service_requests.id','service_requests.service_type',
+        //             'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
+        //             DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+        //             DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+        //             LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+        //             'service_requests.is_accepted'
+        //         )
+        //         ->where('service_requests.technician_id',$technicianId)
+        //         ->where('service_requests.id',$lastInsertedId)
+        //         ->join('customers','service_requests.customer_id','=','customers.id')
+        //         ->join('products','service_requests.product_id','=','products.id')
+        //         ->first();
+
+                // $device_token = \App\User::select('firebase_token')
+                // ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                // ->where('status','Active')
+                // ->where('id',$technicianId)
+                // ->first();
+
+                $device_token = "dBJg3r2jgb8:APA91bEaSNTeUdwETnXr-xjXkqNKhiLhA16xwh-5Uw0JDLPfGdQWK18HQG1aYYJ9FSpaHFQysSb4rtkMCh3WV67LoJMXPQAgAKbkFrt91fXkBg_qGAIbH-sr9_TNI-O3bSe0CWATfZLZ";
+               
+                
+                $apiKey = "AAAAkwYtQh8:APA91bF0WWqlkV15KYPpr6zd0-d0d6CsApLji6MKGpxyzhXOtQRCJDPrukQhS_S_DHjHH0sWhsUDujUVv8aBgWL2MyCbh8TrQX4VqYTgi6PQ_0JWipAdh2w8Jni4w9C23dR7wSDVa8mD";
+                // FCM API KEY
+
+                // $message = array("message" => $assignedRequest);
+                $message = array("message" => "test message from push notification");
+                
+                // $registrationIDs = array($device_token->firebase_token);
+                $registrationIDs = array($device_token);
+
+                $url = 'https://fcm.googleapis.com/fcm/send';
+
+                $fields = array(
+                    'registration_ids' => $registrationIDs,
+                    'data' => $message,
+                    "time_to_live" => 300000,
+                    // "delay_while_idle" => false,
+                    'priority' => 'high',
+                );
+
+                $headers = array(
+                    'Authorization: key=' . $apiKey,
+                   'Content-Type: application/json'
+                );
+
+                // Open connection
+                $ch = curl_init();
+
+                // Set the url, number of POST vars, POST data
+                curl_setopt( $ch, CURLOPT_URL, $url );
+                curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $fields ));
+                curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+                curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false);
+
+                // Execute post
+                $result = curl_exec($ch);
+                if ($result === FALSE) {
+                    Log::error('Oops! FCM Send Error: ' . curl_error($ch));
+                    // die('Oops! FCM Send Error: ' . curl_error($ch));
+                }
+
+                // echo "----".$result;
+                // echo "<br>".json_encode( $fields );
+                // Close connection
+                curl_close($ch);
+                // exit();
+            // }
+        // }
+    }
 }
