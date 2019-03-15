@@ -16,9 +16,9 @@ class AdminDashboardController extends Controller
     }
     public function index(Request $request)
     {
-        $PandingComplainCount       = 0;
+        $PendingComplainCount       = 0;
         $SolvedComplainCount        = 0;
-        $PandingInstallationCount   = 0;
+        $PendingInstallationCount   = 0;
         $SolvedInstallationCount    = 0;
 
         $ServiceTypes = DB::table('service_requests')->select('service_type','status')
@@ -30,7 +30,7 @@ class AdminDashboardController extends Controller
             if($SingleServiceTypes->service_type == 'repair' && $SingleServiceTypes->status != 'Closed'){
 
                 /*Total panding complain (Repair) */
-                $PandingComplainCount++;
+                $PendingComplainCount++;
 
             }else if($SingleServiceTypes->service_type == 'repair' && $SingleServiceTypes->status == 'Closed'){
 
@@ -40,7 +40,7 @@ class AdminDashboardController extends Controller
             }else if($SingleServiceTypes->service_type == 'installation' && $SingleServiceTypes->status != 'Closed'){
 
                 /*Total panding installation */
-                $PandingInstallationCount++;
+                $PendingInstallationCount++;
 
             }else if($SingleServiceTypes->service_type == 'installation' && $SingleServiceTypes->status == 'Closed'){
 
@@ -90,7 +90,7 @@ class AdminDashboardController extends Controller
         ->where('deleted_at',NULL)
         ->where('status','=','Active')->get();
        
-        return view('admin.admin_dashboard',compact('PandingComplainCount','SolvedComplainCount','PandingInstallationCount','SolvedInstallationCount','ServiceTypeDetails','CompaninesName'));
+        return view('admin.admin_dashboard',compact('PendingComplainCount','SolvedComplainCount','PendingInstallationCount','SolvedInstallationCount','ServiceTypeDetails','CompaninesName'));
     }
 
     public function getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,$type)
