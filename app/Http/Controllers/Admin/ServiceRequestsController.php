@@ -1486,7 +1486,7 @@ class ServiceRequestsController extends Controller
 
            
             // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
-            if(count($customer) > 0)
+            if(!empty($customer))
             {
                 $data['service_centers'] = \App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customer->zipcode . '%')->get();
             }
@@ -1508,7 +1508,7 @@ class ServiceRequestsController extends Controller
             $customer = \App\Customer::where('id',$details['customerId'])
                                 ->where('status','Active')->get()->first();
             // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
-            if(count($customer) > 0)
+            if(!empty($customer))
             {
                 $data['address'].=$customer->address_1."<br/>";
                 if(!empty($customer->address_2))

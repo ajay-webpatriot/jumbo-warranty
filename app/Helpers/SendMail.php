@@ -54,8 +54,7 @@ class SendMail
 
         $receiver_email=array('admin' => $admin_email,
                               'company_admin' => $company_admin_email,
-                              'customer' => $customer_email,
-                              'other' => 'hinal.webpatriot@gmail.com'
+                              'customer' => $customer_email
 		                        );
         foreach ($receiver_email as $key => $value) {
 
@@ -68,10 +67,6 @@ class SendMail
           }
           else if($key == 'customer'){
             $username = $customer->firstname.' '.$customer->lastname;
-          }
-          else
-          {
-            $username ='hinal patel';
           }
           $to_email=$value;
           $data=array('subject' => 'New Service Request Created',
@@ -110,7 +105,6 @@ class SendMail
         $receiver_email=array('admin' => $admin_email,
                               // 'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
-                              'other' => 'hinal.webpatriot@gmail.com'
                             );
         if($service_request->status == "Closed")
         {
@@ -145,10 +139,6 @@ class SendMail
           else if($key == 'customer'){
             $username = $customer->firstname.' '.$customer->lastname;
           }
-          else
-          {
-            $username ='hinal patel';
-          }
           $to_email=$value;
           $data=array('subject' => 'Service Request Status Changed',
                 'user_name' => ucwords($username),
@@ -161,10 +151,6 @@ class SendMail
                     $message->to($to_email,$username)
                       ->subject('Service Request Status Changed')
                       ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
-                      // here comes what you want
-                      // ->setBody('Hi, welcome user!'); // assuming text/plain
-                      // or:
-                      // ->setBody('<h1>Hi, welcome user!</h1>', 'text/html'); // for HTML rich messages
               });        
         }
         
@@ -196,8 +182,7 @@ class SendMail
     
 
         $receiver_email=array('admin' => $admin_email,
-                              'service_center_admin' => $service_center_admin_email,
-                              'other' => 'hinal.webpatriot@gmail.com'
+                              'service_center_admin' => $service_center_admin_email
                             );
        
         foreach ($receiver_email as $key => $value) {
@@ -208,10 +193,6 @@ class SendMail
           }
           else if($key == 'service_center_admin'){
             $username = $service_center_admin->name;
-          }
-          else
-          {
-            $username ='hinal patel';
           }
           $to_email=$value;
           $data=array('subject' => 'Service Request',
