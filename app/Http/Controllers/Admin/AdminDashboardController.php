@@ -50,7 +50,7 @@ class AdminDashboardController extends Controller
             }
         }
 
-        $ServiceTypeDetails = DB::table('service_requests')->select('service_requests.service_type','service_requests.id','service_requests.created_at',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+        $ServiceTypeDetails = DB::table('service_requests')->select('service_requests.amount','service_requests.service_type','service_requests.id','service_requests.created_at',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
         LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
         ->join('customers','service_requests.customer_id','=','customers.id')
         ->join('products','service_requests.product_id','=','products.id')
