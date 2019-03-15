@@ -87,6 +87,7 @@ class AdminDashboardController extends Controller
         }
 
         $CompaninesName = DB::table('companies')->select('companies.name as CompanyName','companies.status as CompanyStatus','companies.id as CompanyId')
+        ->where('deleted_at',NULL)
         ->where('status','=','Active')->get();
        
         return view('admin.admin_dashboard',compact('PandingComplainCount','SolvedComplainCount','PandingInstallationCount','SolvedInstallationCount','ServiceTypeDetails','CompaninesName'));
