@@ -1643,44 +1643,42 @@ class ServiceRequestsController extends Controller
     
     }
 
-    // public function sendPushNotificationTechnician($technicianId,$lastInsertedId)
-    // {
-    public function sendPushNotificationTechnician()
+    public function sendPushNotificationTechnician($technicianId,$lastInsertedId)
     {
-        // if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
 
-        //     if($technicianId != '' && $technicianId != 0 && !empty($technicianId) && $technicianId != NULL){
+            if($technicianId != '' && $technicianId != 0 && !empty($technicianId) && $technicianId != NULL){
 
-        //         $assignedRequest = ServiceRequest::select('service_requests.id','service_requests.service_type',
-        //             'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
-        //             DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
-        //             DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-        //             LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
-        //             'service_requests.is_accepted'
-        //         )
-        //         ->where('service_requests.technician_id',$technicianId)
-        //         ->where('service_requests.id',$lastInsertedId)
-        //         ->join('customers','service_requests.customer_id','=','customers.id')
-        //         ->join('products','service_requests.product_id','=','products.id')
-        //         ->first();
+                $assignedRequest = ServiceRequest::select('service_requests.id','service_requests.service_type',
+                    'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
+                    DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+                    DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+                    LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+                    'service_requests.is_accepted'
+                )
+                ->where('service_requests.technician_id',$technicianId)
+                ->where('service_requests.id',$lastInsertedId)
+                ->join('customers','service_requests.customer_id','=','customers.id')
+                ->join('products','service_requests.product_id','=','products.id')
+                ->first();
 
-                // $device_token = \App\User::select('firebase_token')
-                // ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-                // ->where('status','Active')
-                // ->where('id',$technicianId)
-                // ->first();
+                $device_token = \App\User::select('firebase_token')
+                ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                ->where('status','Active')
+                ->where('id',$technicianId)
+                ->first();
 
-                $device_token = "dBJg3r2jgb8:APA91bEaSNTeUdwETnXr-xjXkqNKhiLhA16xwh-5Uw0JDLPfGdQWK18HQG1aYYJ9FSpaHFQysSb4rtkMCh3WV67LoJMXPQAgAKbkFrt91fXkBg_qGAIbH-sr9_TNI-O3bSe0CWATfZLZ";
+                // $device_token = "dBJg3r2jgb8:APA91bEaSNTeUdwETnXr-xjXkqNKhiLhA16xwh-5Uw0JDLPfGdQWK18HQG1aYYJ9FSpaHFQysSb4rtkMCh3WV67LoJMXPQAgAKbkFrt91fXkBg_qGAIbH-sr9_TNI-O3bSe0CWATfZLZ";
                
                 
                 $apiKey = "AAAAkwYtQh8:APA91bF0WWqlkV15KYPpr6zd0-d0d6CsApLji6MKGpxyzhXOtQRCJDPrukQhS_S_DHjHH0sWhsUDujUVv8aBgWL2MyCbh8TrQX4VqYTgi6PQ_0JWipAdh2w8Jni4w9C23dR7wSDVa8mD";
                 // FCM API KEY
 
-                // $message = array("message" => $assignedRequest);
-                $message = array("message" => "test message from push notification");
+                $message = array("message" => $assignedRequest);
+                // $message = array("message" => "test message from push notification");
                 
-                // $registrationIDs = array($device_token->firebase_token);
-                $registrationIDs = array($device_token);
+                $registrationIDs = array($device_token->firebase_token);
+                // $registrationIDs = array($device_token);
 
                 $url = 'https://fcm.googleapis.com/fcm/send';
 
@@ -1721,7 +1719,7 @@ class ServiceRequestsController extends Controller
                 // Close connection
                 curl_close($ch);
                 // exit();
-            // }
-        // }
+            }
+        }
     }
 }
