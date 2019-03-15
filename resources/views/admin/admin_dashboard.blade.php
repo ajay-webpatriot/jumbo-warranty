@@ -58,7 +58,7 @@
 
                 <div class="row">
 
-                    <!-- Total panding complain -->
+                    <!-- Total PENDING complain -->
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box">
                             <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                        
-                    <!-- Total panding installation -->
+                    <!-- Total PENDING installation -->
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box">
                             <span class="info-box-icon bg-red"><i class="fa fa-tv"></i></span>
@@ -108,24 +108,24 @@
 
                 <div class="row">
 
-                    <!-- Total panding complain -->
+                    <!-- Total PENDING complain -->
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box">
                             <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text boxfont">TOTAL PANDING COMPLAIN</span>
-                                <span class="info-box-number">{{$PandingComplainCount}}</span>
+                                <span class="info-box-text boxfont">TOTAL PENDING COMPLAIN</span>
+                                <span class="info-box-number">{{$PENDINGComplainCount}}</span>
                             </div>
                         </div>
                     </div>
                        
-                    <!-- Total panding installation -->
+                    <!-- Total PENDING installation -->
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box">
                             <span class="info-box-icon bg-red"><i class="fa fa-tv"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text boxfont">TOTAL PANDING INSTALLATION</span>
-                                <span class="info-box-number">{{$PandingInstallationCount}}</span>
+                                <span class="info-box-text boxfont">TOTAL PENDING INSTALLATION</span>
+                                <span class="info-box-number">{{$PENDINGInstallationCount}}</span>
                             </div>
                         </div>
                     </div>
