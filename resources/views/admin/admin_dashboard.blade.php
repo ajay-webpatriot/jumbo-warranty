@@ -114,7 +114,7 @@
                             <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text boxfont">TOTAL PENDING COMPLAIN</span>
-                                <span class="info-box-number">{{$PENDINGComplainCount}}</span>
+                                <span class="info-box-number">{{$PendingComplainCount}}</span>
                             </div>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                             <span class="info-box-icon bg-red"><i class="fa fa-tv"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text boxfont">TOTAL PENDING INSTALLATION</span>
-                                <span class="info-box-number">{{$PENDINGInstallationCount}}</span>
+                                <span class="info-box-number">{{$PendingInstallationCount}}</span>
                             </div>
                         </div>
                     </div>
