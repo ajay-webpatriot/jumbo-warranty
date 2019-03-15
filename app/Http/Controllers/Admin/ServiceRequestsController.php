@@ -789,13 +789,7 @@ class ServiceRequestsController extends Controller
             $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
         }
 
-        // if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
-
-            // if($request->technician_id != '' && $request->technician_id != 0 && !empty($request->technician_id) && $request->technician_id != NULL){
-                $this->sendPushNotificationTechnician();
-            // }
-
-        // }
+        
 
         return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title'))->with('no', 1);
         // $user_name=ucwords('user name');
@@ -989,6 +983,7 @@ class ServiceRequestsController extends Controller
         // calculate total amount work end
 
         $request_status=$service_request->status;
+        $existing_technician_id=$service_request->technician_id;
         
 
         $service_request->update($request->all());
@@ -1000,7 +995,13 @@ class ServiceRequestsController extends Controller
             // echo $id;exit;
             SendMailHelper::sendRequestUpdateMail($id,$msg);
         }
-        
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            if($request->technician_id != '' && $request->technician_id != 0 && !empty($request->technician_id) && $request->technician_id != NULL && $request->technician_id != $existing_technician_id){
+                $this->sendPushNotificationTechnician($request->technician_id,$id);
+            }
+
+        }
         if($request['status'] == "Closed")
         {
             // return $this->createReceiptPDF($request->all());
