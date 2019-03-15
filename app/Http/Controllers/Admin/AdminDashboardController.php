@@ -16,6 +16,10 @@ class AdminDashboardController extends Controller
     }
     public function index(Request $request)
     {
+        if(auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID')){
+            return view('home');
+        }
+        
         $PendingComplainCount       = 0;
         $SolvedComplainCount        = 0;
         $PendingInstallationCount   = 0;

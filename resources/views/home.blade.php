@@ -7,7 +7,10 @@
                 <div class="panel-heading">@lang('quickadmin.qa_dashboard')</div>
 
                 <div class="panel-body">
-                    @lang('quickadmin.qa_dashboard_text')
+                    <?php
+                        $Firstname = Auth::user()->name;
+                    ?>
+                    Welcome {{$Firstname}}
                 </div>
             </div>
         </div>
