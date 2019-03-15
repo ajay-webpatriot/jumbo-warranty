@@ -1586,7 +1586,7 @@ class ServiceRequestsController extends Controller
             {
                 foreach($customers as $key => $value)
                 {
-                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname.' '.$value->lastname."</option>";   
+                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname."</option>";   
                 }   
             }
             if(count($product_parts) > 0)
