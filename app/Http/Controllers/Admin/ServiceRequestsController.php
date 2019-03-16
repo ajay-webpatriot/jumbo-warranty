@@ -529,7 +529,11 @@ class ServiceRequestsController extends Controller
         }
 
         $distance_charge=\App\ManageCharge::get()->first();
-        $km_charge =$distance_charge->km_charge;
+        $km_charge = 0;
+        if(!empty($distance_charge))
+        {
+            $km_charge =$distance_charge->km_charge;
+        }
 
         $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
