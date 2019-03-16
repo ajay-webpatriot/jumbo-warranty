@@ -8,7 +8,7 @@
     </style>
     <div class="row">
         <div class="col-md-12">
-            <section class="pull-right">
+            <section class="">
                 <ol class="breadcrumb">
                     <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
                     <li class="active">@lang('quickadmin.qa_dashboard')</li>
