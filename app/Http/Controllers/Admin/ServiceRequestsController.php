@@ -528,7 +528,7 @@ class ServiceRequestsController extends Controller
             $parts = \App\ProductPart::get()->pluck('name', 'id');
         }
 
-        $distance_charge=\App\ManageCharge::get()->first();
+        $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
         $km_charge = 0;
         if(!empty($distance_charge))
         {
@@ -577,10 +577,14 @@ class ServiceRequestsController extends Controller
         // convert to json
         $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
 
-        $distance_charge=\App\ManageCharge::get()->first();
-
+        $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
+        $km_charge = 0;
+        if(!empty($distance_charge))
+        {
+            $km_charge =$distance_charge->km_charge;
+        }
         $request['km_distance'] = ($request['km_distance'] == "") ? 0 : number_format((float)$request['km_distance'], 2, '.', '');
-        $request['km_charge'] = ($request['km_charge'] == "") ? number_format((float)$distance_charge->km_charge, 2, '.', '') : number_format((float)$request['km_charge'], 2, '.', '');
+        $request['km_charge'] = ($request['km_charge'] == "") ? number_format((float)$km_charge, 2, '.', '') : number_format((float)$request['km_charge'], 2, '.', '');
 
         $request['transportation_charge'] = ($request['transportation_charge'] == "") ? 0 : number_format((float)$request['transportation_charge'], 2, '.', '');
         // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
@@ -607,7 +611,7 @@ class ServiceRequestsController extends Controller
 
         //         $request['km_distance']=$distance;
 
-        //         $distance_charge=\App\ManageCharge::get()->first();
+        //         $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
         //         $request['km_charge']=$distance_charge->km_charge;
         //         $total_amount+=($distance*$distance_charge->km_charge);
         //     }
@@ -942,10 +946,14 @@ class ServiceRequestsController extends Controller
         $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
 
 
-        $distance_charge=\App\ManageCharge::get()->first();
-
+        $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
+        $km_charge = 0;
+        if(!empty($distance_charge))
+        {
+            $km_charge =$distance_charge->km_charge;
+        }
         $request['km_distance'] = ($request['km_distance'] == "") ? 0 : number_format((float)$request['km_distance'], 2, '.', '');
-        $request['km_charge'] = ($request['km_charge'] == "") ? number_format((float)$distance_charge->km_charge, 2, '.', '') : number_format((float)$request['km_charge'], 2, '.', '');
+        $request['km_charge'] = ($request['km_charge'] == "") ? number_format((float)$km_charge, 2, '.', '') : number_format((float)$request['km_charge'], 2, '.', '');
 
         $request['transportation_charge'] = ($request['transportation_charge'] == "") ? 0 : number_format((float)$request['transportation_charge'], 2, '.', '');
 
@@ -1447,8 +1455,13 @@ class ServiceRequestsController extends Controller
             
             $supportedCenterDetail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customerDetail->zipcode . '%')->where('id',$details['serviceCenterId'])->get();
 
-            $distance_charge=\App\ManageCharge::get()->first();
-            $data['km_charge']=$distance_charge->km_charge;
+            $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
+            $km_charge = 0;
+            if(!empty($distance_charge))
+            {
+                $km_charge =$distance_charge->km_charge;
+            }
+            $data['km_charge']=$km_charge;
 
             if(count($supportedCenterDetail) <= 0)// && $customerDetail->zipcode != $centerDetail->zipcode)
             {
@@ -1464,7 +1477,7 @@ class ServiceRequestsController extends Controller
                 $data['km_distance']=$distance;
 
                 
-                $data['transportation_amount']=($distance*$distance_charge->km_charge);
+                $data['transportation_amount']=($distance*$km_charge);
                 $data['supported'] = false;
                
             }
