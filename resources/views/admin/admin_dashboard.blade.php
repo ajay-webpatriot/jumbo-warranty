@@ -8,17 +8,14 @@
     </style>
     <div class="row">
         <div class="col-md-12">
-            <section class="content-header">
-                <!-- <h1>
-
-                </h1> -->
-                <!-- <ol class="breadcrumb">
+            <section class="pull-right">
+                <ol class="breadcrumb">
                     <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
                     <li class="active">@lang('quickadmin.qa_dashboard')</li>
-                </ol> -->
+                </ol>
             </section>
-
-            <section class="content">
+            
+            <section class="">
 
                 <div class="row">
                     <div class="col-md-12">
