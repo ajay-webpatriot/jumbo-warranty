@@ -75,7 +75,7 @@ class CompanyAdminsController extends Controller
         $data['role_id'] = config('constants.COMPANY_ADMIN_ROLE_ID');
         $user = User::create($data);
 
-        return redirect()->route('admin.company_admins.index')->with('success','Company Admin created successfully!');;
+        return redirect()->route('admin.company_admins.index')->with('success','Company Admin created successfully!');->with('success','Company Admin created successfully!');
     }
 
 
@@ -115,7 +115,7 @@ class CompanyAdminsController extends Controller
         }
         $user = User::findOrFail($id);
         $user->update($request->all());
-        return redirect()->route('admin.company_admins.index');
+        return redirect()->route('admin.company_admins.index')->with('success','Company Admin updated successfully!');;
     }
 
 
