@@ -75,7 +75,7 @@ class CompanyAdminsController extends Controller
         $data['role_id'] = config('constants.COMPANY_ADMIN_ROLE_ID');
         $user = User::create($data);
 
-        return redirect()->route('admin.company_admins.index');
+        return redirect()->route('admin.company_admins.index')->with('success','Company Admin created successfully!');;
     }
 
 
