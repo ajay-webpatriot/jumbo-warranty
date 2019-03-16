@@ -39,4 +39,6 @@
       href="//cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css"/>
 
 <link rel="stylesheet" href="{{ url('adminlte/plugins/datetimepicker/bootstrap-datetimepicker.min.css') }}">
+
+<!-- Date range picker css file -->
 <link rel="stylesheet" href="{{ url('adminlte/plugins/daterangepicker/daterangepicker.css') }}">
