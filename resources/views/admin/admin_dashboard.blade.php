@@ -9,23 +9,23 @@
     <div class="row">
         <div class="col-md-12">
             <section class="content-header">
-                <h1>
-                    Dashboard
-                </h1>
-                <ol class="breadcrumb">
+                <!-- <h1>
+
+                </h1> -->
+                <!-- <ol class="breadcrumb">
                     <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
                     <li class="active">@lang('quickadmin.qa_dashboard')</li>
-                </ol>
+                </ol> -->
             </section>
 
             <section class="content">
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="box box-primary">
+                        <div class="box">
 
                             <div class="box-header with-border">
-                                <h3 class="box-title">Monthly Recap Report</h3>
+                                <h3 class="box-title">@lang('quickadmin.qa_dashboard')</h3>
                             </div>
 
                             <div class="box-body">
@@ -200,26 +200,33 @@
                             
                             <div class="box-body">
                                 <ul class="products-list product-list-in-box">
-
-                                    @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
-                                        <li class="item">
-                                                <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
-                                                    {{$SingleServiceTypeDetail->servicerequest_title}}
-                                                    <span class="label label-info pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                    @if(!empty($ServiceTypeDetails))
+                                        @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
+                                            <li class="item">
+                                                    <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
+                                                        {{$SingleServiceTypeDetail->servicerequest_title}}
+                                                        <span class="label label-info pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                                        </span>
+                                                    </a>
+                                                    
+                                                    <span class="product-description">
+                                                        {{$SingleServiceTypeDetail->customer_name}}
                                                     </span>
-                                                </a>
-                                                
-                                                <span class="product-description">
-                                                    {{$SingleServiceTypeDetail->customer_name}}
-                                                </span>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li class="item">
+                                            <span class="product-description text-center">
+                                                No Requests
+                                            </span>   
                                         </li>
-                                    @endforeach
+                                    @endif
 
                                 </ul>
                             </div>
                            
                             <div class="box-footer text-center">
-                                <a href="{{ route('admin.service_requests.index') }}" class="uppercase">View All Products</a>
+                                <a href="{{ route('admin.service_requests.index') }}" class="uppercase">View All Service requests</a>
                             </div>
                         </div>
                     </div>
