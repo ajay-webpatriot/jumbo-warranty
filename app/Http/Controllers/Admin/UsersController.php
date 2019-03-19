@@ -87,7 +87,7 @@ class UsersController extends Controller
         $user = User::create($data);
 
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.users.index')->with('success','Admin User added successfully!');
     }
 
 
@@ -125,7 +125,7 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         $user->update($request->all());
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.users.index')->with('success','Admin User updated successfully!');
     }
 
 

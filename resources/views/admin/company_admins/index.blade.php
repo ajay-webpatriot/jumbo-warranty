@@ -10,8 +10,25 @@
     </p>
     @endcan
 
-    
+    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        <div class="panel panel-default">
+            <div class="panel-heading headerTitle">
+                Filter
+            </div>
 
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'', ['class' => 'control-label']) !!}
+
+                        {{-- !! Form::select('filter_company',[null=>'All'], null, ['class' => 'form-control select2']) !! --}}
+
+                        {!! Form::select('filter_company',$companies, null, ['class' => 'form-control select2','onchange' => 'requestCustomerFilter(this)']) !!}
+                    </div>
+                </div> 
+            </div>
+        </div>                  
+    @endif
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
             @lang('quickadmin.company-admins.title')
@@ -88,6 +105,31 @@
 @section('javascript') 
     <script>
             window.route_mass_crud_entries_destroy = '{{ route('admin.company_admins.mass_destroy') }}';
+
+        function requestCustomerFilter(ele) {
+            var companyId = $(ele).val();
+            alert(companyId);
+            // $.ajax({
+            //     type:'GET',
+            //     url:APP_URL+'/admin/getFilterCompanyDetails',
+            //     data:{
+            //         'companyId':companyId
+            //     },
+            //     dataType: "json",
+            //     success:function(data) {
+            //         if(companyId != "")
+            //         {
+            //             $(".filterCompanyDetails").show();
+            //         }
+            //         $(".filterCompanyDetails").find(".select2").select2();
+            //         $("#filter_customer").html(data.custOptions);
+            //         $("#filter_product").html(data.productOptions);
+
+            //         tableServiceRequest.draw();
+            //     }
+            // });
+
+        }
 
     </script>
 @endsection

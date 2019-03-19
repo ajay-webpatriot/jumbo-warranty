@@ -110,7 +110,7 @@ class PermissionsController extends Controller
                 }
             }
         }
-        return redirect()->route('admin.permissions.index');
+        return redirect()->route('admin.permissions.index')->with('success','Permissions added successfully!');
     }
 
     /**

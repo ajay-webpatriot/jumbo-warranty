@@ -124,6 +124,7 @@ return [
 		'title' => 'Customers',
 		'formTitle' => 'Customer',
 		'fields' => [
+			'firstnameandlastname' => 'Name',
 			'firstname' => 'First Name',
 			'lastname' => 'Last Name',
 			'phone' => 'Phone',

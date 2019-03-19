@@ -37,7 +37,7 @@
             @else
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('company_id', trans('quickadmin.users.fields.company').'', ['class' => 'control-label']) !!}
+                    {!! Form::label('company_id', trans('quickadmin.users.fields.company').'*', ['class' => 'control-label']) !!}
                     {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2','id' => 'userCompany','required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('company_id'))

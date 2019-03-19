@@ -91,7 +91,7 @@ class ServiceCentersController extends Controller
 
 
 
-        return redirect()->route('admin.service_centers.index');
+        return redirect()->route('admin.service_centers.index')->with('success','Service Center created successfully!');
     }
 
 
@@ -145,7 +145,7 @@ class ServiceCentersController extends Controller
 
 
 
-        return redirect()->route('admin.service_centers.index');
+        return redirect()->route('admin.service_centers.index')->with('success','Service Center updated successfully!');
     }
 
 

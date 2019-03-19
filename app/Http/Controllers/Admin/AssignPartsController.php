@@ -97,7 +97,7 @@ class AssignPartsController extends Controller
 
 
 
-        return redirect()->route('admin.assign_parts.index');
+        return redirect()->route('admin.assign_parts.index')->with('success','Assign Parts added successfully!');
     }
 
 
@@ -138,7 +138,7 @@ class AssignPartsController extends Controller
 
 
 
-        return redirect()->route('admin.assign_parts.index');
+        return redirect()->route('admin.assign_parts.index')->with('success','Assign Parts updated successfully!');
     }
 
 

@@ -83,7 +83,7 @@ class TechniciansController extends Controller
         // }
 
 
-        return redirect()->route('admin.technicians.index');
+        return redirect()->route('admin.technicians.index')->with('success','Technician created successfully!');
     }
 
 
@@ -142,7 +142,7 @@ class TechniciansController extends Controller
         //     }
         // }
 
-        return redirect()->route('admin.technicians.index');
+        return redirect()->route('admin.technicians.index')->with('success','Technician updated successfully!');
     }
 
 

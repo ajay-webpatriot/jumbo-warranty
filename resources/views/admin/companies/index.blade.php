@@ -36,11 +36,11 @@
                         <th>@lang('quickadmin.company.fields.name')</th>
                         <th>@lang('quickadmin.company.fields.credit')</th>
                         <th>@lang('quickadmin.company.fields.installation-charge')</th>
-                        <th>@lang('quickadmin.company.fields.address-1')</th>
-                        <th>@lang('quickadmin.company.fields.address-2')</th>
+                        <!-- <th>@lang('quickadmin.company.fields.address-1')</th>
+                        <th>@lang('quickadmin.company.fields.address-2')</th> -->
                         <th>@lang('quickadmin.company.fields.city')</th>
                         <th>@lang('quickadmin.company.fields.state')</th>
-                        <th>@lang('quickadmin.company.fields.zipcode')</th>
+                        <!-- <th>@lang('quickadmin.company.fields.zipcode')</th> -->
                         <th>@lang('quickadmin.company.fields.status')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
@@ -61,11 +61,11 @@
                                 <td field-key='name'>{{ $company->name }}</td>
                                 <td class="text-right" field-key='credit'>{{ number_format($company->credit,2) }}</td>
                                 <td class="text-right" field-key='installation_charge'>{{ number_format($company->installation_charge,2) }}</td>
-                                <td field-key='address_1'>{{ $company->address_1 }}</td>
-                                <td field-key='address_2'>{{ $company->address_2 }}</td>
+                                <!-- <td field-key='address_1'>{{ $company->address_1 }}</td>
+                                <td field-key='address_2'>{{ $company->address_2 }}</td> -->
                                 <td field-key='city'>{{ $company->city }}</td>
                                 <td field-key='state'>{{ $company->state }}</td>
-                                <td field-key='zipcode'>{{ $company->zipcode }}</td>
+                                <!-- <td field-key='zipcode'>{{ $company->zipcode }}</td> -->
                                 <td field-key='status'>{{ $company->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

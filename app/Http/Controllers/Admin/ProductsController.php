@@ -81,7 +81,7 @@ class ProductsController extends Controller
 
 
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.products.index')->with('success','Product added successfully!');
     }
 
 
@@ -122,7 +122,7 @@ class ProductsController extends Controller
 
 
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.products.index')->with('success','Product updated successfully!');
     }
 
 

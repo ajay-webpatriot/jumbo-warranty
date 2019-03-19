@@ -35,8 +35,9 @@
                             @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" id="select-all" /></th>@endif
                         @endcan
 
-                        <th>@lang('quickadmin.customers.fields.firstname')</th>
-                        <th>@lang('quickadmin.customers.fields.lastname')</th>
+                        <!-- <th>@lang('quickadmin.customers.fields.firstname')</th>
+                        <th>@lang('quickadmin.customers.fields.lastname')</th> -->
+                        <th>@lang('quickadmin.customers.fields.firstnameandlastname')</th>
                         <th>@lang('quickadmin.customers.fields.phone')</th>
                         <th>@lang('quickadmin.customers.fields.company')</th>
                         <!-- <th>@lang('quickadmin.customers.fields.address-1')</th>
@@ -61,9 +62,10 @@
                                 @can('customer_delete')
                                     @if ( request('show_deleted') != 1 )<td></td>@endif
                                 @endcan
-
-                                <td field-key='firstname'>{{ $customer->firstname }}</td>
-                                <td field-key='lastname'>{{ $customer->lastname }}</td>
+                                
+                                <td field-key='name'>{{ $customer->firstname }} {{ $customer->lastname}}</td>
+                                <!-- <td field-key='firstname'>{{-- $customer->firstname --}}</td>
+                                <td field-key='lastname'>{{-- $customer->lastname --}}</td> -->
                                 <td field-key='phone'>{{ $customer->phone }}</td>
                                 <td field-key='company'>{{ $customer->company->name or '' }}</td>
                                 <!-- <td field-key='address_1'>{{ $customer->address_1 }}</td>

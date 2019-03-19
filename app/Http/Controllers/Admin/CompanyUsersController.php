@@ -79,7 +79,7 @@ class CompanyUsersController extends Controller
         $data['role_id'] = config('constants.COMPANY_USER_ROLE_ID');
         $user = User::create($data);
 
-        return redirect()->route('admin.company_users.index');
+        return redirect()->route('admin.company_users.index')->with('success','Company Users created successfully!');
     }
 
 
@@ -119,7 +119,7 @@ class CompanyUsersController extends Controller
         }
         $user = User::findOrFail($id);
         $user->update($request->all());
-        return redirect()->route('admin.company_users.index');
+        return redirect()->route('admin.company_users.index')->with('success','Company Users updated successfully!');
     }
 
 

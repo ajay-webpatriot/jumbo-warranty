@@ -53,8 +53,20 @@
                                 //         $options="disabled";
                                 //     }
                                 // } 
-                                if($role->title == "Service Center Admin" || $role->title == "Technician")
+                                if($role->title == "Service Center Admin" )
                                 {
+                                    if($perm->name == "Company Management")
+                                    {
+                                        $options="disabled";
+                                    }
+                                    
+                                    
+                                }else if ($role->title == "Technician") {
+
+                                    if($perm->name == "Service Center Management")
+                                    {
+                                        $options="disabled";
+                                    }
                                     if($perm->name == "Company Management")
                                     {
                                         $options="disabled";

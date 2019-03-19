@@ -76,9 +76,7 @@ class CompaniesController extends Controller
         }
         $company = Company::create($request->all());
 
-
-
-        return redirect()->route('admin.companies.index');
+        return redirect()->route('admin.companies.index')->with('success','Company created successfully!');
     }
 
 
@@ -125,7 +123,7 @@ class CompaniesController extends Controller
 
 
 
-        return redirect()->route('admin.companies.index');
+        return redirect()->route('admin.companies.index')->with('success','Company updated successfully!');
     }
 
 

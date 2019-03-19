@@ -40,9 +40,11 @@ class CompanyAdminsController extends Controller
         $query = User::where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
                         ->orderby('name');
 
-    
+        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+
         $users = $query->get();
-        return view('admin.company_admins.index', compact('users'));
+        
+        return view('admin.company_admins.index', compact('users','companies'));
     }
     /**
      * Show the form for creating new User.

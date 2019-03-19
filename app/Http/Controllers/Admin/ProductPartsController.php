@@ -78,7 +78,7 @@ class ProductPartsController extends Controller
 
 
 
-        return redirect()->route('admin.product_parts.index');
+        return redirect()->route('admin.product_parts.index')->with('success','Product Parts added successfully!');
     }
 
 
@@ -116,7 +116,7 @@ class ProductPartsController extends Controller
 
 
 
-        return redirect()->route('admin.product_parts.index');
+        return redirect()->route('admin.product_parts.index')->with('success','Product Parts updated successfully!');
     }
 
 

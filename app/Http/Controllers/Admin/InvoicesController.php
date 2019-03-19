@@ -81,7 +81,7 @@ class InvoicesController extends Controller
 
 
 
-        return redirect()->route('admin.invoices.index');
+        return redirect()->route('admin.invoices.index')->with('success','Invoice created successfully!');
     }
 
 
@@ -122,7 +122,7 @@ class InvoicesController extends Controller
 
 
 
-        return redirect()->route('admin.invoices.index');
+        return redirect()->route('admin.invoices.index')->with('success','Invoice updated successfully!');
     }
 
 

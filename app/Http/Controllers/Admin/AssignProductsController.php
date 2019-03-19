@@ -90,7 +90,7 @@ class AssignProductsController extends Controller
 
 
 
-        return redirect()->route('admin.assign_products.index');
+        return redirect()->route('admin.assign_products.index')->with('success','Assign Products added successfully!');
     }
 
 
@@ -132,7 +132,7 @@ class AssignProductsController extends Controller
 
 
 
-        return redirect()->route('admin.assign_products.index');
+        return redirect()->route('admin.assign_products.index')->with('success','Assign Products updated successfully!');
     }
 
 

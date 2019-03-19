@@ -179,7 +179,7 @@ class ServiceRequestsController extends Controller
             }
             
         }
-        
+
         return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians'));
 
         // $data=array('subject' => 'Request Creation Receive',
@@ -287,7 +287,7 @@ class ServiceRequestsController extends Controller
             $serviceRequestObj = new ServiceRequest();  
             $requestFilterCount =  $serviceRequestObj->getFilterRequestsCount($request->all());
             
-            $service_requestsQuery = ServiceRequest::select('customers.firstname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id')
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as firstname'))
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
@@ -377,7 +377,7 @@ class ServiceRequestsController extends Controller
                         $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
                         $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
                     }
-                    $query->orWhere('customers.firstname', 'like', '%' . $searchVal . '%');
+                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
@@ -666,7 +666,7 @@ class ServiceRequestsController extends Controller
         
             
 
-        return redirect()->route('admin.service_requests.index');
+        return redirect()->route('admin.service_requests.index')->with('success','Service Request created successfully!');
     }
 
 
@@ -1021,7 +1021,7 @@ class ServiceRequestsController extends Controller
         }
         else
         {
-            return redirect()->route('admin.service_requests.index');
+            return redirect()->route('admin.service_requests.index')->with('success','Service Request updated successfully!');
         }
         // return redirect()->route('admin.service_requests.index');
     }
@@ -1604,7 +1604,7 @@ class ServiceRequestsController extends Controller
             {
                 foreach($customers as $key => $value)
                 {
-                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname."</option>";   
+                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname.' '.$value->lastname."</option>";
                 }   
             }
             if(count($product_parts) > 0)

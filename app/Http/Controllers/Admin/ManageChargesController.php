@@ -36,17 +36,19 @@ class ManageChargesController extends Controller
             return abort(401);
         }
 
-
+        // $enum_status = ManageCharge::$enum_status;
         if (request('show_deleted') == 1) {
             if (! Gate::allows('manage_charge_delete')) {
                 return abort(401);
             }
             $manage_charges = ManageCharge::onlyTrashed()->get();
         } else {
-            $manage_charges = ManageCharge::all();
+            // $manage_charges = ManageCharge::all();
+            $manage_charge = ManageCharge::findOrFail(1);
         }
 
-        return view('admin.manage_charges.index', compact('manage_charges'));
+        return view('admin.manage_charges.edit', compact('manage_charge'));
+        // return view('admin.manage_charges.index', compact('manage_charges'));
     }
 
     /**
@@ -75,10 +77,8 @@ class ManageChargesController extends Controller
             return abort(401);
         }
         $manage_charge = ManageCharge::create($request->all());
-
-
-
-        return redirect()->route('admin.manage_charges.index');
+        return view('admin.manage_charges.edit', compact('manage_charge'))->with('success','Manage Charges added successfully!');;
+        // return redirect()->route('admin.manage_charges.index')
     }
 
 
@@ -92,11 +92,12 @@ class ManageChargesController extends Controller
     {
         if (! Gate::allows('manage_charge_edit')) {
             return abort(401);
-        }        $enum_status = ManageCharge::$enum_status;
+        } 
+        // $enum_status = ManageCharge::$enum_status;
             
         $manage_charge = ManageCharge::findOrFail($id);
-
-        return view('admin.manage_charges.edit', compact('manage_charge', 'enum_status'));
+        
+        return view('admin.manage_charges.edit', compact('manage_charge'));
     }
 
     /**
@@ -112,11 +113,12 @@ class ManageChargesController extends Controller
             return abort(401);
         }
         $manage_charge = ManageCharge::findOrFail($id);
+      
         $manage_charge->update($request->all());
 
 
-
-        return redirect()->route('admin.manage_charges.index');
+        return view('admin.manage_charges.edit', compact('manage_charge'))->with('success','Manage Charges updated successfully!');
+        // return redirect()->route('admin.manage_charges.index')
     }
 
 

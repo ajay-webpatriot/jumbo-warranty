@@ -112,7 +112,7 @@ class CustomersController extends Controller
         // }
 
 
-        return redirect()->route('admin.customers.index');
+        return redirect()->route('admin.customers.index')->with('success','Customer created successfully!');
     }
 
 
@@ -191,7 +191,7 @@ class CustomersController extends Controller
         // }
 
 
-        return redirect()->route('admin.customers.index');
+        return redirect()->route('admin.customers.index')->with('success','Customer updated successfully!');
     }
 
 

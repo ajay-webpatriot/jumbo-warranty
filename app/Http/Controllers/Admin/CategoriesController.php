@@ -81,7 +81,7 @@ class CategoriesController extends Controller
         // }
 
 
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with('success','Category added successfully!');
     }
 
 
@@ -136,7 +136,7 @@ class CategoriesController extends Controller
         // }
 
 
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with('success','Category updated successfully!');
     }
 
 
