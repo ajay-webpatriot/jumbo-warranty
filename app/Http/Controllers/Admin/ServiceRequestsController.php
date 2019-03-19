@@ -75,14 +75,16 @@ class ServiceRequestsController extends Controller
         // }
 
         // filter dropdown details
-
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+       
+       
+        $companies = \App\Company::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
             $products=array(''=>trans('quickadmin.qa_show_all')); 
             $customers = \App\Customer::where('company_id',auth()->user()->company_id)
                                         ->where('status','Active')
+                                        ->select(DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'),'id')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
                                         
             $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
@@ -108,6 +110,7 @@ class ServiceRequestsController extends Controller
 
                 $customers=\App\Customer::where('status','Active')
                                         ->where('company_id',session('filter_company'))
+                                        ->select(DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'),'id')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
 
                 $products=array(''=>trans('quickadmin.qa_show_all')); 
@@ -133,8 +136,8 @@ class ServiceRequestsController extends Controller
                 {
                     foreach($service_requests as $key => $value)
                     {
-                        $customers[$value->customer_id]=$value->customer->firstname;
-                        $products[$value->product_id]=$value->product->name;
+                        $customers[$value->customer_id]=ucfirst($value->customer->firstname).' '.ucfirst($value->customer->lastname);
+                        $products[$value->product_id]=ucfirst($value->product->name);
                     }
                 }   
             }
@@ -146,8 +149,8 @@ class ServiceRequestsController extends Controller
                 {
                     foreach($service_requests as $key => $value)
                     {
-                        $customers[$value->customer_id]=$value->customer->firstname;
-                        $products[$value->product_id]=$value->product->name;
+                        $customers[$value->customer_id]=ucfirst($value->customer->firstname).' '.ucfirst($value->customer->lastname);
+                        $products[$value->product_id]=ucfirst($value->product->name);
                     }
                 }  
             }
@@ -156,6 +159,7 @@ class ServiceRequestsController extends Controller
             
         }
         $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->get()->pluck('name');
+        
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
         {
             $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
@@ -165,7 +169,7 @@ class ServiceRequestsController extends Controller
         }
         else
         {
-            $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             if(!empty(session('filter_service_center')))
             {
                 $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
@@ -214,12 +218,12 @@ class ServiceRequestsController extends Controller
             // 0 offset is skipped for checkbox
             $columnArray = array(
                 1 => 'service_requests.id',
-                2 =>'companies.name' ,
-                3 =>'customers.firstname' ,
-                4 =>'service_requests.service_type' ,
-                5 =>'products.name' ,
-                6 =>'service_requests.amount' ,
-                7 =>'service_requests.status'
+                // 2 =>'companies.name' ,
+                2 =>'customers.firstname' ,
+                3 =>'service_requests.service_type' ,
+                4 =>'products.name' ,
+                5 =>'service_requests.amount' ,
+                6 =>'service_requests.status'
             );
         }else{
             // admin and super admin
@@ -236,7 +240,7 @@ class ServiceRequestsController extends Controller
                 8 =>'service_requests.status'
             );
         }
-        
+
         
         $limit = $request->input('length');
 
@@ -287,7 +291,7 @@ class ServiceRequestsController extends Controller
             $serviceRequestObj = new ServiceRequest();  
             $requestFilterCount =  $serviceRequestObj->getFilterRequestsCount($request->all());
             
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
@@ -306,12 +310,17 @@ class ServiceRequestsController extends Controller
             {
                 $service_requestsQuery->Where('service_requests.technician_id', auth()->user()->id);
             }
-            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                $service_requestsQuery->Where('service_requests.company_id', auth()->user()->company_id);
-            }
+            // else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            // {
+            //     $service_requestsQuery->Where('service_requests.company_id', auth()->user()->company_id);
+            // }
 
             // filter data from table and store into session variable
+            // echo "<pre>";
+            // print_r($request->input('company'));
+            // echo "</pre>";
+            // exit();
+            
             if(!empty($request->input('company')))
             {   
                 $request->session()->put('filter_company', $request['company']);
@@ -364,17 +373,22 @@ class ServiceRequestsController extends Controller
                 $searchVal = $request['search']['value'];
                 $service_requestsQuery->where(function ($query) use ($searchVal) {
 
-                    if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                    {
-                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                    // if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    // {
+                    //     $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
 
-                    }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+                    // }else 
+                    if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
 
                         $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
 
-                    }else{
+                    }else {
 
-                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                        if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                        {
+                            $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                        }
+
                         $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
                     }
                     $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
@@ -412,7 +426,7 @@ class ServiceRequestsController extends Controller
 
                 if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
 
-                    $tableField['company_name'] =$SingleServiceRequest->cname;
+                    // $tableField['company_name'] =$SingleServiceRequest->cname;
                     if (Gate::allows('service_request_delete')) {
                         // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';
                         $tableField['checkbox'] = '';
@@ -420,11 +434,11 @@ class ServiceRequestsController extends Controller
 
                 }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
 
-                    $tableField['service_center'] =$SingleServiceRequest->sname;
+                    $tableField['service_center'] =ucfirst($SingleServiceRequest->sname);
 
                 }else{
-                    $tableField['service_center'] =$SingleServiceRequest->sname;
-                    $tableField['company_name'] =$SingleServiceRequest->cname;
+                    $tableField['service_center'] =ucfirst($SingleServiceRequest->sname);
+                    $tableField['company_name'] =ucfirst($SingleServiceRequest->cname);
 
                     if (Gate::allows('service_request_delete')) {
                         // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';
@@ -433,8 +447,8 @@ class ServiceRequestsController extends Controller
                 }
                 $tableField['sr_no'] = $SingleServiceRequest->id;
                 $tableField['customer'] = $SingleServiceRequest->firstname;
-                $tableField['service_type'] =$SingleServiceRequest->service_type;
-                $tableField['product'] =$SingleServiceRequest->pname;
+                $tableField['service_type'] =ucfirst($SingleServiceRequest->service_type);
+                $tableField['product'] =ucfirst($SingleServiceRequest->pname);
                 $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
                 $tableField['request_status'] =$SingleServiceRequest->status;
 

@@ -65,20 +65,20 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "aaSorting": [],
         buttons: [
-            {
-                extend: 'pdf',
-                text: window.pdfButtonTrans,
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-            {
-                extend: 'print',
-                text: window.printButtonTrans,
-                exportOptions: {
-                    columns: ':visible'
-                }
-            }
+            // {
+            //     extend: 'pdf',
+            //     text: window.pdfButtonTrans,
+            //     exportOptions: {
+            //         columns: ':visible'
+            //     }
+            // },
+            // {
+            //     extend: 'print',
+            //     text: window.printButtonTrans,
+            //     exportOptions: {
+            //         columns: ':visible'
+            //     }
+            // }
         ]
     };
     $('.datatable').each(function () {
