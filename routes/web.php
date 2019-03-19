@@ -112,6 +112,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     /* admin dashboard route */
     Route::get('dashboard','Admin\AdminDashboardController@index')->name('index');
     // Route::get('getCompanyDashboardRequestCount','Admin\AdminDashboardController@getCompanyDashboardRequestCount')->name('getCompanyDashboardRequestCount');
+
+    //company admin ajax data table
+    Route::post('/DataTableCompanyAdminAjax','Admin\CompanyAdminsController@DataTableCompanyAdminAjax');
+
+    //company user ajax data table
+    Route::post('/DataTableCompanyUserAjax','Admin\CompanyUsersController@DataTableCompanyUserAjax');
     
 });
   

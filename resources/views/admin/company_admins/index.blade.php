@@ -23,7 +23,7 @@
 
                         {{-- !! Form::select('filter_company',[null=>'All'], null, ['class' => 'form-control select2']) !! --}}
 
-                        {!! Form::select('filter_company',$companies, null, ['class' => 'form-control select2','onchange' => 'requestCustomerFilter(this)']) !!}
+                        {!! Form::select('filter_company',$companies, null, ['class' => 'form-control select2','onchange' => 'requestCustomerFilter(this)', 'id' => 'filter_company']) !!}
                     </div>
                 </div> 
             </div>
@@ -35,14 +35,15 @@
         </div>
 
         <div class="panel-body table-responsive">
-            <table class="table table-bordered table-striped {{ count($users) > 0 ? 'datatable' : '' }} dt-select">
+            <table id="company_admin" class="display table table-bordered table-striped dt-select dataTable no-footer datatable">
                 <thead>
                     <tr>
                         <th style="text-align:center;"><input type="checkbox" id="select-all" /></th>
-                        @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
-                        || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
+                        <th>@lang('quickadmin.qa_sr_no')</th>
+                       <!--  @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
+                        || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')) -->
                             <th>@lang('quickadmin.users.fields.company')</th>
-                        @endif
+                        <!-- @endif -->
                         <th>@lang('quickadmin.users.fields.name')</th>
                         <th>@lang('quickadmin.users.fields.phone')</th>
                         <!-- <th>@lang('quickadmin.users.fields.address-1')</th> -->
@@ -53,19 +54,19 @@
                         <!-- <th>@lang('quickadmin.users.fields.location')</th> -->
                         <th>@lang('quickadmin.users.fields.email')</th>
                         <th>@lang('quickadmin.users.fields.status')</th>
-                        <th>&nbsp;</th>
+                        <th>@lang('quickadmin.qa_action')</th>
                     </tr>
                 </thead>
                 
                 <tbody>
-                    @if (count($users) > 0)
+                    {{-- @if (count($users) > 0)
                         @foreach ($users as $user)
                             <tr data-entry-id="{{ $user->id }}">
                                 <td></td>
-                                @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
-                                || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
+                                <!-- @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')
+                                || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')) -->
                                     <td field-key='company'>{{ $user->company->name or '' }}</td>
-                                @endif
+                                <!-- @endif -->
                                 <td field-key='name'>{{ $user->name }}</td>
                                 <td field-key='phone'>{{ $user->phone }}</td>
                                 <!-- <td field-key='address_1'>{{ $user->address_1 }}</td> -->
@@ -95,7 +96,7 @@
                         <tr>
                             <td colspan="20">@lang('quickadmin.qa_no_entries_in_table')</td>
                         </tr>
-                    @endif
+                    @endif --}}
                 </tbody>
             </table>
         </div>
@@ -106,9 +107,95 @@
     <script>
             window.route_mass_crud_entries_destroy = '{{ route('admin.company_admins.mass_destroy') }}';
 
+
+        var tableCompanyAdmin = $('#company_admin').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "order": [[ 1, "desc" ]],
+                retrieve: true,
+                dom: 'lBfrtip<"actions">',
+                columnDefs: [],
+                "iDisplayLength": 10,
+                "aaSorting": [],
+                buttons: [
+                    // {
+                    //     extend: 'pdf',
+                    //     text: window.pdfButtonTrans,
+                    //     exportOptions: {
+                    //         columns: ':visible'
+                    //     }
+                    // },
+                    // {
+                    //     extend: 'print',
+                    //     text: window.printButtonTrans,
+                    //     exportOptions: {
+                    //         columns: ':visible'
+                    //     }
+                    // }
+                ],
+                "ajax":{
+                        "url": APP_URL+"/admin/DataTableCompanyAdminAjax",
+                        "type":"POST",
+                        "dataType": "json",
+                        // "data":{"_token": "{{csrf_token()}}"}
+                        "data":function(data) {
+                            data.company = $('#filter_company').val();
+                            data._token = "{{csrf_token()}}";
+
+                        },
+                    },
+                "columns": [
+                    
+                    { "data": "checkbox" },
+                    { "data": "sr_no" },
+                    { "data": "company_name" },
+                    { "data": "company_admin_name" },
+                    { "data": "phone" },
+                    { "data": "email" },
+                    { "data": "status" },
+                    { "data": "action" }
+                ],
+                "columnDefs": [{
+                    "orderable": false,
+                    "className": 'select-checkbox',
+                    "targets":   0,
+                    "searchable": false
+                },{
+                    "orderable": false,
+                    "className": 'dt-body-center',
+                    "targets":   1,
+                    "visible": false,
+                    "searchable": false
+                },{
+                    "orderable": false,
+                    "targets":   7
+                }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                    $(nRow).attr('data-entry-id', aData.sr_no);
+                },
+                "drawCallback": function( settings ) {
+                    var api = this.api();
+                    // Output the data for the visible rows to the browser's console
+                    
+                    if(api.rows( {page:'current'} ).data().length > 0)
+                    {
+                        if($('#company_admin').parent().find(".actions").length == 0 )
+                        {
+                            // set bulk delete button after table draw
+                            if (typeof window.route_mass_crud_entries_destroy != 'undefined') {
+                                $('#company_admin').parent().append('<div class="actions"><a href="' + window.route_mass_crud_entries_destroy + '" class="btn btn-xs btn-danger js-delete-selected" style="margin-top:0.755em;margin-left: 20px;">'+window.deleteButtonTrans+'</a></div>');
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $('#company_admin').parent().find(".actions").remove();
+                    }
+                }   
+            });
+
+
         function requestCustomerFilter(ele) {
-            var companyId = $(ele).val();
-            alert(companyId);
+            tableCompanyAdmin.draw();
             // $.ajax({
             //     type:'GET',
             //     url:APP_URL+'/admin/getFilterCompanyDetails',
@@ -130,6 +217,8 @@
             // });
 
         }
+
+
 
     </script>
 @endsection

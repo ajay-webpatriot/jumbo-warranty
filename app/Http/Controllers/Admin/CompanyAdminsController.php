@@ -37,14 +37,160 @@ class CompanyAdminsController extends Controller
         }
 
         // show all company admin
-        $query = User::where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
-                        ->orderby('name');
+        // $query = User::where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
+        //                 ->orderby('name');
+        // $users = $query->get();
 
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
-
-        $users = $query->get();
         
-        return view('admin.company_admins.index', compact('users','companies'));
+        return view('admin.company_admins.index', compact('companies'));
+    }
+    /**
+     * Display a listing of company admin using ajax data table.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function DataTableCompanyAdminAjax(Request $request)
+    {
+        if (! Gate::allows('user_access')) {
+            return abort(401);
+        }
+        $columnArray = array(
+                1 => 'users.id',
+                2 =>'companies.name' ,
+                3 =>'users.name' ,
+                4 =>'users.phone' ,
+                5 =>'users.email' ,
+                6 =>'users.status' 
+            );
+        $limit = $request->input('length');
+
+        $start = $request->input('start');
+        $order = $columnArray[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+
+        $tableFieldData = [];
+        $ViewButtons = '';
+        $EditButtons = '';
+        $DeleteButtons = '';
+
+        // count data with filter value
+        $requestFilterCountQuery =  User::select('users.*','companies.name as company_name')
+         ->join('companies','users.company_id','=','companies.id')
+         ->join('roles','users.role_id','=','roles.id')
+         ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'));
+
+        if(!empty($request->input('company')))
+        {   
+            $requestFilterCountQuery->Where('users.company_id', $request['company']);
+        }
+
+        //Search from table
+        if(!empty($request->input('search.value')))
+        { 
+            $searchVal = $request['search']['value'];
+            $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+
+                
+                $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+
+                $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
+
+                $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
+
+            });
+        }
+        $requestFilterCount = $requestFilterCountQuery->count('users.id');
+        
+
+        $company_adminsQuery = User::select('users.*','companies.name as company_name')
+         ->join('companies','users.company_id','=','companies.id')
+         ->join('roles','users.role_id','=','roles.id')
+         ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
+         ->offset($start)
+         ->limit($limit)
+         ->orderBy($order,$dir);
+
+
+        // filter data from table
+        if(!empty($request->input('company')))
+        {   
+            $company_adminsQuery->Where('users.company_id', $request['company']);
+        }
+
+        //Search from table
+        if(!empty($request->input('search.value')))
+        { 
+            $searchVal = $request['search']['value'];
+            $company_adminsQuery->where(function ($query) use ($searchVal) {
+
+                
+                $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+
+                $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
+
+                $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
+
+            });
+        }
+        
+        $company_admins = $company_adminsQuery->get();
+
+        // fetch total count without any filter
+        $countRecord = User::select('*')->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->count('id');
+        if(!empty($company_admins)){
+            
+            foreach ($company_admins as $key => $company_admin) {
+
+                $tableField['checkbox'] = '';
+                $tableField['sr_no'] = $company_admin->id;
+                $tableField['company_name'] = $company_admin->company_name;
+                $tableField['company_admin_name'] =$company_admin->name;
+                $tableField['phone'] =$company_admin->phone;
+                $tableField['email'] =$company_admin->email;
+                $tableField['status'] =$company_admin->status;
+
+                if (Gate::allows('user_edit')) {
+                    $EditButtons = '<a href="'.route('admin.company_admins.edit',$company_admin->id).'" class="btn btn-xs btn-info">Edit</a>';
+                }
+                if (Gate::allows('user_delete')) {
+                    $DeleteButtons = '<form action="'.route('admin.company_admins.destroy',$company_admin->id).'" method="post" onsubmit="return confirm(\'Are you sure ?\');" style="display: inline-block;">
+
+                    <input name="_method" type="hidden" value="DELETE">
+                    <input type="hidden"
+                               name="_token"
+                               value="'.csrf_token().'">
+                    <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+                    </form>';
+                }
+
+                $tableField['action'] = $ViewButtons.' '.$EditButtons.' '.$DeleteButtons;
+                $tableFieldData[] = $tableField;
+            }
+           
+        }
+               
+        $json_data = array(
+            "draw"            => intval($request['draw']),  
+            "recordsTotal"    => intval($countRecord),  
+            "recordsFiltered" => intval($requestFilterCount),
+            "data"            => $tableFieldData   
+            );
+        // $json_data = array(
+        //     "draw"            => intval($request['draw']),  
+        //     "recordsTotal"    => 0,  
+        //     "recordsFiltered" => 0,
+        //     "data"            => $tableFieldData   
+        //     );
+
+        echo json_encode($json_data);
+
+       
     }
     /**
      * Show the form for creating new User.
