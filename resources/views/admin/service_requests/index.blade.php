@@ -21,8 +21,8 @@
 
     <!-- Filter portion start -->
     <div class="panel panel-default">
-        <div class="panel-heading headerTitle">
-            <a data-toggle="collapse" href="#collapseAdvanceFilter">Advance Filters</a>
+        <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
+            <a href="#">Advance Filters</a>
         </div>
         <div id="collapseAdvanceFilter" class="panel-collapse in" role="tabpanel">
             <div class="panel-body">
@@ -226,7 +226,7 @@
                                 <th style="text-align:center;"><input type="checkbox" class="dt-body-center" id="select-all" /></th>
                             @endcan
                             <th>Sr No.</th>
-                            <th>@lang('quickadmin.service-request.fields.company')</th>
+                            <!-- <th>@lang('quickadmin.service-request.fields.company')</th> -->
                             <th>@lang('quickadmin.service-request.fields.customer')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
@@ -286,6 +286,9 @@
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
+                "language": {
+                    "infoEmpty": "No entries"
+                },
                 buttons: [
                     {
                         extend: 'pdf',
@@ -379,6 +382,9 @@
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
+                "language": {
+                    "infoEmpty": "No entries"
+                },
                 buttons: [
                     {
                         extend: 'pdf',
@@ -401,7 +407,7 @@
                         "dataType": "json",
                         // "data":{"_token": "{{csrf_token()}}"}
                         "data":function(data) {
-                            data.company = $('#filter_company').val();
+                            // data.company = $('#filter_company').val();
                             data.customer = $('#filter_customer').val();
                             data.product = $('#filter_product').val();
                             data._token = "{{csrf_token()}}";
@@ -412,7 +418,7 @@
                     
                     { "data": "checkbox" },
                     { "data": "sr_no" },
-                    { "data": "company_name" },
+                    // { "data": "company_name" },
                     { "data": "customer" },
                     { "data": "service_type" },
                     { "data": "product" },
@@ -431,16 +437,17 @@
                     "targets":   1,
                     "visible": false,
                     "searchable": false
-                },{
-                    "class": "text-right",
-                    "targets":   6
                 },
+                // {
+                //     "class": "text-right",
+                //     "targets":   6
+                // },
                 {
                     "class": "text-center",
-                    "targets":   7
+                    "targets":   6
                 },{
                     "orderable": false,
-                    "targets":   8
+                    "targets":   7
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },
@@ -476,6 +483,9 @@
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
+                "language": {
+                    "infoEmpty": "No entries"
+                },
                 buttons: [
                     {
                         extend: 'pdf',

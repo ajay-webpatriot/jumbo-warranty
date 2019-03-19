@@ -33,7 +33,7 @@
                             @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" id="select-all" /></th>@endif
                         @endcan
 
-                        <th>@lang('quickadmin.assign-parts.fields.company')</th>
+                        <!-- <th>@lang('quickadmin.assign-parts.fields.company')</th> -->
                         <th>@lang('quickadmin.assign-parts.fields.product-parts')</th>
                         <th>@lang('quickadmin.assign-parts.fields.quantity')</th>
                         <th>@lang('quickadmin.assign-parts.fields.availableQuantity')</th>
@@ -53,7 +53,7 @@
                                     @if ( request('show_deleted') != 1 )<td></td>@endif
                                 @endcan
 
-                                <td field-key='company'>{{ $assign_part->company->name or '' }}</td>
+                                <!-- <td field-key='company'>{{-- $assign_part->company->name or '' --}}</td> -->
                                 <td field-key='product_parts'>{{ $assign_part->product_parts->name or '' }}</td>
                                 <td field-key='quantity'>{{ $assign_part->quantity }}</td>
                                 <td field-key='available_quantity'>{{ $assign_part->availableQuantity }}</td>
@@ -84,7 +84,7 @@
                                     <a href="{{ route('admin.assign_parts.edit',[$assign_part->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('assign_part_delete')
-{!! Form::open(array(
+                                    {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
