@@ -167,6 +167,10 @@ class AssignProductsController extends Controller
             }
             // fetch total count without any filter
             $countRecord = AssignProduct::select('*')->count('id');
+            $countRecord = AssignProduct::select('assign_products.*','companies.name as company_name','products.name as product_name')
+            ->join('companies','assign_products.company_id','=','companies.id')
+            ->join('assign_product_product','assign_product_product.assign_product_id','=','assign_products.id')
+            ->join('products','products.id','assign_product_product.product_id')->count('assign_products.id');
         } 
         else 
         {
@@ -185,7 +189,10 @@ class AssignProductsController extends Controller
                 });
             }
             // fetch total count without any filter
-            $countRecord = AssignProduct::select('*')->where('company_id',auth()->user()->company_id)->count('id');
+            $countRecord = AssignProduct::select('assign_products.*','companies.name as company_name','products.name as product_name')
+            ->join('companies','assign_products.company_id','=','companies.id')
+            ->join('assign_product_product','assign_product_product.assign_product_id','=','assign_products.id')
+            ->join('products','products.id','assign_product_product.product_id')->where('company_id',auth()->user()->company_id)->count('assign_products.id');
         } 
 
         
