@@ -21,8 +21,8 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-xs-12 form-group">
-						{!! Form::label('current_password', trans('quickadmin.qa_current_password'), ['class' => 'control-label']) !!}
-						{!! Form::password('current_password', ['class' => 'form-control', 'placeholder' => '']) !!}
+						{!! Form::label('current_password', trans('quickadmin.qa_current_password').'*', ['class' => 'control-label']) !!}
+						{!! Form::password('current_password', ['class' => 'form-control', 'placeholder' => '','required' => '']) !!}
 						<p class="help-block"></p>
 						@if($errors->has('current_password'))
 							<p class="help-block">
@@ -34,8 +34,8 @@
 
 				<div class="row">
 					<div class="col-xs-12 form-group">
-						{!! Form::label('new_password', trans('quickadmin.qa_new_password'), ['class' => 'control-label']) !!}
-						{!! Form::password('new_password', ['class' => 'form-control', 'placeholder' => '']) !!}
+						{!! Form::label('new_password', trans('quickadmin.qa_new_password').'*', ['class' => 'control-label']) !!}
+						{!! Form::password('new_password', ['class' => 'form-control', 'placeholder' => '','required' => '']) !!}
 						<p class="help-block"></p>
 						@if($errors->has('new_password'))
 							<p class="help-block">
@@ -47,8 +47,8 @@
 
 				<div class="row">
 					<div class="col-xs-12 form-group">
-						{!! Form::label('new_password_confirmation', trans('quickadmin.qa_password_confirm'), ['class' => 'control-label']) !!}
-						{!! Form::password('new_password_confirmation', ['class' => 'form-control', 'placeholder' => '']) !!}
+						{!! Form::label('new_password_confirmation', trans('quickadmin.qa_password_confirm').'*', ['class' => 'control-label']) !!}
+						{!! Form::password('new_password_confirmation', ['class' => 'form-control', 'placeholder' => '','required' => '']) !!}
 						<p class="help-block"></p>
 						@if($errors->has('new_password_confirmation'))
 							<p class="help-block">

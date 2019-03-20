@@ -33,7 +33,7 @@
                             @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" id="select-all" /></th>@endif
                         @endcan
 
-                        <th>@lang('quickadmin.assign-product.fields.company')</th>
+                        <!-- <th>@lang('quickadmin.assign-product.fields.company')</th> -->
                         <th>@lang('quickadmin.assign-product.fields.product-id')</th>
                         @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
@@ -46,16 +46,17 @@
                 <tbody>
                     @if (count($assign_products) > 0)
                         @foreach ($assign_products as $assign_product)
+                            @foreach ($assign_product->product_id as $singleProductId)
                             <tr data-entry-id="{{ $assign_product->id }}">
                                 @can('assign_product_delete')
                                     @if ( request('show_deleted') != 1 )<td></td>@endif
                                 @endcan
 
-                                <td field-key='company'>{{ $assign_product->company->name or '' }}</td>
+                                <!-- <td field-key='company'>{{-- $assign_product->company->name or '' --}}</td> -->
                                 <td field-key='product_id'>
-                                    @foreach ($assign_product->product_id as $singleProductId)
+                                    {{-- @foreach ($assign_product->product_id as $singleProductId) --}}
                                         <span class="label label-info label-many">{{ $singleProductId->name }}</span>
-                                    @endforeach
+                                    {{-- @endforeach --}}
                                 </td>
                                 @if( request('show_deleted') == 1 )
                                 <td>
@@ -84,7 +85,7 @@
                                     <a href="{{ route('admin.assign_products.edit',[$assign_product->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('assign_product_delete')
-{!! Form::open(array(
+                                    {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
@@ -95,6 +96,7 @@
                                 </td>
                                 @endif
                             </tr>
+                            @endforeach
                         @endforeach
                     @else
                         <tr>
