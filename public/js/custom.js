@@ -92,7 +92,7 @@ $(document).ready(function(){
         
         return status;
 	});
-	$(document).on('click','#serviceRequest.datatable .select-checkbox, #company.datatable .select-checkbox, #company_admin.datatable .select-checkbox, #company_user.datatable .select-checkbox',function (){
+	$(document).on('click','#serviceRequest.datatable .select-checkbox, #company.datatable .select-checkbox, #company_admin.datatable .select-checkbox, #company_user.datatable .select-checkbox, #customer.datatable .select-checkbox',function (){
 		// service request check single checkbox work
 		if($(this).closest('tr').hasClass('selected'))
 		{
@@ -105,7 +105,7 @@ $(document).ready(function(){
 			
 	});
 
-	$(document).on('click','#serviceRequest.datatable #select-all, #company.datatable #select-all, #company_admin.datatable #select-all, #company_user.datatable #select-all',function (){
+	$(document).on('click','#serviceRequest.datatable #select-all, #company.datatable #select-all, #company_admin.datatable #select-all, #company_user.datatable #select-all, #customer.datatable #select-all',function (){
 		// service request check multiple checkbox work
 		var selected = $(this).is(':checked');
         $(this).closest('table.datatable, table.ajaxTable').find('td:first-child').each(function () {

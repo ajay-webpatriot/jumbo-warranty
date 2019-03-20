@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Permission as perm;
 
 // get lat long 
 use GoogleAPIHelper;
-
+use DB;
 class CustomersController extends Controller
 {
     public function __construct()
@@ -58,10 +58,206 @@ class CustomersController extends Controller
             }
             
         }
-
-        return view('admin.customers.index', compact('customers'));
+        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        return view('admin.customers.index', compact('customers','companies'));
     }
+    /**
+     * Display a listing of company admin using ajax data table.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function DataTableCustomerAjax(Request $request)
+    {
+        if (! Gate::allows('user_access')) {
+            return abort(401);
+        }
 
+        
+
+        $tableFieldData = [];
+        $ViewButtons = '';
+        $EditButtons = '';
+        $DeleteButtons = '';
+
+        // count data with filter value
+        $requestFilterCountQuery =  Customer::select('customers.*','companies.name as company_name')
+         ->join('companies','customers.company_id','=','companies.id');
+
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        {
+            $columnArray = array(
+                    1 => 'customers.id',
+                    2 =>'customers.firstname' ,
+                    3 =>'customers.phone' ,
+                    4 =>'companies.name' ,
+                    5 =>'customers.status'
+                );
+
+            if(!empty($request->input('company')))
+            {   
+                $requestFilterCountQuery->Where('customers.company_id', $request['company']);
+            }
+
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+
+                    
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
+
+                });
+            }
+        }
+        else{
+           $columnArray = array(
+                    1 => 'customers.id',
+                    2 =>'customers.firstname' ,
+                    3 =>'customers.phone' ,
+                    4 =>'customers.status'
+                );
+
+            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+            {
+                $requestFilterCountQuery->where('company_id',auth()->user()->company_id);
+            }
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+
+                    
+                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.email', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
+
+                });
+            } 
+        }
+        
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columnArray[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        
+        $requestFilterCount = $requestFilterCountQuery->count('customers.id');
+        
+
+        $customerQuery = Customer::select('customers.*','companies.name as company_name')
+         ->join('companies','customers.company_id','=','companies.id')
+         ->offset($start)
+         ->limit($limit)
+         ->orderBy($order,$dir);
+
+
+        // filter data from table
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        {
+            if(!empty($request->input('company')))
+            {   
+                $customerQuery->Where('customers.company_id', $request['company']);
+            }
+
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $customerQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
+
+                });
+            }
+            // fetch total count without any filter
+            $countRecord = Customer::select('*')->count('id');
+        } 
+        else 
+        {
+            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $customerQuery->where('customers.company_id',auth()->user()->company_id);
+            }
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $customerQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
+
+                });
+            }
+            // fetch total count without any filter
+            $countRecord = Customer::select('*')->where('company_id',auth()->user()->company_id)->count('id');
+        } 
+
+        
+        
+        $customers = $customerQuery->get();
+        
+
+        if(!empty($customers)){
+
+            foreach ($customers as $key => $customer) {
+
+                $tableField['checkbox'] = '';
+                $tableField['sr_no'] = $customer->id;
+                $tableField['customer_name'] = $customer->firstname." ".$customer->lastname;
+                $tableField['company'] =$customer->company_name;
+                $tableField['phone'] =$customer->phone;
+                $tableField['status'] =$customer->status;
+
+                $EditButtons = '';
+                if (Gate::allows('customer_edit')) {
+                    $EditButtons = '<a href="'.route('admin.customers.edit',$customer->id).'" class="btn btn-xs btn-info">Edit</a>';
+                }
+                $DeleteButtons = '';
+                if (Gate::allows('customer_delete')) {
+                    $DeleteButtons = '<form action="'.route('admin.customers.destroy',$customer->id).'" method="post" onsubmit="return confirm(\'Are you sure ?\');" style="display: inline-block;">
+
+                    <input name="_method" type="hidden" value="DELETE">
+                    <input type="hidden"
+                               name="_token"
+                               value="'.csrf_token().'">
+                    <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+                    </form>';
+                }
+
+                $tableField['action'] = $ViewButtons.' '.$EditButtons.' '.$DeleteButtons;
+                $tableFieldData[] = $tableField;
+            }
+           
+        }
+               
+        $json_data = array(
+            "draw"            => intval($request['draw']),  
+            "recordsTotal"    => intval($countRecord),  
+            "recordsFiltered" => intval($requestFilterCount),
+            "data"            => $tableFieldData   
+            );
+        // $json_data = array(
+        //     "draw"            => intval($request['draw']),  
+        //     "recordsTotal"    => 0,  
+        //     "recordsFiltered" => 0,
+        //     "data"            => array()   
+        //     );
+
+        echo json_encode($json_data);
+
+       
+    }
     /**
      * Show the form for creating new Customer.
      *

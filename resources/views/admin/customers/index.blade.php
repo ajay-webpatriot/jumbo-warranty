@@ -21,25 +21,59 @@
     </p> -->
     @endcan
 
+    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        <div class="panel panel-default">
+            <div class="panel-heading headerTitle">
+                Filter
+            </div>
 
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'', ['class' => 'control-label']) !!}
+
+                        {{-- !! Form::select('filter_company',[null=>'All'], null, ['class' => 'form-control select2']) !! --}}
+
+                        {!! Form::select('filter_company',$companies, null, ['class' => 'form-control select2', 'id' => 'filter_company']) !!}
+                    </div>
+                </div> 
+            </div>
+        </div>                  
+    @endif
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
             @lang('quickadmin.customers.title')
         </div>
 
         <div class="panel-body table-responsive">
-            <table class="table table-bordered table-striped {{ count($customers) > 0 ? 'datatable' : '' }} @can('customer_delete') @if ( request('show_deleted') != 1 ) dt-select @endif @endcan">
+             @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                <table id="customer" class="display table table-bordered table-striped dt-select dataTable no-footer datatable">
+                    <thead>
+                        <tr>
+                            
+                            <th style="text-align:center;"><input type="checkbox" class="dt-body-center select-checkbox" id="select-all" /></th>
+                            <th>@lang('quickadmin.qa_sr_no')</th>
+                            <th>@lang('quickadmin.customers.fields.firstnameandlastname')</th>
+                            <th>@lang('quickadmin.customers.fields.phone')</th>
+                            <th>@lang('quickadmin.customers.fields.company')</th>
+                            <th>@lang('quickadmin.customers.fields.status')</th>
+                            <th>@lang('quickadmin.qa_action')</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            @else
+            <table id="customer" class="display table table-bordered table-striped dt-select dataTable no-footer datatable">
                 <thead>
                     <tr>
-                        @can('customer_delete')
-                            @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" id="select-all" /></th>@endif
-                        @endcan
-
+                        <th style="text-align:center;"><input type="checkbox" class="dt-body-center select-checkbox" id="select-all" /></th>
+                        <th>@lang('quickadmin.qa_sr_no')</th>
                         <!-- <th>@lang('quickadmin.customers.fields.firstname')</th>
                         <th>@lang('quickadmin.customers.fields.lastname')</th> -->
                         <th>@lang('quickadmin.customers.fields.firstnameandlastname')</th>
                         <th>@lang('quickadmin.customers.fields.phone')</th>
-                        <th>@lang('quickadmin.customers.fields.company')</th>
                         <!-- <th>@lang('quickadmin.customers.fields.address-1')</th>
                         <th>@lang('quickadmin.customers.fields.address-2')</th>
                         <th>@lang('quickadmin.customers.fields.city')</th>
@@ -47,80 +81,15 @@
                         <th>@lang('quickadmin.customers.fields.zipcode')</th>
                         <th>@lang('quickadmin.customers.fields.location')</th> -->
                         <th>@lang('quickadmin.customers.fields.status')</th>
-                        @if( request('show_deleted') == 1 )
-                        <th>&nbsp;</th>
-                        @else
-                        <th>&nbsp;</th>
-                        @endif
+                        <th>@lang('quickadmin.qa_action')</th>
                     </tr>
                 </thead>
                 
                 <tbody>
-                    @if (count($customers) > 0)
-                        @foreach ($customers as $customer)
-                            <tr data-entry-id="{{ $customer->id }}">
-                                @can('customer_delete')
-                                    @if ( request('show_deleted') != 1 )<td></td>@endif
-                                @endcan
-                                
-                                <td field-key='name'>{{ $customer->firstname }} {{ $customer->lastname}}</td>
-                                <!-- <td field-key='firstname'>{{-- $customer->firstname --}}</td>
-                                <td field-key='lastname'>{{-- $customer->lastname --}}</td> -->
-                                <td field-key='phone'>{{ $customer->phone }}</td>
-                                <td field-key='company'>{{ $customer->company->name or '' }}</td>
-                                <!-- <td field-key='address_1'>{{ $customer->address_1 }}</td>
-                                <td field-key='address_2'>{{ $customer->address_2 }}</td>
-                                <td field-key='city'>{{ $customer->city }}</td>
-                                <td field-key='state'>{{ $customer->state }}</td>
-                                <td field-key='zipcode'>{{ $customer->zipcode }}</td>
-                                <td field-key='location'>{{ $customer->location }}</td> -->
-                                <td field-key='status'>{{ $customer->status }}</td>
-                                @if( request('show_deleted') == 1 )
-                                <td>
-                                    @can('customer_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'POST',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.customers.restore', $customer->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_restore'), array('class' => 'btn btn-xs btn-success')) !!}
-                                    {!! Form::close() !!}
-                                @endcan
-                                    @can('customer_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.customers.perma_del', $customer->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_permadel'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
-                                @endcan
-                                </td>
-                                @else
-                                <td>
-                                    @can('customer_edit')
-                                    <a href="{{ route('admin.customers.edit',[$customer->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
-                                    @endcan
-                                    @can('customer_delete')
-{!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.customers.destroy', $customer->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
-                                    @endcan
-                                </td>
-                                @endif
-                            </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="16">@lang('quickadmin.qa_no_entries_in_table')</td>
-                        </tr>
-                    @endif
+                
                 </tbody>
             </table>
+            @endif
         </div>
     </div>
 @stop
@@ -130,6 +99,178 @@
         @can('customer_delete')
             @if ( request('show_deleted') != 1 ) window.route_mass_crud_entries_destroy = '{{ route('admin.customers.mass_destroy') }}'; @endif
         @endcan
+        @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                
+                var tableCustomer = $('#customer').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "order": [[ 1, "desc" ]],
+                    retrieve: true,
+                    dom: 'lBfrtip<"actions">',
+                    columnDefs: [],
+                    "iDisplayLength": 10,
+                    "aaSorting": [],
+                    buttons: [
+                        // {
+                        //     extend: 'pdf',
+                        //     text: window.pdfButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // },
+                        // {
+                        //     extend: 'print',
+                        //     text: window.printButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // }
+                    ],
+                    "ajax":{
+                            "url": APP_URL+"/admin/DataTableCustomerAjax",
+                            "type":"POST",
+                            "dataType": "json",
+                            // "data":{"_token": "{{csrf_token()}}"}
+                            "data":function(data) {
+                                data.company = $('#filter_company').val();
+                                data._token = "{{csrf_token()}}";
 
+                            },
+                        },
+                    "columns": [
+                        
+                        { "data": "checkbox" },
+                        { "data": "sr_no" },
+                        { "data": "customer_name" },
+                        { "data": "phone" },
+                        { "data": "company" },
+                        { "data": "status" },
+                        { "data": "action" }
+                    ],
+                    "columnDefs": [{
+                        "orderable": false,
+                        "className": 'select-checkbox',
+                        "targets":   0,
+                        "searchable": false
+                    },{
+                        "orderable": false,
+                        "className": 'dt-body-center',
+                        "targets":   1,
+                        "visible": false,
+                        "searchable": false
+                    },{
+                        "orderable": false,
+                        "targets":   6
+                    }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                        $(nRow).attr('data-entry-id', aData.sr_no);
+                    },
+                    "drawCallback": function( settings ) {
+                        var api = this.api();
+                        // Output the data for the visible rows to the browser's console
+                        
+                        if(api.rows( {page:'current'} ).data().length > 0)
+                        {
+                            if($('#customer').parent().find(".actions").length == 0 )
+                            {
+                                // set bulk delete button after table draw
+                                if (typeof window.route_mass_crud_entries_destroy != 'undefined') {
+                                    $('#customer').parent().append('<div class="actions"><a href="' + window.route_mass_crud_entries_destroy + '" class="btn btn-xs btn-danger js-delete-selected" style="margin-top:0.755em;margin-left: 20px;">'+window.deleteButtonTrans+'</a></div>');
+                                }
+                            }
+                        }
+                        else
+                        {
+                            $('#customer').parent().find(".actions").remove();
+                        }
+                    }   
+                });
+            @else
+                var tableCustomer = $('#customer').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "order": [[ 1, "desc" ]],
+                    retrieve: true,
+                    dom: 'lBfrtip<"actions">',
+                    columnDefs: [],
+                    "iDisplayLength": 10,
+                    "aaSorting": [],
+                    buttons: [
+                        // {
+                        //     extend: 'pdf',
+                        //     text: window.pdfButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // },
+                        // {
+                        //     extend: 'print',
+                        //     text: window.printButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // }
+                    ],
+                    "ajax":{
+                            "url": APP_URL+"/admin/DataTableCustomerAjax",
+                            "type":"POST",
+                            "dataType": "json",
+                            // "data":{"_token": "{{csrf_token()}}"}
+                            "data":function(data) {
+                                data.company = $('#filter_company').val();
+                                data._token = "{{csrf_token()}}";
+
+                            },
+                        },
+                    "columns": [
+                        
+                        { "data": "checkbox" },
+                        { "data": "sr_no" },
+                        { "data": "customer_name" },
+                        { "data": "phone" },
+                        { "data": "status" },
+                        { "data": "action" }
+                    ],
+                    "columnDefs": [{
+                        "orderable": false,
+                        "className": 'select-checkbox',
+                        "targets":   0,
+                        "searchable": false
+                    },{
+                        "orderable": false,
+                        "className": 'dt-body-center',
+                        "targets":   1,
+                        "visible": false,
+                        "searchable": false
+                    },{
+                        "orderable": false,
+                        "targets":   5
+                    }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                        $(nRow).attr('data-entry-id', aData.sr_no);
+                    },
+                    "drawCallback": function( settings ) {
+                        var api = this.api();
+                        // Output the data for the visible rows to the browser's console
+                        
+                        if(api.rows( {page:'current'} ).data().length > 0)
+                        {
+                            if($('#customer').parent().find(".actions").length == 0 )
+                            {
+                                // set bulk delete button after table draw
+                                if (typeof window.route_mass_crud_entries_destroy != 'undefined') {
+                                    $('#customer').parent().append('<div class="actions"><a href="' + window.route_mass_crud_entries_destroy + '" class="btn btn-xs btn-danger js-delete-selected" style="margin-top:0.755em;margin-left: 20px;">'+window.deleteButtonTrans+'</a></div>');
+                                }
+                            }
+                        }
+                        else
+                        {
+                            $('#customer').parent().find(".actions").remove();
+                        }
+                    }   
+                });
+            @endif
+
+            $(document).on("change",'#filter_company',function(){
+                tableCustomer.draw();
+            });
     </script>
 @endsection
