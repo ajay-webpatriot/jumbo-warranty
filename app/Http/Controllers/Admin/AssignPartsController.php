@@ -13,6 +13,8 @@ use App\Http\Requests\Admin\UpdateAssignPartsRequest;
 use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
 
+use DB;
+
 class AssignPartsController extends Controller
 {
     public function __construct()
@@ -36,35 +38,237 @@ class AssignPartsController extends Controller
             return abort(401);
         }
 
-        $AssignPart = new AssignPart(); // model object to call custom functions
+        // $AssignPart = new AssignPart(); // model object to call custom functions
         
         
-        if (request('show_deleted') == 1) {
-            if (! Gate::allows('assign_part_delete')) {
-                return abort(401);
-            }
-            $assign_parts = AssignPart::onlyTrashed()->get();
-        } else {
-            if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                //get company admin's or user's own company assigned parts if logged in user is company admin or user
-                $assign_parts = AssignPart::where('company_id',auth()->user()->company_id)->get();
-            }
-            else
-            {
-                $assign_parts = AssignPart::all();
-            }
+        // if (request('show_deleted') == 1) {
+        //     if (! Gate::allows('assign_part_delete')) {
+        //         return abort(401);
+        //     }
+        //     $assign_parts = AssignPart::onlyTrashed()->get();
+        // } else {
+        //     if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
+        //     {
+        //         //get company admin's or user's own company assigned parts if logged in user is company admin or user
+        //         $assign_parts = AssignPart::where('company_id',auth()->user()->company_id)->get();
+        //     }
+        //     else
+        //     {
+        //         $assign_parts = AssignPart::all();
+        //     }
             
-        }
+        // }
         
-        foreach ($assign_parts as $key => $value) {
-            $usedParts=$AssignPart->getRequestedServiceParts($value->product_parts_id,$value->company_id);// get quantity of used parts in service requests
-            $value['availableQuantity']=$value->quantity-$usedParts;
-        }
+        // foreach ($assign_parts as $key => $value) {
+        //     $usedParts=$AssignPart->getRequestedServiceParts($value->product_parts_id,$value->company_id);// get quantity of used parts in service requests
+        //     $value['availableQuantity']=$value->quantity-$usedParts;
+        // }
         
-        return view('admin.assign_parts.index', compact('assign_parts'));
+        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        return view('admin.assign_parts.index', compact('companies'));
     }
+    /**
+     * Display a listing of assigned parts ajax data table.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function DataTableAssignPartAjax(Request $request)
+    {
+        if (! Gate::allows('assign_part_access')) {
+            return abort(401);
+        }
 
+        $tableFieldData = [];
+        $ViewButtons = '';
+        $EditButtons = '';
+        $DeleteButtons = '';
+
+        // count data with filter value
+        $requestFilterCountQuery =  AssignPart::select('assign_parts.*','companies.name as company_name','product_parts.name as part_name',
+            DB::raw("(assign_parts.quantity - (SELECT COUNT(distinct service_requests.id) FROM service_requests 
+                join product_part_service_request on service_requests.id = product_part_service_request.service_request_id 
+                                WHERE assign_parts.product_parts_id = product_part_service_request.product_part_id and service_requests.company_id = assign_parts.company_id
+                                ) )  as available_quantity")
+            )
+         ->join('companies','assign_parts.company_id','=','companies.id')
+         ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id');
+
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        {
+            $columnArray = array(
+                    1 => 'assign_parts.id',
+                    2 => 'companies.name',
+                    3 => 'product_parts.name',
+                    4 => 'assign_parts.quantity',
+                    5 => 'available_quantity'
+                );
+
+            if(!empty($request->input('company')))
+            {   
+                $requestFilterCountQuery->Where('assign_parts.company_id', $request['company']);
+            }
+
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('product_parts.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('assign_parts.quantity', 'like', '%' . $searchVal . '%');
+                    
+                });
+            }
+        }
+        else{
+            $columnArray = array(
+                    0 => 'assign_parts.id',
+                    1 => 'product_parts.name',
+                    2 => 'assign_parts.quantity',
+                    3 => 'available_quantity'
+                );
+
+            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $requestFilterCountQuery->where('assign_parts.company_id',auth()->user()->company_id);
+            }
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+                    
+                    $query->orWhere('product_parts.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('assign_parts.quantity', 'like', '%' . $searchVal . '%');
+
+                });
+            } 
+        }
+        
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columnArray[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        
+        $requestFilterCount = $requestFilterCountQuery->count('assign_parts.id');
+        
+
+        $assignPartQuery = AssignPart::select('assign_parts.*','companies.name as company_name','product_parts.name as part_name',
+            DB::raw("(assign_parts.quantity - (SELECT COUNT(distinct service_requests.id) FROM service_requests 
+                join product_part_service_request on service_requests.id = product_part_service_request.service_request_id 
+                                WHERE assign_parts.product_parts_id = product_part_service_request.product_part_id and service_requests.company_id = assign_parts.company_id
+                                ) )  as available_quantity")
+         )
+         ->join('companies','assign_parts.company_id','=','companies.id')
+         ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+         ->offset($start)
+         ->limit($limit)
+         ->orderBy($order,$dir);
+
+
+        // filter data from table
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        {
+            if(!empty($request->input('company')))
+            {   
+                $assignPartQuery->Where('assign_parts.company_id', $request['company']);
+            }
+
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $assignPartQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('product_parts.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('assign_parts.quantity', 'like', '%' . $searchVal . '%');
+
+                });
+                // $assignPartQuery->having('available_quantity', 'like', '%' . $searchVal . '%');
+            }
+            // fetch total count without any filter
+            $countRecord = AssignPart::select('*')->count('id');
+        } 
+        else 
+        {
+            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $assignPartQuery->where('assign_parts.company_id',auth()->user()->company_id);
+            }
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $assignPartQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere('product_parts.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('assign_parts.quantity', 'like', '%' . $searchVal . '%');
+
+                });
+                // $assignPartQuery->having('available_quantity', 'like', '%' . $searchVal . '%');
+            }
+            // fetch total count without any filter
+            $countRecord = AssignPart::select('*')->where('company_id',auth()->user()->company_id)->count('id');
+        } 
+
+        
+        
+        $assignParts = $assignPartQuery->get();
+        // echo "<pre>"; print_r ($assignParts); echo "</pre>"; exit();
+
+        if(!empty($assignParts)){
+
+            foreach ($assignParts as $key => $assignPart) {
+
+                $tableField['checkbox'] = '';
+                $tableField['sr_no'] =  $assignPart->id;
+                $tableField['company'] = $assignPart->company_name;
+                $tableField['part_name'] = $assignPart->part_name;
+                $tableField['quantity'] = $assignPart->quantity;
+                $tableField['available_quantity'] = $assignPart->available_quantity;
+
+                $EditButtons = '';
+                if (Gate::allows('assign_part_edit')) {
+                    $EditButtons = '<a href="'.route('admin.assign_parts.edit',$assignPart->id).'" class="btn btn-xs btn-info">Edit</a>';
+                }
+                $DeleteButtons = '';
+                if (Gate::allows('assign_part_delete')) {
+                    $DeleteButtons = '<form action="'.route('admin.assign_parts.destroy',$assignPart->id).'" method="post" onsubmit="return confirm(\'Are you sure ?\');" style="display: inline-block;">
+
+                    <input name="_method" type="hidden" value="DELETE">
+                    <input type="hidden"
+                               name="_token"
+                               value="'.csrf_token().'">
+                    <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+                    </form>';
+                }
+
+                $tableField['action'] = $ViewButtons.' '.$EditButtons.' '.$DeleteButtons;
+                $tableFieldData[] = $tableField;
+            }
+           
+        }
+               
+        $json_data = array(
+            "draw"            => intval($request['draw']),  
+            "recordsTotal"    => intval($countRecord),  
+            "recordsFiltered" => intval($requestFilterCount),
+            "data"            => $tableFieldData   
+            );
+        // $json_data = array(
+        //     "draw"            => intval($request['draw']),  
+        //     "recordsTotal"    => 0,  
+        //     "recordsFiltered" => 0,
+        //     "data"            => array()   
+        //     );
+
+        echo json_encode($json_data);
+
+       
+    }
     /**
      * Show the form for creating new AssignPart.
      *

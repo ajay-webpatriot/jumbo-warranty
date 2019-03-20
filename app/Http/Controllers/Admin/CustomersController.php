@@ -40,35 +40,35 @@ class CustomersController extends Controller
         }
 // echo "<pre>"; print_r (auth()->user()); echo "</pre>"; exit();
 
-        if (request('show_deleted') == 1) {
-            if (! Gate::allows('customer_delete')) {
-                return abort(401);
-            }
-            $customers = Customer::onlyTrashed()->get();
-        } else {
+        // if (request('show_deleted') == 1) {
+        //     if (! Gate::allows('customer_delete')) {
+        //         return abort(401);
+        //     }
+        //     $customers = Customer::onlyTrashed()->get();
+        // } else {
 
-            if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                //get company admin's or user's own company customers if logged in user is company admin or user
-                $customers = Customer::where('company_id',auth()->user()->company_id)->get();
-            }
-            else
-            {
-                $customers = Customer::all();
-            }
+        //     if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
+        //     {
+        //         //get company admin's or user's own company customers if logged in user is company admin or user
+        //         $customers = Customer::where('company_id',auth()->user()->company_id)->get();
+        //     }
+        //     else
+        //     {
+        //         $customers = Customer::all();
+        //     }
             
-        }
+        // }
         $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
-        return view('admin.customers.index', compact('customers','companies'));
+        return view('admin.customers.index', compact('companies'));
     }
     /**
-     * Display a listing of company admin using ajax data table.
+     * Display a listing of customer using ajax data table.
      *
      * @return \Illuminate\Http\Response
      */
     public function DataTableCustomerAjax(Request $request)
     {
-        if (! Gate::allows('user_access')) {
+        if (! Gate::allows('customer_access')) {
             return abort(401);
         }
 
@@ -86,7 +86,7 @@ class CustomersController extends Controller
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         {
             $columnArray = array(
-                    1 => 'customers.id',
+                    1 =>'customers.id',
                     2 =>'customers.firstname' ,
                     3 =>'customers.phone' ,
                     4 =>'companies.name' ,
@@ -115,13 +115,13 @@ class CustomersController extends Controller
         }
         else{
            $columnArray = array(
-                    1 => 'customers.id',
+                    1 =>'customers.id',
                     2 =>'customers.firstname' ,
                     3 =>'customers.phone' ,
                     4 =>'customers.status'
                 );
 
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
             {
                 $requestFilterCountQuery->where('company_id',auth()->user()->company_id);
             }

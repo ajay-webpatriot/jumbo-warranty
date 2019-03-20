@@ -23,20 +23,21 @@
 
     @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         <div class="panel panel-default">
-            <div class="panel-heading headerTitle">
+            <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
                 Filter
             </div>
+            <div id="collapseAdvanceFilter" class="panel-collapse in" role="tabpanel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'', ['class' => 'control-label']) !!}
 
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'', ['class' => 'control-label']) !!}
+                            {{-- !! Form::select('filter_company',[null=>'All'], null, ['class' => 'form-control select2']) !! --}}
 
-                        {{-- !! Form::select('filter_company',[null=>'All'], null, ['class' => 'form-control select2']) !! --}}
-
-                        {!! Form::select('filter_company',$companies, null, ['class' => 'form-control select2', 'id' => 'filter_company']) !!}
-                    </div>
-                </div> 
+                            {!! Form::select('filter_company',$companies, null, ['class' => 'form-control select2', 'id' => 'filter_company']) !!}
+                        </div>
+                    </div> 
+                </div>
             </div>
         </div>                  
     @endif

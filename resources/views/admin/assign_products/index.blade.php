@@ -19,6 +19,26 @@
     </p> -->
     @endcan
 
+    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        <div class="panel panel-default">
+            <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
+                Filter
+            </div>
+            <div id="collapseAdvanceFilter" class="panel-collapse in" role="tabpanel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'', ['class' => 'control-label']) !!}
+
+                            {{-- !! Form::select('filter_company',[null=>'All'], null, ['class' => 'form-control select2']) !! --}}
+
+                            {!! Form::select('filter_company',$companies, null, ['class' => 'form-control select2', 'id' => 'filter_company']) !!}
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>                  
+    @endif
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -26,85 +46,36 @@
         </div>
 
         <div class="panel-body table-responsive">
-            <table class="table table-bordered table-striped {{ count($assign_products) > 0 ? 'datatable' : '' }} @can('assign_product_delete') @if ( request('show_deleted') != 1 ) dt-select @endif @endcan">
-                <thead>
-                    <tr>
-                        @can('assign_product_delete')
-                            @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" id="select-all" /></th>@endif
-                        @endcan
-
-                        <!-- <th>@lang('quickadmin.assign-product.fields.company')</th> -->
-                        <th>@lang('quickadmin.assign-product.fields.product-id')</th>
-                        @if( request('show_deleted') == 1 )
-                        <th>&nbsp;</th>
-                        @else
-                        <th>&nbsp;</th>
-                        @endif
-                    </tr>
-                </thead>
-                
-                <tbody>
-                    @if (count($assign_products) > 0)
-                        @foreach ($assign_products as $assign_product)
-                            @foreach ($assign_product->product_id as $singleProductId)
-                            <tr data-entry-id="{{ $assign_product->id }}">
-                                @can('assign_product_delete')
-                                    @if ( request('show_deleted') != 1 )<td></td>@endif
-                                @endcan
-
-                                <!-- <td field-key='company'>{{-- $assign_product->company->name or '' --}}</td> -->
-                                <td field-key='product_id'>
-                                    {{-- @foreach ($assign_product->product_id as $singleProductId) --}}
-                                        <span class="label label-info label-many">{{ $singleProductId->name }}</span>
-                                    {{-- @endforeach --}}
-                                </td>
-                                @if( request('show_deleted') == 1 )
-                                <td>
-                                    @can('assign_product_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'POST',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.assign_products.restore', $assign_product->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_restore'), array('class' => 'btn btn-xs btn-success')) !!}
-                                    {!! Form::close() !!}
-                                @endcan
-                                    @can('assign_product_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.assign_products.perma_del', $assign_product->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_permadel'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
-                                @endcan
-                                </td>
-                                @else
-                                <td>
-                                    @can('assign_product_edit')
-                                    <a href="{{ route('admin.assign_products.edit',[$assign_product->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
-                                    @endcan
-                                    @can('assign_product_delete')
-                                    {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.assign_products.destroy', $assign_product->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
-                                    @endcan
-                                </td>
-                                @endif
-                            </tr>
-                            @endforeach
-                        @endforeach
-                    @else
+            @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                <table id="assign_product" class="display table table-bordered table-striped dt-select dataTable no-footer datatable">
+                    <thead>
                         <tr>
-                            <td colspan="8">@lang('quickadmin.qa_no_entries_in_table')</td>
+                            
+                            <th style="text-align:center;"><input type="checkbox" class="dt-body-center select-checkbox" id="select-all" /></th>
+                            <th>@lang('quickadmin.qa_sr_no')</th>
+                            <th>@lang('quickadmin.assign-product.fields.company')</th>
+                            <th>@lang('quickadmin.assign-product.fields.product-id')</th>
+                            <th>@lang('quickadmin.qa_action')</th>
                         </tr>
-                    @endif
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            @else
+                <table id="assign_product" class="display table table-bordered table-striped dt-select dataTable no-footer datatable">
+                    <thead>
+                        <tr>
+                            <th>@lang('quickadmin.qa_sr_no')</th>
+                            <th>@lang('quickadmin.assign-product.fields.product-id')</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
 @stop
@@ -114,6 +85,163 @@
         @can('assign_product_delete')
             @if ( request('show_deleted') != 1 ) window.route_mass_crud_entries_destroy = '{{ route('admin.assign_products.mass_destroy') }}'; @endif
         @endcan
+        @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                
+                var tableAssignProduct = $('#assign_product').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "order": [[ 1, "desc" ]],
+                    retrieve: true,
+                    dom: 'lBfrtip<"actions">',
+                    columnDefs: [],
+                    "iDisplayLength": 10,
+                    "aaSorting": [],
+                    buttons: [
+                        // {
+                        //     extend: 'pdf',
+                        //     text: window.pdfButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // },
+                        // {
+                        //     extend: 'print',
+                        //     text: window.printButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // }
+                    ],
+                    "ajax":{
+                            "url": APP_URL+"/admin/DataTableAssignProductAjax",
+                            "type":"POST",
+                            "dataType": "json",
+                            // "data":{"_token": "{{csrf_token()}}"}
+                            "data":function(data) {
+                                data.company = $('#filter_company').val();
+                                data._token = "{{csrf_token()}}";
 
+                            },
+                        },
+                    "columns": [
+                        
+                        { "data": "checkbox" },
+                        { "data": "sr_no" },
+                        { "data": "company" },
+                        { "data": "product_name" },
+                        { "data": "action" }
+                    ],
+                    "columnDefs": [{
+                        "orderable": false,
+                        "className": 'select-checkbox',
+                        "targets":   0,
+                        "searchable": false
+                    },{
+                        "orderable": false,
+                        "className": 'dt-body-center',
+                        "targets":   1,
+                        "visible": false,
+                        "searchable": false
+                    },{
+                        "orderable": false,
+                        "targets":   4
+                    }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                        $(nRow).attr('data-entry-id', aData.sr_no);
+                    },
+                    "drawCallback": function( settings ) {
+                        var api = this.api();
+                        // Output the data for the visible rows to the browser's console
+                        
+                        if(api.rows( {page:'current'} ).data().length > 0)
+                        {
+                            if($('#assign_product').parent().find(".actions").length == 0 )
+                            {
+                                // set bulk delete button after table draw
+                                if (typeof window.route_mass_crud_entries_destroy != 'undefined') {
+                                    $('#assign_product').parent().append('<div class="actions"><a href="' + window.route_mass_crud_entries_destroy + '" class="btn btn-xs btn-danger js-delete-selected" style="margin-top:0.755em;margin-left: 20px;">'+window.deleteButtonTrans+'</a></div>');
+                                }
+                            }
+                        }
+                        else
+                        {
+                            $('#assign_product').parent().find(".actions").remove();
+                        }
+                    }   
+                });
+            @else
+                var tableAssignProduct = $('#assign_product').DataTable({
+                    "processing": true,
+                    "serverSide": true,
+                    "order": [[ 0, "desc" ]],
+                    retrieve: true,
+                    dom: 'lBfrtip<"actions">',
+                    columnDefs: [],
+                    "iDisplayLength": 10,
+                    "aaSorting": [],
+                    buttons: [
+                        // {
+                        //     extend: 'pdf',
+                        //     text: window.pdfButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // },
+                        // {
+                        //     extend: 'print',
+                        //     text: window.printButtonTrans,
+                        //     exportOptions: {
+                        //         columns: ':visible'
+                        //     }
+                        // }
+                    ],
+                    "ajax":{
+                            "url": APP_URL+"/admin/DataTableAssignProductAjax",
+                            "type":"POST",
+                            "dataType": "json",
+                            // "data":{"_token": "{{csrf_token()}}"}
+                            "data":function(data) {
+                                data.company = $('#filter_company').val();
+                                data._token = "{{csrf_token()}}";
+
+                            },
+                        },
+                    "columns": [
+                        { "data": "sr_no" },
+                        { "data": "product_name" }
+                    ],
+                    "columnDefs": [{
+                        "orderable": false,
+                        "className": 'dt-body-center',
+                        "targets":   0,
+                        "visible": false,
+                        "searchable": false
+                    }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                        $(nRow).attr('data-entry-id', aData.sr_no);
+                    },
+                    "drawCallback": function( settings ) {
+                        var api = this.api();
+                        // Output the data for the visible rows to the browser's console
+                        
+                        if(api.rows( {page:'current'} ).data().length > 0)
+                        {
+                            if($('#assign_product').parent().find(".actions").length == 0 )
+                            {
+                                // set bulk delete button after table draw
+                                if (typeof window.route_mass_crud_entries_destroy != 'undefined') {
+                                    $('#assign_product').parent().append('<div class="actions"><a href="' + window.route_mass_crud_entries_destroy + '" class="btn btn-xs btn-danger js-delete-selected" style="margin-top:0.755em;margin-left: 20px;">'+window.deleteButtonTrans+'</a></div>');
+                                }
+                            }
+                        }
+                        else
+                        {
+                            $('#assign_product').parent().find(".actions").remove();
+                        }
+                    }   
+                });
+            @endif
+
+            $(document).on("change",'#filter_company',function(){
+                tableAssignProduct.draw();
+            });
     </script>
 @endsection

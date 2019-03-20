@@ -37,26 +37,210 @@ class AssignProductsController extends Controller
         }
 
 
-        if (request('show_deleted') == 1) {
-            if (! Gate::allows('assign_product_delete')) {
-                return abort(401);
-            }
-            $assign_products = AssignProduct::onlyTrashed()->get();
-        } else {
+        // if (request('show_deleted') == 1) {
+        //     if (! Gate::allows('assign_product_delete')) {
+        //         return abort(401);
+        //     }
+        //     $assign_products = AssignProduct::onlyTrashed()->get();
+        // } else {
 
-            if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                //get company admin's or user's own company assigned product if logged in user is company admin or user
-                $assign_products = AssignProduct::where('company_id',auth()->user()->company_id)->get();
+        //     if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
+        //     {
+        //         //get company admin's or user's own company assigned product if logged in user is company admin or user
+        //         $assign_products = AssignProduct::where('company_id',auth()->user()->company_id)->get();
+        //     }
+        //     else
+        //     {
+        //         $assign_products = AssignProduct::all();
+        //     }
+        // }
+        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        return view('admin.assign_products.index', compact('companies'));
+    }
+    /**
+     * Display a listing of assigned products ajax data table.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function DataTableAssignProductAjax(Request $request)
+    {
+        if (! Gate::allows('assign_product_access')) {
+            return abort(401);
+        }
+
+        
+
+        $tableFieldData = [];
+        $ViewButtons = '';
+        $EditButtons = '';
+        $DeleteButtons = '';
+
+        // count data with filter value
+        $requestFilterCountQuery =  AssignProduct::select('assign_products.*','companies.name as company_name','products.name as product_name')
+         ->join('companies','assign_products.company_id','=','companies.id')
+         ->join('assign_product_product','assign_product_product.assign_product_id','=','assign_products.id')
+         ->join('products','products.id','=','assign_product_product.product_id');
+
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        {
+            $columnArray = array(
+                    1 => 'assign_products.id',
+                    2 => 'companies.name',
+                    3 => 'products.name' ,
+                );
+
+            if(!empty($request->input('company')))
+            {   
+                $requestFilterCountQuery->Where('assign_products.company_id', $request['company']);
             }
-            else
-            {
-                $assign_products = AssignProduct::all();
+
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
+                    
+                });
             }
         }
-        return view('admin.assign_products.index', compact('assign_products'));
-    }
+        else{
+            $columnArray = array(
+                    0 => 'assign_products.id',
+                    1 => 'products.name' ,
+                );
 
+            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $requestFilterCountQuery->where('assign_products.company_id',auth()->user()->company_id);
+            }
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+                    
+                    $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
+
+                });
+            } 
+        }
+        
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columnArray[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        
+        $requestFilterCount = $requestFilterCountQuery->count('assign_products.id');
+        
+
+        $assignProductQuery = AssignProduct::select('assign_products.*','companies.name as company_name','products.name as product_name')
+         ->join('companies','assign_products.company_id','=','companies.id')
+         ->join('assign_product_product','assign_product_product.assign_product_id','=','assign_products.id')
+         ->join('products','products.id','assign_product_product.product_id')
+         ->offset($start)
+         ->limit($limit)
+         ->orderBy($order,$dir);
+
+
+        // filter data from table
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        {
+            if(!empty($request->input('company')))
+            {   
+                $assignProductQuery->Where('assign_products.company_id', $request['company']);
+            }
+
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $assignProductQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
+
+                });
+            }
+            // fetch total count without any filter
+            $countRecord = AssignProduct::select('*')->count('id');
+        } 
+        else 
+        {
+            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $assignProductQuery->where('assign_products.company_id',auth()->user()->company_id);
+            }
+            //Search from table
+            if(!empty($request->input('search.value')))
+            { 
+                $searchVal = $request['search']['value'];
+                $assignProductQuery->where(function ($query) use ($searchVal) {
+
+                    $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
+
+                });
+            }
+            // fetch total count without any filter
+            $countRecord = AssignProduct::select('*')->where('company_id',auth()->user()->company_id)->count('id');
+        } 
+
+        
+        
+        $assignProducts = $assignProductQuery->get();
+        // echo "<pre>"; print_r ($assignProducts); echo "</pre>"; exit();
+
+        if(!empty($assignProducts)){
+
+            foreach ($assignProducts as $key => $assignProduct) {
+
+                $tableField['checkbox'] = '';
+                $tableField['sr_no'] =  $assignProduct->id;
+                $tableField['company'] = $assignProduct->company_name;
+                $tableField['product_name'] = $assignProduct->product_name;
+
+                $EditButtons = '';
+                if (Gate::allows('assign_product_edit')) {
+                    $EditButtons = '<a href="'.route('admin.assign_products.edit',$assignProduct->id).'" class="btn btn-xs btn-info">Edit</a>';
+                }
+                $DeleteButtons = '';
+                if (Gate::allows('assign_product_delete')) {
+                    $DeleteButtons = '<form action="'.route('admin.assign_products.destroy',$assignProduct->id).'" method="post" onsubmit="return confirm(\'Are you sure ?\');" style="display: inline-block;">
+
+                    <input name="_method" type="hidden" value="DELETE">
+                    <input type="hidden"
+                               name="_token"
+                               value="'.csrf_token().'">
+                    <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+                    </form>';
+                }
+
+                $tableField['action'] = $ViewButtons.' '.$EditButtons.' '.$DeleteButtons;
+                $tableFieldData[] = $tableField;
+            }
+           
+        }
+               
+        $json_data = array(
+            "draw"            => intval($request['draw']),  
+            "recordsTotal"    => intval($countRecord),  
+            "recordsFiltered" => intval($requestFilterCount),
+            "data"            => $tableFieldData   
+            );
+        // $json_data = array(
+        //     "draw"            => intval($request['draw']),  
+        //     "recordsTotal"    => 0,  
+        //     "recordsFiltered" => 0,
+        //     "data"            => array()   
+        //     );
+
+        echo json_encode($json_data);
+
+       
+    }
     /**
      * Show the form for creating new AssignProduct.
      *

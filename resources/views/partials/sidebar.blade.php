@@ -117,20 +117,21 @@
                     <!-- can('company_access') -->
                     @can('manageCompany')
 
-                        @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
-                        <li>
-                            <a href="{{ route('admin.companies.show',[auth()->user()->company_id]) }}">
-                                <i class="fa fa-circle-o"></i>
-                                <span>@lang('quickadmin.company.company-info')</span>
-                            </a>
-                        </li>
-                        @else
-                        <li>
-                            <a href="{{ route('admin.companies.index') }}">
-                                <i class="fa fa-circle-o"></i>
-                                <span>@lang('quickadmin.company.title')</span>
-                            </a>
-                        </li>
+                        @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
+                        || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                            <li>
+                                <a href="{{ route('admin.companies.index') }}">
+                                    <i class="fa fa-circle-o"></i>
+                                    <span>@lang('quickadmin.company.title')</span>
+                                </a>
+                            </li>
+                        @elseif(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+                            <li>
+                                <a href="{{ route('admin.companies.show',[auth()->user()->company_id]) }}">
+                                    <i class="fa fa-circle-o"></i>
+                                    <span>@lang('quickadmin.company.company-info')</span>
+                                </a>
+                            </li>
                         @endif
                         <!-- endcan -->
                         

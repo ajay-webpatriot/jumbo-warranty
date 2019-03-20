@@ -121,6 +121,15 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
 
     //Customer ajax data table
     Route::post('/DataTableCustomerAjax','Admin\CustomersController@DataTableCustomerAjax');
+
+    //Customer ajax data table
+    Route::post('/DataTableCustomerAjax','Admin\CustomersController@DataTableCustomerAjax');
+
+    //Assign products ajax data table
+    Route::post('/DataTableAssignProductAjax','Admin\AssignProductsController@DataTableAssignProductAjax');
+
+    //Assign parts ajax data table
+    Route::post('/DataTableAssignPartAjax','Admin\AssignPartsController@DataTableAssignPartAjax');
     
 
     
