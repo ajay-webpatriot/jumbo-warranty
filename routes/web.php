@@ -127,11 +127,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
 
     //Assign products ajax data table
     Route::post('/DataTableAssignProductAjax','Admin\AssignProductsController@DataTableAssignProductAjax');
+    Route::post('/DataTableAssignProductAdminAjax','Admin\AssignProductsController@DataTableAssignProductAdminAjax');
+    // get assigned product of particular company in edit page
+    Route::get('/getAssignedProductsAjax','Admin\AssignProductsController@getAssignedProductsAjax');
 
     //Assign parts ajax data table
     Route::post('/DataTableAssignPartAjax','Admin\AssignPartsController@DataTableAssignPartAjax');
-    
-
     
 });
   

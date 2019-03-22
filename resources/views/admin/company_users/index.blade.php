@@ -14,8 +14,9 @@
         <div class="panel panel-default">
             <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
                 Filter
+                <span class="btn-box-tool glyphicon glyphicon-plus pull-right"></span>
             </div>
-            <div id="collapseAdvanceFilter" class="panel-collapse in" role="tabpanel">
+            <div id="collapseAdvanceFilter" class="panel-collapse collapse in" role="tabpanel">
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-4">

@@ -77,7 +77,7 @@ class ServiceRequestsController extends Controller
         // filter dropdown details
        
        
-        $companies = \App\Company::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
@@ -88,16 +88,15 @@ class ServiceRequestsController extends Controller
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
                                         
             $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
-                                ->with('product_id')->get();
+                                ->whereHas('product', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
             
             if(count($company_products) > 0)
             {
                 foreach($company_products as $key => $value)
                 {
-                    foreach($value->product_id as $details)
-                    {
-                        $products[$details->id]=$details->name;
-                    }
+                    $products[$value->product->id]=$value->product->name;
                 }
             }             
         }
@@ -115,16 +114,15 @@ class ServiceRequestsController extends Controller
 
                 $products=array(''=>trans('quickadmin.qa_show_all')); 
                 $company_products = \App\AssignProduct::where('company_id',session('filter_company'))
-                ->with('product_id')->get();
+                                    ->whereHas('product', function ($q) {
+                                        $q->where('status', 'Active');
+                                    })->get();
                 
                 if(count($company_products) > 0)
                 {
                     foreach($company_products as $key => $value)
                     {
-                        foreach($value->product_id as $details)
-                        {
-                            $products[$details->id]=$details->name;
-                        }
+                        $products[$value->product->id]=$value->product->name;
                     }
                 } 
             }
@@ -158,7 +156,7 @@ class ServiceRequestsController extends Controller
 
             
         }
-        $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->get()->pluck('name');
+        $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->where('status','Active')->get()->pluck('name');
         
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
         {
@@ -169,7 +167,7 @@ class ServiceRequestsController extends Controller
         }
         else
         {
-            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             if(!empty(session('filter_service_center')))
             {
                 $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
@@ -297,6 +295,10 @@ class ServiceRequestsController extends Controller
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
             ->leftjoin('products','service_requests.product_id','=','products.id')
             ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id')
+            ->Where('companies.status','Active')
+            ->Where('customers.status','Active')
+            ->Where('products.status','Active')
+            ->Where('service_centers.status','Active')
             ->offset($start)
             ->limit($limit)
             ->orderBy($order,$dir);
@@ -406,7 +408,16 @@ class ServiceRequestsController extends Controller
 
             
             // fetch total count according to logged in user
-            $countRecordQuery = ServiceRequest::select('*');
+            $countRecordQuery = ServiceRequest::select('*')
+                                ->leftjoin('companies','service_requests.company_id','=','companies.id')
+                                ->leftjoin('roles','service_requests.technician_id','=','roles.id')
+                                ->leftjoin('customers','service_requests.customer_id','=','customers.id')
+                                ->leftjoin('products','service_requests.product_id','=','products.id')
+                                ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id')
+                                ->Where('companies.status','Active')
+                                ->Where('customers.status','Active')
+                                ->Where('products.status','Active')
+                                ->Where('service_centers.status','Active');
             if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             {
                 $countRecordQuery->Where('service_requests.service_center_id', auth()->user()->service_center_id);
@@ -419,7 +430,7 @@ class ServiceRequestsController extends Controller
             {
                 $countRecordQuery->Where('service_requests.company_id', auth()->user()->company_id);
             }
-            $countRecord = $countRecordQuery->count('id');
+            $countRecord = $countRecordQuery->count('service_requests.id');
 
 
             foreach ($service_requests as $key => $SingleServiceRequest) {
@@ -497,7 +508,7 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
@@ -511,10 +522,15 @@ class ServiceRequestsController extends Controller
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
                                         
             $product_parts = \App\AssignPart::where('company_id',auth()->user()->company_id)
-                                ->with('product_parts')->get();
+                                ->whereHas('product_parts', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
 
             $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
-                                ->with('product_id')->get();
+                                ->whereHas('product', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
+
             if(count($product_parts) > 0)
             {
                 foreach($product_parts as $key => $value)
@@ -526,10 +542,7 @@ class ServiceRequestsController extends Controller
             {
                 foreach($company_products as $key => $value)
                 {
-                    foreach($value->product_id as $details)
-                    {
-                        $products[$details->id]=$details->name;
-                    }
+                    $products[$value->product->id]=$value->product->name;
                 }
             }                            
 
@@ -538,8 +551,8 @@ class ServiceRequestsController extends Controller
         else
         {
             $customers=array(''=>trans('quickadmin.qa_please_select'));
-            $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-            $parts = \App\ProductPart::get()->pluck('name', 'id');
+            $products = \App\Product::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $parts = \App\ProductPart::where('status','Active')->get()->pluck('name', 'id');
         }
 
         $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
@@ -549,9 +562,9 @@ class ServiceRequestsController extends Controller
             $km_charge =$distance_charge->km_charge;
         }
 
-        $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $service_centers = \App\ServiceCenter::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
 
         $enum_service_type = ServiceRequest::$enum_service_type;
@@ -696,9 +709,9 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         // SendMailHelper::sendRequestCreationMail($id);
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
-        $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $service_centers = \App\ServiceCenter::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
         // $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $parts = \App\ProductPart::get()->pluck('name', 'id');
@@ -763,11 +776,22 @@ class ServiceRequestsController extends Controller
                                         ->where('status','Active')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
+            // $product_parts = \App\AssignPart::where('company_id',$service_request['company_id'])
+            //                     ->with('product_parts')->get();
             $product_parts = \App\AssignPart::where('company_id',$service_request['company_id'])
-                                ->with('product_parts')->get();
+                                ->whereHas('product_parts', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
 
+            // $company_products = \App\AssignProduct::where('company_id',$service_request['company_id'])
+            //                     ->with('product')->get();
             $company_products = \App\AssignProduct::where('company_id',$service_request['company_id'])
-                                ->with('product_id')->get();
+                                ->whereHas('product', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
+
+
+            // echo "<pre>"; print_r ($company_products); echo "</pre>"; exit();
             if(count($product_parts) > 0)
             {
                 foreach($product_parts as $key => $value)
@@ -779,10 +803,11 @@ class ServiceRequestsController extends Controller
             {
                 foreach($company_products as $key => $value)
                 {
-                    foreach($value->product_id as $details)
-                    {
-                        $products[$details->id]=$details->name;
-                    }
+                    $products[$value->product->id]=$value->product->name;
+                    // foreach($value->product_id as $details)
+                    // {
+                    //     $products[$details->id]=$details->name;
+                    // }
                 }
             }
 
@@ -1420,12 +1445,15 @@ class ServiceRequestsController extends Controller
                                 ->where('status','Active')->get();
 
             $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
-                                ->with('product_parts')->get();
+                                ->whereHas('product_parts', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
 
             $products = \App\AssignProduct::where('company_id',$details['companyId'])
-                                ->with('product_id')->get();
-            // echo count($product_parts);
-            //             echo "<pre>"; print_r ($product_parts); echo "</pre>"; exit();        
+                                ->whereHas('product', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
+
             if(count($customers) > 0)
             {
                 foreach($customers as $key => $value)
@@ -1445,11 +1473,12 @@ class ServiceRequestsController extends Controller
             {
                 foreach($products as $key => $value)
                 {
-                    // echo "<pre>"; print_r ($value->product_id); echo "</pre>"; exit();
-                    foreach($value->product_id as $details)
-                    {
-                        $data['productOptions'].="<option value='".$details->id."'>".$details->name."</option>";   
-                    }
+                    // if(!empty($value->product_id)){
+                    //     foreach($value->product_id as $details)
+                    //     {
+                            $data['productOptions'].="<option value='".$value->product->id."'>".$value->product->name."</option>";   
+                    //     }
+                    // }
                 }   
             }
         }
@@ -1519,7 +1548,7 @@ class ServiceRequestsController extends Controller
             // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
             if(!empty($customer))
             {
-                $data['service_centers'] = \App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $customer->zipcode . '%')->get();
+                $data['service_centers'] = \App\ServiceCenter::where('status','Active')->Where('supported_zipcode', 'like', '%' . $customer->zipcode . '%')->get();
             }
         }
         echo json_encode($data);
@@ -1608,10 +1637,14 @@ class ServiceRequestsController extends Controller
                                 ->where('status','Active')->get();
 
             $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
-                                ->with('product_parts')->get();
+                                ->whereHas('product_parts', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
 
             $products = \App\AssignProduct::where('company_id',$details['companyId'])
-                                ->with('product_id')->get();
+                                ->whereHas('product', function ($q) {
+                                        $q->where('status', 'Active');
+                                })->get();
             // echo count($product_parts);
             //             echo "<pre>"; print_r ($product_parts); echo "</pre>"; exit();        
             if(count($customers) > 0)
@@ -1634,10 +1667,7 @@ class ServiceRequestsController extends Controller
                 foreach($products as $key => $value)
                 {
                     // echo "<pre>"; print_r ($value->product_id); echo "</pre>"; exit();
-                    foreach($value->product_id as $details)
-                    {
-                        $data['productOptions'].="<option value='".$details->id."'>".$details->name."</option>";   
-                    }
+                    $data['productOptions'].="<option value='".$value->product->id."'>".$value->product->name."</option>";
                 }   
             }
         }

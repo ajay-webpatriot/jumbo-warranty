@@ -40,13 +40,20 @@ class SendMail
         $service_request['additional_charges']=$additional_charges;
         $service_request['additional_charges_title']=$additional_charge_title;
 
-    		$company_admin= \App\User::where('company_id',$service_request->company_id)->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->get()->first();
+    		$company_admin= \App\User::where('company_id',$service_request->company_id)
+                                  ->where('status','Active')
+                                  ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
+                                  ->get()->first();
     		$company_admin_email=$company_admin->email;
 
-    		$customer= \App\Customer::where('id',$service_request->customer_id)->get()->first();
+    		$customer= \App\Customer::where('id',$service_request->customer_id)
+                                  ->where('status','Active')
+                                  ->get()->first();
     		$customer_email=$customer->email;
 
-    		$admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))->get()->first();
+    		$admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
+                          ->where('status','Active')
+                          ->get()->first();
 
     		$admin_email=$admin->email;
 
@@ -54,7 +61,8 @@ class SendMail
 
         $receiver_email=array('admin' => $admin_email,
                               'company_admin' => $company_admin_email,
-                              'customer' => $customer_email
+                              'customer' => $customer_email,
+                              'hinal' => 'hinal.webpatriot@gmail.com'
 		                        );
         foreach ($receiver_email as $key => $value) {
 
@@ -93,10 +101,12 @@ class SendMail
         $service_request = ServiceRequest::findOrFail($request_id);
         
        
-        $customer= \App\Customer::where('id',$service_request->customer_id)->get()->first();
+        $customer= \App\Customer::where('id',$service_request->customer_id)->where('status','Active')->get()->first();
         $customer_email=$customer->email;
 
-        $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))->get()->first();
+        $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
+                          ->where('status','Active')
+                          ->get()->first();
 
         $admin_email=$admin->email;
 
@@ -105,18 +115,28 @@ class SendMail
         $receiver_email=array('admin' => $admin_email,
                               // 'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
+                              'hinal' => 'hinal.webpatriot@gmail.com'
                             );
         if($service_request->status == "Closed")
         {
-          $company_admin= \App\User::where('company_id',$service_request->company_id)->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->get()->first();
+          $company_admin= \App\User::where('company_id',$service_request->company_id)
+                                    ->where('status','Active')
+                                    ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
+                                    ->get()->first();
           $company_admin_email=$company_admin->email;
           $receiver_email['company_admin'] = $company_admin_email;
 
-          $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))->get()->first();
+          $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
+                                          ->where('status','Active')
+                                          ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
+                                          ->get()->first();
           $service_center_admin_email=$service_center_admin->email;
           $receiver_email['service_center_admin'] = $service_center_admin_email;
 
-          $technician= \App\User::where('id',$service_request->technician_id)->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->first();
+          $technician= \App\User::where('id',$service_request->technician_id)
+                                ->where('status','Active')
+                                ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                                ->get()->first();
           $technician_email=$technician->email;
           $receiver_email['technician'] = $technician_email;
         }
@@ -161,10 +181,13 @@ class SendMail
         // send mail to service center admin and admin
         $service_request = ServiceRequest::findOrFail($request_id);
         
-        $technician= \App\User::where('id',$service_request->technician_id)->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->first();
+        $technician= \App\User::where('id',$service_request->technician_id)->where('status','Active')->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->first();
         $technician_name=ucwords($technician->name);
 
-        $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))->get()->first();
+        $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
+                              ->where('status','Active')
+                              ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
+                              ->get()->first();
         $service_center_admin_email=$service_center_admin->email;
 
         $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))->get()->first();
@@ -182,7 +205,8 @@ class SendMail
     
 
         $receiver_email=array('admin' => $admin_email,
-                              'service_center_admin' => $service_center_admin_email
+                              'service_center_admin' => $service_center_admin_email,
+                              'hinal' => 'hinal.webpatriot@gmail.com'
                             );
        
         foreach ($receiver_email as $key => $value) {
@@ -219,6 +243,7 @@ class SendMail
     $query = \App\User::select('name','email')
     ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
     ->where('email',$email)
+    ->where('status','Active')
     ->first();
 
     $response = 1;

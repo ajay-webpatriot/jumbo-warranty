@@ -210,7 +210,11 @@ class ServiceRequest extends Model
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
             ->leftjoin('products','service_requests.product_id','=','products.id')
-            ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id');
+            ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id')
+            ->Where('companies.status','Active')
+            ->Where('customers.status','Active')
+            ->Where('products.status','Active')
+            ->Where('service_centers.status','Active');
             
             if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             {

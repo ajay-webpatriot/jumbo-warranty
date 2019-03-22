@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.assign-product.fields.company').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'getAssignedProducts(this)', 'id' => 'assign_company_id']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('company_id'))
                         <p class="help-block">

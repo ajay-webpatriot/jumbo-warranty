@@ -14,6 +14,8 @@ use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
 
 use DB;
+use Validator;
+use Illuminate\Support\Facades\Input;
 
 class AssignPartsController extends Controller
 {
@@ -91,7 +93,9 @@ class AssignPartsController extends Controller
                                 ) )  as available_quantity")
             )
          ->join('companies','assign_parts.company_id','=','companies.id')
-         ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id');
+         ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+         ->Where('product_parts.status', 'Active')
+         ->Where('companies.status', 'Active');
 
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         {
@@ -163,6 +167,8 @@ class AssignPartsController extends Controller
          )
          ->join('companies','assign_parts.company_id','=','companies.id')
          ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+         ->Where('product_parts.status', 'Active')
+         ->Where('companies.status', 'Active')
          ->offset($start)
          ->limit($limit)
          ->orderBy($order,$dir);
@@ -190,7 +196,11 @@ class AssignPartsController extends Controller
                 // $assignPartQuery->having('available_quantity', 'like', '%' . $searchVal . '%');
             }
             // fetch total count without any filter
-            $countRecord = AssignPart::select('*')->count('id');
+            $countRecord = AssignPart::select('assign_parts.*')
+                            ->join('companies','assign_parts.company_id','=','companies.id')
+                            ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+                            ->Where('product_parts.status', 'Active')
+                            ->Where('companies.status', 'Active')->count('assign_parts.id');
         } 
         else 
         {
@@ -211,7 +221,12 @@ class AssignPartsController extends Controller
                 // $assignPartQuery->having('available_quantity', 'like', '%' . $searchVal . '%');
             }
             // fetch total count without any filter
-            $countRecord = AssignPart::select('*')->where('company_id',auth()->user()->company_id)->count('id');
+            $countRecord = AssignPart::select('assign_parts.*')
+                                ->join('companies','assign_parts.company_id','=','companies.id')
+                                ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+                                ->Where('product_parts.status', 'Active')
+                                ->Where('companies.status', 'Active')
+                                ->where('company_id',auth()->user()->company_id)->count('assign_parts.id');
         } 
 
         
@@ -280,8 +295,8 @@ class AssignPartsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $product_parts = \App\ProductPart::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $product_parts = \App\ProductPart::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
             
         return view('admin.assign_parts.create', compact('companies', 'product_parts'));
     }
@@ -296,6 +311,20 @@ class AssignPartsController extends Controller
     {
         if (! Gate::allows('assign_part_create')) {
             return abort(401);
+        }
+
+        // check unique validation for company and part both field
+        $validator = Validator::make($request->all(), []);
+        $checkExistData = AssignPart::where('company_id', $request->company_id)->where('product_parts_id', $request->product_parts_id)->first();
+
+        if(!empty($checkExistData))
+        {   
+            return redirect()->back()->withInput(Input::all())->with(array(
+                    'success' => false,
+                    'errors' => $validator->getMessageBag()->add('Duplicate', trans('Same part is already assigned to this company.'))
+
+                ));
+                exit;
         }
         $assign_part = AssignPart::create($request->all());
 
@@ -317,8 +346,8 @@ class AssignPartsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $product_parts = \App\ProductPart::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $product_parts = \App\ProductPart::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
             
         $assign_part = AssignPart::findOrFail($id);
 
@@ -336,6 +365,20 @@ class AssignPartsController extends Controller
     {
         if (! Gate::allows('assign_part_edit')) {
             return abort(401);
+        }
+
+        // check unique validation for company and part both field
+        $validator = Validator::make($request->all(), []);
+        $checkExistData = AssignPart::where('company_id', $request->company_id)->where('product_parts_id', $request->product_parts_id)->where('id',"!=", $id)->first();
+
+        if(!empty($checkExistData))
+        {   
+            return redirect()->back()->withInput(Input::all())->with(array(
+                    'success' => false,
+                    'errors' => $validator->getMessageBag()->add('Duplicate', trans('Same part is already assigned to this company.'))
+
+                ));
+                exit;
         }
         $assign_part = AssignPart::findOrFail($id);
         $assign_part->update($request->all());

@@ -115,7 +115,18 @@ $(document).ready(function(){
         });
 	});
 
-
+	// filter + and - icon set on collapse in/out
+	// Add minus icon for collapse element which is open by default
+    $(".collapse.in").each(function(){
+    	$(this).siblings(".panel-heading").find(".glyphicon").addClass("glyphicon-minus").removeClass("glyphicon-plus");
+    });
+    
+    // Toggle plus minus icon on show hide of collapse element
+    $(".collapse").on('show.bs.collapse', function(){
+    	$(this).parent().find(".glyphicon").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+    }).on('hide.bs.collapse', function(){
+    	$(this).parent().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+    });
 	
 });
 function getTechnicians(serviceCenterId) {
@@ -350,6 +361,35 @@ function getTransporationCharge() {
 		       			$(".transportationDiv").hide();
 		       		}
 		       		
+		       	}
+	    });
+	}
+	else
+	{
+		$(".transportationDiv").hide();
+	}
+}
+
+function getAssignedProducts(ele) {
+	
+	var companyId = $(ele).val();
+
+	if(companyId != "")
+	{
+
+		$.ajax({
+		       	type:'GET',
+		       	url:APP_URL+'/admin/getAssignedProductsAjax',
+		       	data:{
+		       		'companyId':companyId
+		       	},
+		       	dataType: "json",
+		       	success:function(data) {
+
+		       		if(data.selectedProductOptions.length > 0)
+		       		{
+		       			$("#selectall-product_id").val(data.selectedProductOptions).trigger('change');
+		       		}		       		
 		       	}
 	    });
 	}

@@ -22,9 +22,10 @@
     <!-- Filter portion start -->
     <div class="panel panel-default">
         <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
-            <a href="#">Advance Filters</a>
+            <!-- <a href="#"> -->Advance Filters<!-- </a> -->
+            <span class="btn-box-tool glyphicon glyphicon-plus pull-right"></span>
         </div>
-        <div id="collapseAdvanceFilter" class="panel-collapse in" role="tabpanel">
+        <div id="collapseAdvanceFilter" class="panel-collapse collapse in" role="tabpanel">
             <div class="panel-body">
                 <!-- Company & Customer -->
                 @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))

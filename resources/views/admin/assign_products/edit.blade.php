@@ -3,7 +3,7 @@
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.assign-product.title')</h3> -->
     
-    {!! Form::model($assign_product, ['method' => 'PUT', 'route' => ['admin.assign_products.update', $assign_product->id]]) !!}
+    {!! Form::model($assign_product, ['method' => 'PUT', 'route' => ['admin.assign_products.update', $assign_product->company_id]]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -14,7 +14,8 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.assign-product.fields.company').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '', 'id' => 'assign_company_id','disabled' => '']) !!}
+                    {!! Form::hidden('company_id', old('company_id'), ['class' => 'form-control']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('company_id'))
                         <p class="help-block">
@@ -32,7 +33,7 @@
                     <button type="button" class="btn btn-primary btn-xs" id="deselectbtn-product_id">
                         {{ trans('quickadmin.qa_deselect_all') }}
                     </button>
-                    {!! Form::select('product_id[]', $product_ids, old('product_id') ? old('product_id') : $assign_product->product_id->pluck('id')->toArray(), ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-product_id' , 'required' => '']) !!}
+                    {!! Form::select('product_id[]', $product_ids, old('product_id') ? old('product_id') : $assign_product->product_id, ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-product_id' , 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('product_id'))
                         <p class="help-block">

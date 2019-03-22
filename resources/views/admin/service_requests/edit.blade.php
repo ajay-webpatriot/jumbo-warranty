@@ -663,7 +663,7 @@
                                 @if($service_request->status == "Closed")
                                 <div class="col-xs-12 form-group pull-right">
                                      
-                                    <a href="{{ route('admin.service_request.invoice',[$service_request->id]) }}" class="btn btn-xl btn-primary pull-right">View Invoice</a>
+                                    <a target="_blank" href="{{ route('admin.service_request.invoice',[$service_request->id]) }}" class="btn btn-xl btn-primary pull-right">View Invoice</a>
                                 </div> 
                                 @endif
                             </div>
@@ -757,6 +757,8 @@
                 $("select").prop("disabled", true);
                 $("textarea").prop("disabled", true);
                 $("#btnUpdate").hide();
+                $("#selectbtn-parts").hide();
+                $("#deselectbtn-parts").hide();
             }
             moment.updateLocale('{{ App::getLocale() }}', {
                 week: { dow: 1 } // Monday is the first day of the week
