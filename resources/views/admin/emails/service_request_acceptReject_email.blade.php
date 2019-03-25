@@ -16,14 +16,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="bodyContent" bgcolor="#ffffff">
+                        <td align="center" class="bodyContent" bgcolor="#ffffff">
                         
 
-                            <div>
-                                <h3>Service Request</h3>
+                            <div style="margin-top: 2%;">
+                                <h3 style="margin: 1em 0px 1em 0px;">Service Request</h3>
                                 <span>{{$update_message}}</span>
                             </div>
-                            <div>
+                            <div style="margin-top: 2%;">
                                 <a href="{{ route('admin.service_requests.show',[$service_request->id]) }}" class="btn btn-xs btn-primary">Click here for more detail</a>
                             </div>
                         </td>

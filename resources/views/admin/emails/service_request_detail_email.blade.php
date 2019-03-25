@@ -195,7 +195,7 @@
                                                         <div class="row">
                                                             <div class="col-xs-12">
                                                                 {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
-                                                                {!! Form::label('',  (!empty($service_request->service_center->name))?$service_request->service_center->name:'', ['class' => 'control-label fontweight']) !!}
+                                                                {!! Form::label('',  (!empty($service_request->service_center->name))?$service_request->service_center->name:'Not Assigned', ['class' => 'control-label fontweight']) !!}
                                                                 <p class="help-block"></p>
                                                                 @if($errors->has('service_center_id'))
                                                                     <p class="help-block">
@@ -215,7 +215,7 @@
                                                         <div class="row techDiv" {{ ($service_request->service_type == "") ? 'style=display:none' : ''}}>
                                                             <div class="col-xs-12">
                                                                 {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
-                                                                {!! Form::label('', (!empty($service_request->technician->name))?$service_request->technician->name: '', ['class' => 'control-label fontweight']) !!}
+                                                                {!! Form::label('', (!empty($service_request->technician->name))?$service_request->technician->name: 'Not Assigned', ['class' => 'control-label fontweight']) !!}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -384,7 +384,7 @@
                                 border: 1px solid transparent;
                                 border-radius: 4px;
                                 -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-                                box-shadow: 0 1px 1px rgba(0,0,0,.05);border-color: #ddd;">
+                                box-shadow: 0 1px 1px rgba(0,0,0,.05);border-color: #ddd;overflow: hidden;padding-bottom: 20px;">
                                         <div class="panel-heading" style="color: #333;
                                             background-color: #f5f5f5;
                                             border-color: #ddd;
@@ -398,7 +398,7 @@
 
                                                
                                                 <div class="row">
-                                                    <div class="col-md-12" style="width: 100%;float: left;">
+                                                    <div class="col-md-12" style="width: 100%;float: left;text-align: justify;">
                                                         {!! Form::label('complain_details', trans('quickadmin.service-request.fields.complain-details').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
 
                                                         {!! Form::label('complain_details', $service_request->complain_details, ['class' => 'control-label fontweight']) !!}
@@ -410,7 +410,7 @@
                                                     <div class="col-md-6" style="width: 48%;    float: left;    
                                                         position: relative;
                                                         min-height: 1px;
-                                                        padding-right: 15px;
+                                                        padding-right: 15px;margin-top: 2%;
                                                         ">
                                                         {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                         {!! Form::label('',App\Helpers\CommonFunctions::setDateFormat( $service_request->completion_date), ['class' => 'control-label fontweight']) !!}
@@ -420,7 +420,7 @@
                                                         position: relative;
                                                         min-height: 1px;
                                                         padding-right: 15px;
-                                                        padding-left: 15px;">
+                                                        padding-left: 15px;margin-top: 2%;">
                                                         <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
                                                             <div class="col-md-12" style="width: 100%;float: left;">
                                                                 {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
@@ -454,7 +454,7 @@
                                                             </div>
                                                         </div>
                                                         @endif
-                                                        @if(!empty($service_request->additional_charges))
+                                                        @if(!empty($service_request->additional_charges) && !empty($service_request->additional_charges_title))
                                                         <div class="row">
                                                             <div class="col-md-12" style="width: 100%;float: left;">
                                                                 <div class="row">
@@ -501,10 +501,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-xs-12 form-group" style="width: 100%;float: left;">
+                                                    <div class="col-xs-12 form-group" style="width: 100%;float: left;text-align: justify;">
                                                         {!! Form::label('note', trans('quickadmin.service-request.fields.note').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
 
-                                                        {!! Form::label('',$service_request->note, ['class' => 'control-label fontweight', 'id' => '']) !!}
+                                                        {!! Form::label('',$service_request->note, ['class' => 'control-label fontweight', 'id' => '', 'align' => 'justify']) !!}
                                                         
                                                     </div>
                                                 </div>

@@ -61,12 +61,12 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                    {!! Form::label('status', trans('quickadmin.service-center.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::label('zipcode', trans('quickadmin.service-center.fields.zipcode').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','minlength' => '6','maxlength' => '6']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('status'))
+                    @if($errors->has('zipcode'))
                         <p class="help-block">
-                            {{ $errors->first('status') }}
+                            {{ $errors->first('zipcode') }}
                         </p>
                     @endif
                 </div>
@@ -83,6 +83,15 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
+                    {!! Form::label('supported_zipcode', trans('quickadmin.service-center.fields.supported-zipcode').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('supported_zipcode', old('supported_zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return allowNumberWithComma(this,event)']) !!}
+                    <p>(Add multiple supported zipcode by comma separate)</p>
+                    <p class="help-block"></p>
+                    @if($errors->has('supported_zipcode'))
+                        <p class="help-block">
+                            {{ $errors->first('supported_zipcode') }}
+                        </p>
+                    @endif
                 </div>
                 <div class="col-xs-6">
                     {!! Form::label('state', trans('quickadmin.service-center.fields.state').'*', ['class' => 'control-label']) !!}
@@ -97,31 +106,24 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
-                </div>
-                <div class="col-xs-6">
-                    {!! Form::label('zipcode', trans('quickadmin.service-center.fields.zipcode').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','minlength' => '6','maxlength' => '6']) !!}
+                    {!! Form::label('status', trans('quickadmin.service-center.fields.status').'*', ['class' => 'control-label']) !!}
+                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('zipcode'))
+                    @if($errors->has('status'))
                         <p class="help-block">
-                            {{ $errors->first('zipcode') }}
+                            {{ $errors->first('status') }}
                         </p>
                     @endif
+                </div>
+                <div class="col-xs-6">
+                    
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-6">
                 </div>
                 <div class="col-xs-6">
-                    {!! Form::label('supported_zipcode', trans('quickadmin.service-center.fields.supported-zipcode').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('supported_zipcode', old('supported_zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return allowNumberWithComma(this,event)']) !!}
-                    <p>(Add multiple supported zipcode by comma separate)</p>
-                    <p class="help-block"></p>
-                    @if($errors->has('supported_zipcode'))
-                        <p class="help-block">
-                            {{ $errors->first('supported_zipcode') }}
-                        </p>
-                    @endif
+                    
                 </div>
             </div>
             

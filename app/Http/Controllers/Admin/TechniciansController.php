@@ -37,7 +37,9 @@ class TechniciansController extends Controller
         }
 
         $query = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-                        ->orderby('name');
+                        ->orderby('name')->whereHas('service_center', function ($query) {
+                                        $query->where('status', 'Active');
+                                });
 
         //get service center's own technician if logged in user is technician
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
@@ -57,7 +59,7 @@ class TechniciansController extends Controller
         if (! Gate::allows('user_create')) {
             return abort(401);
         }
-        $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $service_centers = \App\ServiceCenter::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
         $logged_userRole_id= auth()->user()->role_id;  
         return view('admin.technicians.create', compact('enum_status', 'service_centers','logged_userRole_id'));
@@ -101,7 +103,7 @@ class TechniciansController extends Controller
         
         // $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $service_centers = \App\ServiceCenter::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $service_centers = \App\ServiceCenter::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
             
         $user = User::findOrFail($id);

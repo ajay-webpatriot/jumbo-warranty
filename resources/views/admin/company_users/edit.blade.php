@@ -18,19 +18,7 @@
             </div>
             
             @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
-            <div class="row">
-                <div class="col-xs-12 form-group">
-                    {!! Form::label('company_id', trans('quickadmin.users.fields.company').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('company_name', $companies[auth()->user()->company_id], ['class' => 'form-control', 'placeholder' => 'Comapny Name','disabled' => '']) !!}
-                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('company_id'))
-                        <p class="help-block">
-                            {{ $errors->first('company_id') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
+                {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
             @else
             <div class="row">
                 <div class="col-xs-12 form-group">

@@ -134,8 +134,14 @@ class ServiceRequestsController extends Controller
                 {
                     foreach($service_requests as $key => $value)
                     {
-                        $customers[$value->customer_id]=ucfirst($value->customer->firstname).' '.ucfirst($value->customer->lastname);
-                        $products[$value->product_id]=ucfirst($value->product->name);
+                        if($value->customer->status == "Active"){
+                            $customers[$value->customer_id]=ucfirst($value->customer->firstname).' '.ucfirst($value->customer->lastname);
+                        }
+                        if($value->product->status == "Active")
+                        {
+                            $products[$value->product_id]=ucfirst($value->product->name);
+                        }
+                        
                     }
                 }   
             }
@@ -147,8 +153,13 @@ class ServiceRequestsController extends Controller
                 {
                     foreach($service_requests as $key => $value)
                     {
-                        $customers[$value->customer_id]=ucfirst($value->customer->firstname).' '.ucfirst($value->customer->lastname);
-                        $products[$value->product_id]=ucfirst($value->product->name);
+                        if($value->customer->status == "Active"){
+                            $customers[$value->customer_id]=ucfirst($value->customer->firstname).' '.ucfirst($value->customer->lastname);
+                        }
+                        if($value->product->status == "Active")
+                        {
+                            $products[$value->product_id]=ucfirst($value->product->name);
+                        }
                     }
                 }  
             }
@@ -298,7 +309,7 @@ class ServiceRequestsController extends Controller
             ->Where('companies.status','Active')
             ->Where('customers.status','Active')
             ->Where('products.status','Active')
-            ->Where('service_centers.status','Active')
+            // ->Where('service_centers.status','Active')
             ->offset($start)
             ->limit($limit)
             ->orderBy($order,$dir);
@@ -417,7 +428,8 @@ class ServiceRequestsController extends Controller
                                 ->Where('companies.status','Active')
                                 ->Where('customers.status','Active')
                                 ->Where('products.status','Active')
-                                ->Where('service_centers.status','Active');
+                                // ->Where('service_centers.status','Active')
+                                ;
             if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             {
                 $countRecordQuery->Where('service_requests.service_center_id', auth()->user()->service_center_id);
@@ -857,8 +869,6 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         
-        
-        
         $service_request = ServiceRequest::findOrFail($id);
 
         if($request['service_center_id'] == "" && isset($request['suggested_service_center']))
@@ -934,7 +944,7 @@ class ServiceRequestsController extends Controller
         {
             // insert service request log on technician change 
             if($service_request->technician_id != $request['technician_id']){
-
+                $request['is_accepted'] = 0;
                 $technician=\App\User::where('id',$request['technician_id'])->first();
                 $insertServiceRequestLogArr =   array(
                                                     'action_made'     =>  "Technician assigned(".$technician->name.").", 
@@ -945,6 +955,10 @@ class ServiceRequestsController extends Controller
                                                 );
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
+        }
+        else
+        {
+            $request['is_accepted'] = 0;
         }
         if($request['service_center_id'] != "")
         {
@@ -977,7 +991,17 @@ class ServiceRequestsController extends Controller
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
         }  
-
+        if($request['status'] == "Closed")
+        {
+            // calculate invoice number
+            $max_invoice_number= ServiceRequest::max('invoice_number');
+            $last_invoice_number=0;
+            if(!empty($max_invoice_number))
+            {
+                $last_invoice_number = $max_invoice_number;
+            }
+            $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
+        }
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
 
@@ -1053,10 +1077,12 @@ class ServiceRequestsController extends Controller
             }
 
         }
-        if($request['status'] == "Closed")
+        if($request['status'] == "Closed" && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
+                || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
         {
-            // return $this->createReceiptPDF($request->all());
-            return $this->createReceiptPDF($id);
+            // allow only admin and super admin to generate PDF
+            // return $this->createReceiptPDF($id);
+            return redirect()->route('admin.service_request.invoice',[$id]);
         }
         else
         {
@@ -1311,15 +1337,15 @@ class ServiceRequestsController extends Controller
                                 <thead>
                                     <tr>
                                         <th class='align-text-center'>Product</th>
-                                        <th class='align-text-center'>Category</th>
-                                        <th class='price'>Price</th>
+                                        <th class='align-text-center'>&nbsp;</th>
+                                        <th class='price'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td class='align-text-center'>".$productDetail->name."</td>
-                                        <td class='align-text-center'>".$productDetail->category->name."</td>
-                                        <td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($productDetail->price,2)."</td>
+                                        <td class='align-text-center'></td>
+                                        <td class='price'></td>
                                     </tr>
                                     <tr>
                                     <td style='border:0;'></td>
@@ -1358,6 +1384,12 @@ class ServiceRequestsController extends Controller
                     </head>";
             $html.="<body>
                     <h1 style='text-align:center;'>Bill Receipt</h1>";
+
+                    if(!empty($request['invoice_number']))
+                    {
+                        $html.="<h5 style='text-align:center;'>Invoice Number : ".$request['invoice_number']."</h5>";
+                    }
+                    
             
             $html.="<div style='height:18%;margin-top:5%;'>".$compCustHTML.$centerHTML."</div>";
             $html.=$productHTML;

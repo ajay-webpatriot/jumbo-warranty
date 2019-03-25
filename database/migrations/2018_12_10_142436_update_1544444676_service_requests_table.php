@@ -71,7 +71,6 @@ if (!Schema::hasColumn('service_requests', 'km_charge')) {
 if (!Schema::hasColumn('service_requests', 'km_distance')) {
                 $table->string('km_distance')->nullable();
                 }
-        });
 if (!Schema::hasColumn('service_requests', 'transportation_charge')) {
                 $table->string('transportation_charge')->nullable();
                 }

@@ -58,7 +58,7 @@ class CustomersController extends Controller
         //     }
             
         // }
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.customers.index', compact('companies'));
     }
     /**
@@ -81,7 +81,8 @@ class CustomersController extends Controller
 
         // count data with filter value
         $requestFilterCountQuery =  Customer::select('customers.*','companies.name as company_name')
-         ->join('companies','customers.company_id','=','companies.id');
+         ->join('companies','customers.company_id','=','companies.id')
+         ->where('companies.status','Active');
 
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         {
@@ -152,6 +153,7 @@ class CustomersController extends Controller
 
         $customerQuery = Customer::select('customers.*','companies.name as company_name')
          ->join('companies','customers.company_id','=','companies.id')
+         ->where('companies.status','Active')
          ->offset($start)
          ->limit($limit)
          ->orderBy($order,$dir);
@@ -179,7 +181,10 @@ class CustomersController extends Controller
                 });
             }
             // fetch total count without any filter
-            $countRecord = Customer::select('*')->count('id');
+            $countRecord = Customer::select('customers.*')
+                            ->join('companies','customers.company_id','=','companies.id')
+                            ->where('companies.status','Active')
+                            ->count('customers.id');
         } 
         else 
         {
@@ -200,7 +205,10 @@ class CustomersController extends Controller
                 });
             }
             // fetch total count without any filter
-            $countRecord = Customer::select('*')->where('company_id',auth()->user()->company_id)->count('id');
+            $countRecord = Customer::select('customers.*')
+                            ->join('companies','customers.company_id','=','companies.id')
+                            ->where('companies.status','Active')
+                            ->where('company_id',auth()->user()->company_id)->count('customers.id');
         } 
 
         
@@ -269,7 +277,7 @@ class CustomersController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Customer::$enum_status;
             
         return view('admin.customers.create', compact('enum_status', 'companies'));
@@ -324,7 +332,7 @@ class CustomersController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Customer::$enum_status;
             
         $customer = Customer::findOrFail($id);

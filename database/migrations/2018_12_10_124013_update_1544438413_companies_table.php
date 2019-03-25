@@ -31,8 +31,8 @@ if (!Schema::hasColumn('companies', 'zipcode')) {
                 }
 /*if (!Schema::hasColumn('companies', 'location')) {
                 $table->string('location');
-                }
-        });*/
+                } */
+        });
 
     }
 

@@ -42,41 +42,38 @@
             <div class="panel-group">
 
                 <div class="panel panel-default">
-                    <div class="panel-heading"> <a data-toggle="collapse" href="#collapseCompany">Company & Customer</a></div>
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapseCompany">
+                            @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                Company & Customer
+                            @else
+                                Customer
+                            @endif
+                        </a>
+                    </div>
                     <div id="collapseCompany" class="panel-collapse in" role="tabpanel">
                         <div class="panel-body">
                             <div class="row">
                                 <!-- Company & Customer -->
-                                <div class="col-md-6">
-                                    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
-                                            {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
-                                            <p class="help-block"></p>
-                                            @if($errors->has('company_id'))
-                                            <p class="help-block">
-                                                {{ $errors->first('company_id') }}
-                                            </p>
-                                            @endif
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                    <!-- company will not visible to company admin,user, service center admin and technician -->
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
+                                                {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
+                                                <p class="help-block"></p>
+                                                @if($errors->has('company_id'))
+                                                <p class="help-block">
+                                                    {{ $errors->first('company_id') }}
+                                                </p>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
-                                    @else
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
-                                            <p class="help-block"></p>
-                                            @if($errors->has('company_id'))
-                                            <p class="help-block">
-                                                {{ $errors->first('company_id') }}
-                                            </p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    @endif
-                                </div>
+                                @else
+                                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control', 'id' => 'company_id']) !!}
+                                @endif
                                 <div class="col-md-6">
                                     @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
                                     <div class="row custDiv">
@@ -109,9 +106,11 @@
                                 </div>
                             </div>
                             <div class="row">
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                 <div class="col-md-6">
-
+                                    <!--  added condition to set layout when company is not visible -->
                                 </div>
+                                @endif
 
                                 <div class="col-md-6">
                                     <div class="row custDiv" style="display: none;">

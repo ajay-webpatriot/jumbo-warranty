@@ -41,7 +41,7 @@ class CompanyAdminsController extends Controller
         //                 ->orderby('name');
         // $users = $query->get();
 
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         
         return view('admin.company_admins.index', compact('companies'));
     }
@@ -79,6 +79,7 @@ class CompanyAdminsController extends Controller
         $requestFilterCountQuery =  User::select('users.*','companies.name as company_name')
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->where('companies.status','Active')
          ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'));
 
         if(!empty($request->input('company')))
@@ -109,6 +110,7 @@ class CompanyAdminsController extends Controller
         $company_adminsQuery = User::select('users.*','companies.name as company_name')
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->where('companies.status','Active')
          ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
          ->offset($start)
          ->limit($limit)
@@ -142,7 +144,11 @@ class CompanyAdminsController extends Controller
         $company_admins = $company_adminsQuery->get();
 
         // fetch total count without any filter
-        $countRecord = User::select('*')->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->count('id');
+        $countRecord = User::select('users.*')
+            ->join('companies','users.company_id','=','companies.id')
+            ->join('roles','users.role_id','=','roles.id')
+            ->where('companies.status','Active')
+            ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->count('users.id');
         if(!empty($company_admins)){
             
             foreach ($company_admins as $key => $company_admin) {
@@ -202,7 +208,7 @@ class CompanyAdminsController extends Controller
         if (! Gate::allows('user_create')) {
             return abort(401);
         }
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
         $logged_userRole_id= auth()->user()->role_id;  
         return view('admin.company_admins.create', compact('enum_status', 'companies','logged_userRole_id'));
@@ -241,7 +247,7 @@ class CompanyAdminsController extends Controller
         
         // $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
             
         $user = User::findOrFail($id);

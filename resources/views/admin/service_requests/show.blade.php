@@ -59,7 +59,13 @@
                 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a data-toggle="collapse" href="#collapseCompany">Company & Customer</a>
+                        <a data-toggle="collapse" href="#collapseCompany">
+                            @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                            Company & Customer
+                            @else
+                            Customer
+                            @endif
+                        </a>
                     </div>
 
                     <div id="collapseCompany" class="panel-collapse in" role="tabpanel">
@@ -67,7 +73,7 @@
 
                             <div class="row">
                                 <!-- Company & Customer  -->
-                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                 <div class="col-md-6">
                                     
                                     <div class="row">
@@ -90,7 +96,7 @@
                             </div>
 
                             <div class="row">
-                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                 <div class="col-md-6">
                                     <!--  added condition to set layput when company is not visible -->
                                 </div>
@@ -281,7 +287,7 @@
                                 <div class="col-md-12">
                                     {!! Form::label('complain_details', trans('quickadmin.service-request.fields.complain-details').': ', ['class' => 'control-label']) !!}
 
-                                    {!! Form::label('complain_details', $service_request->complain_details, ['class' => 'control-label fontweight']) !!}
+                                    {!! Form::label('complain_details', $service_request->complain_details, ['class' => 'control-label fontweight text-justify']) !!}
                                     
                                 </div>
                             </div>
@@ -374,11 +380,12 @@
                                 <div class="col-xs-12 form-group">
                                     {!! Form::label('note', trans('quickadmin.service-request.fields.note').': ', ['class' => 'control-label']) !!}
 
-                                    {!! Form::label('',$service_request->note, ['class' => 'control-label fontweight', 'id' => '']) !!}
+                                    {!! Form::label('',$service_request->note, ['class' => 'control-label fontweight text-justify', 'id' => '']) !!}
                                     
                                 </div>
                             </div>
-                            @if($service_request->status == "Closed")
+                            @if($service_request->status == "Closed" && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
+                || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
                             <div class="col-xs-12 form-group pull-right">
                                 <a target="_blank" href="{{ route('admin.service_request.invoice',[$service_request->id]) }}" class="btn btn-xl btn-primary pull-right">View Invoice</a>
                             </div> 

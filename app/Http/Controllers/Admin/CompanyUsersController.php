@@ -46,7 +46,7 @@ class CompanyUsersController extends Controller
         // }                
         // $users = $query->get();
 
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.company_users.index', compact('companies'));
     }
 
@@ -72,6 +72,7 @@ class CompanyUsersController extends Controller
         $requestFilterCountQuery =  User::select('users.*','companies.name as company_name')
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->where('companies.status','Active')
          ->where('users.role_id',config('constants.COMPANY_USER_ROLE_ID'));
 
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
@@ -150,6 +151,7 @@ class CompanyUsersController extends Controller
         $company_usersQuery = User::select('users.*','companies.name as company_name')
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->where('companies.status','Active')
          ->where('users.role_id',config('constants.COMPANY_USER_ROLE_ID'))
          ->offset($start)
          ->limit($limit)
@@ -182,7 +184,11 @@ class CompanyUsersController extends Controller
                 });
             }
             // fetch total count without any filter
-            $countRecord = User::select('*')->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->count('id');
+            $countRecord = User::select('users.*')
+                ->join('companies','users.company_id','=','companies.id')
+                ->join('roles','users.role_id','=','roles.id')
+                ->where('companies.status','Active')
+                ->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->count('users.id');
         } 
         else 
         {
@@ -206,7 +212,11 @@ class CompanyUsersController extends Controller
                 });
             }
             // fetch total count without any filter
-            $countRecord = User::select('*')->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->where('company_id',auth()->user()->company_id)->count('id');
+            $countRecord = User::select('users.*')
+                ->join('companies','users.company_id','=','companies.id')
+                ->join('roles','users.role_id','=','roles.id')
+                ->where('companies.status','Active')
+                ->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->where('company_id',auth()->user()->company_id)->count('users.id');
         } 
 
         
@@ -274,7 +284,7 @@ class CompanyUsersController extends Controller
         if (! Gate::allows('user_create')) {
             return abort(401);
         }
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
         $logged_userRole_id= auth()->user()->role_id;  
         return view('admin.company_users.create', compact('enum_status', 'companies','logged_userRole_id'));
@@ -313,7 +323,7 @@ class CompanyUsersController extends Controller
         
         // $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
             
         $user = User::findOrFail($id);

@@ -265,15 +265,12 @@
             
             @can('manageInvoices')
             <!-- can('invoice_access') -->
-                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
-                || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
-                    <li>
-                        <a href="{{ route('admin.invoices.index') }}" target="_blank">
-                            <i class="fa fa-gears"></i>
-                            <span>@lang('quickadmin.invoices.title')</span>
-                        </a>
-                    </li>
-                @endif
+                <li>
+                    <a href="{{ route('admin.invoices.index') }}">
+                        <i class="fa fa-gears"></i>
+                        <span>@lang('quickadmin.invoices.title')</span>
+                    </a>
+                </li>
             @endcan
             
             @can('permission_management_access')

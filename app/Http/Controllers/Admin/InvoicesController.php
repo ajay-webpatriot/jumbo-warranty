@@ -43,7 +43,9 @@ class InvoicesController extends Controller
             }
             $invoices = Invoice::onlyTrashed()->get();
         } else {
-            $invoices = Invoice::all();
+            $invoices = Invoice::whereHas('company', function ($query) {
+                                        $query->where('status', 'Active');
+                                })->get();
         }
 
         return view('admin.invoices.index', compact('invoices'));
@@ -60,7 +62,7 @@ class InvoicesController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Invoice::$enum_status;
             
         return view('admin.invoices.create', compact('enum_status', 'companies'));
@@ -97,7 +99,7 @@ class InvoicesController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Invoice::$enum_status;
             
         $invoice = Invoice::findOrFail($id);

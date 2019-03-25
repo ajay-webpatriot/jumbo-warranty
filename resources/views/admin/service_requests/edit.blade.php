@@ -76,7 +76,13 @@
                 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a data-toggle="collapse" href="#collapseCompany">Company & Customer</a>
+                        <a data-toggle="collapse" href="#collapseCompany">
+                            @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                Company & Customer
+                            @else
+                                Customer
+                            @endif
+                        </a>
                     </div>
 
                     <div id="collapseCompany" class="panel-collapse in" role="tabpanel">
@@ -84,24 +90,9 @@
 
                             <div class="row">
                                 <!-- Company & Customer  -->
-                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                                    <!-- company will not visible to service center admin and technician -->
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                    <!-- company will not visible to company admin,user, service center admin and technician -->
                                     <div class="col-md-6">
-                                        @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
-                                                {!! Form::text('company_name', $companyName[0], ['class' => 'form-control', 'placeholder' => 'Company Name','disabled' => '']) !!}
-                                                {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
-                                                <p class="help-block"></p>
-                                                @if($errors->has('company_id'))
-                                                    <p class="help-block">
-                                                        {{ $errors->first('company_id') }}
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        @else
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
@@ -114,10 +105,9 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        @endif
                                     </div>
                                 @else
-                                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
+                                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control', 'id' => 'company_id']) !!}
                                 @endif
                                 <div class="col-md-6"> 
                                     <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>
@@ -136,9 +126,9 @@
                             </div>
 
                             <div class="row">
-                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                 <div class="col-md-6">
-                                    <!--  added condition to set layput when company is not visible -->
+                                    <!--  added condition to set layout when company is not visible -->
                                 </div>
                                 @endif
 
@@ -660,7 +650,8 @@
                                         </p>
                                     @endif
                                 </div>
-                                @if($service_request->status == "Closed")
+                                @if($service_request->status == "Closed" && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
+                || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
                                 <div class="col-xs-12 form-group pull-right">
                                      
                                     <a target="_blank" href="{{ route('admin.service_request.invoice',[$service_request->id]) }}" class="btn btn-xl btn-primary pull-right">View Invoice</a>

@@ -36,12 +36,11 @@ if (!Schema::hasColumn('customers', 'zipcode')) {
 if (!Schema::hasColumn('customers', 'location_latitude')) {
                 $table->double('location_latitude')->nullable();  
                 }
-        });
 if (!Schema::hasColumn('customers', 'location_longitude')) {
                 $table->double('location_longitude')->nullable();
                 }
-        });
 
+    });
     }
 
     /**
