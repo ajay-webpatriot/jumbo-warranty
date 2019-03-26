@@ -54,7 +54,7 @@
                 </ul>
             </li>@endcan
             <!-- can('product_management_access') -->
-            @can('manageCategory','manageProduct','manageParts')
+            <!-- can('manageCategory','manageProduct','manageParts') -->
                 @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                     <li class="treeview">
                         <a href="#">
@@ -101,7 +101,7 @@
                         </ul>
                     </li>
                 @endif
-            @endcan
+            
             
             @can('manageCompany')
             <!-- can('company_management_access') -->
