@@ -50,23 +50,32 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-md-12">
-                            <!-- Request Status -->
-                            @if($service_request->status == "New")
-                                
+                        @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                             <!-- Request Status -->
+                            <div class="col-md-12">
+                               {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
+                                {!! Form::label('status', $service_request->status, ['class' => 'control-label fontweight']) !!}
                                 {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
-                            @else
-                                {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
-                                {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status']) !!}
                                 <p class="help-block"></p>
-                                @if($errors->has('status'))
-                                        <p class="help-block">
-                                            {{ $errors->first('status') }}
-                                        </p>
+                            </div>
+                        @else
+                            <div class="col-md-12">
+                                <!-- Request Status -->
+                                @if($service_request->status == "New")
+                                    
+                                    {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
+                                @else
+                                    {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
+                                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status']) !!}
+                                    <p class="help-block"></p>
+                                    @if($errors->has('status'))
+                                            <p class="help-block">
+                                                {{ $errors->first('status') }}
+                                            </p>
+                                    @endif
                                 @endif
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
@@ -751,6 +760,36 @@
                 $("#selectbtn-parts").hide();
                 $("#deselectbtn-parts").hide();
             }
+            else
+            {
+                if({{auth()->user()->role_id}} == SERVICE_ADMIN_ROLE_ID)
+                {
+                    // disabled all field except technician and status for service admin
+                    $("input[type=text]").prop("readonly", true);
+                    $("textarea").prop("readonly", true);
+                    $("select").prop("disabled", true);
+                    $("#technician_id").prop("disabled", false);
+                    $("#status").prop("disabled", false);
+                }
+                else if({{auth()->user()->role_id}} == TECHNICIAN_ROLE_ID)
+                {
+                    // disabled all field except charges related field, parts and status for technician
+                    $("input[type=text]").prop("readonly", true);
+                    $("textarea").prop("readonly", true);
+                    $("select").prop("disabled", true);
+
+                    // $("#adavance_amount").prop("readonly", false);
+                    // $("#service_charge").prop("readonly", false);
+                    // $("#service_tag").prop("readonly", false);
+                    $("#additional_charges_title").prop("readonly", false);
+                    $("#additional_charges").prop("readonly", false);
+                    // $("#amount").prop("readonly", false);
+
+                    $("#selectall-parts").prop("disabled", false);
+                    $("#status").prop("disabled", false);
+
+                }
+            }
             moment.updateLocale('{{ App::getLocale() }}', {
                 week: { dow: 1 } // Monday is the first day of the week
             });
@@ -761,33 +800,7 @@
             });
 
             
-            if({{auth()->user()->role_id}} == SERVICE_ADMIN_ROLE_ID)
-            {
-                // disabled all field except technician and status for service admin
-                $("input[type=text]").prop("readonly", true);
-                $("textarea").prop("readonly", true);
-                $("select").prop("disabled", true);
-                $("#technician_id").prop("disabled", false);
-                $("#status").prop("disabled", false);
-            }
-            else if({{auth()->user()->role_id}} == TECHNICIAN_ROLE_ID)
-            {
-                // disabled all field except charges related field, parts and status for technician
-                $("input[type=text]").prop("readonly", true);
-                $("textarea").prop("readonly", true);
-                $("select").prop("disabled", true);
-
-                // $("#adavance_amount").prop("readonly", false);
-                // $("#service_charge").prop("readonly", false);
-                // $("#service_tag").prop("readonly", false);
-                $("#additional_charges_title").prop("readonly", false);
-                $("#additional_charges").prop("readonly", false);
-                // $("#amount").prop("readonly", false);
-
-                $("#selectall-parts").prop("disabled", false);
-                $("#status").prop("disabled", false);
-
-            }
+            
             // removed disabled attr of select on form submit to store exusting value
             $('form').bind('submit', function() {
                 $(this).find('select:disabled').removeAttr('disabled');

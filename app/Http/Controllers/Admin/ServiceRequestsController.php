@@ -743,11 +743,26 @@ class ServiceRequestsController extends Controller
         $service_request = ServiceRequest::findOrFail($id);
         if($service_request['service_type'] == "repair")
         {
-            $enum_status = ServiceRequest::$enum_repair_status;
+            if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+            {
+                $enum_status = ServiceRequest::$enum_technician_repair_status;
+            }
+            else
+            {
+                $enum_status = ServiceRequest::$enum_repair_status;
+            }
+            
         }
         else
         {
-            $enum_status = ServiceRequest::$enum_installation_status;
+            if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+            {
+                $enum_status = ServiceRequest::$enum_technician_installation_status;
+            }
+            else
+            {
+                $enum_status = ServiceRequest::$enum_installation_status;
+            }
         }
         $additional_charge_array=json_decode($service_request['additional_charges']);
         $additional_charge_title="";
@@ -996,20 +1011,21 @@ class ServiceRequestsController extends Controller
                                                 );
                 ServiceRequestLog::create($insertServiceRequestLogArr);
 
-                if($request['status'] =="Service center assigned"){
+                   
+            }
+            if($request['status'] =="Service center assigned"){
                     $request['status']="Technician assigned";
                 
-                // service request log for assigned status
-                    $insertServiceRequestLogArr = array(
-                                                'action_made'     =>   "Status is changed from Service center assigned to ".$request['status'].".",
-                                                'action_made_company'     =>   "Status is changed from Service center assigned to ".$request['status'].".",
-                                                'action_made_service_center'     =>   "Status is changed from Service center assigned to ".$request['status'].".", 
-                                                'service_request_id'   =>   $id,
-                                                'user_id'   =>   auth()->user()->id
-                                            );
-                    ServiceRequestLog::create($insertServiceRequestLogArr);
-                }    
-            }
+            // service request log for assigned status
+                $insertServiceRequestLogArr = array(
+                                            'action_made'     =>   "Status is changed from Service center assigned to ".$request['status'].".",
+                                            'action_made_company'     =>   "Status is changed from Service center assigned to ".$request['status'].".",
+                                            'action_made_service_center'     =>   "Status is changed from Service center assigned to ".$request['status'].".", 
+                                            'service_request_id'   =>   $id,
+                                            'user_id'   =>   auth()->user()->id
+                                        );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+            } 
         }
         else
         {
