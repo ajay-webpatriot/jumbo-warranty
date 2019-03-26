@@ -314,7 +314,7 @@ return [
 	'qa_list' => 'List',
 	'qa_action' => 'Action',
 	'qa_sr_no' => 'Sr No.',
-	'qa_no_entries_in_table' => 'No entries in table',
+	'qa_no_entries_in_table' => 'No data available in table',
 	'qa_custom_controller_index' => 'Custom controller index.',
 	'qa_logout' => 'Logout',
 	'qa_add_new' => 'Add New',

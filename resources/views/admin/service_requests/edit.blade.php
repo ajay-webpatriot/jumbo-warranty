@@ -54,7 +54,7 @@
                              <!-- Request Status -->
                             <div class="col-md-12">
                                {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
-                                {!! Form::label('status', $service_request->status, ['class' => 'control-label fontweight']) !!}
+                                {!! Form::label('', $service_request->status, ['class' => 'control-label fontweight']) !!}
                                 {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
                                 <p class="help-block"></p>
                             </div>

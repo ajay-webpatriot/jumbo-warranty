@@ -5,16 +5,14 @@
                         <td align="center" height="35"></td>
                     </tr>
 
-                    <tr>
+                    <!-- <tr>
                         <td align="center" valign="top" class="bodyContent" bgcolor="#ffffff">
                             <div>
-                                <h2>Hello {{ $user_name }}!</h2>
                                 <span class="divider">―</span>
 
-                                <!-- <h2>Service Request Details</h3> -->
                             </div>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td align="center" class="bodyContent" bgcolor="#ffffff">
                         

@@ -51,7 +51,7 @@ class CompanyUsersController extends Controller
     }
 
     /**
-     * Display a listing of company admin using ajax data table.
+     * Display a listing of company users using ajax data table.
      *
      * @return \Illuminate\Http\Response
      */

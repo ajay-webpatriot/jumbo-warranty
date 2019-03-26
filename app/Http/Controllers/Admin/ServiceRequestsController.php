@@ -803,7 +803,7 @@ class ServiceRequestsController extends Controller
         $products=array(''=>trans('quickadmin.qa_please_select'));                             
         if($service_request['company_id'] != "")
         {
-            $customers = \App\Customer::where('company_id',$service_request['company_id'])
+            $customers = \App\Customer::select("*", DB::raw('CONCAT(firstname, " ", lastname) AS firstname'))->where('company_id',$service_request['company_id'])
                                         ->where('status','Active')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 

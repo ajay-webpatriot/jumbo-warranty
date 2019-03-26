@@ -133,6 +133,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
 
     //Assign parts ajax data table
     Route::post('/DataTableAssignPartAjax','Admin\AssignPartsController@DataTableAssignPartAjax');
+   
+    // service center admin ajax data table
+    Route::post('/DataTableServiceCenterAdminAjax','Admin\ServiceCenterAdminsController@DataTableServiceCenterAdminAjax');
     
+    // technician ajax data table
+    Route::post('/DataTableTechnicianAjax','Admin\TechniciansController@DataTableTechnicianAjax');
+
 });
   

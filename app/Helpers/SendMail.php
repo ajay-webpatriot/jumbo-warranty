@@ -44,12 +44,14 @@ class SendMail
         $service_request['additional_charges']=$additional_charges;
         $service_request['additional_charges_title']=$additional_charge_title;
 
+        // get receiver user data
     		$company_admin= \App\User::where('company_id',$service_request->company_id)
                                   ->where('status','Active')
                                   ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
-                                  ->get()->first();
+                                  ->get()->pluck('email')->toArray();
         if(!empty($company_admin)){
-          $company_admin_email=$company_admin->email;
+          // $company_admin_email=$company_admin->email;
+          $company_admin_email=$company_admin;
         }
     		
 
@@ -62,9 +64,10 @@ class SendMail
 
     		$admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
                           ->where('status','Active')
-                          ->get()->first();
+                          ->get()->pluck('email')->toArray();
         if(!empty($admin)){
-          $admin_email=$admin->email;
+          // $admin_email=$admin->email;
+          $admin_email=$admin;
         }
 		
 
@@ -76,25 +79,30 @@ class SendMail
         foreach ($receiver_email as $key => $value) {
           if(!empty($value))
           {
+            $role_id = "";
             if($key == 'admin')
             {
-              $username = $admin->name;
+              // $username = $admin->name;
+              $role_id = config('constants.ADMIN_ROLE_ID');
             }
             else if($key == 'company_admin'){
-              $username = $company_admin->name;
+              // $username = $company_admin->name;
+              $role_id = config('constants.COMPANY_ADMIN_ROLE_ID');
             }
             else if($key == 'customer'){
-              $username = $customer->firstname.' '.$customer->lastname;
+              // $username = $customer->firstname.' '.$customer->lastname;
+              $role_id = "customer";
             }
             $to_email=$value;
             $data=array('subject' => 'New Service Request Created',
-                  'user_name' => ucwords($username),
+                  // 'user_name' => ucwords($username),
+                  'role_id' => $role_id,
                   'service_request' => $service_request,
                   'receiver_email' => $value
                   );
         
-            Mail::send('admin.emails.service_request_detail_email',$data, function ($message)  use ( $to_email,$username){
-                      $message->to($to_email,$username)
+            Mail::send('admin.emails.service_request_detail_email',$data, function ($message)  use ( $to_email){
+                      $message->to($to_email)
                         ->subject('New Service Request Created')
                         ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
                         // here comes what you want
@@ -125,9 +133,10 @@ class SendMail
 
         $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
                           ->where('status','Active')
-                          ->get()->first();
+                          ->get()->pluck('email')->toArray();
         if(!empty($admin)){                  
-          $admin_email=$admin->email;
+          // $admin_email=$admin->email;
+           $admin_email=$admin;
         } 
     
 
@@ -141,19 +150,21 @@ class SendMail
           $company_admin= \App\User::where('company_id',$service_request->company_id)
                                     ->where('status','Active')
                                     ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
-                                    ->get()->first();
+                                    ->get()->pluck('email')->toArray();
 
           if(!empty($company_admin)){  
-            $company_admin_email=$company_admin->email;
+            // $company_admin_email=$company_admin->email;
+            $company_admin_email=$company_admin;
             $receiver_email['company_admin'] = $company_admin_email;
           }
             
           $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
                                           ->where('status','Active')
                                           ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
-                                          ->get()->first();
+                                          ->get()->pluck('email')->toArray();
           if(!empty($service_center_admin)){
-            $service_center_admin_email=$service_center_admin->email;
+            // $service_center_admin_email=$service_center_admin->email;
+            $service_center_admin_email=$service_center_admin;
             $receiver_email['service_center_admin'] = $service_center_admin_email;
           }
 
@@ -170,32 +181,32 @@ class SendMail
         foreach ($receiver_email as $key => $value) {
           if(!empty($value))
           {
-              if($key == 'admin')
-              {
-                $username = $admin->name;
-              }
-              else if($key == 'company_admin'){
-                $username = $company_admin->name;
-              }
-              else if($key == 'service_center_admin'){
-                $username = $service_center_admin->name;
-              }
-              else if($key == 'technician'){
-                $username = $technician->name;
-              }
-              else if($key == 'customer'){
-                $username = $customer->firstname.' '.$customer->lastname;
-              }
+              // if($key == 'admin')
+              // {
+              //   $username = $admin->name;
+              // }
+              // else if($key == 'company_admin'){
+              //   $username = $company_admin->name;
+              // }
+              // else if($key == 'service_center_admin'){
+              //   $username = $service_center_admin->name;
+              // }
+              // else if($key == 'technician'){
+              //   $username = $technician->name;
+              // }
+              // else if($key == 'customer'){
+              //   $username = $customer->firstname.' '.$customer->lastname;
+              // }
               $to_email=$value;
               $data=array('subject' => 'Service Request Status Changed',
-                    'user_name' => ucwords($username),
+                    // 'user_name' => ucwords($username),
                     'service_request' => $service_request,
                     'receiver_email' => $value,
                     'update_message' => $update_message
                     );
           
-              Mail::send('admin.emails.service_request_update_email',$data, function ($message)  use ( $to_email,$username){
-                        $message->to($to_email,$username)
+              Mail::send('admin.emails.service_request_update_email',$data, function ($message)  use ( $to_email){
+                        $message->to($to_email)
                           ->subject('Service Request Status Changed')
                           ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
                   });   
@@ -217,16 +228,20 @@ class SendMail
         $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
                               ->where('status','Active')
                               ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
-                              ->get()->first();
+                              ->get()->pluck('email')->toArray();
         if(!empty($service_center_admin))
         {
-          $service_center_admin_email=$service_center_admin->email;
+          // $service_center_admin_email=$service_center_admin->email;
+          $service_center_admin_email=$service_center_admin;
         }
 
-        $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))->get()->first();
+        $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
+                        ->where('status','Active')
+                        ->get()->pluck('email')->toArray();
         if(!empty($admin))
         {
-          $admin_email=$admin->email;
+          // $admin_email=$admin->email;
+          $admin_email=$admin;
         }
 
         if($service_request->is_accepted){
@@ -248,23 +263,23 @@ class SendMail
         foreach ($receiver_email as $key => $value) {
             if(!empty($value)){
 
-              if($key == 'admin')
-              {
-                $username = $admin->name;
-              }
-              else if($key == 'service_center_admin'){
-                $username = $service_center_admin->name;
-              }
+              // if($key == 'admin')
+              // {
+              //   $username = $admin->name;
+              // }
+              // else if($key == 'service_center_admin'){
+              //   $username = $service_center_admin->name;
+              // }
               $to_email=$value;
-              $data=array('subject' => 'Service Request',
-                    'user_name' => ucwords($username),
+              $data=array('subject' => $subject,
+                    // 'user_name' => ucwords($username),
                     'service_request' => $service_request,
                     'receiver_email' => $value,
                     'update_message' => $update_message
                     );
           
-              Mail::send('admin.emails.service_request_acceptReject_email',$data, function ($message)  use ( $to_email,$username,$subject){
-                    $message->to($to_email,$username)
+              Mail::send('admin.emails.service_request_acceptReject_email',$data, function ($message)  use ( $to_email,$subject){
+                    $message->to($to_email)
                       ->subject($subject)
                       ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
                       // here comes what you want

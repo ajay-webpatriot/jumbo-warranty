@@ -287,9 +287,6 @@
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
-                "language": {
-                    "infoEmpty": "No entries"
-                },
                 buttons: [
                     {
                         extend: 'pdf',
@@ -383,9 +380,6 @@
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
-                "language": {
-                    "infoEmpty": "No entries"
-                },
                 buttons: [
                     {
                         extend: 'pdf',
@@ -484,9 +478,6 @@
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
-                "language": {
-                    "infoEmpty": "No entries"
-                },
                 buttons: [
                     {
                         extend: 'pdf',

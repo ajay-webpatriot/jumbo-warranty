@@ -5,16 +5,14 @@
                         <td align="center" height="35"></td>
                     </tr>
 
-                    <tr>
+                    <!-- <tr>
                         <td align="center" valign="top" class="bodyContent" bgcolor="#ffffff">
                             <div>
-                                <h2>Hello {{ $user_name }}!</h2>
+                                <h2>Hello {{-- $user_name --}}!</h2>
                                 <span class="divider">―</span>
-
-                                <!-- <h2>Service Request Details</h3> -->
                             </div>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td class="bodyContent" bgcolor="#ffffff">
                         <div class="panel panel-default" style="margin-bottom: 20px;
@@ -166,6 +164,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @if($role_id == config('constants.ADMIN_ROLE_ID') || $role_id == "customer")
                                     <div class="panel panel-default" style="margin-bottom: 20px;
                                 background-color: #fff;
                                 border: 1px solid transparent;
@@ -180,12 +179,17 @@
                                             border-top-left-radius: 3px;
                                             border-top-right-radius: 3px;
                                             ">
-                                            <span style="color: #3c8dbc;text-decoration: none;">Service Center</span>
+                                            
+                                            @if($role_id == config('constants.ADMIN_ROLE_ID')) 
+                                                <span style="color: #3c8dbc;text-decoration: none;">Service Center</span>
+                                            @else
+                                                <span style="color: #3c8dbc;text-decoration: none;">Technician</span>
+                                            @endif
                                         </div>
                                         <div id="collapseServiceCenter" class="panel-collapse in">
                                             <div class="panel-body" style="border-top-color: #ddd;border-top: 1px solid #ddd;padding: 15px;height:40px;">
                                                 <div class="row">
-
+                                                    @if($role_id == config('constants.ADMIN_ROLE_ID'))
                                                     <!-- Service center -->
                                                     <div class="col-md-6" style="width: 50%;    float: left;    
                                                         position: relative;
@@ -205,7 +209,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
+                                                    @endif
                                                     <!-- Technician -->
                                                     <div class="col-md-6" style="float: left;    
                                                         position: relative;
@@ -224,6 +228,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                     <div class="panel panel-default" style="margin-bottom: 20px;
                                 background-color: #fff;
                                 border: 1px solid transparent;

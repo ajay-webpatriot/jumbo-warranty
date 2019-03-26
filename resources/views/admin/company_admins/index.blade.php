@@ -113,6 +113,7 @@
         var tableCompanyAdmin = $('#company_admin').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "responsive": true,
                 "order": [[ 1, "desc" ]],
                 retrieve: true,
                 dom: 'lBfrtip<"actions">',
@@ -177,7 +178,6 @@
                 "drawCallback": function( settings ) {
                     var api = this.api();
                     // Output the data for the visible rows to the browser's console
-                    
                     if(api.rows( {page:'current'} ).data().length > 0)
                     {
                         if($('#company_admin').parent().find(".actions").length == 0 )
