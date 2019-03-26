@@ -378,6 +378,21 @@ class ServiceRequestApiController extends Controller
             ]);
         }
 
+        /* Check request assign or not */
+        $requestAssigend = ServiceRequest::where('id',$serviceRequestId)
+        ->where('technician_id','=',$user_id)
+        ->where('status','!=','Closed')
+        ->get()->toArray();
+
+        if($requestAssigend == '' || empty($requestAssigend) || count($requestAssigend) < 0){
+
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Request not assign yet!',
+                'data'      => (object)array()
+            ]);
+        }
+
         /* Request status */
         $StatusChangeResponse = $serviceRequest->requestStatus($serviceRequestId,$is_Accept);
         
@@ -435,6 +450,20 @@ class ServiceRequestApiController extends Controller
         $valid = $this->validateToken($user_id,$token);
 
         $serviceRequestId = trim($json['service_request_id']);
+
+        /* Check request assign or not */
+        $requestAssigend = ServiceRequest::where('id',$serviceRequestId)
+        ->where('technician_id','=',$user_id)
+        ->get()->toArray();
+
+        if($requestAssigend == '' || empty($requestAssigend) || count($requestAssigend) < 0){
+
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Request not assign yet!',
+                'data'      => (object)array()
+            ]);
+        }
        
         $serviceRequest = new ServiceRequest();
 
@@ -667,7 +696,21 @@ class ServiceRequestApiController extends Controller
         }
 
         $serviceRequestId = trim($json['service_request_id']);
-        
+
+        /* Check request assign or not */
+        $requestAssigend = ServiceRequest::where('id',$serviceRequestId)
+        ->where('technician_id','=',$user_id)
+        ->get()->toArray();
+
+        if($requestAssigend == '' || empty($requestAssigend) || count($requestAssigend) < 0){
+
+            return response()->json([
+                'status'    => 0,
+                'message'   => 'Request not assign yet!',
+                'data'      => (object)array()
+            ]);
+        }
+
         /* Service request object, all data */
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
 
@@ -722,12 +765,6 @@ class ServiceRequestApiController extends Controller
 
         /* Service request object, all data */
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
-
-        // echo "<pre>";
-        // print_r($serviceRequestDetail->is_accepted);
-        // echo "</pre>";
-        // exit();
-        
 
         /* Service additional charge */
         $additional_charge_title="";
@@ -814,13 +851,13 @@ class ServiceRequestApiController extends Controller
         if($serviceRequestDetail->service_type == 'installation'){
 
             /* Service request status (Type = 'installation') */
-            $changeKey = ServiceRequest::$enum_installation_status;
+            $changeKey = ServiceRequest::$enum_technician_installation_status;
             $newStatusarray = array_values($changeKey);
 
         }else if($serviceRequestDetail->service_type == 'repair'){
 
             /* Service request status (Type = 'repair') */
-            $changeKey = ServiceRequest::$enum_repair_status;
+            $changeKey = ServiceRequest::$enum_technician_repair_status;
             $newStatusarray = array_values($changeKey);
         }
 
