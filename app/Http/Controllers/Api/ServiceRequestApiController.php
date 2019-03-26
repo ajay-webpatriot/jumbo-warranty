@@ -851,13 +851,13 @@ class ServiceRequestApiController extends Controller
         if($serviceRequestDetail->service_type == 'installation'){
 
             /* Service request status (Type = 'installation') */
-            $changeKey = ServiceRequest::$enum_installation_status;
+            $changeKey = ServiceRequest::$enum_technician_installation_status;
             $newStatusarray = array_values($changeKey);
 
         }else if($serviceRequestDetail->service_type == 'repair'){
 
             /* Service request status (Type = 'repair') */
-            $changeKey = ServiceRequest::$enum_repair_status;
+            $changeKey = ServiceRequest::$enum_technician_repair_status;
             $newStatusarray = array_values($changeKey);
         }
 
