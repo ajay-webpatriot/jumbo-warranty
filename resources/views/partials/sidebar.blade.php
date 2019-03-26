@@ -66,36 +66,33 @@
                         </a>
                         <ul class="treeview-menu">
                             <!-- can('category_access') -->
-                            @can('manageCategory')
+                            <!-- can('manageCategory') -->
                             <li>
                                 <a href="{{ route('admin.categories.index') }}">
                                     <i class="fa fa-circle-o"></i>
                                     <span>@lang('quickadmin.categories.title')</span>
                                 </a>
                             </li>
-                            @endcan
                             <!-- endcan -->
                             
                             <!-- can('product_access') -->
-                            @can('manageProduct')
+                            <!-- can('manageProduct') -->
                             <li>
                                 <a href="{{ route('admin.products.index') }}">
                                     <i class="fa fa-circle-o"></i>
                                     <span>@lang('quickadmin.products.title')</span>
                                 </a>
                             </li>
-                            @endcan
                             <!-- endcan -->
                             
                             <!-- can('product_part_access') -->
-                            @can('manageParts')
+                            <!-- can('manageParts') -->
                             <li>
                                 <a href="{{ route('admin.product_parts.index') }}">
                                     <i class="fa fa-circle-o"></i>
                                     <span>@lang('quickadmin.product-parts.title')</span>
                                 </a>
                             </li>
-                            @endcan
                             <!-- endcan -->
                             
                         </ul>
