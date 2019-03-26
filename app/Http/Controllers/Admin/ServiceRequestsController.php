@@ -659,7 +659,11 @@ class ServiceRequestsController extends Controller
         $total_amount+=$request['transportation_charge'];
         if($request['service_center_id'] != "")
         {
-            $request['status'] ="Assigned";
+            $request['status'] ="Service center assigned";
+        }
+        if($request['technician_id'] != "")
+        {
+            $request['status'] ="Technician assigned";
         }
         
         $request['amount']=$total_amount;  
@@ -680,13 +684,13 @@ class ServiceRequestsController extends Controller
                                     );
         $LastInsertedId = ServiceRequestLog::create($insertServiceRequestLogArr);
 
-        if($request['status'] == "Assigned")
+        if($request['status'] == "Service center assigned" || $request['status'] == "Technician assigned")
         {
             // service request log for assigned status
             $insertServiceRequestLogArr = array(
-                                        'action_made'     =>   "Status is changed from New to Assigned.",
-                                        'action_made_company'     =>   "Status is changed from New to Assigned.",
-                                        'action_made_service_center'     =>   "Status is changed from New to Assigned.", 
+                                        'action_made'     =>   "Status is changed from New to ".$request['status'].".",
+                                        'action_made_company'     =>   "Status is changed from New to ".$request['status'].".",
+                                        'action_made_service_center'     =>   "Status is changed from New to ".$request['status'].".", 
                                         'service_request_id'   =>   $service_request->id,
                                         'user_id'   =>   auth()->user()->id
                                     );
@@ -940,38 +944,24 @@ class ServiceRequestsController extends Controller
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
         }
-        if($request['technician_id'] != "")
-        {
-            // insert service request log on technician change 
-            if($service_request->technician_id != $request['technician_id']){
-                $request['is_accepted'] = 0;
-                $technician=\App\User::where('id',$request['technician_id'])->first();
-                $insertServiceRequestLogArr =   array(
-                                                    'action_made'     =>  "Technician assigned(".$technician->name.").", 
-                                                    'action_made_company'     =>  "Technician assigned.",
-                                                    'action_made_service_center'     =>  "Technician assigned(".$technician->name.").", 
-                                                    'service_request_id'   =>   $id,
-                                                    'user_id'   =>   auth()->user()->id
-                                                );
-                ServiceRequestLog::create($insertServiceRequestLogArr);
-            }
-        }
-        else
-        {
-            $request['is_accepted'] = 0;
-        }
+        
         if($request['service_center_id'] != "")
         {
             
             if($service_request->status == "New")
             {
-                $request['status']="Assigned";
-
+                if($request['technician_id'] != "")
+                {
+                    $request['status']="Technician assigned";
+                }
+                else{
+                    $request['status']="Service center assigned";
+                }
                 // service request log for assigned status
                 $insertServiceRequestLogArr = array(
-                                            'action_made'     =>   "Status is changed from New to Assigned.",
-                                            'action_made_company'     =>   "Status is changed from New to Assigned.",
-                                            'action_made_service_center'     =>   "Status is changed from New to Assigned.", 
+                                            'action_made'     =>   "Status is changed from New to ".$request['status'].".",
+                                            'action_made_company'     =>   "Status is changed from New to ".$request['status'].".",
+                                            'action_made_service_center'     =>   "Status is changed from New to ".$request['status'].".", 
                                             'service_request_id'   =>   $id,
                                             'user_id'   =>   auth()->user()->id
                                         );
@@ -991,6 +981,40 @@ class ServiceRequestsController extends Controller
                 ServiceRequestLog::create($insertServiceRequestLogArr);
             }
         }  
+        if($request['technician_id'] != "")
+        {
+            // insert service request log on technician change 
+            if($service_request->technician_id != $request['technician_id']){
+                $request['is_accepted'] = 0;
+                $technician=\App\User::where('id',$request['technician_id'])->first();
+                $insertServiceRequestLogArr =   array(
+                                                    'action_made'     =>  "Technician assigned(".$technician->name.").", 
+                                                    'action_made_company'     =>  "Technician assigned.",
+                                                    'action_made_service_center'     =>  "Technician assigned(".$technician->name.").", 
+                                                    'service_request_id'   =>   $id,
+                                                    'user_id'   =>   auth()->user()->id
+                                                );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+
+                if($request['status'] =="Service center assigned"){
+                    $request['status']="Technician assigned";
+                
+                // service request log for assigned status
+                    $insertServiceRequestLogArr = array(
+                                                'action_made'     =>   "Status is changed from Service center assigned to ".$request['status'].".",
+                                                'action_made_company'     =>   "Status is changed from Service center assigned to ".$request['status'].".",
+                                                'action_made_service_center'     =>   "Status is changed from Service center assigned to ".$request['status'].".", 
+                                                'service_request_id'   =>   $id,
+                                                'user_id'   =>   auth()->user()->id
+                                            );
+                    ServiceRequestLog::create($insertServiceRequestLogArr);
+                }    
+            }
+        }
+        else
+        {
+            $request['is_accepted'] = 0;
+        }
         if($request['status'] == "Closed")
         {
             // calculate invoice number
@@ -1107,6 +1131,7 @@ class ServiceRequestsController extends Controller
         $request = ServiceRequest::find($id);
         if($request) {
             $request->technician_id = NULL;
+            $request->status = 'Service center assigned';
             $request->save();
         }
         return redirect()->route('admin.service_requests.index');

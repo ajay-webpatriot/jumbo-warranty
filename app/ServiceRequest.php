@@ -60,9 +60,9 @@ class ServiceRequest extends Model
 
     public static $enum_status = ["Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
 
-    public static $enum_installation_status = ["Started" => "Started", "Closed" => "Closed"];
+    public static $enum_installation_status = ["Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Started" => "Started", "Closed" => "Closed"];
 
-    public static $enum_repair_status = ["Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
+    public static $enum_repair_status = ["Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
 
     public function getServiceRequestParts($partsIds)
     {
@@ -366,15 +366,23 @@ class ServiceRequest extends Model
         if(isset($requestId) && $requestId != '' && $requestId != 0){
             if($status == 1){
             
-                $updateArray = array(
-                    'is_accepted'  => 1,
-                    'status'       =>'Started'
+                // $updateArray = array(
+                //     'is_accepted'  => 1,
+                //     'status'       =>'Started'
+                // );
+                 $updateArray = array(
+                    'is_accepted'  => 1
                 );
             }else{
+                // $updateArray = array(
+                //     'is_accepted'   => 0,
+                //     'technician_id' => NULL,
+                //     'status'        =>'Cancelled'
+                // );
                 $updateArray = array(
                     'is_accepted'   => 0,
                     'technician_id' => NULL,
-                    'status'        =>'Cancelled'
+                    'status'        =>'Service center assigned'
                 );
             }
             $requestStatus = ServiceRequest::where('id',$requestId)
