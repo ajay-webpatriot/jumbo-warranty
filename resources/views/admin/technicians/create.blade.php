@@ -12,43 +12,23 @@
         <div class="panel-body">
             
             {!! Form::hidden('loggedUser_role',$logged_userRole_id, ['class' => 'form-control', 'placeholder' => '','id' => 'loggedUser_role']) !!}
-            <div class="row">
-            @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
             
-                <div class="col-xs-6">
-                    {!! Form::label('service_center_id', trans('quickadmin.users.fields.service-center').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('service_center_name', $service_centers[auth()->user()->service_center_id], ['class' => 'form-control', 'placeholder' => trans('quickadmin.users.fields.service-center'),'disabled' => '']) !!}
-                    {!! Form::hidden('service_center_id', auth()->user()->service_center_id, ['class' => 'form-control']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('service_center_id'))
-                        <p class="help-block">
-                            {{ $errors->first('service_center_id') }}
-                        </p>
-                    @endif
-                </div>
+            @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+                {!! Form::hidden('service_center_id', auth()->user()->service_center_id, ['class' => 'form-control']) !!}
             @else
-                <div class="col-xs-6">
-                    {!! Form::label('service_center_id', trans('quickadmin.users.fields.service-center').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2','id' => 'userServiceCenter', 'required' => '']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('service_center_id'))
-                        <p class="help-block">
-                            {{ $errors->first('service_center_id') }}
-                        </p>
-                    @endif
+                <div class="row">
+                    <div class="col-xs-6">
+                        {!! Form::label('service_center_id', trans('quickadmin.users.fields.service-center').'*', ['class' => 'control-label']) !!}
+                        {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2','id' => 'userServiceCenter', 'required' => '']) !!}
+                        <p class="help-block"></p>
+                        @if($errors->has('service_center_id'))
+                            <p class="help-block">
+                                {{ $errors->first('service_center_id') }}
+                            </p>
+                        @endif
+                    </div>
                 </div>
             @endif
-                <div class="col-xs-6">
-                    {!! Form::label('address_1', trans('quickadmin.users.fields.address-1').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('address_1', old('address_1'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('address_1'))
-                        <p class="help-block">
-                            {{ $errors->first('address_1') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('name', trans('quickadmin.users.fields.name').'*', ['class' => 'control-label']) !!}
@@ -61,15 +41,16 @@
                     @endif
                 </div>
                 <div class="col-xs-6">
-                    {!! Form::label('address_2', trans('quickadmin.users.fields.address-2').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('address_2', old('address_2'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('address_1', trans('quickadmin.users.fields.address-1').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('address_1', old('address_1'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('address_2'))
+                    @if($errors->has('address_1'))
                         <p class="help-block">
-                            {{ $errors->first('address_2') }}
+                            {{ $errors->first('address_1') }}
                         </p>
                     @endif
                 </div>
+                
             </div>
             <div class="row">
                 <div class="col-xs-6">
@@ -83,15 +64,16 @@
                     @endif
                 </div>
                 <div class="col-xs-6">
-                    {!! Form::label('city', trans('quickadmin.users.fields.city').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('city', old('city'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::label('address_2', trans('quickadmin.users.fields.address-2').'', ['class' => 'control-label']) !!}
+                    {!! Form::text('address_2', old('address_2'), ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('city'))
+                    @if($errors->has('address_2'))
                         <p class="help-block">
-                            {{ $errors->first('city') }}
+                            {{ $errors->first('address_2') }}
                         </p>
                     @endif
                 </div>
+                
             </div>
             {!! Form::hidden('location_latitude', 0 , ['id' => 'location-latitude']) !!}
             {!! Form::hidden('location_longitude', 0 , ['id' => 'location-longitude']) !!}
@@ -107,15 +89,16 @@
                     @endif
                 </div>
                 <div class="col-xs-6">
-                    {!! Form::label('state', trans('quickadmin.users.fields.state').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('state', old('state'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::label('city', trans('quickadmin.users.fields.city').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('city', old('city'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('state'))
+                    @if($errors->has('city'))
                         <p class="help-block">
-                            {{ $errors->first('state') }}
+                            {{ $errors->first('city') }}
                         </p>
                     @endif
                 </div>
+                
             </div>
             <div class="row">
                 <div class="col-xs-6">
@@ -129,15 +112,16 @@
                     @endif
                 </div>
                 <div class="col-xs-6">
-                    {!! Form::label('zipcode', trans('quickadmin.users.fields.zipcode').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','minlength' => '6','maxlength' => '6']) !!}
+                    {!! Form::label('state', trans('quickadmin.users.fields.state').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('state', old('state'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('zipcode'))
+                    @if($errors->has('state'))
                         <p class="help-block">
-                            {{ $errors->first('zipcode') }}
+                            {{ $errors->first('state') }}
                         </p>
                     @endif
                 </div>
+                
             </div>
             <div class="row">
                 <div class="col-xs-6">
@@ -147,6 +131,16 @@
                     @if($errors->has('password_confirmation'))
                         <p class="help-block">
                             {{ $errors->first('password_confirmation') }}
+                        </p>
+                    @endif
+                </div>
+                <div class="col-xs-6">
+                    {!! Form::label('zipcode', trans('quickadmin.users.fields.zipcode').'*', ['class' => 'control-label']) !!}
+                    {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','minlength' => '6','maxlength' => '6']) !!}
+                    <p class="help-block"></p>
+                    @if($errors->has('zipcode'))
+                        <p class="help-block">
+                            {{ $errors->first('zipcode') }}
                         </p>
                     @endif
                 </div>
