@@ -694,7 +694,7 @@ class ServiceRequestsController extends Controller
                                         'service_request_id'   =>   $service_request->id,
                                         'user_id'   =>   auth()->user()->id
                                     );
-            $LastInsertedId = ServiceRequestLog::create($insertServiceRequestLogArr);
+            ServiceRequestLog::create($insertServiceRequestLogArr);
                                    
             
         }
@@ -702,7 +702,7 @@ class ServiceRequestsController extends Controller
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
 
             if($request->technician_id != '' && $request->technician_id != 0 && !empty($request->technician_id) && $request->technician_id != NULL){
-                $this->sendPushNotificationTechnician($request->technician_id,$LastInsertedId->service_request_id);
+                $this->sendPushNotificationTechnician($request->technician_id,$service_request->id);
             }
 
         }

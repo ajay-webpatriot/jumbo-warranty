@@ -140,7 +140,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').': ', ['class' => 'control-label']) !!}
-                                            {!! Form::label('',  (!empty($service_request->service_center->name))?$service_request->service_center->name:'', ['class' => 'control-label fontweight']) !!}
+                                            {!! Form::label('',  (!empty($service_request->service_center->name))?$service_request->service_center->name:'Not Assigned', ['class' => 'control-label fontweight']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('service_center_id'))
                                                 <p class="help-block">
@@ -156,7 +156,7 @@
                                     <div class="row techDiv" {{ ($service_request->service_type == "") ? 'style=display:none' : ''}}>
                                         <div class="col-xs-12">
                                             {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').': ', ['class' => 'control-label']) !!}
-                                            {!! Form::label('', (!empty($service_request->technician->name))?$service_request->technician->name: '', ['class' => 'control-label fontweight']) !!}
+                                            {!! Form::label('', (!empty($service_request->technician->name))?$service_request->technician->name: 'Not Assigned', ['class' => 'control-label fontweight']) !!}
                                         </div>
                                     </div>
                                 </div>
