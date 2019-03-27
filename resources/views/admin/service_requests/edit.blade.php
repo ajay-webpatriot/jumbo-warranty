@@ -464,7 +464,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     {!! Form::label('complain_details', trans('quickadmin.service-request.fields.complain-details').'', ['class' => 'control-label']) !!}
-                                    {!! Form::textarea('complain_details', old('complain_details'), ['class' => 'form-control ', 'placeholder' => '']) !!}
+                                    {!! Form::textarea('complain_details', old('complain_details'), ['class' => 'form-control text-justify', 'placeholder' => '']) !!}
                                     <p class="help-block"></p>
                                     @if($errors->has('complain_details'))
                                         <p class="help-block">
@@ -656,7 +656,7 @@
                                     {!! Form::label('note', trans('quickadmin.service-request.fields.note').'', ['class' => 'control-label']) !!}
                                     <!-- {!! Form::text('note', old('note'), ['class' => 'form-control', 'placeholder' => '']) !!} -->
 
-                                    {!! Form::textarea('note', old('note'), ['class' => 'form-control ', 'placeholder' => '']) !!}
+                                    {!! Form::textarea('note', old('note'), ['class' => 'form-control text-justify', 'placeholder' => '']) !!}
                                     
                                     <p class="help-block"></p>
                                     @if($errors->has('note'))
