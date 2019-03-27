@@ -216,14 +216,14 @@ class SendMail
   
   }
 
-  public static function sendRequestAcceptRejectMail($request_id){
+  public static function sendRequestAcceptRejectMail($request_id,$technician_name){
         // send mail to service center admin and admin
         $service_request = ServiceRequest::findOrFail($request_id);
         $service_center_admin_email = "";
         $admin_email = "";
 
-        $technician= \App\User::where('id',$service_request->technician_id)->where('status','Active')->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->first();
-        $technician_name=ucwords($technician->name);
+        // $technician= \App\User::where('id',$service_request->technician_id)->where('status','Active')->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->get()->first();
+        // $technician_name=ucwords($technician->name);
 
         $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
                               ->where('status','Active')

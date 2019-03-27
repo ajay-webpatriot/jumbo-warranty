@@ -1146,21 +1146,29 @@ class ServiceRequestsController extends Controller
     {
         
         $request = ServiceRequest::find($id);
+        
         if($request) {
+            $technician_name = $request->technician->name;
             $request->is_accepted = 1;
             $request->save();
+
+            SendMailHelper::sendRequestAcceptRejectMail($id,$technician_name);
         }
-        SendMailHelper::sendRequestAcceptRejectMail($id);
+        
         return redirect()->route('admin.service_requests.index');
     }
     public function rejectServiceRequest($id)
     {
-        SendMailHelper::sendRequestAcceptRejectMail($id);
+        // SendMailHelper::sendRequestAcceptRejectMail($id);
         $request = ServiceRequest::find($id);
+
         if($request) {
+            $technician_name = $request->technician->name;
             $request->technician_id = NULL;
             $request->status = 'Service center assigned';
             $request->save();
+
+            SendMailHelper::sendRequestAcceptRejectMail($id,$technician_name);
         }
         return redirect()->route('admin.service_requests.index');
     }
