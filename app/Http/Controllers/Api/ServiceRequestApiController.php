@@ -6,6 +6,7 @@ use App\User;
 use Validator;
 use Hash;
 use App\ServiceRequest;
+use SendMailHelper;
 use App\Http\Controllers\Controller;
 
 class ServiceRequestApiController extends Controller
@@ -383,7 +384,7 @@ class ServiceRequestApiController extends Controller
         ->where('technician_id','=',$user_id)
         ->where('status','!=','Closed')
         ->get()->toArray();
-
+        
         if($requestAssigend == '' || empty($requestAssigend) || count($requestAssigend) < 0){
 
             return response()->json([
@@ -400,7 +401,15 @@ class ServiceRequestApiController extends Controller
 
             $requestdetail = $this->getRequestDetailJson($serviceRequestId);
             if($requestdetail != ''){
-                
+
+                $technician_name = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                ->where('id',$user_id)
+                ->first();
+
+                $technician_name=ucwords($technician_name->name);
+
+                SendMailHelper::sendRequestAcceptRejectMail($serviceRequestId,$technician_name);
+
                 $status = 1;
                 $message = 'Request status change';
                 $response = $requestdetail;
