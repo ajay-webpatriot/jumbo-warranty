@@ -400,6 +400,7 @@ class ServiceRequestApiController extends Controller
 
             $requestdetail = $this->getRequestDetailJson($serviceRequestId);
             if($requestdetail != ''){
+                
                 $status = 1;
                 $message = 'Request status change';
                 $response = $requestdetail;
@@ -714,7 +715,7 @@ class ServiceRequestApiController extends Controller
         /* Service request object, all data */
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
 
-        $additional_charges = 0;
+        $additional_charges = NULL;
         $total_amount       = 0;
 
         if(isset($json['additionalChargesFor']) && !empty($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
@@ -725,12 +726,12 @@ class ServiceRequestApiController extends Controller
                 $total_amount += $serviceRequestDetail->transportation_charge;
                 
                 $additional_charges= json_encode(array($json['additionalChargesFor'] => number_format((float)$json['additionalCharges'], 2, '.', '')));
-               
-                $serviceRequestDetail->additional_charges = $additional_charges;
-                $serviceRequestDetail->amount = $total_amount;
-                $serviceRequestDetail->update();
             }
         }
+        
+        $serviceRequestDetail->additional_charges = $additional_charges;
+        $serviceRequestDetail->amount = $total_amount;
+        $serviceRequestDetail->update();
 
         /* Update service request status */
         $serviceRequestDetailStatusUpdate = ServiceRequest::findOrFail($serviceRequestId);
