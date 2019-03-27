@@ -22,6 +22,7 @@ use Dompdf\Dompdf;
 use SendMailHelper;
 use Session;
 use DB;
+use Log;
 
 class ServiceRequestsController extends Controller
 {
@@ -1872,6 +1873,8 @@ class ServiceRequestsController extends Controller
                 // echo "----".$result;
                 // echo "<br>".json_encode( $fields );
                 // Close connection
+		Log::info("== sending notification ==".json_encode( $fields ));
+		Log::info("== sent notification ==".json_encode( $result ));
                 curl_close($ch);
                 // exit();
             }
