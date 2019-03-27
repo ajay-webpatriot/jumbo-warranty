@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\Controller;
 use App\ServiceRequest;
+use App\Company;
 use DB;
 
 class AdminDashboardController extends Controller
@@ -25,7 +26,7 @@ class AdminDashboardController extends Controller
         $PendingInstallationCount   = 0;
         $SolvedInstallationCount    = 0;
 
-        $ServiceTypes = DB::table('service_requests')->select('service_type','status')
+        $ServiceTypes = ServiceRequest::select('service_type','status')
         ->whereIn('service_type',array('repair','installation'))
         ->get();
 
@@ -54,7 +55,7 @@ class AdminDashboardController extends Controller
             }
         }
 
-        $ServiceTypeDetails = DB::table('service_requests')->select('service_requests.amount','service_requests.service_type','service_requests.id','service_requests.created_at',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+        $ServiceTypeDetails = ServiceRequest::select('service_requests.amount','service_requests.service_type','service_requests.id','service_requests.created_at',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
         LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
         ->join('customers','service_requests.customer_id','=','customers.id')
         ->join('products','service_requests.product_id','=','products.id')
@@ -90,7 +91,7 @@ class AdminDashboardController extends Controller
             exit();
         }
 
-        $CompaninesName = DB::table('companies')->select('companies.name as CompanyName','companies.status as CompanyStatus','companies.id as CompanyId')
+        $CompaninesName = Company::select('companies.name as CompanyName','companies.status as CompanyStatus','companies.id as CompanyId')
         ->where('deleted_at',NULL)
         ->where('status','=','Active')->get();
        

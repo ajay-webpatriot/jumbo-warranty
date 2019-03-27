@@ -104,7 +104,7 @@
                                                         <div class="info-box bg-green">
                                                             <span class="info-box-icon"><i class="fa fa-tv"></i></span>
                                                             <div class="info-box-content">
-                                                                <span class="info-box-text boxfont">TOTAL DELAYED REQUESTS</span>
+                                                                <span class="info-box-text boxfont">TOTAL DELAYED REQUESTS FROM TODAY</span>
                                                                 <span class="info-box-number" id="delayedRequest">{{-- $delayedRequest --}}</span>
                                                             </div>
                                                         </div>
@@ -115,7 +115,7 @@
                                                         <div class="info-box bg-yellow">
                                                             <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
                                                             <div class="info-box-content">
-                                                                <span class="info-box-text boxfont">TOTAL REQUESTS CLOSED</span>
+                                                                <span class="info-box-text boxfont">TOTAL REQUESTS CLOSED BY TODAY</span>
                                                                 <span class="info-box-number" id="closededRequest">{{-- $closededRequest --}}</span>
                                                             </div>
                                                         </div>
