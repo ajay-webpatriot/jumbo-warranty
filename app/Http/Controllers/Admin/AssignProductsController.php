@@ -82,6 +82,8 @@ class AssignProductsController extends Controller
         $requestFilterCountQuery =  AssignProduct::select('assign_products.*','companies.name as company_name',DB::raw('group_concat(products.name) as product_name'),DB::raw("count(*) as total"))
          ->join('companies','assign_products.company_id','=','companies.id')
          ->join('products','products.id','=','assign_products.product_id')
+         ->whereNull('companies.deleted_at')
+         ->whereNull('products.deleted_at')
          ->Where('products.status', 'Active')
          ->Where('companies.status', 'Active')
          ->groupBy('assign_products.company_id');
@@ -122,6 +124,8 @@ class AssignProductsController extends Controller
         $assignProductQuery = AssignProduct::select('assign_products.*','companies.name as company_name',DB::raw('group_concat(products.name) as product_name'))
          ->join('companies','assign_products.company_id','=','companies.id')
          ->join('products','products.id','=','assign_products.product_id')
+         ->whereNull('companies.deleted_at')
+         ->whereNull('products.deleted_at')
          ->Where('products.status', 'Active')
          ->Where('companies.status', 'Active')
          ->groupBy('assign_products.company_id')
@@ -154,6 +158,8 @@ class AssignProductsController extends Controller
         $countRecord = AssignProduct::select('assign_products.*','companies.name as company_name',DB::raw('group_concat(products.name) as product_name'))
         ->join('companies','assign_products.company_id','=','companies.id')
         ->join('products','products.id','assign_products.product_id')
+        ->whereNull('companies.deleted_at')
+        ->whereNull('products.deleted_at')
         ->Where('products.status', 'Active')
         ->Where('companies.status', 'Active')
         ->groupBy('assign_products.company_id')->get()->count();
@@ -234,6 +240,8 @@ class AssignProductsController extends Controller
         $requestFilterCountQuery =  AssignProduct::select('assign_products.*','companies.name as company_name','products.name as product_name')
          ->join('companies','assign_products.company_id','=','companies.id')
          ->join('products','products.id','=','assign_products.product_id')
+         ->whereNull('companies.deleted_at')
+         ->whereNull('products.deleted_at')
          ->Where('products.status', 'Active')
          ->Where('companies.status', 'Active')
          ->where('assign_products.company_id',auth()->user()->company_id);

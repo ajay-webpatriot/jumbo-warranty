@@ -218,6 +218,9 @@ class ServiceRequest extends Model
             ->Where('companies.status','Active')
             ->Where('customers.status','Active')
             ->Where('products.status','Active')
+            ->whereNull('companies.deleted_at')
+            ->whereNull('customers.deleted_at')
+            ->whereNull('products.deleted_at')
             // ->Where('service_centers.status','Active')
             ;
             

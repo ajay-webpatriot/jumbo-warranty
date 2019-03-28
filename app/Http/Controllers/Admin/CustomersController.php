@@ -87,6 +87,7 @@ class CustomersController extends Controller
         // count data with filter value
         $requestFilterCountQuery =  Customer::select('customers.*','companies.name as company_name')
          ->join('companies','customers.company_id','=','companies.id')
+         ->whereNull('companies.deleted_at')
          ->where('companies.status','Active');
 
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
@@ -158,6 +159,7 @@ class CustomersController extends Controller
 
         $customerQuery = Customer::select('customers.*','companies.name as company_name')
          ->join('companies','customers.company_id','=','companies.id')
+         ->whereNull('companies.deleted_at')
          ->where('companies.status','Active')
          ->offset($start)
          ->limit($limit)
@@ -188,6 +190,7 @@ class CustomersController extends Controller
             // fetch total count without any filter
             $countRecord = Customer::select('customers.*')
                             ->join('companies','customers.company_id','=','companies.id')
+                            ->whereNull('companies.deleted_at')
                             ->where('companies.status','Active')
                             ->count('customers.id');
         } 
@@ -212,6 +215,7 @@ class CustomersController extends Controller
             // fetch total count without any filter
             $countRecord = Customer::select('customers.*')
                             ->join('companies','customers.company_id','=','companies.id')
+                            ->whereNull('companies.deleted_at')
                             ->where('companies.status','Active')
                             ->where('company_id',auth()->user()->company_id)->count('customers.id');
         } 

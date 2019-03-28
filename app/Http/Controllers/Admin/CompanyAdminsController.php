@@ -80,6 +80,7 @@ class CompanyAdminsController extends Controller
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
          ->where('companies.status','Active')
+         ->whereNull('companies.deleted_at')
          ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'));
 
         if(!empty($request->input('company')))
@@ -111,6 +112,7 @@ class CompanyAdminsController extends Controller
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
          ->where('companies.status','Active')
+         ->whereNull('companies.deleted_at')
          ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
          ->offset($start)
          ->limit($limit)
@@ -148,6 +150,7 @@ class CompanyAdminsController extends Controller
             ->join('companies','users.company_id','=','companies.id')
             ->join('roles','users.role_id','=','roles.id')
             ->where('companies.status','Active')
+            ->whereNull('companies.deleted_at')
             ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->count('users.id');
         if(!empty($company_admins)){
             

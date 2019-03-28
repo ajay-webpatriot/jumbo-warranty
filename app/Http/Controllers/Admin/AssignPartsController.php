@@ -89,11 +89,13 @@ class AssignPartsController extends Controller
         $requestFilterCountQuery =  AssignPart::select('assign_parts.*','companies.name as company_name','product_parts.name as part_name',
             DB::raw("(assign_parts.quantity - (SELECT COUNT(distinct service_requests.id) FROM service_requests 
                 join product_part_service_request on service_requests.id = product_part_service_request.service_request_id 
-                                WHERE assign_parts.product_parts_id = product_part_service_request.product_part_id and service_requests.company_id = assign_parts.company_id
+                                WHERE assign_parts.product_parts_id = product_part_service_request.product_part_id and service_requests.company_id = assign_parts.company_id and service_requests.deleted_at IS NULL 
                                 ) )  as available_quantity")
             )
          ->join('companies','assign_parts.company_id','=','companies.id')
          ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+         ->whereNull('product_parts.deleted_at')
+         ->whereNull('companies.deleted_at')
          ->Where('product_parts.status', 'Active')
          ->Where('companies.status', 'Active');
 
@@ -162,11 +164,13 @@ class AssignPartsController extends Controller
         $assignPartQuery = AssignPart::select('assign_parts.*','companies.name as company_name','product_parts.name as part_name',
             DB::raw("(assign_parts.quantity - (SELECT COUNT(distinct service_requests.id) FROM service_requests 
                 join product_part_service_request on service_requests.id = product_part_service_request.service_request_id 
-                                WHERE assign_parts.product_parts_id = product_part_service_request.product_part_id and service_requests.company_id = assign_parts.company_id
+                                WHERE assign_parts.product_parts_id = product_part_service_request.product_part_id and service_requests.company_id = assign_parts.company_id and service_requests.deleted_at IS NULL 
                                 ) )  as available_quantity")
          )
          ->join('companies','assign_parts.company_id','=','companies.id')
          ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+         ->whereNull('product_parts.deleted_at')
+         ->whereNull('companies.deleted_at')
          ->Where('product_parts.status', 'Active')
          ->Where('companies.status', 'Active')
          ->offset($start)
@@ -199,6 +203,8 @@ class AssignPartsController extends Controller
             $countRecord = AssignPart::select('assign_parts.*')
                             ->join('companies','assign_parts.company_id','=','companies.id')
                             ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+                            ->whereNull('product_parts.deleted_at')
+                            ->whereNull('companies.deleted_at')
                             ->Where('product_parts.status', 'Active')
                             ->Where('companies.status', 'Active')->count('assign_parts.id');
         } 
@@ -224,13 +230,15 @@ class AssignPartsController extends Controller
             $countRecord = AssignPart::select('assign_parts.*')
                                 ->join('companies','assign_parts.company_id','=','companies.id')
                                 ->join('product_parts','product_parts.id','=','assign_parts.product_parts_id')
+                                ->whereNull('product_parts.deleted_at')
+                                ->whereNull('companies.deleted_at')
                                 ->Where('product_parts.status', 'Active')
                                 ->Where('companies.status', 'Active')
                                 ->where('company_id',auth()->user()->company_id)->count('assign_parts.id');
         } 
 
         
-        
+        // echo $assignPartQuery->toSql();exit;
         $assignParts = $assignPartQuery->get();
         // echo "<pre>"; print_r ($assignParts); echo "</pre>"; exit();
 

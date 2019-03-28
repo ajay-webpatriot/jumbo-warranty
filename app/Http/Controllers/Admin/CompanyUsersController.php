@@ -73,6 +73,7 @@ class CompanyUsersController extends Controller
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
          ->where('companies.status','Active')
+         ->whereNull('companies.deleted_at')
          ->where('users.role_id',config('constants.COMPANY_USER_ROLE_ID'));
 
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
@@ -152,6 +153,7 @@ class CompanyUsersController extends Controller
          ->join('companies','users.company_id','=','companies.id')
          ->join('roles','users.role_id','=','roles.id')
          ->where('companies.status','Active')
+         ->whereNull('companies.deleted_at')
          ->where('users.role_id',config('constants.COMPANY_USER_ROLE_ID'))
          ->offset($start)
          ->limit($limit)
@@ -188,6 +190,7 @@ class CompanyUsersController extends Controller
                 ->join('companies','users.company_id','=','companies.id')
                 ->join('roles','users.role_id','=','roles.id')
                 ->where('companies.status','Active')
+                ->whereNull('companies.deleted_at')
                 ->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->count('users.id');
         } 
         else 
@@ -216,6 +219,7 @@ class CompanyUsersController extends Controller
                 ->join('companies','users.company_id','=','companies.id')
                 ->join('roles','users.role_id','=','roles.id')
                 ->where('companies.status','Active')
+                ->whereNull('companies.deleted_at')
                 ->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->where('company_id',auth()->user()->company_id)->count('users.id');
         } 
 

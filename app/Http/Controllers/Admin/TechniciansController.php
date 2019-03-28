@@ -74,6 +74,7 @@ class TechniciansController extends Controller
         $requestFilterCountQuery =  User::select('users.*','service_centers.name as service_center_name')
          ->join('service_centers','users.service_center_id','=','service_centers.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->whereNull('service_centers.deleted_at')
          ->where('service_centers.status','Active')
          ->where('users.role_id',config('constants.TECHNICIAN_ROLE_ID'));
 
@@ -153,6 +154,7 @@ class TechniciansController extends Controller
         $techniciansQuery = User::select('users.*','service_centers.name as service_center_name')
          ->join('service_centers','users.service_center_id','=','service_centers.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->whereNull('service_centers.deleted_at')
          ->where('service_centers.status','Active')
          ->where('users.role_id',config('constants.TECHNICIAN_ROLE_ID'))
          ->offset($start)
@@ -189,6 +191,7 @@ class TechniciansController extends Controller
             $countRecord = User::select('users.*','service_centers.name as service_center_name')
                  ->join('service_centers','users.service_center_id','=','service_centers.id')
                  ->join('roles','users.role_id','=','roles.id')
+                 ->whereNull('service_centers.deleted_at')
                  ->where('service_centers.status','Active')
                 ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->count('users.id');
         } 
@@ -217,6 +220,7 @@ class TechniciansController extends Controller
             $countRecord = User::select('users.*','service_centers.name as service_center_name')
                  ->join('service_centers','users.service_center_id','=','service_centers.id')
                  ->join('roles','users.role_id','=','roles.id')
+                 ->whereNull('service_centers.deleted_at')
                  ->where('service_centers.status','Active')
                  ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('service_center_id',auth()->user()->service_center_id)->count('users.id');
         } 
