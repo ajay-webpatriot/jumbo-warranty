@@ -1007,12 +1007,17 @@ class ServiceRequestsController extends Controller
                                                 );
                 ServiceRequestLog::create($insertServiceRequestLogArr);
 
+
                    
             }
             if($request['status'] == "Closed" && $service_request->is_accepted == 0)
             {
                 // if techician is assigned, request is not accepted and any user close the request, is_accepted will be set to 1
                 $request['is_accepted'] = 1;
+            }
+            else if ($request['status'] =="Service center assigned")
+            {
+                $request['status']="Technician assigned";
             }
             // if($request['status'] =="Service center assigned"){
             //         $request['status']="Technician assigned";
@@ -1031,13 +1036,16 @@ class ServiceRequestsController extends Controller
         else
         {
             $request['is_accepted'] = 0;
-            if($request['service_center_id'] != "")
+            if($request['status'] == "Technician assigned")
             {
+                if($request['service_center_id'] != "")
+                {
                     $request['status']="Service center assigned";
-            }
-            else
-            {
-                $request['status']="New";
+                }
+                else
+                {
+                    $request['status']="New";
+                }
             }
         }
 
@@ -1126,6 +1134,7 @@ class ServiceRequestsController extends Controller
         
         $service_request->update($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
+
         if($request_status != $request['status'])
         {
             //send mail on every status change

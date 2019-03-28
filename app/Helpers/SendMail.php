@@ -104,7 +104,8 @@ class SendMail
             Mail::send('admin.emails.service_request_detail_email',$data, function ($message)  use ( $to_email){
                       $message->to($to_email)
                         ->subject('New Service Request Created')
-                        ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+                        // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+                        ->from(env('MAIL_USERNAME'),env('APP_NAME'));
                         // here comes what you want
                         // ->setBody('Hi, welcome user!'); // assuming text/plain
                         // or:
@@ -208,7 +209,8 @@ class SendMail
               Mail::send('admin.emails.service_request_update_email',$data, function ($message)  use ( $to_email){
                         $message->to($to_email)
                           ->subject('Service Request Status Changed')
-                          ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+                          // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+                          ->from(env('MAIL_USERNAME'),env('APP_NAME'));
                   });   
           }     
         }
@@ -281,7 +283,8 @@ class SendMail
               Mail::send('admin.emails.service_request_acceptReject_email',$data, function ($message)  use ( $to_email,$subject){
                     $message->to($to_email)
                       ->subject($subject)
-                      ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+                      // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+                      ->from(env('MAIL_USERNAME'),env('APP_NAME'));
                       // here comes what you want
                       // ->setBody('Hi, welcome user!'); // assuming text/plain
                       // or:
@@ -314,7 +317,8 @@ class SendMail
     Mail::send('admin.emails.otp',$data, function ($message)  use ( $to_email,$name){
       $message->to($to_email,$name)
       ->subject('Forgot password OTP')
-      ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+      // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+      ->from(env('MAIL_USERNAME'),env('APP_NAME'));
     });
 
     if (Mail::failures()) {
