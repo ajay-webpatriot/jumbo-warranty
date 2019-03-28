@@ -458,10 +458,10 @@ class ServiceRequestsController extends Controller
 
                 }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
 
-                    $tableField['service_center'] =ucfirst($SingleServiceRequest->sname);
+                    $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
 
                 }else{
-                    $tableField['service_center'] =ucfirst($SingleServiceRequest->sname);
+                    $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
                     $tableField['company_name'] =ucfirst($SingleServiceRequest->cname);
 
                     if (Gate::allows('service_request_delete')) {

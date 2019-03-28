@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Product;
+use App\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,9 @@ use App\Http\Requests\Admin\UpdateProductsRequest;
 // permission plugin
 use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
+
+use Validator;
+use Illuminate\Support\Facades\Input;
 
 class ProductsController extends Controller
 {
@@ -118,6 +122,23 @@ class ProductsController extends Controller
             return abort(401);
         }
         $product = Product::findOrFail($id);
+
+        // check product is assigned in service request
+        if($request['status'] == "Inactive"){
+            $validator = Validator::make($request->all(), []);
+            $checkExistData = ServiceRequest::where('product_id', $id)->get();
+
+            if(count($checkExistData) > 0)
+            {   
+                return redirect()->back()->withInput(Input::all())->with(array(
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->add('Assigned', trans('This product is already assigned in service request.'))
+
+                    ));
+                    exit;
+            }
+        }
+
         $product->update($request->all());
 
 
@@ -161,6 +182,15 @@ class ProductsController extends Controller
             return abort(401);
         }
         $product = Product::findOrFail($id);
+
+        // check product is assigned in service request
+        $checkExistData = ServiceRequest::where('product_id', $id)->get();
+        if(count($checkExistData) > 0)
+        {   
+            return  redirect()->route('admin.products.index')->withErrors('This product is already assigned in service request.');
+            exit;
+        }
+
         $product->delete();
 
         return redirect()->route('admin.products.index');
@@ -179,8 +209,22 @@ class ProductsController extends Controller
         if ($request->input('ids')) {
             $entries = Product::whereIn('id', $request->input('ids'))->get();
 
+            $not_deleted=0;
             foreach ($entries as $entry) {
-                $entry->delete();
+                // check product is assigned in service request
+                $checkExistData = ServiceRequest::where('product_id', $entry->id)->get();
+                if(count($checkExistData) > 0)
+                {   
+                    $not_deleted++;
+                }
+                else
+                {
+                    $entry->delete();
+                }
+            }
+            if($not_deleted > 0)
+            {
+                redirect()->route('admin.products.index')->withErrors('Some product is already assigned in service request, so it is not deleted.');
             }
         }
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Customer;
+use App\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,10 @@ use Spatie\Permission\Models\Permission as perm;
 // get lat long 
 use GoogleAPIHelper;
 use DB;
+
+use Validator;
+use Illuminate\Support\Facades\Input;
+
 class CustomersController extends Controller
 {
     public function __construct()
@@ -353,7 +358,21 @@ class CustomersController extends Controller
             return abort(401);
         }
         $customer = Customer::findOrFail($id);
+        // check customer is assigned in service request
+        if($request['status'] == "Inactive"){
+            $validator = Validator::make($request->all(), []);
+            $checkExistData = ServiceRequest::where('customer_id', $id)->get();
 
+            if(count($checkExistData) > 0)
+            {   
+                return redirect()->back()->withInput(Input::all())->with(array(
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->add('Assigned', trans('This customer is already assigned in service request.'))
+
+                    ));
+                    exit;
+            }
+        }
         if(isset($customer->zipcode) && isset($request['zipcode']))
         {
             if($customer->zipcode !== $request['zipcode'])
@@ -431,6 +450,15 @@ class CustomersController extends Controller
             return abort(401);
         }
         $customer = Customer::findOrFail($id);
+
+        // check customer is assigned in service request
+        $checkExistData = ServiceRequest::where('customer_id', $id)->get();
+        if(count($checkExistData) > 0)
+        {   
+            return  redirect()->route('admin.customers.index')->withErrors('This customer is already assigned in service request.');
+            exit;
+        }
+
         $customer->delete();
 
         return redirect()->route('admin.customers.index');
@@ -449,8 +477,23 @@ class CustomersController extends Controller
         if ($request->input('ids')) {
             $entries = Customer::whereIn('id', $request->input('ids'))->get();
 
+            $not_deleted=0;
             foreach ($entries as $entry) {
-                $entry->delete();
+
+                // check customer is assigned in service request
+                $checkExistData = ServiceRequest::where('customer_id', $entry->id)->get();
+                if(count($checkExistData) > 0)
+                {   
+                    $not_deleted++;
+                }
+                else
+                {
+                    $entry->delete();
+                }
+            }
+            if($not_deleted > 0)
+            {
+                redirect()->route('admin.customers.index')->withErrors('Some customer is already assigned in service request, so it is not deleted.');
             }
         }
     }

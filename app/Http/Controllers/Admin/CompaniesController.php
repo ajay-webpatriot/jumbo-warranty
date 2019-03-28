@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Company;
+use App\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,8 @@ use App\Http\Requests\Admin\UpdateCompaniesRequest;
 use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
 
+use Validator;
+use Illuminate\Support\Facades\Input;
 class CompaniesController extends Controller
 {
     public function __construct()
@@ -119,6 +122,23 @@ class CompaniesController extends Controller
             return abort(401);
         }
         $company = Company::findOrFail($id);
+
+        // check company is assigned in service request
+        if($request['status'] == "Inactive"){
+            $validator = Validator::make($request->all(), []);
+            $checkExistData = ServiceRequest::where('company_id', $id)->get();
+
+            if(count($checkExistData) > 0)
+            {   
+                return redirect()->back()->withInput(Input::all())->with(array(
+                        'success' => false,
+                        'errors' => $validator->getMessageBag()->add('Assigned', trans('This company is already assigned in service request.'))
+
+                    ));
+                    exit;
+            }
+        }
+
         $company->update($request->all());
 
 
@@ -163,6 +183,15 @@ class CompaniesController extends Controller
             return abort(401);
         }
         $company = Company::findOrFail($id);
+
+        // check company is assigned in service request
+        $checkExistData = ServiceRequest::where('company_id', $id)->get();
+        if(count($checkExistData) > 0)
+        {   
+            return  redirect()->route('admin.companies.index')->withErrors('This company is already assigned in service request.');
+            exit;
+        }
+
         $company->delete();
 
         return redirect()->route('admin.companies.index');
@@ -181,8 +210,22 @@ class CompaniesController extends Controller
         if ($request->input('ids')) {
             $entries = Company::whereIn('id', $request->input('ids'))->get();
 
+            $not_deleted=0;
             foreach ($entries as $entry) {
-                $entry->delete();
+                // check company is assigned in service request
+                $checkExistData = ServiceRequest::where('company_id', $entry->id)->get();
+                if(count($checkExistData) > 0)
+                {   
+                    $not_deleted++;
+                }
+                else
+                {
+                    $entry->delete();
+                }
+            }
+            if($not_deleted > 0)
+            {
+                redirect()->route('admin.companies.index')->withErrors('Some company is already assigned in service request, so it is not deleted.');
             }
         }
     }
