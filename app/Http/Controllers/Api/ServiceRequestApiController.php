@@ -725,7 +725,7 @@ class ServiceRequestApiController extends Controller
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
 
         $additional_charges = NULL;
-        $total_amount       = 0;
+        $total_amount = 0;
 
         if(isset($json['additionalChargesFor']) && !empty($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
             if(isset($json['additionalCharges']) && !empty($json['additionalCharges']) && $json['additionalCharges'] != 0){
@@ -734,7 +734,7 @@ class ServiceRequestApiController extends Controller
 
                 $total_amount += $serviceRequestDetail->transportation_charge;
                 
-                $additional_charges= json_encode(array($json['additionalChargesFor'] => number_format((float)$json['additionalCharges'], 2, '.', '')));
+                $additional_charges = json_encode(array($json['additionalChargesFor'] => number_format((float)$json['additionalCharges'], 2, '.', '')));
             }
         }
         
@@ -744,7 +744,7 @@ class ServiceRequestApiController extends Controller
 
         /* Update service request status */
         $serviceRequestDetailStatusUpdate = ServiceRequest::findOrFail($serviceRequestId);
-        $serviceRequestDetail->status = $request_status;
+        $serviceRequestDetail->status     = $request_status;
         $serviceRequestDetail->update();
 
         /* Get request data */
@@ -771,15 +771,15 @@ class ServiceRequestApiController extends Controller
             ]);
         }
 
-        $response  = (object)array();
+        $response = (object)array();
 
         /* Service request object, all data */
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
 
         /* Service additional charge */
-        $additional_charge_title="";
-        $additional_charges="";
-        $additional_charge_array=json_decode($serviceRequestDetail['additional_charges']);
+        $additional_charge_title = "";
+        $additional_charges      = "";
+        $additional_charge_array = json_decode($serviceRequestDetail['additional_charges']);
 
         if(!empty($additional_charge_array))
         {
@@ -837,7 +837,7 @@ class ServiceRequestApiController extends Controller
 
         /* Check blank zipcode */
         if($serviceRequestDetail->customer->zipcode != '' || $serviceRequestDetail->customer->zipcode != NULL){
-            $state = $serviceRequestDetail->customer->zipcode.'.';
+            $zipcode = $serviceRequestDetail->customer->zipcode.'.';
         }
         
         /* Overview data */
@@ -891,19 +891,17 @@ class ServiceRequestApiController extends Controller
         unset($serviceRequestDetail->product->created_at);
         unset($serviceRequestDetail->product->updated_at);
 
-        /* Unset product data */
+        /* Unset servicerequestlog data */
         foreach ($serviceRequestDetail->servicerequestlog as $key => $unsetvalue) {
             unset($unsetvalue->action_made);
             unset($unsetvalue->action_made_company);
         }
         
         /* Customer data */
-        $customer           = $serviceRequestDetail->customer;
-        $response->customer = $customer;
+        $response->customer = $serviceRequestDetail->customer;
 
         /* Service center data */
-        $serviceCenter           = $serviceRequestDetail->service_center;
-        $response->serviceCenter = $serviceCenter;
+        $response->serviceCenter = $serviceRequestDetail->service_center;
 
         /* Technician data */
         $response->technician_name = '';
@@ -917,9 +915,15 @@ class ServiceRequestApiController extends Controller
         $response->callPriority  = $serviceRequestDetail->priority;
 
         /* Product data */
-        $product           = $serviceRequestDetail->product;
-        $response->product = $product;
+        $response->product = $serviceRequestDetail->product;
 
+        /* Product parts data*/
+        $product_parts = (object)array();
+        if($serviceRequestDetail->service_type == 'repair'){
+            $product_parts = (object)$serviceRequestDetail->parts;
+        }
+        $response->product_parts = $product_parts;
+        
         /* Other data */
         $response->is_item_in_warrenty  = $serviceRequestDetail->is_item_in_warrenty;
         $response->model_no             = $serviceRequestDetail->model_no;
@@ -933,8 +937,7 @@ class ServiceRequestApiController extends Controller
         $response->bill_no              = $serviceRequestDetail->bill_no;
 
         /* Complain data */
-        $complain = $serviceRequestDetail->complain_details;  
-        $response->complain = $complain;
+        $response->complain = $serviceRequestDetail->complain_details;
 
         /* Completion date */
         $response->completion_date = $serviceRequestDetail->completion_date;
