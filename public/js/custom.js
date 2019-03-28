@@ -190,10 +190,10 @@ function requestCharge(ele) {
 
 		// $(".partsDiv").css('display','none');
 		$(".partsDiv").hide();
-		if(companyId == "")
-		{
-			return false;
-		}
+		// if(companyId == "")
+		// {
+		// 	return false;
+		// }
 	}
 	else
 	{
@@ -203,14 +203,14 @@ function requestCharge(ele) {
 		$(".partsDiv").css('display','block');
 		$(".partsDiv").show();
 		$(".partsDiv").find(".select2").select2();
-		if(productId == "")
-		{
-			return false;
-		}
+		// if(productId == "")
+		// {
+		// 	return false;
+		// }
 	}
 
-	if(companyId || productId)
-	{
+	// if(companyId || productId)
+	// {
 		$.ajax({
 	       	type:'GET',
 	       	url:APP_URL+'/admin/getCharge',
@@ -241,7 +241,7 @@ function requestCharge(ele) {
 	          	$("#status").html(data.statusOptions);
 	       	}
 	    });
-	}
+	// }
 	
 }
 function totalServiceAmount() {

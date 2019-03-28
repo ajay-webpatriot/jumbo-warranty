@@ -82,6 +82,7 @@ class ServiceCenterAdminsController extends Controller
         $requestFilterCountQuery =  User::select('users.*','service_centers.name as service_center_name')
          ->join('service_centers','users.service_center_id','=','service_centers.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->whereNull('service_centers.deleted_at')
          ->where('service_centers.status','Active')
          ->where('users.role_id',config('constants.SERVICE_ADMIN_ROLE_ID'));
 
@@ -113,6 +114,7 @@ class ServiceCenterAdminsController extends Controller
         $service_center_adminsQuery = User::select('users.*','service_centers.name as service_center_name')
          ->join('service_centers','users.service_center_id','=','service_centers.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->whereNull('service_centers.deleted_at')
          ->where('service_centers.status','Active')
          ->where('users.role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
          ->offset($start)
@@ -150,6 +152,7 @@ class ServiceCenterAdminsController extends Controller
         $countRecord = User::select('users.*','service_centers.name as service_center_name')
          ->join('service_centers','users.service_center_id','=','service_centers.id')
          ->join('roles','users.role_id','=','roles.id')
+         ->whereNull('service_centers.deleted_at')
          ->where('service_centers.status','Active')
          ->where('users.role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))->count('users.id');
         if(!empty($service_center_admins)){
