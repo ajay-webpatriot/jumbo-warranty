@@ -890,7 +890,6 @@ class ServiceRequestsController extends Controller
         }
         
         $service_request = ServiceRequest::findOrFail($id);
-
         if($request['service_center_id'] == "" && isset($request['suggested_service_center']))
         {
             if($request['suggested_service_center'] != "")
@@ -1003,6 +1002,11 @@ class ServiceRequestsController extends Controller
                 ServiceRequestLog::create($insertServiceRequestLogArr);
 
                    
+            }
+            if($request['status'] == "Closed" && $service_request->is_accepted == 0)
+            {
+                // if techician is assigned, request is not accepted and any user close the request, is_accepted will be set to 1
+                $request['is_accepted'] = 1;
             }
             // if($request['status'] =="Service center assigned"){
             //         $request['status']="Technician assigned";
