@@ -34,7 +34,7 @@ class StoreServiceRequestsRequest extends FormRequest
             'parts.*' => 'exists:product_parts,id',
             'status' => 'required',
             'additional_charges_title' => 'required_with:additional_charges',
-            'additional_charges' => 'required_with:additional_charges_title'
+            'additional_charges' => 'required_with:additional_charges_title|min:0|not_in:0'
         ];
     }
 }
