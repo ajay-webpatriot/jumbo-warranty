@@ -412,6 +412,7 @@ class ServiceRequestsController extends Controller
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.status', 'like', '%' . $searchVal . '%');
 
                 });
             }
@@ -785,6 +786,11 @@ class ServiceRequestsController extends Controller
         
         $service_request['additional_charges']=$additional_charges;
 
+        $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
+                                        ->where('status','Active')
+                                        ->get()->first();
+
+        $service_center_supported = true;
         if($service_request['service_center_id'] != "")
         {
             // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
@@ -792,6 +798,14 @@ class ServiceRequestsController extends Controller
                                     ->where('status','Active')
                                     ->where('service_center_id',$service_request['service_center_id'])
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+
+            // check service center supported to apply transportation charges
+            $supported_center_detail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $custAddressData->zipcode . '%')->where('id',$service_request['service_center_id'])->get();
+            if(count($supported_center_detail) <= 0)
+            {
+                $service_center_supported = false;
+            }
+
         }
         else
         {
@@ -802,9 +816,7 @@ class ServiceRequestsController extends Controller
 // echo "</pre>";
 // exit();
 
-        $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
-                                        ->where('status','Active')
-                                        ->get()->first();
+        
           
         $parts=array();
         $products=array(''=>trans('quickadmin.qa_please_select'));                             
@@ -875,8 +887,7 @@ class ServiceRequestsController extends Controller
         }
 
         
-
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title'))->with('no', 1);
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported'))->with('no', 1);
         // $user_name=ucwords('user name');
         // $subject='sub';
         // return view('admin.emails.service_request_detail_email', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);

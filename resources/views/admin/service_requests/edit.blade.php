@@ -562,8 +562,11 @@
                                         </div>
                                     </div>
                                     @endif -->
-
+                                    @if(!$service_center_supported && (auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')))
+                                    <div class="row transportationDiv">
+                                    @else
                                     <div class="row transportationDiv" {{ ($service_request->transportation_charge <= 0) ? 'style=display:none' : ''}}>
+                                    @endif
                                         <div class="col-md-12">
                                             <div class="row">
                                                 <div class="col-sm-8">

@@ -282,6 +282,7 @@ class ServiceRequest extends Model
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.status', 'like', '%' . $searchVal . '%');
 
                 });
             }
