@@ -22,7 +22,8 @@ class ServiceRequestApiController extends Controller
             ->where('status','Active')
             ->first();
 
-            if(count($user) > 0){
+            // if(count($user) > 0){
+            if(!empty($user) > 0){
                 $valid = true;
             }
         }
@@ -725,21 +726,19 @@ class ServiceRequestApiController extends Controller
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
 
         $additional_charges = NULL;
-        $total_amount = 0;
+        $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge;
+        $total_amount+=($serviceRequestDetail->transportation_charge == "") ? 0 : number_format((float)$serviceRequestDetail->transportation_charge, 2, '.', '');
 
         if(isset($json['additionalChargesFor']) && !empty($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
             if(isset($json['additionalCharges']) && !empty($json['additionalCharges']) && $json['additionalCharges'] != 0){
 
-                $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge +(($json['additionalCharges'] == "")?0:number_format((float)$json['additionalCharges'], 2, '.', ''));
+                // $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge +(($json['additionalCharges'] == "")?0:number_format((float)$json['additionalCharges'], 2, '.', ''));
+                $total_amount+=(($json['additionalCharges'] == "")?0:number_format((float)$json['additionalCharges'], 2, '.', ''));
 
-                $total_amount += $serviceRequestDetail->transportation_charge;
+                // $total_amount += $serviceRequestDetail->transportation_charge;
                 
                 $additional_charges = json_encode(array($json['additionalChargesFor'] => number_format((float)$json['additionalCharges'], 2, '.', '')));
             }
-        }
-        else
-        {
-            $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge;
         }
         
         $serviceRequestDetail->additional_charges = $additional_charges;
@@ -922,7 +921,7 @@ class ServiceRequestApiController extends Controller
         $response->product = $serviceRequestDetail->product;
 
         /* Product parts data*/
-        $product_parts = (object)array();
+        $product_parts = array();
         if($serviceRequestDetail->service_type == 'repair'){
             $product_parts = (object)$serviceRequestDetail->parts;
         }

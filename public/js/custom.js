@@ -82,7 +82,7 @@ $(document).ready(function(){
 
 		if($("#additional_charges").val().trim() != "" && $("#additional_charges").val() <= 0)
         {
-        	$("#additional_charges").next(".help-block").html("The additional charges is invalid.");
+        	$("#additional_charges").next(".help-block").html("The additional charges must be greater than 0.");
 			status = false;
         }
 		else if($("#additional_charges_title").val().trim() != "" && $("#additional_charges").val().trim() == "")
