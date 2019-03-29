@@ -737,6 +737,10 @@ class ServiceRequestApiController extends Controller
                 $additional_charges = json_encode(array($json['additionalChargesFor'] => number_format((float)$json['additionalCharges'], 2, '.', '')));
             }
         }
+        else
+        {
+            $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge;
+        }
         
         $serviceRequestDetail->additional_charges = $additional_charges;
         $serviceRequestDetail->amount = $total_amount;
