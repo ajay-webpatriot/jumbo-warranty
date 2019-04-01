@@ -308,8 +308,8 @@ class ServiceRequest extends Model
                 'service_requests.is_accepted'
             )
             ->join('customers','service_requests.customer_id','=','customers.id')
-            ->join('products','service_requests.product_id','=','products.id');
-            
+            ->join('products','service_requests.product_id','=','products.id')
+            ->orderBy('service_requests.id','Desc');
             return $assignedRequest->get()->toArray();
         }
     }
@@ -339,7 +339,8 @@ class ServiceRequest extends Model
                 'service_requests.is_accepted'
             )
             ->join('customers','service_requests.customer_id','=','customers.id')
-            ->join('products','service_requests.product_id','=','products.id');
+            ->join('products','service_requests.product_id','=','products.id')
+            ->orderBy('service_requests.id','Desc');
             return $dueRequest->get();
         }
     }
@@ -362,7 +363,8 @@ class ServiceRequest extends Model
                 'service_requests.is_accepted'
             )
             ->join('customers','service_requests.customer_id','=','customers.id')
-            ->join('products','service_requests.product_id','=','products.id');
+            ->join('products','service_requests.product_id','=','products.id')
+            ->orderBy('service_requests.id','Desc');
             return $resolvedRequest->get();
         }
     }
