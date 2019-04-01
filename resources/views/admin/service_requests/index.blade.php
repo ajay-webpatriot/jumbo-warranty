@@ -433,10 +433,10 @@
                     "visible": false,
                     "searchable": false
                 },
-                // {
-                //     "class": "text-right",
-                //     "targets":   6
-                // },
+                {
+                    "class": "text-right",
+                    "targets":   5
+                },
                 {
                     "class": "text-center",
                     "targets":   6
