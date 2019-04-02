@@ -199,7 +199,7 @@
                             
                             <th>@lang('quickadmin.service-request.fields.customer')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
-                            <th>@lang('quickadmin.service-request.fields.service-center')</th>
+                            <!-- <th>@lang('quickadmin.service-request.fields.service-center')</th> -->
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
@@ -292,14 +292,33 @@
                         extend: 'pdf',
                         text: window.pdfButtonTrans,
                         exportOptions: {
-                            columns: ':visible'
+                            // columns: ':visible'
+                            columns: [1, 2, 3, 4, 5]
+                        },
+                        customize: function (doc) {
+                            // var iColumns = $('#technician thead th').length;
+                            // set alignment of amount and request status column for PDF screen
+                            var rowCount = document.getElementById("technician").rows.length;
+                            
+                            for (i = 0; i < rowCount; i++) {
+                                    
+                                    doc.content[1].table.body[i][3].alignment = 'right';
+                                    doc.content[1].table.body[i][4].alignment = 'center';
+                                 
+                            }
                         }
                     },
                     {
                         extend: 'print',
                         text: window.printButtonTrans,
                         exportOptions: {
-                            columns: ':visible'
+                            // columns: ':visible'
+                            columns: [1, 2, 3, 4, 5]
+                        },
+                        customize: function (win) {
+                            // set alignment of amount and request status column for print screen
+                            $(win.document.body).find('table tbody td:nth-child(4)').css('text-align', 'right');
+                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'center');
                         }
                     }
                 ],
@@ -323,7 +342,7 @@
                     // { "data": "checkbox" },
                     { "data": "customer","name": "customer"},
                     { "data": "service_type","name": "service_type" },
-                    { "data": "service_center","name": "service_center" },
+                    /*{ "data": "service_center","name": "service_center" },*/
                     { "data": "product","name": "product" },
                     { "data": "amount","name": "amount" },
                     { "data": "request_status","name": "request_status" },
@@ -337,7 +356,7 @@
                     "searchable": false
                 },{
                     "orderable": true,
-                    "targets":   [1,2,3,4,5,6]
+                    "targets":   [1,2,3,4,5]
                 },
                 // {
                 //     "orderable": true,
@@ -357,15 +376,15 @@
                 // },
                 {
                     "class": "text-right",
-                    "targets":   5
+                    "targets":   4
                 },
                 {
                     "class": "text-center",
-                    "targets":   6
+                    "targets":   5
                 },
                 {
                     "orderable": false,
-                    "targets":   7
+                    "targets":   6
                 }]
             });
             
@@ -385,14 +404,33 @@
                         extend: 'pdf',
                         text: window.pdfButtonTrans,
                         exportOptions: {
-                            columns: ':visible'
+                            // columns: ':visible'
+                            columns: [2, 3, 4, 5, 6]
+                        },
+                        customize: function (doc) {
+                            // var iColumns = $('#company thead th').length;
+                            // set alignment of amount and request status column for PDF screen
+                            var rowCount = document.getElementById("company").rows.length;
+                            
+                            for (i = 0; i < rowCount; i++) {
+                                    
+                                    doc.content[1].table.body[i][3].alignment = 'right';
+                                    doc.content[1].table.body[i][4].alignment = 'center';
+                                 
+                            }
                         }
                     },
                     {
                         extend: 'print',
                         text: window.printButtonTrans,
                         exportOptions: {
-                            columns: ':visible'
+                            // columns: ':visible'
+                            columns: [2, 3, 4, 5, 6]
+                        },
+                        customize: function (win) {
+                            // set alignment of amount and request status column for print screen
+                            $(win.document.body).find('table tbody td:nth-child(4)').css('text-align', 'right');
+                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'center');
                         }
                     }
                 ],
@@ -483,14 +521,33 @@
                         extend: 'pdf',
                         text: window.pdfButtonTrans,
                         exportOptions: {
-                            columns: ':visible'
+                            // columns: ':visible'
+                            columns: [2, 3, 4, 5, 6, 7, 8]
+                        },
+                        customize: function (doc) {
+                            // var iColumns = $('#company thead th').length;
+                            // set alignment of amount and request status column for PDF screen
+                            var rowCount = document.getElementById("serviceRequest").rows.length;
+                            
+                            for (i = 0; i < rowCount; i++) {
+                                    
+                                    doc.content[1].table.body[i][5].alignment = 'right';
+                                    doc.content[1].table.body[i][6].alignment = 'center';
+                                 
+                            }
                         }
                     },
                     {
                         extend: 'print',
                         text: window.printButtonTrans,
                         exportOptions: {
-                            columns: ':visible'
+                            // columns: ':visible'
+                            columns: [2, 3, 4, 5, 6, 7, 8]
+                        },
+                        customize: function (win) {
+                            // set alignment of amount and request status column for print screen
+                            $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'right');
+                            $(win.document.body).find('table tbody td:nth-child(7)').css('text-align', 'center');
                         }
                     }
                 ],

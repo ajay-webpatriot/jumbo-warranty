@@ -390,22 +390,9 @@ class ServiceRequestsController extends Controller
                 $searchVal = $request['search']['value'];
                 $service_requestsQuery->where(function ($query) use ($searchVal) {
 
-                    // if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                    // {
-                    //     $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-
-                    // }else 
-                    if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
-
-                        $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
-
-                    }else {
-
-                        if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
-                        {
-                            $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-                        }
-
+                    if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                    {
+                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
                         $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
                     }
                     $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
@@ -451,7 +438,6 @@ class ServiceRequestsController extends Controller
                 $countRecordQuery->Where('service_requests.company_id', auth()->user()->company_id);
             }
             $countRecord = $countRecordQuery->count('service_requests.id');
-
 
             foreach ($service_requests as $key => $SingleServiceRequest) {
 

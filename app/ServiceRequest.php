@@ -265,15 +265,17 @@ class ServiceRequest extends Model
                 $searchVal = $request['search']['value'];
                 $service_requestsQuery->where(function ($query) use ($searchVal) {
 
-                    if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    // if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                    // {
+                    //     $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+
+                    // }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+                    //     $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
+
+                    // }
+                    if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                     {
-                        $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-
-                    }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
-
-                        $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
-
-                    }else{
 
                         $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
                         $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
