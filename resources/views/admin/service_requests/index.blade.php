@@ -204,7 +204,7 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
-                            <th>Action</th>
+                            <th>@lang('quickadmin.qa_action')</th>
                             
                             {{--@if( request('show_deleted') == 1 )
                             <th>Action</th>
@@ -234,7 +234,7 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
-                            <th>Action</th>
+                            <th>@lang('quickadmin.qa_action')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -257,7 +257,7 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
-                            <th>Action</th>
+                            <th>@lang('quickadmin.qa_action')</th>
                         </tr>
                     </thead>
                     <tbody>

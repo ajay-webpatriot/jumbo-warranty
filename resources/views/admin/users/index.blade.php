@@ -30,7 +30,8 @@
                         <th>@lang('quickadmin.users.fields.phone')</th>
                         <th>@lang('quickadmin.users.fields.email')</th>
                         <th>@lang('quickadmin.users.fields.status')</th>
-                                                <th>&nbsp;</th>
+                        <!-- <th>&nbsp;</th> -->
+                        <th>@lang('quickadmin.qa_action')</th>
 
                     </tr>
                 </thead>

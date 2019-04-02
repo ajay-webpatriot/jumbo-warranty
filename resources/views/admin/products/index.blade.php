@@ -37,11 +37,12 @@
                         <th>@lang('quickadmin.products.fields.category')</th>
                         <th>@lang('quickadmin.products.fields.price')</th>
                         <th>@lang('quickadmin.products.fields.status')</th>
-                        @if( request('show_deleted') == 1 )
+                        {{-- @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
                         <th>&nbsp;</th>
-                        @endif
+                        @endif --}}
+                        <th>@lang('quickadmin.qa_action')</th>
                     </tr>
                 </thead>
                 

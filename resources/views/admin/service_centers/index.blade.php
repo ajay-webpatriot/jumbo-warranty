@@ -44,11 +44,12 @@
                         <th>@lang('quickadmin.service-center.fields.state')</th>
                         <th>@lang('quickadmin.service-center.fields.zipcode')</th> -->
                         
-                        @if( request('show_deleted') == 1 )
+                        {{-- @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
                         <th>&nbsp;</th>
-                        @endif
+                        @endif --}}
+                        <th>@lang('quickadmin.qa_action')</th>
                     </tr>
                 </thead>
                 

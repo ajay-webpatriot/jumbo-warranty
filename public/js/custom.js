@@ -109,7 +109,23 @@ $(document).ready(function(){
 		{
 			$(this).closest('tr').addClass('selected');
 		}
-			
+		var tbl_datatable = $(this).closest(".datatable");
+		selected_checkbox_length=tbl_datatable.DataTable().rows('.selected').data().length;
+		if(selected_checkbox_length > 0)
+		{
+			if(tbl_datatable.parent().find(".select-info").length == 0 )
+            {
+            	tbl_datatable.parent().find('.dataTables_info').append('<span class="select-info"><span class="select-item">'+selected_checkbox_length+' row selected</span><span class="select-item"></span><span class="select-item"></span></span>');
+            }
+            else{
+            	tbl_datatable.parent().find('.dataTables_info span:nth-child(1)').html(selected_checkbox_length+' rows selected');
+            }
+			// alert( table.rows('.selected').data().length +' row(s) selected' );
+		}
+		else
+		{
+			tbl_datatable.parent().find(".select-info").remove();
+		}
 	});
 
 	$(document).on('click','#serviceRequest.datatable #select-all, #company.datatable #select-all, #company_admin.datatable #select-all, #company_user.datatable #select-all, #customer.datatable #select-all, #assign_product.datatable #select-all, #assign_part.datatable #select-all, #service_center_admin.datatable #select-all, #technician.datatable #select-all',function (){

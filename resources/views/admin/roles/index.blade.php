@@ -27,8 +27,8 @@
 
                         <th>@lang('quickadmin.roles.fields.title')</th>
                         <th>@lang('quickadmin.roles.fields.status')</th>
-                                                <th>&nbsp;</th>
-
+                        <!-- <th>&nbsp;</th> -->
+                        <th>@lang('quickadmin.qa_action')</th>
                     </tr>
                 </thead>
                 

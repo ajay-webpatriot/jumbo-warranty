@@ -42,11 +42,12 @@
                         <th>@lang('quickadmin.company.fields.state')</th>
                         <!-- <th>@lang('quickadmin.company.fields.zipcode')</th> -->
                         <th>@lang('quickadmin.company.fields.status')</th>
-                        @if( request('show_deleted') == 1 )
+                        {{-- @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
                         <th>&nbsp;</th>
-                        @endif
+                        @endif --}}
+                        <th>@lang('quickadmin.qa_action')</th>
                     </tr>
                 </thead>
                 

@@ -26,7 +26,8 @@
         </div>
 
         <div class="panel-body table-responsive">
-            <table class="table table-bordered table-striped {{ count($invoices) > 0 ? 'datatable_invoice' : '' }} @can('invoice_delete') @if ( request('show_deleted') != 1 ) dt-select @endif @endcan">
+            {{-- <table class="table table-bordered table-striped {{ count($invoices) > 0 ? 'datatable_invoice datatable' : '' }} @can('invoice_delete') @if ( request('show_deleted') != 1 ) dt-select @endif @endcan"> --}}
+            <table class="table table-bordered table-striped {{ count($invoices) > 0 ? 'datatable' : '' }} @can('invoice_delete') @if ( request('show_deleted') != 1 ) dt-select @endif @endcan">
                 <thead>
                     <tr>
                         @can('invoice_delete')
@@ -35,11 +36,12 @@
 
                         <th>@lang('quickadmin.invoices.fields.company')</th>
                         <th>@lang('quickadmin.invoices.fields.status')</th>
-                        @if( request('show_deleted') == 1 )
+                        {{-- @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
                         @else
                         <th>&nbsp;</th>
-                        @endif
+                        @endif --}}
+                        <th>@lang('quickadmin.qa_action')</th>
                     </tr>
                 </thead>
                 
