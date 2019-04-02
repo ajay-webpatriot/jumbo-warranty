@@ -118,7 +118,7 @@ $(document).ready(function(){
             	tbl_datatable.parent().find('.dataTables_info').append('<span class="select-info"><span class="select-item">'+selected_checkbox_length+' row selected</span><span class="select-item"></span><span class="select-item"></span></span>');
             }
             else{
-            	tbl_datatable.parent().find('.dataTables_info span:nth-child(1)').html(selected_checkbox_length+' rows selected');
+            	tbl_datatable.parent().find('.select-info span:nth-child(1)').html(selected_checkbox_length+' rows selected');
             }
 			// alert( table.rows('.selected').data().length +' row(s) selected' );
 		}
