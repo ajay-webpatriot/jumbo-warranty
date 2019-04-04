@@ -192,7 +192,7 @@
                 {{--<!-- <table  id="technician" class="display {{ count($service_requests) > 0 ? 'datatable' : '' }} @can('service_request_delete') @if ( request('show_deleted') != 1 ) dt-select @endif @endcan"> -->--}}
                     <thead>
                         <tr>
-                            <th>Sr No.</th>
+                            <th>@lang('quickadmin.service-request.fields.request-id')</th>
                             {{--@can('service_request_delete')
                                 @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" class="dt-body-center" id="select-all" /></th>@endif
                             @endcan--}}
@@ -226,7 +226,7 @@
                             @can('service_request_delete')
                                 <th style="text-align:center;"><input type="checkbox" class="dt-body-center" id="select-all" /></th>
                             @endcan
-                            <th>Sr No.</th>
+                            <th>@lang('quickadmin.service-request.fields.request-id')</th>
                             <!-- <th>@lang('quickadmin.service-request.fields.company')</th> -->
                             <th>@lang('quickadmin.service-request.fields.customer')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
@@ -249,7 +249,7 @@
                             @can('service_request_delete')
                                 <th style="text-align:center;"><input type="checkbox" class="dt-body-center select-checkbox" id="select-all" /></th>
                             @endcan
-                            <th>Sr No.</th>
+                            <th>@lang('quickadmin.service-request.fields.request-id')</th>
                             <th>@lang('quickadmin.service-request.fields.company')</th>
                             <th>@lang('quickadmin.service-request.fields.customer')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
@@ -349,11 +349,12 @@
                     { "data": "action" }
                 ],
                 "columnDefs": [{
-                    "orderable": false,
-                    "className": 'dt-body-center select-checkbox',
+                    "orderable": true,
+                    // "className": 'dt-body-center select-checkbox',
+                    "className": 'dt-body-center',
                     "targets":   0,
-                    "visible": false,
-                    "searchable": false
+                    "visible": true,
+                    "searchable": true
                 },{
                     "orderable": true,
                     "targets":   [1,2,3,4,5]
@@ -465,11 +466,11 @@
                     "targets":   0,
                     "searchable": false
                 },{
-                    "orderable": false,
+                    "orderable": true,
                     "className": 'dt-body-center',
                     "targets":   1,
-                    "visible": false,
-                    "searchable": false
+                    "visible": true,
+                    "searchable": true
                 },
                 {
                     "class": "text-right",
@@ -590,11 +591,11 @@
                     "targets":   0,
                     "searchable": false
                 },{
-                    "orderable": false,
+                    "orderable": true,
                     "className": 'dt-body-center',
                     "targets":   1,
-                    "visible": false,
-                    "searchable": false
+                    "visible": true,
+                    "searchable": true
                 },{
                     "class": "text-right",
                     "targets":   7

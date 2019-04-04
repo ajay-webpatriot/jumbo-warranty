@@ -107,6 +107,10 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
     Route::get('/getFilterTechnicians','Admin\ServiceRequestsController@getFilterTechnicians');
     
     Route::get('service_request_accept/{id}', ['uses' => 'Admin\ServiceRequestsController@acceptServiceRequest', 'as' => 'service_request.accept']);
+
+    //update paid status
+    Route::post('/amountPaid', ['uses' => 'Admin\ServiceRequestsController@amountPaid']);
+
     Route::get('service_request_reject/{id}', ['uses' => 'Admin\ServiceRequestsController@rejectServiceRequest', 'as' => 'service_request.reject']);
 
     /* admin dashboard route */

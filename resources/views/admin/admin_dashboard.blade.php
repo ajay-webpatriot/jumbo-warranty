@@ -71,15 +71,17 @@
                                                 <div class="row"> -->
 
                                                     <!-- Total PENDING complain -->
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <div class="info-box bg-aqua">
-                                                            <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-text boxfont">TOTAL INSTALLATION REQUESTS</span>
-                                                                <span class="info-box-number" id="installationToday">{{-- $installationToday --}}</span>
+                                                    <a href="">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <div class="info-box bg-aqua">
+                                                                <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
+                                                                <div class="info-box-content">
+                                                                    <span class="info-box-text boxfont">TOTAL INSTALLATION REQUESTS</span>
+                                                                    <span class="info-box-number" id="installationToday">{{-- $installationToday --}}</span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
 
                                                     <!-- Total PENDING installation -->
                                                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -200,15 +202,36 @@
                                     @if(!empty($ServiceTypeDetails))
                                         @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
                                             <li class="item">
+                                                <div class="product-img">
+                                                    <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}">
+                                                        <span class="product-title"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </span> 
+                                                    </a>
+                                                </div>
+
+                                                
+
+                                                <div class="product-info">
+                                                    <?php
+                                                        $status = '';
+                                                    ?>
+                                                    @if($SingleServiceTypeDetail->status != '')
+                                                        <?php
+                                                            $status = '( '.$SingleServiceTypeDetail->status.' )';
+                                                        ?>
+                                                    @endif
                                                     <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
                                                         {{$SingleServiceTypeDetail->servicerequest_title}}
                                                         <span class="label label-info pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
                                                         </span>
+                                                        <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
                                                     </a>
-                                                    
                                                     <span class="product-description">
                                                         {{$SingleServiceTypeDetail->customer_name}}
                                                     </span>
+                                                    <span class="product-description">
+                                                        {{$status}}
+                                                    </span>
+                                                </div>
                                             </li>
                                         @endforeach
                                     @else

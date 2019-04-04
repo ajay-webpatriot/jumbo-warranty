@@ -48,7 +48,7 @@ class ServiceRequest extends Model
 
     public static $enum_service_type = ["installation" => "Installation", "repair" => "Repair"];
 
-    public static $enum_call_type = ["AMC" => "AMC", "Chargeable" => "Chargeable", "FOC" => "FOC", "Warranty" => "Warranty"];
+    public static $enum_call_type = ["Chargeable" => "Chargeable", "Warranty" => "Warranty"];
 
     public static $enum_call_location = ["On site" => "On site", "In House" => "In House"];
 

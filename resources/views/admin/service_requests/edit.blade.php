@@ -22,7 +22,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
-            @lang('quickadmin.service-request.formTitle')
+            @lang('quickadmin.service-request.formTitle') ( {{ 'JW'.sprintf("%04d", $service_request->id)}} )
         </div>
 
         <div class="panel-body">
@@ -47,6 +47,7 @@
                                 <div class="col-md-6 form-group">
                                     {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').':', ['class' => 'control-label lablemargin','readonly' => '']) !!}
                                     {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
+                                   
                                 </div>
                             </div>
                         </div>
@@ -364,16 +365,16 @@
                                         @endif
                                     </div>
 
-                                    <div class="form-group">
-                                        {!! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').'*', ['class' => 'control-label']) !!}
-                                        {!! Form::select('is_item_in_warrenty', $enum_is_item_in_warrenty, old('is_item_in_warrenty'), ['class' => 'form-control select2', 'required' => '']) !!}
-                                        <p class="help-block"></p>
-                                        @if($errors->has('is_item_in_warrenty'))
-                                            <p class="help-block">
-                                                {{ $errors->first('is_item_in_warrenty') }}
-                                            </p>
-                                        @endif
-                                    </div>
+                                    <!-- <div class="form-group"> -->
+                                        {{-- !! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').'*', ['class' => 'control-label']) !!--}}
+                                        {{-- !! Form::select('is_item_in_warrenty', $enum_is_item_in_warrenty, old('is_item_in_warrenty'), ['class' => 'form-control select2', 'required' => '']) !! --}}
+                                        <!-- <p class="help-block"></p> -->
+                                        {{-- @if($errors->has('is_item_in_warrenty')) --}}
+                                            <!-- <p class="help-block"> -->
+                                                {{-- $errors->first('is_item_in_warrenty') --}}
+                                            <!-- </p> -->
+                                        {{-- @endif --}}
+                                    <!-- </div> -->
                                 </div>
 
                                 <div class="col-md-6">
@@ -632,7 +633,20 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
+                                            <?php 
+                                                $paidStatus = '';
+                                            ?>
+                                            @if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
+                                                <?php 
+                                                    $paidStatus = '( Due ) ';
+                                                ?>
+                                                @if($service_request->status == "Closed" && $service_request->is_paid == 1)
+                                                <?php 
+                                                    $paidStatus = '( Paid ) ';
+                                                ?>
+                                                @endif
+                                            @endif
+                                            {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').''.$paidStatus.':' , ['class' => 'control-label']) !!}
 
                                             <!-- total amount value label -->
                                             {!! Form::label('totalamount',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
@@ -699,6 +713,12 @@
     @else
         <div class="row">
             <div class="col-md-12 form-group">
+                @if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
+                    <button type="button" onclick="updatePaidstatus({{$service_request->id}})"
+                     class="btn btn-danger">@lang('quickadmin.qa_paid')</button>
+                @endif
+
+        
                 {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate']) !!}
                 <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
                 {!! Form::close() !!}
@@ -815,6 +835,27 @@
                 $(this).find('select:disabled').removeAttr('disabled');
             });
         });
+
+        function updatePaidstatus(serviceRequestId) {
+            if(serviceRequestId != 0){
+
+               $.ajax({
+                type:'POST',
+                url:APP_URL+"/admin/amountPaid",
+                data:{
+                    'serviceRequestId':serviceRequestId,
+                    '_token': '{{csrf_token()}}'
+                },
+                dataType: "json",
+                success:function(data) {
+                    if(data == 1){
+                        window.location.reload();
+                    }
+                }
+               });
+              
+            }
+        }
     </script>
             
     <script>

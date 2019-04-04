@@ -390,6 +390,9 @@ class ServiceRequestsController extends Controller
                 $searchVal = $request['search']['value'];
                 $service_requestsQuery->where(function ($query) use ($searchVal) {
 
+                    $RequestedId = trim($searchVal,'JW');
+                    $clearRequestId = ltrim($RequestedId, '0');
+
                     if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                     {
                         $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
@@ -399,6 +402,7 @@ class ServiceRequestsController extends Controller
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.id', 'like', '%' . $clearRequestId . '%');
                     $query->orWhere('service_requests.status', 'like', '%' . $searchVal . '%');
 
                 });
@@ -462,7 +466,7 @@ class ServiceRequestsController extends Controller
                         $tableField['checkbox'] = '';
                     }
                 }
-                $tableField['sr_no'] = $SingleServiceRequest->id;
+                $tableField['sr_no'] = 'JW'.sprintf("%04d", $SingleServiceRequest->id);
                 $tableField['customer'] = $SingleServiceRequest->firstname;
                 $tableField['service_type'] =ucfirst($SingleServiceRequest->service_type);
                 $tableField['product'] =ucfirst($SingleServiceRequest->pname);
@@ -797,12 +801,6 @@ class ServiceRequestsController extends Controller
         {
             $technicians=array(''=>trans('quickadmin.qa_please_select'));
         }
-// echo "<pre>";
-// print_r($technicians);
-// echo "</pre>";
-// exit();
-
-        
           
         $parts=array();
         $products=array(''=>trans('quickadmin.qa_please_select'));                             
@@ -1813,6 +1811,19 @@ class ServiceRequestsController extends Controller
         echo json_encode($data);
         exit;
     
+    }
+
+    public function amountPaid( Request $request )
+    {
+        $requestDetail = ServiceRequest::find($request->serviceRequestId);
+        $requestDetail->is_paid = 1;
+        $status = $requestDetail->save();
+        if($status == 1){
+            return 1;
+        }else{
+            return 0;
+        }
+
     }
 
     public function sendPushNotificationTechnician($technicianId,$lastInsertedId)

@@ -847,7 +847,8 @@ class ServiceRequestApiController extends Controller
         $overview = (object)array(
             "product_title" => ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name,
             "created_at"    => date('Y-m-d H:i:s',strtotime($serviceRequestDetail->created_at)),
-            "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode)
+            "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode),
+            "service_request_number" => 'JW'.sprintf("%04d", $serviceRequestDetail->id)
         );   
         
         $response->overview = $overview;

@@ -4,7 +4,7 @@
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     <style>
         .lablemargin{
-            margin-top: 30px;
+            margin-top: 20px;
         }
         hr{
             margin-top: 10px !important;
@@ -19,7 +19,7 @@
     </style>
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
-            @lang('quickadmin.service-request.formTitle')
+            @lang('quickadmin.service-request.formTitle') ( {{ 'JW'.sprintf("%04d", $service_request->id)}} )
         </div>
 
         <div class="panel-body table-responsive">
@@ -39,16 +39,16 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').': ', ['class' => 'control-label lablemargin','readonly' => '']) !!}
-                                    {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
+                                    {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').': ', ['class' => 'control-label','readonly' => '']) !!}
+                                    {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label fontweight','readonly' => '']) !!}
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-12">
                             <!-- Request Status -->
-                           {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
-                            {!! Form::label('status', $service_request->status, ['class' => 'control-label fontweight']) !!}
+                           {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label lablemargin']) !!}
+                            {!! Form::label('status', $service_request->status, ['class' => 'control-label lablemargin fontweight']) !!}
                         </div>
                     </div>
 
@@ -237,11 +237,11 @@
                                         {!! Form::label('', $service_request->model_no, ['class' => 'control-label fontweight']) !!}
                                     </div>
 
-                                    <div class="form-group">
-                                        {!! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').': ', ['class' => 'control-label']) !!}
+                                    <!-- <div class="form-group"> -->
+                                        {{-- !! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').': ', ['class' => 'control-label']) !! --}}
                                         
-                                        {!! Form::label('', $service_request->is_item_in_warrenty, ['class' => 'control-label fontweight']) !!}
-                                    </div>
+                                        {{-- !! Form::label('', $service_request->is_item_in_warrenty, ['class' => 'control-label fontweight']) !! --}}
+                                    <!-- </div> -->
                                 </div>
 
                                 <div class="col-md-6">

@@ -29,7 +29,7 @@ class UpdateServiceCentersRequest extends FormRequest
             'location_latitude'=>'required',
             'location_longitude'=>'required',
 
-            'commission' => 'max:2147483647|required|numeric',
+            // 'commission' => 'max:2147483647|required|numeric',
             'city' => 'required',
             'state' => 'required',
             'zipcode' => 'required|min:6|max:6',

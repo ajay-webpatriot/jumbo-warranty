@@ -57,7 +57,7 @@
                                 <!-- Company & Customer -->
                                 @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                     <!-- company will not visible to company admin,user, service center admin and technician -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
@@ -71,10 +71,19 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <button class="btn btn-success" type="button" style="margin-top: 23px;">+</button>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
                                 @else
                                     {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control', 'id' => 'company_id']) !!}
                                 @endif
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
                                     <div class="row custDiv">
                                         <div class="col-xs-12">
@@ -200,7 +209,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             {!! Form::label('call_type', trans('quickadmin.service-request.fields.call-type').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('call_type', $enum_call_type, old('call_type'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                            {!! Form::select('call_type', $enum_call_type, old('call_type'), ['class' => 'form-control select2', 'required' => '','id' => 'call_type']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('call_type'))
                                             <p class="help-block">
@@ -336,15 +345,35 @@
                                 
                                 </div>
                                 <div class="form-group">
-                                    {!! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').'*', ['class' => 'control-label']) !!}
-                                    {!! Form::select('is_item_in_warrenty', $enum_is_item_in_warrenty, old('is_item_in_warrenty'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                    {!! Form::label('purchase_from', trans('quickadmin.service-request.fields.purchase-from').'', ['class' => 'control-label']) !!}
+                                    {!! Form::text('purchase_from', old('purchase_from'), ['class' => 'form-control', 'placeholder' => '']) !!}
                                     <p class="help-block"></p>
-                                    @if($errors->has('is_item_in_warrenty'))
+                                    @if($errors->has('purchase_from'))
                                     <p class="help-block">
-                                        {{ $errors->first('is_item_in_warrenty') }}
+                                        {{ $errors->first('purchase_from') }}
                                     </p>
                                     @endif
                                 </div>
+                                <div class="form-group warrantycardnumber" style="display: none;">
+                                    {!! Form::label('warranty_card_number', trans('quickadmin.service-request.fields.warranty-card-number').'', ['class' => 'control-label']) !!}
+                                    {!! Form::text('warranty_card_number','', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                    <p class="help-block"></p>
+                                    @if($errors->has('warranty_card_number'))
+                                    <p class="help-block">
+                                        {{ $errors->first('warranty_card_number') }}
+                                    </p>
+                                    @endif
+                                </div>
+                                <!-- <div class="form-group"> -->
+                                    {{-- !! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').'*', ['class' => 'control-label']) !! --}}
+                                    {{-- !! Form::select('is_item_in_warrenty', $enum_is_item_in_warrenty, old('is_item_in_warrenty'), ['class' => 'form-control select2', 'required' => '']) !! --}}
+                                    <!-- <p class="help-block"></p> -->
+                                    {{-- @if($errors->has('is_item_in_warrenty')) --}}
+                                    <!-- <p class="help-block"> -->
+                                        {{-- $errors->first('is_item_in_warrenty') --}}
+                                    <!-- </p> -->
+                                    {{-- @endif --}}
+                                <!-- </div> -->
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -384,16 +413,7 @@
                                     </p>
                                     @endif
                                 </div>
-                                <div class="form-group">
-                                    {!! Form::label('purchase_from', trans('quickadmin.service-request.fields.purchase-from').'', ['class' => 'control-label']) !!}
-                                    {!! Form::text('purchase_from', old('purchase_from'), ['class' => 'form-control', 'placeholder' => '']) !!}
-                                    <p class="help-block"></p>
-                                    @if($errors->has('purchase_from'))
-                                    <p class="help-block">
-                                        {{ $errors->first('purchase_from') }}
-                                    </p>
-                                    @endif
-                                </div> 
+
                                 <div class="form-group">
                                     {!! Form::label('mop', trans('quickadmin.service-request.fields.mop').'', ['class' => 'control-label']) !!}
                                     {!! Form::select('mop', $enum_mop, old('mop'), ['class' => 'form-control select2']) !!}
@@ -401,6 +421,16 @@
                                     @if($errors->has('mop'))
                                     <p class="help-block">
                                         {{ $errors->first('mop') }}
+                                    </p>
+                                    @endif
+                                </div>
+                                <div class="form-group onlineserialnumber" style="display: none;">
+                                    {!! Form::label('online_serial_number', trans('quickadmin.service-request.fields.online-serial-number').'', ['class' => 'control-label']) !!}
+                                    {!! Form::text('online_serial_number','', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                    <p class="help-block"></p>
+                                    @if($errors->has('online_serial_number'))
+                                    <p class="help-block">
+                                        {{ $errors->first('online_serial_number') }}
                                     </p>
                                     @endif
                                 </div>
@@ -648,6 +678,18 @@ week: { dow: 1 } // Monday is the first day of the week
     $("#deselectbtn-parts").click(function(){
         $("#selectall-parts > option").prop("selected","");
         $("#selectall-parts").trigger("change");
+    });
+    $("#call_type").change(function(){
+        var selectedCallType = $(this).children("option:selected").val();
+        // alert(selectedCallType);
+        if(selectedCallType == 'Warranty'){
+            $('.warrantycardnumber').css('display','block');
+            $('.onlineserialnumber').css('display','block');
+        }else{
+            $('.warrantycardnumber').css('display','none');
+            $('.onlineserialnumber').css('display','none');
+        }
+        
     });
 </script>
 @stop
