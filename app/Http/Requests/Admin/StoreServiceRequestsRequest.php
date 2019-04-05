@@ -29,7 +29,7 @@ class StoreServiceRequestsRequest extends FormRequest
             'call_location' => 'required',
             'priority' => 'required',
             'product_id' => 'required',
-            'is_item_in_warrenty' => 'required',
+            // 'is_item_in_warrenty' => 'required',
             'completion_date' => 'required|date_format:'.config('app.date_format'),
             'parts.*' => 'exists:product_parts,id',
             'status' => 'required',

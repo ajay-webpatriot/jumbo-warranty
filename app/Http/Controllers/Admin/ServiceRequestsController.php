@@ -327,10 +327,10 @@ class ServiceRequestsController extends Controller
             {
                 $service_requestsQuery->Where('service_requests.technician_id', auth()->user()->id);
             }
-            // else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            // {
-            //     $service_requestsQuery->Where('service_requests.company_id', auth()->user()->company_id);
-            // }
+            else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                $service_requestsQuery->Where('service_requests.company_id', auth()->user()->company_id);
+            }
 
             // filter data from table and store into session variable
             // echo "<pre>";

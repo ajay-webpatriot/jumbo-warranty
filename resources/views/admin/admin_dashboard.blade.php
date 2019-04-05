@@ -41,27 +41,29 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                             
+                                                <div class="col-md-12 col-sm-6 col-xs-12">
+                                                    <div class="form-group">
+                                                        <!-- <label>Company</label> -->
+                                                        <select class="form-control select2" id="companyDropdown" style="width: 100%;">
 
-                                            <div class="col-md-12 col-sm-6 col-xs-12">
-                                                <div class="form-group">
-                                                    <!-- <label>Company</label> -->
-                                                    <select class="form-control select2" id="companyDropdown" style="width: 100%;">
+                                                            <option selected="selected" value="all">All Compaines</option>
 
-                                                        <option selected="selected" value="all">All Compaines</option>
-
-                                                        @foreach($CompaninesName as $CompanyKey => $SingleCompanyName)
-                                                            <option value="{{$SingleCompanyName->CompanyId}}">{{$SingleCompanyName->CompanyName}}</option>
-                                                            
-                                                        @endforeach
-                                                    </select>
+                                                            @foreach($CompaninesName as $CompanyKey => $SingleCompanyName)
+                                                                <option value="{{$SingleCompanyName->CompanyId}}">{{$SingleCompanyName->CompanyName}}</option>
+                                                                
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
-
+                                          @endif
                                             <div class="col-md-12 col-sm-6 col-xs-12 margin-bottom">
                                                
                                                 <!-- <label></label> -->
                                                 <button type="button" onclick="changeDateCompanyGetCount()" class="btn btn-block btn-primary">Filters</button>
                                             </div>
+
                                         </div>
                                     </div>
                                     
