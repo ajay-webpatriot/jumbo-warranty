@@ -237,6 +237,16 @@
                                         {!! Form::label('', $service_request->model_no, ['class' => 'control-label fontweight']) !!}
                                     </div>
 
+                                    <div class="form-group">
+                                        {!! Form::label('purchase_from', trans('quickadmin.service-request.fields.purchase-from').': ', ['class' => 'control-label']) !!}
+                                        {!! Form::label('', $service_request->purchase_from, ['class' => 'control-label fontweight']) !!}
+                                    </div>
+
+                                    <div class="form-group">
+                                        {!! Form::label('warranty_card_number', trans('quickadmin.service-request.fields.warranty-card-number').': ', ['class' => 'control-label']) !!}
+                                        {!! Form::label('', $service_request->warranty_card_number, ['class' => 'control-label fontweight']) !!}
+                                    </div>
+
                                     <!-- <div class="form-group"> -->
                                         {{-- !! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').': ', ['class' => 'control-label']) !! --}}
                                         
@@ -259,17 +269,17 @@
                                         {!! Form::label('serial_no', trans('quickadmin.service-request.fields.serial-no').': ', ['class' => 'control-label']) !!}
                                         {!! Form::label('', $service_request->serial_no, ['class' => 'control-label fontweight']) !!}
                                     </div>
-                                    
-                                    <div class="form-group">
-                                        {!! Form::label('purchase_from', trans('quickadmin.service-request.fields.purchase-from').': ', ['class' => 'control-label']) !!}
-                                        {!! Form::label('', $service_request->purchase_from, ['class' => 'control-label fontweight']) !!}
-                                    </div>
 
                                     <div class="form-group">
                                         {!! Form::label('mop', trans('quickadmin.service-request.fields.mop').': ', ['class' => 'control-label']) !!}
 
                                         {!! Form::label('', $service_request->mop, ['class' => 'control-label fontweight']) !!}
 
+                                    </div>
+
+                                    <div class="form-group">
+                                        {!! Form::label('online_serial_number', trans('quickadmin.service-request.fields.online-serial-number').': ', ['class' => 'control-label']) !!}
+                                        {!! Form::label('', $service_request->online_serial_number, ['class' => 'control-label fontweight']) !!}
                                     </div>
                                 </div>
 

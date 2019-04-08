@@ -72,13 +72,13 @@
                                         </div>
                                     </div>
 
-                                    <!-- <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <button class="btn btn-success" type="button" style="margin-top: 23px;">+</button>
                                             </div>
                                         </div>
-                                    </div> -->
+                                    </div>
 
                                 @else
                                     {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control', 'id' => 'company_id']) !!}
@@ -355,8 +355,8 @@
                                     @endif
                                 </div>
                                 <div class="form-group warrantycardnumber" style="display: none;">
-                                    {!! Form::label('warranty_card_number', trans('quickadmin.service-request.fields.warranty-card-number').'', ['class' => 'control-label']) !!}
-                                    {!! Form::text('warranty_card_number','', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                    {!! Form::label('warranty_card_number', trans('quickadmin.service-request.fields.warranty-card-number').'*', ['class' => 'control-label']) !!}
+                                    {!! Form::text('warranty_card_number','', ['class' => 'form-control', 'placeholder' => '','id' => 'warrantyCardNumber']) !!}
                                     <p class="help-block"></p>
                                     @if($errors->has('warranty_card_number'))
                                     <p class="help-block">
@@ -425,8 +425,8 @@
                                     @endif
                                 </div>
                                 <div class="form-group onlineserialnumber" style="display: none;">
-                                    {!! Form::label('online_serial_number', trans('quickadmin.service-request.fields.online-serial-number').'', ['class' => 'control-label']) !!}
-                                    {!! Form::text('online_serial_number','', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                    {!! Form::label('online_serial_number', trans('quickadmin.service-request.fields.online-serial-number').'*', ['class' => 'control-label']) !!}
+                                    {!! Form::text('online_serial_number','', ['class' => 'form-control', 'placeholder' => '','id' => 'onlineSerialNumber']) !!}
                                     <p class="help-block"></p>
                                     @if($errors->has('online_serial_number'))
                                     <p class="help-block">
@@ -678,18 +678,6 @@ week: { dow: 1 } // Monday is the first day of the week
     $("#deselectbtn-parts").click(function(){
         $("#selectall-parts > option").prop("selected","");
         $("#selectall-parts").trigger("change");
-    });
-    $("#call_type").change(function(){
-        var selectedCallType = $(this).children("option:selected").val();
-        // alert(selectedCallType);
-        if(selectedCallType == 'Warranty'){
-            $('.warrantycardnumber').css('display','block');
-            $('.onlineserialnumber').css('display','block');
-        }else{
-            $('.warrantycardnumber').css('display','none');
-            $('.onlineserialnumber').css('display','none');
-        }
-        
     });
 </script>
 @stop

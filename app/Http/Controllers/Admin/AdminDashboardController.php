@@ -162,7 +162,7 @@ class AdminDashboardController extends Controller
 
         }elseif ($type == "closed_request") {
             $ServiceCount->where('service_requests.status','=','Closed')
-            ->whereRaw("DATE_FORMAT(service_requests.updated_at, '%Y-%m-%d') = '".$todayDate."'");
+            ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
              
             /*Total Closed count*/
             return $ServiceCount->count();

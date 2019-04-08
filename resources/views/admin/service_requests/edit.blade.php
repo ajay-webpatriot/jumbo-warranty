@@ -259,7 +259,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             {!! Form::label('call_type', trans('quickadmin.service-request.fields.call-type').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('call_type', $enum_call_type, old('call_type'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                            {!! Form::select('call_type', $enum_call_type, old('call_type'), ['class' => 'form-control select2', 'required' => '','id' => 'call_type']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('call_type'))
                                                 <p class="help-block">
@@ -365,6 +365,28 @@
                                         @endif
                                     </div>
 
+                                    <div class="form-group">
+                                        {!! Form::label('purchase_from', trans('quickadmin.service-request.fields.purchase-from').'', ['class' => 'control-label']) !!}
+                                        {!! Form::text('purchase_from', $service_request->purchase_from, ['class' => 'form-control', 'placeholder' => '']) !!}
+                                        <p class="help-block"></p>
+                                        @if($errors->has('purchase_from'))
+                                            <p class="help-block">
+                                                {{ $errors->first('purchase_from') }}
+                                            </p>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group warrantycardnumber" {{ ($service_request->call_type != "Warranty") ? 'style=display:none' : ''}}>
+                                        {!! Form::label('warranty_card_number', trans('quickadmin.service-request.fields.warranty-card-number').'*', ['class' => 'control-label']) !!}
+                                        {!! Form::text('warranty_card_number',$service_request->warranty_card_number, ['class' => 'form-control', 'placeholder' => '','id' => 'warrantyCardNumber']) !!}
+                                        <p class="help-block"></p>
+                                        @if($errors->has('warranty_card_number'))
+                                        <p class="help-block">
+                                            {{ $errors->first('warranty_card_number') }}
+                                        </p>
+                                        @endif
+                                    </div>
+
                                     <!-- <div class="form-group"> -->
                                         {{-- !! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').'*', ['class' => 'control-label']) !!--}}
                                         {{-- !! Form::select('is_item_in_warrenty', $enum_is_item_in_warrenty, old('is_item_in_warrenty'), ['class' => 'form-control select2', 'required' => '']) !! --}}
@@ -416,17 +438,6 @@
                                             </p>
                                         @endif
                                     </div>
-                                    
-                                    <div class="form-group">
-                                        {!! Form::label('purchase_from', trans('quickadmin.service-request.fields.purchase-from').'', ['class' => 'control-label']) !!}
-                                        {!! Form::text('purchase_from', $service_request->purchase_from, ['class' => 'form-control', 'placeholder' => '']) !!}
-                                        <p class="help-block"></p>
-                                        @if($errors->has('purchase_from'))
-                                            <p class="help-block">
-                                                {{ $errors->first('purchase_from') }}
-                                            </p>
-                                        @endif
-                                    </div>
 
                                     <div class="form-group">
                                         {!! Form::label('mop', trans('quickadmin.service-request.fields.mop').'', ['class' => 'control-label']) !!}
@@ -436,6 +447,17 @@
                                             <p class="help-block">
                                                 {{ $errors->first('mop') }}
                                             </p>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group onlineserialnumber" {{ ($service_request->call_type != "Warranty") ? 'style=display:none' : ''}}>
+                                        {!! Form::label('online_serial_number', trans('quickadmin.service-request.fields.online-serial-number').'*', ['class' => 'control-label']) !!}
+                                        {!! Form::text('online_serial_number',$service_request->online_serial_number, ['class' => 'form-control', 'placeholder' => '','id' => 'onlineSerialNumber']) !!}
+                                        <p class="help-block"></p>
+                                        @if($errors->has('online_serial_number'))
+                                        <p class="help-block">
+                                            {{ $errors->first('online_serial_number') }}
+                                        </p>
                                         @endif
                                     </div>
                                 </div>
@@ -827,12 +849,27 @@
                 format: "{{ config('app.date_format_moment') }}",
                 locale: "{{ App::getLocale() }}",
             });
-
-            
             
             // removed disabled attr of select on form submit to store exusting value
             $('form').bind('submit', function() {
                 $(this).find('select:disabled').removeAttr('disabled');
+            });
+
+            //Validate for warranty number and online number
+            $('#warrantyCardNumber, #onlineSerialNumber').change(function(){
+                var selectedCallType = $('#call_type').children("option:selected").val();
+                // alert(selectedCallType);
+                if(selectedCallType == 'Warranty'){
+                    var serialNumber = $('#onlineSerialNumber').val();
+                    var warrantyNumber = $('#warrantyCardNumber').val();
+                    if(serialNumber == '' || warrantyNumber == ''){
+                        $('#onlineSerialNumber').attr('required', true);
+                        $('#warrantyCardNumber').attr('required', true);
+                    }else{
+                        $('#onlineSerialNumber').attr('required', false);
+                        $('#warrantyCardNumber').attr('required', false);
+                    }
+                }
             });
         });
 

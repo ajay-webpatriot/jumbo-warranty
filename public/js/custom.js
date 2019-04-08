@@ -421,3 +421,21 @@ function getAssignedProducts(ele) {
 		$(".transportationDiv").hide();
 	}
 }
+
+$("#call_type").change(function(){
+	var selectedCallType = $(this).children("option:selected").val();
+	var serialNumber = $('#onlineSerialNumber');
+	var warrantyNumber = $('#warrantyCardNumber');
+	// alert(selectedCallType);
+	if(selectedCallType == 'Warranty'){
+		$('.warrantycardnumber').css('display','block');
+		$('.onlineserialnumber').css('display','block');
+		serialNumber.attr('required', true);
+		warrantyNumber.attr('required', true);
+	}else{
+		warrantyNumber.attr('required', false);
+		serialNumber.attr('required', false);
+		$('.warrantycardnumber').css('display','none');
+		$('.onlineserialnumber').css('display','none');
+	}
+});
