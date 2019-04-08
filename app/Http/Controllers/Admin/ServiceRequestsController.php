@@ -586,7 +586,10 @@ class ServiceRequestsController extends Controller
                     $enum_status = ServiceRequest::$enum_status;
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         
-        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge'));
+        $enum_company_status = \App\Company::$enum_status;
+        $enum_customer_status = \App\Customer::$enum_status;
+
+        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status'));
     }
 
     /**

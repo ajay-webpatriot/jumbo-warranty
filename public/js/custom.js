@@ -150,7 +150,98 @@ $(document).ready(function(){
     }).on('hide.bs.collapse', function(){
     	$(this).parent().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
     });
-	
+
+    $("#company-modal").on('shown.bs.modal', function(){
+    	// quick add company from add/edit service request
+	    $("#company-modal").find(".select2").select2();
+	});
+	$("#company-modal").on('hidden.bs.modal', function() { 
+		// quick add company model close from add/edit service request
+	    $("#company-modal").find('.alert-danger').html('').hide();
+        $("#company-modal").find("form")[0].reset();
+        $("#company_status option:selected").prop("selected", false);
+		$("#company_status option:first").prop("selected", "selected");
+	});
+	$("#company-modal").find("form").on('submit', function (e) {
+		// add company on click of save button
+		e.preventDefault();
+	    if ($("#company-modal").find("form")[0].checkValidity()) {
+	        
+	        var form=$("#company-modal").find("form");
+			$.ajax({
+		       	type:'POST',
+		       	url:form.attr("action"),
+	        	data:form.serialize(),
+		       	dataType: "json",
+		       	success:function(data) {
+		       		if(data.success)
+		       		{
+		       			alert(data.message);
+		       			$('#company-modal').modal('hide');
+		       			$("#company_id").html(data.companyOptions);
+		       			if($("#company_id option[value='"+data.selectedCompany+"']").length != 0){
+			       			$("#company_id").val(data.selectedCompany).trigger('change');
+		       			}
+		       		}
+		       		else
+		       		{
+		       			$.each(data.errors, function(key, value){
+                  			$("#company-modal").find('.alert-danger').show();
+                  			$("#company-modal").find('.alert-danger').append('<p>'+value+'</p>');
+                  		});
+		       		}
+		       	}
+		    });
+	    }
+	    return false;
+	});
+
+	$("#customer-modal").on('shown.bs.modal', function(){
+    	// quick add customer from add/edit service request
+	    $("#customer-modal").find(".select2").select2();
+	    $("#customer-modal").find("#customer_company_id").val($("#company_id").val()).trigger('change');
+	});
+	$("#customer-modal").on('hidden.bs.modal', function() { 
+		// quick add customer model close from add/edit service request
+	    $("#customer-modal").find('.alert-danger').html('').hide();
+        $("#customer-modal").find("form")[0].reset();
+        $("#customer_status option:selected").prop("selected", false);
+		$("#customer_status option:first").prop("selected", "selected");
+	});
+	$("#customer-modal").find("form").on('submit', function (e) {
+		// add company on click of save button
+		e.preventDefault();
+	    if ($("#customer-modal").find("form")[0].checkValidity()) {
+	        
+	        var form=$("#customer-modal").find("form");
+			$.ajax({
+		       	type:'POST',
+		       	url:form.attr("action"),
+	        	data:form.serialize(),
+		       	dataType: "json",
+		       	success:function(data) {
+		       		if(data.success)
+		       		{
+		       			alert(data.message);
+		       			$('#customer-modal').modal('hide');
+		       			$("#company_id").trigger('change')
+		       			// $("#company_id").html(data.companyOptions);
+		       			// if($("#company_id option[value='"+data.selectedCompany+"']").length != 0){
+			       		// 	$("#company_id").val(data.selectedCompany).trigger('change');
+		       			// }
+		       		}
+		       		else
+		       		{
+		       			$.each(data.errors, function(key, value){
+                  			$("#customer-modal").find('.alert-danger').show();
+                  			$("#customer-modal").find('.alert-danger').append('<p>'+value+'</p>');
+                  		});
+		       		}
+		       	}
+		    });
+	    }
+	    return false;
+	});
 });
 function getTechnicians(serviceCenterId) {
 	$.ajax({
@@ -202,9 +293,9 @@ function getSuggestedServiceCenter(customerId) {
 function requestCharge(ele) {
 
 	// display charges for service and installation in service request
-	var companyId=$("#company_id").val().trim();
-	var serviceType=$("#service_type").val().trim();
-	var productId=$("#product_id").val().trim();
+	var companyId=$("#company_id").val();
+	var serviceType=$("#service_type").val();
+	var productId=$("#product_id").val();
 	
 	if(serviceType == "installation")
 	{

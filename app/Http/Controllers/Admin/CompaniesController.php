@@ -61,9 +61,9 @@ class CompaniesController extends Controller
     {
         if (! Gate::allows('company_create')) {
             return abort(401);
-        }        $enum_status = Company::$enum_status;
+        }        $enum_company_status = Company::$enum_status;
             
-        return view('admin.companies.create', compact('enum_status'));
+        return view('admin.companies.create', compact('enum_company_status'));
     }
 
     /**
@@ -72,14 +72,72 @@ class CompaniesController extends Controller
      * @param  \App\Http\Requests\StoreCompaniesRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCompaniesRequest $request)
+    public function store(Request $request)
     {
         if (! Gate::allows('company_create')) {
             return abort(401);
         }
+        $validator = Validator::make($request->all(), [
+
+            'name' => 'required|unique:companies,name,"",id,deleted_at,NULL',
+            'installation_charge' => 'required|numeric',
+            'address_1' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zipcode' => 'required|min:6|max:6',
+            'status' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+
+            if($request->ajax())
+            {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'There are incorect values in the form!',
+                    'errors' => $validator->getMessageBag()->toArray()
+                ));
+            }
+            else
+            {
+                return redirect()->back()->withInput(Input::all())->with(array(
+                    'success' => false,
+                    'errors' => $validator->getMessageBag()
+
+                ));
+                exit;
+            }
+        
+        }
+
+        
         $company = Company::create($request->all());
 
-        return redirect()->route('admin.companies.index')->with('success','Company created successfully!');
+        if($request->ajax())
+        {
+            // get company details and return in ajax response
+
+            $companyOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
+
+            $companies = \App\Company::where('status','Active')->get();
+            if(count($companies) > 0)
+            {
+                foreach($companies as $key => $value)
+                {
+                    $companyOptions.="<option value='".$value->id."'>".$value->name."</option>";   
+                }   
+            }
+            return response()->json(array(
+                    'success' => true,
+                    'message' => 'Company added successfully.',
+                    'companyOptions' => $companyOptions,
+                    'selectedCompany' => $company->id
+                ));
+        }
+        else{
+            return redirect()->route('admin.companies.index')->with('success','Company created successfully!');
+        }    
+        
     }
 
 
@@ -105,7 +163,7 @@ class CompaniesController extends Controller
        ->get()->first();
 
        // echo $companyCredit->used_credit;exit;
-        $available_credit=($companyCredit) ? ($company->credit - $companyCredit->used_credit) : $company->credit;
+        $available_credit=($companyCredit) ? ($company->credit - $companyCredit->used_credit) : ($company->credit)?$company->credit:0;
         return view('admin.companies.edit', compact('company', 'available_credit', 'enum_status'));
     }
 
