@@ -208,10 +208,6 @@ class ServiceRequestsController extends Controller
     public function DataTableServiceRequestAjax(Request $request)
     { 
         $columnArray = array();
-        // echo "<pre>";
-        // print_r(auth()->user()->role_id);
-        // echo "</pre>";
-        // exit();
         
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
             $columnArray = array(
@@ -247,7 +243,8 @@ class ServiceRequestsController extends Controller
                 5 =>'service_centers.name' ,
                 6 =>'products.name' ,
                 7 =>'service_requests.amount' ,
-                8 =>'service_requests.status'
+                8 =>'service_requests.status',
+                9 =>'service_requests.is_paid'
             );
         }
 
@@ -257,6 +254,7 @@ class ServiceRequestsController extends Controller
         $start = $request->input('start');
         $order = $columnArray[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
+        
 // echo $order;exit;
         // $order = $request->input('order');
         // echo "<pre>";
@@ -301,7 +299,7 @@ class ServiceRequestsController extends Controller
             $serviceRequestObj = new ServiceRequest();  
             $requestFilterCount =  $serviceRequestObj->getFilterRequestsCount($request->all());
             
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
@@ -460,6 +458,12 @@ class ServiceRequestsController extends Controller
                 }else{
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
                     $tableField['company_name'] =ucfirst($SingleServiceRequest->cname);
+
+                    $paidStatus = 'Due';
+                    if($SingleServiceRequest->is_paid == 1 && $SingleServiceRequest->status == "Closed" ){
+                        $paidStatus = 'Paid';
+                    }
+                    $tableField['amount_paid'] = ucfirst($paidStatus);
 
                     if (Gate::allows('service_request_delete')) {
                         // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';

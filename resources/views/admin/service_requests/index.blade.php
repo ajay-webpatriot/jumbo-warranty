@@ -257,6 +257,7 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
+                            <th>@lang('quickadmin.qa_paid')</th>
                             <th>@lang('quickadmin.qa_action')</th>
                         </tr>
                     </thead>
@@ -523,7 +524,7 @@
                         text: window.pdfButtonTrans,
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [2, 3, 4, 5, 6, 7, 8]
+                            columns: [2, 3, 4, 5, 6, 7, 8, 9]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#company thead th').length;
@@ -534,6 +535,7 @@
                                     
                                     doc.content[1].table.body[i][5].alignment = 'right';
                                     doc.content[1].table.body[i][6].alignment = 'center';
+                                    doc.content[1].table.body[i][7].alignment = 'center';
                                  
                             }
                         }
@@ -543,7 +545,7 @@
                         text: window.printButtonTrans,
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [2, 3, 4, 5, 6, 7, 8]
+                            columns: [2, 3, 4, 5, 6, 7, 8, 9]
                         },
                         customize: function (win) {
                             // set alignment of amount and request status column for print screen
@@ -578,6 +580,7 @@
                     { "data": "product" },
                     { "data": "amount" },
                     { "data": "request_status" },
+                    { "data": "amount_paid" },
                     { "data": "action" }
                 ],
                 // columnDefs: [ {
@@ -603,8 +606,13 @@
                     "class": "text-center",
                     "targets":   8
                 },{
-                    "orderable": false,
+                    "orderable": true,
+                    "class": "text-center",
                     "targets":   9
+                },{
+                    "orderable": false,
+                    "targets":   10,
+                    "searchable": false
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },
