@@ -124,40 +124,28 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,$type)
     {
+
         $todayDate = date('Y-m-d');
         $startDate = date('Y-m-d',strtotime($startDate));
         $endDate = date('Y-m-d',strtotime($endDate));
         
         $ServiceCount = ServiceRequest::select('service_requests.service_type','service_requests.status');
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
+        }else{
+            if($SelectedCompanyId != 'all'){
+                    $ServiceCount->where('service_requests.company_id',$SelectedCompanyId);
+            }
+        }
 
         if($type == "installation_today"){
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
-            }else{
-                if($SelectedCompanyId != 'all'){
-                    $ServiceCount->where('service_requests.company_id',$SelectedCompanyId);
-                }
-            }
             $ServiceCount->where('service_requests.service_type','=','installation')
             ->where('service_requests.status','!=','Closed')
             ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
-
             /*Total Installation count*/
-            
             return $ServiceCount->count();
-            
         }elseif ($type == "repair_today") {
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                
-                $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
-            }else{
-                if($SelectedCompanyId != 'all'){
-                    $ServiceCount->where('service_requests.company_id',$SelectedCompanyId);
-                }   
-            }
-
             $ServiceCount->where('service_requests.service_type','=','repair')
             ->where('service_requests.status','!=','Closed')
             ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
@@ -166,16 +154,6 @@ class AdminDashboardController extends Controller
             return $ServiceCount->count();
 
         }elseif ($type == "delayed_request") {
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                
-                $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
-            }else{
-                if($SelectedCompanyId != 'all'){
-                    $ServiceCount->where('service_requests.company_id',$SelectedCompanyId);
-                }
-            }
-
             $ServiceCount->where('service_requests.status','!=','Closed')
             ->whereRaw("DATE_FORMAT(service_requests.completion_date, '%Y-%m-%d') < '".$todayDate."'");
             
@@ -183,18 +161,9 @@ class AdminDashboardController extends Controller
             return $ServiceCount->count();
 
         }elseif ($type == "closed_request") {
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
-            }else{
-                if($SelectedCompanyId != 'all'){
-                    $ServiceCount->where('service_requests.company_id',$SelectedCompanyId);
-                }
-            }
             $ServiceCount->where('service_requests.status','=','Closed')
             ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
              
-
             /*Total Closed count*/
             return $ServiceCount->count();
 
