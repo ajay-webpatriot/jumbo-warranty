@@ -849,45 +849,28 @@
                 format: "{{ config('app.date_format_moment') }}",
                 locale: "{{ App::getLocale() }}",
             });
-
-            
             
             // removed disabled attr of select on form submit to store exusting value
             $('form').bind('submit', function() {
                 $(this).find('select:disabled').removeAttr('disabled');
+            });
 
+            //Validate for warranty number and online number
+            $('#warrantyCardNumber, #onlineSerialNumber').change(function(){
                 var selectedCallType = $('#call_type').children("option:selected").val();
+                // alert(selectedCallType);
                 if(selectedCallType == 'Warranty'){
                     var serialNumber = $('#onlineSerialNumber').val();
                     var warrantyNumber = $('#warrantyCardNumber').val();
                     if(serialNumber == '' || warrantyNumber == ''){
                         $('#onlineSerialNumber').attr('required', true);
                         $('#warrantyCardNumber').attr('required', true);
-                        return false;
                     }else{
                         $('#onlineSerialNumber').attr('required', false);
                         $('#warrantyCardNumber').attr('required', false);
                     }
                 }
             });
-
-           
-            // var serialNumber = $('#onlineSerialNumber');
-            // var warrantyNumber = $('#warrantyCardNumber');
-            // alert(selectedCallType);
-            // if(selectedCallType == 'Warranty' && ($('#onlineSerialNumber').val() == '' && $('#warrantyCardNumber').val() == '')){
-            //     // return false;
-            //     // $('.warrantycardnumber').css('display','block');
-            //     // $('.onlineserialnumber').css('display','block');
-            //     serialNumber.attr('required', true);
-            //     warrantyNumber.attr('required', true);
-            // }else{
-            //     alert(selectedCallType);
-            //     warrantyNumber.attr('required', false);
-            //     serialNumber.attr('required', false);
-            //     // $('.warrantycardnumber').css('display','none');
-            //     // $('.onlineserialnumber').css('display','none');
-            // }
         });
 
         function updatePaidstatus(serviceRequestId) {
