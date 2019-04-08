@@ -607,7 +607,17 @@ class ServiceRequestsController extends Controller
                 $request['service_center_id'] = $request['suggested_service_center'];
             }
         }
+       
+        if($request['call_type'] == "Warranty"){
 
+            if($request['warranty_card_number'] != '' && $request['online_serial_number'] != ''){
+                $request['warranty_card_number'] = $request['warranty_card_number'];
+                $request['online_serial_number'] = $request['online_serial_number'];
+            }
+        }else{
+            $request['warranty_card_number'] = '';
+            $request['online_serial_number'] = '';
+        }
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
 
@@ -870,7 +880,6 @@ class ServiceRequestsController extends Controller
             $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
         }
 
-        
         return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported'))->with('no', 1);
         // $user_name=ucwords('user name');
         // $subject='sub';
@@ -886,6 +895,11 @@ class ServiceRequestsController extends Controller
      */
     public function update(UpdateServiceRequestsRequest $request, $id)
     {
+        echo "<pre>";
+        print_r($request->all());
+        echo "</pre>";
+        exit();
+        
         if (! Gate::allows('service_request_edit')) {
             return abort(401);
         }
@@ -1068,6 +1082,8 @@ class ServiceRequestsController extends Controller
                 $last_invoice_number = $max_invoice_number;
             }
             $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
+
+            $request['closed_at'] = date('Y-m-d H:i:s');
         }
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
@@ -1120,12 +1136,22 @@ class ServiceRequestsController extends Controller
         //     } 
         // }
 
-
         $request['amount']=$total_amount;  
         // calculate total amount work end
 
         $request_status=$service_request->status;
         $existing_technician_id=$service_request->technician_id;
+
+        if($request['call_type'] == "Warranty"){
+
+            if($request['warranty_card_number'] != '' && $request['online_serial_number'] != ''){
+                $request['warranty_card_number'] = $request['warranty_card_number'];
+                $request['online_serial_number'] = $request['online_serial_number'];
+            }
+        }else{
+            $request['warranty_card_number'] = '';
+            $request['online_serial_number'] = '';
+        }  
         
         $service_request->update($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
@@ -1215,7 +1241,6 @@ class ServiceRequestsController extends Controller
         }
         
         $service_request['additional_charges']=$additional_charges;
-
 
         $service_request_logs = $service_request->servicerequestlog;
         return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title'))->with('no', 1);
