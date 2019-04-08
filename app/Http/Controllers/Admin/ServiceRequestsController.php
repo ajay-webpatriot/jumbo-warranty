@@ -895,11 +895,6 @@ class ServiceRequestsController extends Controller
      */
     public function update(UpdateServiceRequestsRequest $request, $id)
     {
-        echo "<pre>";
-        print_r($request->all());
-        echo "</pre>";
-        exit();
-        
         if (! Gate::allows('service_request_edit')) {
             return abort(401);
         }
