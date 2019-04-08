@@ -287,9 +287,9 @@ class CustomersController extends Controller
         }
         
         $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $enum_status = Customer::$enum_status;
+        $enum_customer_status = Customer::$enum_status;
             
-        return view('admin.customers.create', compact('enum_status', 'companies'));
+        return view('admin.customers.create', compact('enum_customer_status', 'companies'));
     }
 
     /**
@@ -298,10 +298,46 @@ class CustomersController extends Controller
      * @param  \App\Http\Requests\StoreCustomersRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCustomersRequest $request)
+    public function store(Request $request)
     {
         if (! Gate::allows('customer_create')) {
             return abort(401);
+        }
+
+        $validator = Validator::make($request->all(), [
+
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'phone' => 'required|min:11|max:11',
+            'email' => 'required|email|unique:customers,email,"",id,deleted_at,NULL',
+            'company_id' => 'required',
+            'address_1' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zipcode' => 'required|min:6|max:6',
+            'status' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+
+            if($request->ajax())
+            {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'There are incorect values in the form!',
+                    'errors' => $validator->getMessageBag()->toArray()
+                ));
+            }
+            else
+            {
+                return redirect()->back()->withInput(Input::all())->with(array(
+                    'success' => false,
+                    'errors' => $validator->getMessageBag()
+
+                ));
+                exit;
+            }
+        
         }
 
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
@@ -324,8 +360,31 @@ class CustomersController extends Controller
         //     $customer->service_requests()->create($data);
         // }
 
+        if($request->ajax())
+        {
+            // get company details and return in ajax response
 
-        return redirect()->route('admin.customers.index')->with('success','Customer created successfully!');
+            $custOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
+
+            // $customers = \App\Customer::where('company_id',$details['companyId'])
+            //                     ->where('status','Active')->get();
+            // if(count($customers) > 0)
+            // {
+            //     foreach($customers as $key => $value)
+            //     {
+            //         $data['custOptions'].="<option value='".$value->id."'>".$value->firstname.' '.$value->lastname."</option>";   
+            //     }   
+            // }
+            return response()->json(array(
+                    'success' => true,
+                    'message' => 'Customer added successfully.',
+                    'custOptions' => $custOptions,
+                    'selectedCustomer' => $customer->id
+                ));
+        }
+        else{
+            return redirect()->route('admin.customers.index')->with('success','Customer created successfully!');
+        }
     }
 
 

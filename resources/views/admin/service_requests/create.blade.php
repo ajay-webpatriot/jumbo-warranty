@@ -57,9 +57,9 @@
                                 <!-- Company & Customer -->
                                 @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                     <!-- company will not visible to company admin,user, service center admin and technician -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="row">
-                                            <div class="col-xs-12">
+                                            <div class="col-xs-10">
                                                 {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
                                                 {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
                                                 <p class="help-block"></p>
@@ -69,24 +69,27 @@
                                                 </p>
                                                 @endif
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <button class="btn btn-success" type="button" style="margin-top: 23px;">+</button>
+                                            <div class="col-xs-2">
+                                                <button class="btn btn-success" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
                                     </div>
 
+                                    <!-- <div class="col-md-1">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <button class="btn btn-success" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;">+</button>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
                                 @else
                                     {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control', 'id' => 'company_id']) !!}
                                 @endif
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
                                     <div class="row custDiv">
-                                        <div class="col-xs-12">
+                                        <div class="col-xs-10">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
                                             {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                                             <p class="help-block"></p>
@@ -96,10 +99,13 @@
                                             </p>
                                             @endif
                                         </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-success" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                        </div>
                                     </div>
                                     @else
                                     <div class="row custDiv" style="display: none;"> 
-                                        <div class="col-xs-12">
+                                        <div class="col-xs-10">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
                                             {!! Form::select('customer_id', array('' => trans('quickadmin.qa_please_select')), old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                                             <p class="help-block"></p>
@@ -108,6 +114,9 @@
                                                 {{ $errors->first('customer_id') }}
                                             </p>
                                             @endif
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-success" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div> 
                                     @endif  
@@ -653,7 +662,54 @@
 
                 @section('javascript')
                 @parent
-
+                <!-- Quick add company modal -->
+                <div class="modal fade in" id="company-modal" style="">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Add Company</h4>
+                          </div>
+                          {!! Form::open(['method' => 'POST', 'route' => ['admin.companies.store']]) !!}
+                          <div class="modal-body">
+                            <div class="alert alert-danger" style="display:none"></div>
+                            @include('admin.companies.content')
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                            <button type="submit" id="btnAddCompany" class="btn btn-primary">Save</button>
+                          </div>
+                          {!! Form::close() !!}
+                        </div>
+                        <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                </div>
+                <!-- Quick add customer modal -->
+                <div class="modal fade in" id="customer-modal" style="">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Add Customer</h4>
+                          </div>
+                          {!! Form::open(['method' => 'POST', 'route' => ['admin.customers.store']]) !!}
+                          <div class="modal-body">
+                            <div class="alert alert-danger" style="display:none"></div>
+                            @include('admin.customers.content')
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                            <button type="submit" id="btnAddCustomer" class="btn btn-primary">Save</button>
+                          </div>
+                          {!! Form::close() !!}
+                        </div>
+                        <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                </div>
 <script src="{{ url('adminlte/plugins/datetimepicker/moment-with-locales.min.js') }}"></script>
 <script src="{{ url('adminlte/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 <script>
