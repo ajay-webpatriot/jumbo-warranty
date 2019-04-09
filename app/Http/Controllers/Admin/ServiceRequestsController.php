@@ -1918,6 +1918,37 @@ class ServiceRequestsController extends Controller
 
     }
 
+    public function quickadd( Request $request )
+    {   
+        $status = 0;
+        $returnHTML = '';
+        if($request['type'] != ''){
+            if($request['type'] == 'company'){
+                $enum_company_status = \App\Company::$enum_status;
+                // $returnHTML = view('job.userjobs')->with('userjobs', $userjobs)->render();
+                $returnHTML = view('admin.companies.content')->with('enum_company_status', $enum_company_status)->render();
+                $status = 1;
+            }elseif ($request['type'] == 'customer') {
+
+                $returnHTML = view('admin.customers.content')->render();
+                $status = 1;
+            }elseif ($request['type'] == 'service_center') {
+
+                $returnHTML = view('admin.service_centers.content')->render();
+                $status = 1;
+            }elseif ($request['type'] == 'technician') {
+
+                $returnHTML = view('admin.technicians.content')->render();
+                $status = 1;
+            }
+        
+        // $enum_customer_status = \App\Customer::$enum_status;
+        // $enum_service_center_status = \App\ServiceCenter::$enum_status;
+        // $enum_technician_status = \App\User::$enum_status;
+        }
+        return response()->json(array('success' => $status , 'html'=>$returnHTML));
+    }
+
     public function sendPushNotificationTechnician($technicianId,$lastInsertedId)
     {
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){

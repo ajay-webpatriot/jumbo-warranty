@@ -114,7 +114,9 @@
                                                 @endif
                                             </div>
                                             <div class="col-sm-2 col-xs-3">
-                                                <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                                <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
+
+                                                <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('company')"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -824,7 +826,8 @@
               {!! Form::open(['method' => 'POST', 'route' => ['admin.companies.store']]) !!}
               <div class="modal-body">
                 <div class="alert alert-danger" style="display:none"></div>
-                @include('admin.companies.content')
+                <div id="renderHtml"></div>
+                {{-- @include('admin.companies.content') --}}
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -916,6 +919,30 @@
     <script src="{{ url('adminlte/plugins/datetimepicker/moment-with-locales.min.js') }}"></script>
     <script src="{{ url('adminlte/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
     <script>
+
+        function quickadd(type){
+            if(type != ''){
+                $.ajax({
+                    type:'POST',
+                    url:APP_URL+"/admin/quickadd",
+                    data:{
+                        'type':type,
+                        '_token': '{{csrf_token()}}'
+                    },
+                    dataType: "json",
+                    success:function(data) {
+                        console.log('data');
+                        console.log(data.success);
+                        if(data.success == 1){
+                            $('#renderHtml').html(data.html);
+                            $('#company-modal').modal('show');
+
+                        }
+                    }
+                });
+            }
+        }
+
         $(function(){
             if("{{$service_request->status}}" == "Closed")
             {
