@@ -42,16 +42,15 @@
             <div class="panel-group">
 
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a data-toggle="collapse" href="#collapseCompany">
-                            @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
-                                Company & Customer
-                            @else
-                                Customer
-                            @endif
-                        </a>
+                    <div class="panel-heading headerTitle" data-toggle="collapse" href="#collapseCompany">
+                        @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                            Company & Customer
+                        @else
+                            Customer
+                        @endif
+                        <span class="btn-box-tool glyphicon glyphicon-plus pull-right"></span>
                     </div>
-                    <div id="collapseCompany" class="panel-collapse in" role="tabpanel">
+                    <div id="collapseCompany" class="panel-collapse collapse in" role="tabpanel">
                         <div class="panel-body">
                             <div class="row">
                                 <!-- Company & Customer -->
@@ -151,8 +150,10 @@
                 </div> 
                 @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
                 <div class="panel panel-default">
-                    <div class="panel-heading"> <a data-toggle="collapse" href="#collapseServiceCenter">Service Center</a></div>
-                    <div id="collapseServiceCenter" class="panel-collapse in">
+                    <div class="panel-heading headerTitle" data-toggle="collapse" href="#collapseServiceCenter"> Service Center
+                        <span class="btn-box-tool glyphicon glyphicon-plus pull-right"></span>
+                    </div>
+                    <div id="collapseServiceCenter" class="panel-collapse collapse in">
                         <div class="panel-body">
                             <div class="row">
 
@@ -215,8 +216,10 @@
                 </div>
                 @endif
                 <div class="panel panel-default">
-                    <div class="panel-heading"> <a data-toggle="collapse" href="#collapseCallDetail">Call Detail</a></div>
-                    <div id="collapseCallDetail" class="panel-collapse in">
+                    <div class="panel-heading headerTitle" data-toggle="collapse" href="#collapseCallDetail">Call Detail
+                        <span class="btn-box-tool glyphicon glyphicon-plus pull-right"></span>
+                    </div>
+                    <div id="collapseCallDetail" class="panel-collapse collapse in">
                         <div class="panel-body">
                             <div class="row">
                                 <!-- Call type  -->
@@ -269,8 +272,11 @@
                     </div>
                 </div> 
                 <div class="panel panel-default">
-                  <div class="panel-heading"> <a data-toggle="collapse" href="#collapseProduct">Product</a></div>
-                  <div id="collapseProduct" class="panel-collapse in">
+                    <div class="panel-heading headerTitle" data-toggle="collapse" href="#collapseProduct">
+                        product
+                        <span class="btn-box-tool glyphicon glyphicon-plus pull-right"></span>
+                    </div>
+                  <div id="collapseProduct" class="panel-collapse collapse in">
                       <div class="panel-body">  
                         <div class="row">
                             <div class="col-md-6">
@@ -455,8 +461,11 @@
                 </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading"> <a data-toggle="collapse" href="#collapseOther">Other</a></div>
-                    <div id="collapseOther" class="panel-collapse in">
+                    <div class="panel-heading headerTitle" data-toggle="collapse" href="#collapseOther">
+                        Other
+                        <span class="btn-box-tool glyphicon glyphicon-plus pull-right"></span>
+                    </div>
+                    <div id="collapseOther" class="panel-collapse collapse in">
                         <div class="panel-body">
                             <!-- <div class="row">
                                 <div class="col-xs-12 form-group">

@@ -190,16 +190,17 @@
                     <div class="col-md-12">
                         <div class="box box-primary">
 
-                            <div class="box-header with-border">
+                            <div class="box-header with-border" data-toggle="collapse" href="#collapseRecentServiceRequests">
                                 <h3 class="box-title">Recent Service Requests</h3>
-                                <div class="box-tools pull-right">
-                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                    </button>
+                                <!-- <div class="box-tools pull-right"> -->
+                                    <!-- <button type="button" class="btn btn-box-tool pull-right"><i class="fa fa-minus"></i>
+                                    </button> -->
+                                    <span class="btn-box-tool glyphicon glyphicon-minus pull-right" style="font-size:12px;"></span> 
                                     <!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
-                                </div>
+                                <!-- </div> -->
                             </div>
                             
-                            <div class="box-body">
+                            <div id="collapseRecentServiceRequests" class="box-body collapse in" role="tabpanel">
                                 <ul class="products-list product-list-in-box">
                                     @if(!empty($ServiceTypeDetails))
                                         @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
