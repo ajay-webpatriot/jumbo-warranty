@@ -89,7 +89,7 @@
                                 <div class="col-md-6">
                                     @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
                                     <div class="row custDiv">
-                                        <div class="col-xs-10 col-xs-9">
+                                        <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
                                             {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                                             <p class="help-block"></p>
@@ -99,13 +99,13 @@
                                             </p>
                                             @endif
                                         </div>
-                                        <div class="col-xs-2 col-xs-3">
+                                        <div class="col-sm-2 col-xs-3">
                                             <button class="btn btn-success btn-quick-add" data-toggle="modal" id="quick_add_customer" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                     @else
                                     <div class="row custDiv" style="display: none;"> 
-                                        <div class="col-xs-10 col-xs-9">
+                                        <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
                                             {!! Form::select('customer_id', array('' => trans('quickadmin.qa_please_select')), old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                                             <p class="help-block"></p>
@@ -115,7 +115,7 @@
                                             </p>
                                             @endif
                                         </div>
-                                        <div class="col-xs-2 col-xs-3">
+                                        <div class="col-sm-2 col-xs-3">
                                             <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div> 
@@ -159,7 +159,7 @@
                                 <!-- Service center -->
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-xs-10 col-xs-9">
+                                        <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
                                             {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2']) !!}
                                             <p class="help-block"></p>
@@ -169,7 +169,7 @@
                                             </p>
                                             @endif
                                         </div>
-                                        <div class="col-xs-2 col-xs-3">
+                                        <div class="col-sm-2 col-xs-3">
                                             <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#service-center-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
@@ -177,7 +177,7 @@
                                 <!-- Technician -->
                                 <div class="col-md-6">
                                     <div class="row techDiv"  style="display: none;">
-                                        <div class="col-xs-10 col-xs-9">
+                                        <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
                                             {!! Form::select('technician_id', array('' => trans('quickadmin.qa_please_select')), old('technician_id'), ['class' => 'form-control select2']) !!}
                                             <p class="help-block"></p>
@@ -187,7 +187,7 @@
                                             </p>
                                             @endif
                                         </div>
-                                        <div class="col-xs-2 col-xs-3">
+                                        <div class="col-sm-2 col-xs-3">
                                             <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#technician-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
