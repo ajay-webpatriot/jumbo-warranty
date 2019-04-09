@@ -57,7 +57,7 @@ class AssignProductsController extends Controller
         //         $assign_products = AssignProduct::all();
         //     }
         // }
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.assign_products.index', compact('companies'));
     }
     /**
@@ -174,12 +174,12 @@ class AssignProductsController extends Controller
 
                 $tableField['checkbox'] = '';
                 $tableField['sr_no'] =  $assignProduct->company_id;
-                $tableField['company'] = $assignProduct->company_name;
+                $tableField['company'] = ucfirst($assignProduct->company_name);
 
                 $product_array = explode(',', $assignProduct->product_name);
                 $product_string = '';
                 foreach ($product_array as $key => $value) {
-                    $product_string .= '<span class="label label-info label-many">'.$value.'</span>';
+                    $product_string .= '<span class="label label-info label-many">'.ucfirst($value).'</span>';
                 }
                 $tableField['product_name'] = $product_string;
 
@@ -314,7 +314,7 @@ class AssignProductsController extends Controller
                 $tableField['checkbox'] = '';
                 $tableField['sr_no'] =  $assignProduct->id;
                 $tableField['company'] = $assignProduct->company_name;
-                $tableField['product_name'] = $assignProduct->product_name;
+                $tableField['product_name'] = ucfirst($assignProduct->product_name);
 
                 $EditButtons = '';
                 if (Gate::allows('assign_product_edit')) {
@@ -366,8 +366,8 @@ class AssignProductsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $product_ids = \App\Product::where('status','Active')->get()->pluck('name', 'id');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $product_ids = \App\Product::where('status','Active')->orderBy('name')->get()->pluck('name', 'id');
             
         return view('admin.assign_products.create', compact('companies', 'product_ids'));
     }
@@ -424,8 +424,8 @@ class AssignProductsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $product_ids = \App\Product::where('status','Active')->get()->pluck('name', 'id');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $product_ids = \App\Product::where('status','Active')->orderBy('name')->get()->pluck('name', 'id');
 
         // $assign_product = AssignProduct::findOrFail($id);
 

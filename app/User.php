@@ -77,7 +77,9 @@ class User extends Authenticatable
         if ($input)
             $this->attributes['password'] = app('hash')->needsRehash($input) ? Hash::make($input) : $input;
     }
-    
+    public function getNameAttribute($value) {
+        return ucfirst($value);
+    }
     
     public function role()
     {

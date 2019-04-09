@@ -22,4 +22,7 @@ class ProductPart extends Model
 
     public static $enum_status = ["Active" => "Active", "Inactive" => "Inactive"];
     
+    public function getNameAttribute($value) {
+        return ucfirst($value);
+    }
 }

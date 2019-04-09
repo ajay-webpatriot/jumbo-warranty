@@ -231,8 +231,8 @@ class CustomersController extends Controller
 
                 $tableField['checkbox'] = '';
                 $tableField['sr_no'] = $customer->id;
-                $tableField['customer_name'] = $customer->firstname." ".$customer->lastname;
-                $tableField['company'] =$customer->company_name;
+                $tableField['customer_name'] = ucfirst($customer->firstname)." ".ucfirst($customer->lastname);
+                $tableField['company'] =ucfirst($customer->company_name);
                 $tableField['phone'] =$customer->phone;
                 $tableField['status'] =$customer->status;
 

@@ -37,5 +37,8 @@ class ServiceCenter extends Model
     {
         $this->attributes['commission'] = $input ? $input : null;
     }
+    public function getNameAttribute($value) {
+        return ucfirst($value);
+    }
     
 }

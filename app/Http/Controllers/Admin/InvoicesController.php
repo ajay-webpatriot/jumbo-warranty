@@ -62,7 +62,7 @@ class InvoicesController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Invoice::$enum_status;
             
         return view('admin.invoices.create', compact('enum_status', 'companies'));
@@ -99,7 +99,7 @@ class InvoicesController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Invoice::$enum_status;
             
         $invoice = Invoice::findOrFail($id);
