@@ -15,7 +15,9 @@ use Spatie\Permission\Models\Permission as perm;
 
 // get lat long 
 use GoogleAPIHelper;
-
+use Validator;
+use Illuminate\Support\Facades\Input;
+use DB;
 class ServiceCentersController extends Controller
 {
     public function __construct()
@@ -62,9 +64,9 @@ class ServiceCentersController extends Controller
     {
         if (! Gate::allows('service_center_create')) {
             return abort(401);
-        }        $enum_status = ServiceCenter::$enum_status;
+        }        $enum_service_center_status = ServiceCenter::$enum_status;
             
-        return view('admin.service_centers.create', compact('enum_status'));
+        return view('admin.service_centers.create', compact('enum_service_center_status'));
     }
 
     /**
@@ -73,13 +75,47 @@ class ServiceCentersController extends Controller
      * @param  \App\Http\Requests\StoreServiceCentersRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreServiceCentersRequest $request)
+    public function store(Request $request)
     {
 
         if (! Gate::allows('service_center_create')) {
             return abort(401);
         }
 
+        $validator = Validator::make($request->all(), [
+
+            'name' => 'required',
+            'address_1' => 'required',
+            'location_latitude'=>'required',
+            'location_longitude'=>'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zipcode' => 'required|min:6|max:6',
+            'supported_zipcode' => 'required',
+            'status' => 'required'
+
+        ]);
+        if ($validator->fails()) {
+
+            if($request->ajax())
+            {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'There are incorect values in the form!',
+                    'errors' => $validator->getMessageBag()->toArray()
+                ));
+            }
+            else
+            {
+                return redirect()->back()->withInput(Input::all())->with(array(
+                    'success' => false,
+                    'errors' => $validator->getMessageBag()
+
+                ));
+                exit;
+            }
+        
+        }
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
             
         if($resultLocation){    
@@ -90,8 +126,29 @@ class ServiceCentersController extends Controller
         $service_center = ServiceCenter::create($request->all());
 
 
+        if($request->ajax())
+        {
+            // get company details and return in ajax response
 
-        return redirect()->route('admin.service_centers.index')->with('success','Service Center created successfully!');
+            $serviceCenterOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
+
+            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get();
+            if(count($service_centers) > 0)
+            {
+                foreach($service_centers as $key => $value)
+                {
+                    $serviceCenterOptions.="<option value='".$value->id."'>".$value->name."</option>";   
+                }   
+            }
+            return response()->json(array(
+                    'success' => true,
+                    'message' => 'Service Center created successfully!',
+                    'serviceCenterOptions' => $serviceCenterOptions
+                ));
+        }
+        else{
+            return redirect()->route('admin.service_centers.index')->with('success','Service Center created successfully!');
+        }
     }
 
 

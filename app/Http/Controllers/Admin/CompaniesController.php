@@ -119,7 +119,7 @@ class CompaniesController extends Controller
 
             $companyOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
 
-            $companies = \App\Company::where('status','Active')->get();
+            $companies = \App\Company::where('status','Active')->orderBy('name')->get();
             if(count($companies) > 0)
             {
                 foreach($companies as $key => $value)
@@ -129,7 +129,7 @@ class CompaniesController extends Controller
             }
             return response()->json(array(
                     'success' => true,
-                    'message' => 'Company added successfully.',
+                    'message' => 'Company created successfully!',
                     'companyOptions' => $companyOptions,
                     'selectedCompany' => $company->id
                 ));

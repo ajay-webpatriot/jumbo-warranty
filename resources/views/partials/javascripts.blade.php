@@ -61,7 +61,7 @@
         $('input[type=email]').attr('autocomplete','off');
         $('input[type=password]').attr('autocomplete','off');
 
-        $("#phone").mask("99999-99999");// set mask for phone field
+        $("input[name=phone]").mask("99999-99999");// set mask for phone field
 
         /** add active class and stay opened when selected */
         // for sidebar menu entirely but not cover treeview

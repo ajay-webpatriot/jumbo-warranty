@@ -70,7 +70,7 @@
                                                 @endif
                                             </div>
                                             <div class="col-xs-2">
-                                                <button class="btn btn-success" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                                <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                             @endif
                                         </div>
                                         <div class="col-xs-2">
-                                            <button class="btn btn-success" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" id="quick_add_customer" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                     @else
@@ -116,7 +116,7 @@
                                             @endif
                                         </div>
                                         <div class="col-xs-2">
-                                            <button class="btn btn-success" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div> 
                                     @endif  
@@ -159,7 +159,7 @@
                                 <!-- Service center -->
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-xs-12">
+                                        <div class="col-xs-10">
                                             {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
                                             {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2']) !!}
                                             <p class="help-block"></p>
@@ -169,12 +169,15 @@
                                             </p>
                                             @endif
                                         </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#service-center-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Technician -->
                                 <div class="col-md-6">
                                     <div class="row techDiv"  style="display: none;">
-                                        <div class="col-xs-12">
+                                        <div class="col-xs-10">
                                             {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
                                             {!! Form::select('technician_id', array('' => trans('quickadmin.qa_please_select')), old('technician_id'), ['class' => 'form-control select2']) !!}
                                             <p class="help-block"></p>
@@ -183,6 +186,9 @@
                                                 {{ $errors->first('technician_id') }}
                                             </p>
                                             @endif
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#technician-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -658,12 +664,8 @@
                 {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
                 <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
                 {!! Form::close() !!}
-                @stop
-
-                @section('javascript')
-                @parent
                 <!-- Quick add company modal -->
-                <div class="modal fade in" id="company-modal" style="">
+                <div class="modal fade in" id="company-modal">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -687,7 +689,7 @@
                       <!-- /.modal-dialog -->
                 </div>
                 <!-- Quick add customer modal -->
-                <div class="modal fade in" id="customer-modal" style="">
+                <div class="modal fade in" id="customer-modal">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -710,6 +712,59 @@
                       </div>
                       <!-- /.modal-dialog -->
                 </div>
+                <!-- Quick add service center modal -->
+                <div class="modal fade in" id="service-center-modal">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Add Service center</h4>
+                          </div>
+                          {!! Form::open(['method' => 'POST', 'route' => ['admin.service_centers.store']]) !!}
+                          <div class="modal-body">
+                            <div class="alert alert-danger" style="display:none"></div>
+                            @include('admin.service_centers.content')
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                            <button type="submit" id="btnAddServiceCenter" class="btn btn-primary">Save</button>
+                          </div>
+                          {!! Form::close() !!}
+                        </div>
+                        <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                </div>
+                <!-- Quick add technician modal -->
+                <div class="modal fade in" id="technician-modal">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Add Technician</h4>
+                          </div>
+                          {!! Form::open(['method' => 'POST', 'route' => ['admin.technicians.store']]) !!}
+                          <div class="modal-body">
+                            <div class="alert alert-danger" style="display:none"></div>
+                            @include('admin.technicians.content')
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                            <button type="submit" id="btnAddTechnician" class="btn btn-primary">Save</button>
+                          </div>
+                          {!! Form::close() !!}
+                        </div>
+                        <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                </div>
+                @stop
+
+                @section('javascript')
+                @parent
+                
 <script src="{{ url('adminlte/plugins/datetimepicker/moment-with-locales.min.js') }}"></script>
 <script src="{{ url('adminlte/plugins/datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
 <script>

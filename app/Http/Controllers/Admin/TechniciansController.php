@@ -12,6 +12,9 @@ use App\Http\Requests\Admin\UpdateTechniciansRequest;
 // permission plugin
 use Spatie\Permission\Models\Role as RolePermission;
 use Spatie\Permission\Models\Permission as perm;
+use Validator;
+use Illuminate\Support\Facades\Input;
+use DB;
 
 class TechniciansController extends Controller
 {
@@ -290,9 +293,9 @@ class TechniciansController extends Controller
             return abort(401);
         }
         $service_centers = \App\ServiceCenter::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $enum_status = User::$enum_status;
-        $logged_userRole_id= auth()->user()->role_id;  
-        return view('admin.technicians.create', compact('enum_status', 'service_centers','logged_userRole_id'));
+        $enum_technician_status = User::$enum_status;
+
+        return view('admin.technicians.create', compact('enum_technician_status', 'service_centers','logged_userRole_id'));
     }
 
     /**
@@ -301,12 +304,47 @@ class TechniciansController extends Controller
      * @param  \App\Http\Requests\StoreTechniciansRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTechniciansRequest $request)
+    public function store(Request $request)
     {
         if (! Gate::allows('user_create')) {
             return abort(401);
         }
         $data = $request->all();
+        $validator = Validator::make($data, [
+
+            'service_center_id' => 'required',
+            'name' => 'required',
+            'phone' => 'required|min:11|max:11',
+            'address_1' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zipcode' => 'required|min:6|max:6',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed',
+            'status' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+
+            if($request->ajax())
+            {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'There are incorect values in the form!',
+                    'errors' => $validator->getMessageBag()->toArray()
+                ));
+            }
+            else
+            {
+                return redirect()->back()->withInput(Input::all())->with(array(
+                    'success' => false,
+                    'errors' => $validator->getMessageBag()
+
+                ));
+                exit;
+            }
+        
+        }
         $data['role_id'] = config('constants.TECHNICIAN_ROLE_ID');
         $user = User::create($data);
 
@@ -314,8 +352,16 @@ class TechniciansController extends Controller
         //     $user->service_requests()->create($data);
         // }
 
-
-        return redirect()->route('admin.technicians.index')->with('success','Technician created successfully!');
+        if($request->ajax())
+        {
+            return response()->json(array(
+                    'success' => true,
+                    'message' => 'Technician created successfully!'
+                ));
+        }
+        else{
+            return redirect()->route('admin.technicians.index')->with('success','Technician created successfully!');
+        }
     }
 
 

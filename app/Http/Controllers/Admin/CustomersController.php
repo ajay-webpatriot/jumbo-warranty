@@ -377,7 +377,7 @@ class CustomersController extends Controller
             // }
             return response()->json(array(
                     'success' => true,
-                    'message' => 'Customer added successfully.',
+                    'message' => 'Customer created successfully!',
                     'custOptions' => $custOptions,
                     'selectedCustomer' => $customer->id
                 ));

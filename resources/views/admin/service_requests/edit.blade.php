@@ -104,7 +104,7 @@
                                     <!-- company will not visible to company admin,user, service center admin and technician -->
                                     <div class="col-md-6">
                                         <div class="row">
-                                            <div class="col-xs-12">
+                                            <div class="col-xs-10">
                                                 {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
                                                 {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
                                                 <p class="help-block"></p>
@@ -114,6 +114,9 @@
                                                     </p>
                                                 @endif
                                             </div>
+                                            <div class="col-xs-2">
+                                                <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 @else
@@ -121,7 +124,7 @@
                                 @endif
                                 <div class="col-md-6"> 
                                     <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>
-                                        <div class="col-xs-12 ">
+                                        <div class="col-xs-10 ">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
                                             {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
                                             <p class="help-block"></p>
@@ -130,6 +133,9 @@
                                                     {{ $errors->first('customer_id') }}
                                                 </p>
                                             @endif
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button id="quick_add_customer" class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div> 
@@ -191,7 +197,7 @@
                                 <!-- Service center -->
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-xs-12">
+                                        <div class="col-xs-10">
                                             {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
                                             {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2']) !!}
                                             <p class="help-block"></p>
@@ -201,6 +207,9 @@
                                                 </p>
                                             @endif
                                         </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#service-center-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                                 @else
@@ -208,8 +217,8 @@
                                 @endif
                                 <!-- Technician -->
                                 <div class="col-md-6">
-                                    <div class="row techDiv" {{ ($service_request->service_type == "") ? 'style=display:none' : ''}}>
-                                        <div class="col-xs-12">
+                                    <div class="row techDiv" {{ ($service_request->service_center_id == "") ? 'style=display:none' : ''}}>
+                                        <div class="col-xs-10">
                                             {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
                                             {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id']) !!}
                                             <p class="help-block"></p>
@@ -218,6 +227,9 @@
                                                     {{ $errors->first('technician_id') }}
                                                 </p>
                                             @endif
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#technician-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -792,7 +804,102 @@
             </div>
         </div>
     </div>
-
+    <!-- Quick add company modal -->
+    <div class="modal fade in" id="company-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add Company</h4>
+              </div>
+              {!! Form::open(['method' => 'POST', 'route' => ['admin.companies.store']]) !!}
+              <div class="modal-body">
+                <div class="alert alert-danger" style="display:none"></div>
+                @include('admin.companies.content')
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" id="btnAddCompany" class="btn btn-primary">Save</button>
+              </div>
+              {!! Form::close() !!}
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
+    <!-- Quick add customer modal -->
+    <div class="modal fade in" id="customer-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add Customer</h4>
+              </div>
+              {!! Form::open(['method' => 'POST', 'route' => ['admin.customers.store']]) !!}
+              <div class="modal-body">
+                <div class="alert alert-danger" style="display:none"></div>
+                @include('admin.customers.content')
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" id="btnAddCustomer" class="btn btn-primary">Save</button>
+              </div>
+              {!! Form::close() !!}
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
+    <!-- Quick add service center modal -->
+    <div class="modal fade in" id="service-center-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add Service center</h4>
+              </div>
+              {!! Form::open(['method' => 'POST', 'route' => ['admin.service_centers.store']]) !!}
+              <div class="modal-body">
+                <div class="alert alert-danger" style="display:none"></div>
+                @include('admin.service_centers.content')
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" id="btnAddServiceCenter" class="btn btn-primary">Save</button>
+              </div>
+              {!! Form::close() !!}
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
+    <!-- Quick add technician modal -->
+    <div class="modal fade in" id="technician-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add Technician</h4>
+              </div>
+              {!! Form::open(['method' => 'POST', 'route' => ['admin.technicians.store']]) !!}
+              <div class="modal-body">
+                <div class="alert alert-danger" style="display:none"></div>
+                @include('admin.technicians.content')
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" id="btnAddTechnician" class="btn btn-primary">Save</button>
+              </div>
+              {!! Form::close() !!}
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
 @stop
 
 @section('javascript')
@@ -804,40 +911,70 @@
         $(function(){
             if("{{$service_request->status}}" == "Closed")
             {
-                $("input").prop("disabled", true);
-                $("select").prop("disabled", true);
-                $("textarea").prop("disabled", true);
-                $("#btnUpdate").hide();
-                $("#selectbtn-parts").hide();
-                $("#deselectbtn-parts").hide();
+                // $("input").prop("disabled", true);
+                // $("select").prop("disabled", true);
+                // $("textarea").prop("disabled", true);
+                // $("#btnUpdate").hide();
+                // $("#selectbtn-parts").hide();
+                // $("#deselectbtn-parts").hide();
+                // $(".btn-quick-add").hide();
+                $("#formServiceRequest").find("input").prop("disabled", true);
+                $("#formServiceRequest").find("select").prop("disabled", true);
+                $("#formServiceRequest").find("textarea").prop("disabled", true);
+                $("#formServiceRequest").find("#btnUpdate").hide();
+                $("#formServiceRequest").find("#selectbtn-parts").hide();
+                $("#formServiceRequest").find("#deselectbtn-parts").hide();
+                $("#formServiceRequest").find(".btn-quick-add").hide();
             }
             else
             {
                 if({{auth()->user()->role_id}} == SERVICE_ADMIN_ROLE_ID)
                 {
                     // disabled all field except technician and status for service admin
-                    $("input[type=text]").prop("readonly", true);
-                    $("textarea").prop("readonly", true);
-                    $("select").prop("disabled", true);
-                    $("#technician_id").prop("disabled", false);
-                    $("#status").prop("disabled", false);
+                    // $("input[type=text]").prop("readonly", true);
+                    // $("textarea").prop("readonly", true);
+                    // $("select").prop("disabled", true);
+                    // $("#technician_id").prop("disabled", false);
+                    // $("#status").prop("disabled", false);
+                    // $("#quick_add_customer").hide();
+                    $("#formServiceRequest").find("input[type=text]").prop("readonly", true);
+                    $("#formServiceRequest").find("textarea").prop("readonly", true);
+                    $("#formServiceRequest").find("select").prop("disabled", true);
+                    $("#formServiceRequest").find("#technician_id").prop("disabled", false);
+                    $("#formServiceRequest").find("#status").prop("disabled", false);
+                    $("#formServiceRequest").find("#selectbtn-parts").hide();
+                    $("#formServiceRequest").find("#deselectbtn-parts").hide();
+                    $("#formServiceRequest").find("#quick_add_customer").hide();
                 }
                 else if({{auth()->user()->role_id}} == TECHNICIAN_ROLE_ID)
                 {
                     // disabled all field except charges related field, parts and status for technician
-                    $("input[type=text]").prop("readonly", true);
-                    $("textarea").prop("readonly", true);
-                    $("select").prop("disabled", true);
+                    // $("input[type=text]").prop("readonly", true);
+                    // $("textarea").prop("readonly", true);
+                    // $("select").prop("disabled", true);
+                    // $("#additional_charges_title").prop("readonly", false);
+                    // $("#additional_charges").prop("readonly", false);
+                    // $("#selectall-parts").prop("disabled", false);
+                    // $("#status").prop("disabled", false);
+                    // $("#quick_add_customer").hide();
+
+                    $("#formServiceRequest").find("input[type=text]").prop("readonly", true);
+                    $("#formServiceRequest").find("textarea").prop("readonly", true);
+                    $("#formServiceRequest").find("select").prop("disabled", true);
+                    $("#formServiceRequest").find("#additional_charges_title").prop("readonly", false);
+                    $("#formServiceRequest").find("#additional_charges").prop("readonly", false);
+                    $("#formServiceRequest").find("#selectall-parts").prop("disabled", false);
+                    $("#formServiceRequest").find("#status").prop("disabled", false);
+                    $("#formServiceRequest").find("#quick_add_customer").hide();
+
 
                     // $("#adavance_amount").prop("readonly", false);
                     // $("#service_charge").prop("readonly", false);
                     // $("#service_tag").prop("readonly", false);
-                    $("#additional_charges_title").prop("readonly", false);
-                    $("#additional_charges").prop("readonly", false);
+                    
                     // $("#amount").prop("readonly", false);
 
-                    $("#selectall-parts").prop("disabled", false);
-                    $("#status").prop("disabled", false);
+                    
 
                 }
             }

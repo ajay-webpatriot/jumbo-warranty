@@ -179,9 +179,9 @@ $(document).ready(function(){
 		       			alert(data.message);
 		       			$('#company-modal').modal('hide');
 		       			$("#company_id").html(data.companyOptions);
-		       			if($("#company_id option[value='"+data.selectedCompany+"']").length != 0){
-			       			$("#company_id").val(data.selectedCompany).trigger('change');
-		       			}
+		       			// if($("#company_id option[value='"+data.selectedCompany+"']").length != 0){
+			       		// 	$("#company_id").val(data.selectedCompany).trigger('change');
+		       			// }
 		       		}
 		       		else
 		       		{
@@ -224,17 +224,99 @@ $(document).ready(function(){
 		       		{
 		       			alert(data.message);
 		       			$('#customer-modal').modal('hide');
-		       			$("#company_id").trigger('change')
-		       			// $("#company_id").html(data.companyOptions);
-		       			// if($("#company_id option[value='"+data.selectedCompany+"']").length != 0){
-			       		// 	$("#company_id").val(data.selectedCompany).trigger('change');
-		       			// }
+		       			$("#company_id").trigger('change');
 		       		}
 		       		else
 		       		{
 		       			$.each(data.errors, function(key, value){
                   			$("#customer-modal").find('.alert-danger').show();
                   			$("#customer-modal").find('.alert-danger').append('<p>'+value+'</p>');
+                  		});
+		       		}
+		       	}
+		    });
+	    }
+	    return false;
+	});
+	$("#service-center-modal").on('shown.bs.modal', function(){
+    	// quick add service cneter from add/edit service request
+	    $("#service-center-modal").find(".select2").select2();
+	    // $("#service-center-modal").find("#customer_company_id").val($("#company_id").val()).trigger('change');
+	});
+	$("#service-center-modal").on('hidden.bs.modal', function() { 
+		// quick add service center model close from add/edit service request
+	    $("#service-center-modal").find('.alert-danger').html('').hide();
+        $("#service-center-modal").find("form")[0].reset();
+        $("#service_center_status option:selected").prop("selected", false);
+		$("#service_center_status option:first").prop("selected", "selected");
+	});
+	$("#service-center-modal").find("form").on('submit', function (e) {
+		// add service center on click of save button
+		e.preventDefault();
+	    if ($("#service-center-modal").find("form")[0].checkValidity()) {
+	        
+	        var form=$("#service-center-modal").find("form");
+			$.ajax({
+		       	type:'POST',
+		       	url:form.attr("action"),
+	        	data:form.serialize(),
+		       	dataType: "json",
+		       	success:function(data) {
+		       		if(data.success)
+		       		{
+		       			alert(data.message);
+		       			$('#service-center-modal').modal('hide');
+		       			$("#service_center_id").html(data.serviceCenterOptions).trigger("change");
+		       			$("#customer_id").select2().trigger("change");
+		       		}
+		       		else
+		       		{
+		       			$.each(data.errors, function(key, value){
+                  			$("#service-center-modal").find('.alert-danger').show();
+                  			$("#service-center-modal").find('.alert-danger').append('<p>'+value+'</p>');
+                  		});
+		       		}
+		       	}
+		    });
+	    }
+	    return false;
+	});
+	$("#technician-modal").on('shown.bs.modal', function(){
+    	// quick add technician from add/edit service request
+	    $("#technician-modal").find(".select2").select2();
+	    $("#technician-modal").find("#userServiceCenter").val($("#service_center_id").val()).trigger('change');
+	    // $("#service-center-modal").find("#customer_company_id").val($("#company_id").val()).trigger('change');
+	});
+	$("#technician-modal").on('hidden.bs.modal', function() { 
+		// quick add technician model close from add/edit service request
+	    $("#technician-modal").find('.alert-danger').html('').hide();
+        $("#technician-modal").find("form")[0].reset();
+        $("#technician_status option:selected").prop("selected", false);
+		$("#technician_status option:first").prop("selected", "selected");
+	});
+	$("#technician-modal").find("form").on('submit', function (e) {
+		// add technician on click of save button
+		e.preventDefault();
+	    if ($("#technician-modal").find("form")[0].checkValidity()) {
+	        
+	        var form=$("#technician-modal").find("form");
+			$.ajax({
+		       	type:'POST',
+		       	url:form.attr("action"),
+	        	data:form.serialize(),
+		       	dataType: "json",
+		       	success:function(data) {
+		       		if(data.success)
+		       		{
+		       			alert(data.message);
+		       			$('#technician-modal').modal('hide');
+		       			$("#service_center_id").trigger("change");
+		       		}
+		       		else
+		       		{
+		       			$.each(data.errors, function(key, value){
+                  			$("#technician-modal").find('.alert-danger').show();
+                  			$("#technician-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
 		       		}
 		       	}

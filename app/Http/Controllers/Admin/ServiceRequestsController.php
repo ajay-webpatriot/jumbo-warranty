@@ -78,7 +78,7 @@ class ServiceRequestsController extends Controller
         // filter dropdown details
        
        
-        $companies = \App\Company::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
@@ -529,6 +529,7 @@ class ServiceRequestsController extends Controller
 
             $customers = \App\Customer::where('company_id',auth()->user()->company_id)
                                         ->where('status','Active')
+                                        ->select(DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'),'id')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
                                         
             $product_parts = \App\AssignPart::where('company_id',auth()->user()->company_id)
@@ -588,8 +589,10 @@ class ServiceRequestsController extends Controller
         
         $enum_company_status = \App\Company::$enum_status;
         $enum_customer_status = \App\Customer::$enum_status;
+        $enum_service_center_status = \App\ServiceCenter::$enum_status;
+        $enum_technician_status = \App\User::$enum_status;
 
-        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status'));
+        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status'));
     }
 
     /**
@@ -819,7 +822,7 @@ class ServiceRequestsController extends Controller
         $products=array(''=>trans('quickadmin.qa_please_select'));                             
         if($service_request['company_id'] != "")
         {
-            $customers = \App\Customer::select("*", DB::raw('CONCAT(firstname, " ", lastname) AS firstname'))->where('company_id',$service_request['company_id'])
+            $customers = \App\Customer::select("*", DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))->where('company_id',$service_request['company_id'])
                                         ->where('status','Active')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
@@ -883,7 +886,12 @@ class ServiceRequestsController extends Controller
             $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
         }
 
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported'))->with('no', 1);
+        $enum_company_status = \App\Company::$enum_status;
+        $enum_customer_status = \App\Customer::$enum_status;
+        $enum_service_center_status = \App\ServiceCenter::$enum_status;
+        $enum_technician_status = \App\User::$enum_status;
+
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status'))->with('no', 1);
         // $user_name=ucwords('user name');
         // $subject='sub';
         // return view('admin.emails.service_request_detail_email', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);
@@ -1573,7 +1581,9 @@ class ServiceRequestsController extends Controller
         if($details['companyId'] != "")
         {
             $customers = \App\Customer::where('company_id',$details['companyId'])
-                                ->where('status','Active')->get();
+                                ->where('status','Active')
+                                ->orderby('firstname')
+                                ->get();
 
             $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
                                 ->whereHas('product_parts', function ($q) {
@@ -1589,7 +1599,7 @@ class ServiceRequestsController extends Controller
             {
                 foreach($customers as $key => $value)
                 {
-                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname.' '.$value->lastname."</option>";   
+                    $data['custOptions'].="<option value='".$value->id."'>". ucfirst($value->firstname).' '.ucfirst($value->lastname)."</option>";   
                 }   
             }
             if(count($product_parts) > 0)
@@ -1765,7 +1775,7 @@ class ServiceRequestsController extends Controller
         if($details['companyId'] != "")
         {
             $customers = \App\Customer::where('company_id',$details['companyId'])
-                                ->where('status','Active')->get();
+                                ->where('status','Active')->orderBy('firstname')->get();
 
             $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
                                 ->whereHas('product_parts', function ($q) {
@@ -1782,7 +1792,7 @@ class ServiceRequestsController extends Controller
             {
                 foreach($customers as $key => $value)
                 {
-                    $data['custOptions'].="<option value='".$value->id."'>".$value->firstname.' '.$value->lastname."</option>";
+                    $data['custOptions'].="<option value='".$value->id."'>". ucfirst($value->firstname).' '.ucfirst($value->lastname)."</option>";
                 }   
             }
             if(count($product_parts) > 0)
