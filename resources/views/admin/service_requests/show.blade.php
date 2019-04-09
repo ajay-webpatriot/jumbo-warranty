@@ -370,8 +370,21 @@
                                     <hr/>
 
                                     <div class="row">
+                                            <?php 
+                                                $paidStatus = '';
+                                            ?>
+                                            @if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
+                                                <?php 
+                                                    $paidStatus = '( Due ) ';
+                                                ?>
+                                                @if($service_request->status == "Closed" && $service_request->is_paid == 1)
+                                                <?php 
+                                                    $paidStatus = '( Paid ) ';
+                                                ?>
+                                                @endif
+                                            @endif
                                         <div class="col-md-12">
-                                                {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
+                                                {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').''.$paidStatus.':', ['class' => 'control-label']) !!}
                                             
                                                 <!-- total amount value label -->
                                                 {!! Form::label('',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
