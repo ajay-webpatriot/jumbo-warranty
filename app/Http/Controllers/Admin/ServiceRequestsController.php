@@ -82,16 +82,21 @@ class ServiceRequestsController extends Controller
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
+            //if logged in user is company admin and company user
             $products=array(''=>trans('quickadmin.qa_show_all')); 
             $customers = \App\Customer::where('company_id',auth()->user()->company_id)
                                         ->where('status','Active')
                                         ->select(DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'),'id')
+                                        ->orderBy('firstname')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
                                         
             $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
                                 ->whereHas('product', function ($q) {
                                         $q->where('status', 'Active');
-                                })->get();
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product->name;
+                                });
             
             if(count($company_products) > 0)
             {
@@ -108,22 +113,27 @@ class ServiceRequestsController extends Controller
             // if($request->session()->has('filter_company')){
             if(!empty(session('filter_company'))){
 
+                // if company filter is applied
                 $customers=\App\Customer::where('status','Active')
                                         ->where('company_id',session('filter_company'))
                                         ->select(DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'),'id')
+                                        ->orderBy('firstname')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
 
                 $products=array(''=>trans('quickadmin.qa_show_all')); 
                 $company_products = \App\AssignProduct::where('company_id',session('filter_company'))
                                     ->whereHas('product', function ($q) {
                                         $q->where('status', 'Active');
-                                    })->get();
+                                    })->get()
+                                    ->sortBy(function($value, $key) {
+                                      return $value->product->name;
+                                    });
                 
                 if(count($company_products) > 0)
                 {
                     foreach($company_products as $key => $value)
                     {
-                        $products[$value->product->id]=$value->product->name;
+                        $products[$value->product->id]=ucfirst($value->product->name);
                     }
                 } 
             }
@@ -172,19 +182,23 @@ class ServiceRequestsController extends Controller
         
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
         {
-            $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+            $technicians = \App\User::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')
+                                    ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
                                     ->where('status','Active')
                                     ->where('service_center_id',auth()->user()->service_center_id)
+                                    ->orderBy('name')
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         }
         else
         {
-            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             if(!empty(session('filter_service_center')))
             {
-                $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                $technicians = \App\User::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')
+                                    ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
                                     ->where('status','Active')
                                     ->where('service_center_id',session('filter_service_center'))
+                                    ->orderBy('name')
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             }
             else
@@ -522,7 +536,10 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')
+                                ->orderBy('name')
+                                ->get()->pluck('name', 'id')
+                                ->prepend(trans('quickadmin.qa_please_select'), '');
         // $customers = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $customers = \App\Customer::get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
@@ -534,17 +551,24 @@ class ServiceRequestsController extends Controller
             $customers = \App\Customer::where('company_id',auth()->user()->company_id)
                                         ->where('status','Active')
                                         ->select(DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'),'id')
+                                        ->orderBy('firstname')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
                                         
             $product_parts = \App\AssignPart::where('company_id',auth()->user()->company_id)
                                 ->whereHas('product_parts', function ($q) {
                                         $q->where('status', 'Active');
-                                })->get();
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product_parts->name;
+                                });
 
             $company_products = \App\AssignProduct::where('company_id',auth()->user()->company_id)
                                 ->whereHas('product', function ($q) {
                                         $q->where('status', 'Active');
-                                })->get();
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product->name;
+                                });
 
             if(count($product_parts) > 0)
             {
@@ -566,8 +590,13 @@ class ServiceRequestsController extends Controller
         else
         {
             $customers=array(''=>trans('quickadmin.qa_please_select'));
-            $products = \App\Product::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-            $parts = \App\ProductPart::where('status','Active')->get()->pluck('name', 'id');
+            $products = \App\Product::where('status','Active')
+                                    ->orderBy('name')
+                                    ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $parts = \App\ProductPart::where('status','Active')
+                                    ->orderBy('name')
+                                    ->get()
+                                    ->pluck('name', 'id');
         }
 
         $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
@@ -577,9 +606,9 @@ class ServiceRequestsController extends Controller
             $km_charge =$distance_charge->km_charge;
         }
 
-        $service_centers = \App\ServiceCenter::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $service_centers = \App\ServiceCenter::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $technicians = \App\User::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
 
         $enum_service_type = ServiceRequest::$enum_service_type;
@@ -743,9 +772,13 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         // SendMailHelper::sendRequestCreationMail($id);
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')
+                                ->orderBy('name')
+                                ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
-        $service_centers = \App\ServiceCenter::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $service_centers = \App\ServiceCenter::where('status','Active')
+                                            ->orderBy('name')
+                                            ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         
         // $products = \App\Product::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $parts = \App\ProductPart::get()->pluck('name', 'id');
@@ -807,6 +840,7 @@ class ServiceRequestsController extends Controller
             $technicians = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
                                     ->where('status','Active')
                                     ->where('service_center_id',$service_request['service_center_id'])
+                                    ->orderBy('name')
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
             // check service center supported to apply transportation charges
@@ -828,21 +862,28 @@ class ServiceRequestsController extends Controller
         {
             $customers = \App\Customer::select("*", DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))->where('company_id',$service_request['company_id'])
                                         ->where('status','Active')
+                                        ->orderBy('firstname')
                                         ->get()->pluck('firstname', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
             // $product_parts = \App\AssignPart::where('company_id',$service_request['company_id'])
             //                     ->with('product_parts')->get();
             $product_parts = \App\AssignPart::where('company_id',$service_request['company_id'])
-                                ->whereHas('product_parts', function ($q) {
-                                        $q->where('status', 'Active');
-                                })->get();
+                                ->whereHas('product_parts', function ($query) {
+                                        $query->where('status', 'Active');
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product_parts->name;
+                                });
 
             // $company_products = \App\AssignProduct::where('company_id',$service_request['company_id'])
             //                     ->with('product')->get();
             $company_products = \App\AssignProduct::where('company_id',$service_request['company_id'])
-                                ->whereHas('product', function ($q) {
-                                        $q->where('status', 'Active');
-                                })->get();
+                                ->whereHas('product', function ($query) {
+                                        $query->where('status', 'Active');
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product->name;
+                                });
 
 
             // echo "<pre>"; print_r ($company_products); echo "</pre>"; exit();
@@ -1590,14 +1631,20 @@ class ServiceRequestsController extends Controller
                                 ->get();
 
             $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
-                                ->whereHas('product_parts', function ($q) {
-                                        $q->where('status', 'Active');
-                                })->get();
+                                ->whereHas('product_parts', function ($query) {
+                                        $query->where('status', 'Active');
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product_parts->name;
+                                });
 
             $products = \App\AssignProduct::where('company_id',$details['companyId'])
-                                ->whereHas('product', function ($q) {
-                                        $q->where('status', 'Active');
-                                })->get();
+                                ->whereHas('product', function ($query) {
+                                        $query->where('status', 'Active');
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product->name;
+                                });
 
             if(count($customers) > 0)
             {
@@ -1781,15 +1828,23 @@ class ServiceRequestsController extends Controller
             $customers = \App\Customer::where('company_id',$details['companyId'])
                                 ->where('status','Active')->orderBy('firstname')->get();
 
-            $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
-                                ->whereHas('product_parts', function ($q) {
-                                        $q->where('status', 'Active');
-                                })->get();
+            // $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
+            //                     ->whereHas('product_parts', function ($query) {
+            //                             $query->orderBy('name');
+            //                             $query->where('status', 'Active');
+            //                     })->get()
+            //                     ->sortBy(function($value, $key) {
+            //                       return $value->product_parts->name;
+            //                     });
 
             $products = \App\AssignProduct::where('company_id',$details['companyId'])
-                                ->whereHas('product', function ($q) {
-                                        $q->where('status', 'Active');
-                                })->get();
+                                ->whereHas('product', function ($query) {
+                                        $query->orderBy('name');
+                                        $query->where('status', 'Active');
+                                })->get()
+                                ->sortBy(function($value, $key) {
+                                  return $value->product->name;
+                                });
             // echo count($product_parts);
             //             echo "<pre>"; print_r ($product_parts); echo "</pre>"; exit();        
             if(count($customers) > 0)
@@ -1799,20 +1854,20 @@ class ServiceRequestsController extends Controller
                     $data['custOptions'].="<option value='".$value->id."'>". ucfirst($value->firstname).' '.ucfirst($value->lastname)."</option>";
                 }   
             }
-            if(count($product_parts) > 0)
-            {
-                foreach($product_parts as $key => $value)
-                {
-                    $data['partOptions'].="<option value='".$value->product_parts->id."'>".$value->product_parts->name."</option>";   
+            // if(count($product_parts) > 0)
+            // {
+            //     foreach($product_parts as $key => $value)
+            //     {
+            //         $data['partOptions'].="<option value='".$value->product_parts->id."'>".$value->product_parts->name."</option>";   
                     
-                }   
-            }
+            //     }   
+            // }
             if(count($products) > 0)
             {
                 foreach($products as $key => $value)
                 {
                     // echo "<pre>"; print_r ($value->product_id); echo "</pre>"; exit();
-                    $data['productOptions'].="<option value='".$value->product->id."'>".$value->product->name."</option>";
+                    $data['productOptions'].="<option value='".$value->product->id."'>".ucfirst($value->product->name)."</option>";
                 }   
             }
         }

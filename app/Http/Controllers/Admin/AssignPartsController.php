@@ -66,7 +66,7 @@ class AssignPartsController extends Controller
         //     $value['availableQuantity']=$value->quantity-$usedParts;
         // }
         
-        $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.assign_parts.index', compact('companies'));
     }
     /**
@@ -248,7 +248,7 @@ class AssignPartsController extends Controller
 
                 $tableField['checkbox'] = '';
                 $tableField['sr_no'] =  $assignPart->id;
-                $tableField['company'] = $assignPart->company_name;
+                $tableField['company'] = ucfirst($assignPart->company_name);
                 $tableField['part_name'] = $assignPart->part_name;
                 $tableField['quantity'] = $assignPart->quantity;
                 $tableField['available_quantity'] = $assignPart->available_quantity;
@@ -303,8 +303,8 @@ class AssignPartsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $product_parts = \App\ProductPart::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $product_parts = \App\ProductPart::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
             
         return view('admin.assign_parts.create', compact('companies', 'product_parts'));
     }
@@ -354,8 +354,8 @@ class AssignPartsController extends Controller
             return abort(401);
         }
         
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $product_parts = \App\ProductPart::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $product_parts = \App\ProductPart::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
             
         $assign_part = AssignPart::findOrFail($id);
 

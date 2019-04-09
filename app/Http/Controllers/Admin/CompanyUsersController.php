@@ -46,7 +46,7 @@ class CompanyUsersController extends Controller
         // }                
         // $users = $query->get();
 
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.company_users.index', compact('companies'));
     }
 
@@ -234,7 +234,7 @@ class CompanyUsersController extends Controller
 
                 $tableField['checkbox'] = '';
                 $tableField['sr_no'] = $company_user->id;
-                $tableField['company_name'] = $company_user->company_name;
+                $tableField['company_name'] = ucfirst($company_user->company_name);
                 $tableField['company_user_name'] =$company_user->name;
                 $tableField['phone'] =$company_user->phone;
                 $tableField['email'] =$company_user->email;
@@ -288,7 +288,7 @@ class CompanyUsersController extends Controller
         if (! Gate::allows('user_create')) {
             return abort(401);
         }
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
         $logged_userRole_id= auth()->user()->role_id;  
         return view('admin.company_users.create', compact('enum_status', 'companies','logged_userRole_id'));
@@ -327,7 +327,7 @@ class CompanyUsersController extends Controller
         
         // $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         // $companies = \App\Company::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-        $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = User::$enum_status;
             
         $user = User::findOrFail($id);

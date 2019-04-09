@@ -64,7 +64,7 @@ class ProductsController extends Controller
             return abort(401);
         }
         
-        $categories = \App\Category::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $categories = \App\Category::orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Product::$enum_status;
             
         return view('admin.products.create', compact('enum_status', 'categories'));
@@ -101,7 +101,7 @@ class ProductsController extends Controller
             return abort(401);
         }
         
-        $categories = \App\Category::get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $categories = \App\Category::orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_status = Product::$enum_status;
             
         $product = Product::findOrFail($id);

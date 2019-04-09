@@ -38,5 +38,9 @@ class Company extends Model
     {
         $this->attributes['installation_charge'] = $input ? $input : null;
     }
+
+    public function getNameAttribute($value) {
+        return ucfirst($value);
+    }
     
 }
