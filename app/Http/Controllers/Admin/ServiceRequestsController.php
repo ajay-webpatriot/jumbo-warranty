@@ -833,6 +833,8 @@ class ServiceRequestsController extends Controller
                                         ->where('status','Active')
                                         ->get()->first();
 
+        $supported_service_centers = \App\ServiceCenter::where('status','Active')->Where('supported_zipcode', 'like', '%' . $custAddressData->zipcode . '%')->get();
+
         $service_center_supported = true;
         if($service_request['service_center_id'] != "")
         {
@@ -845,6 +847,8 @@ class ServiceRequestsController extends Controller
 
             // check service center supported to apply transportation charges
             $supported_center_detail=\App\ServiceCenter::Where('supported_zipcode', 'like', '%' . $custAddressData->zipcode . '%')->where('id',$service_request['service_center_id'])->get();
+
+
             if(count($supported_center_detail) <= 0)
             {
                 $service_center_supported = false;
@@ -935,8 +939,7 @@ class ServiceRequestsController extends Controller
         $enum_customer_status = \App\Customer::$enum_status;
         $enum_service_center_status = \App\ServiceCenter::$enum_status;
         $enum_technician_status = \App\User::$enum_status;
-
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status'))->with('no', 1);
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'supported_service_centers', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status'))->with('no', 1);
         // $user_name=ucwords('user name');
         // $subject='sub';
         // return view('admin.emails.service_request_detail_email', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);
