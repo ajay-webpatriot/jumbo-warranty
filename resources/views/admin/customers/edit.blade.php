@@ -12,6 +12,22 @@
         </div>
 
         <div class="panel-body">
+            @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
+            @else
+                <div class="row">
+                    <div class="col-xs-6">
+                            {!! Form::label('company_id', trans('quickadmin.customers.fields.company').'*', ['class' => 'control-label']) !!}
+                            {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                            <p class="help-block"></p>
+                            @if($errors->has('company_id'))
+                                <p class="help-block">
+                                    {{ $errors->first('company_id') }}
+                                </p>
+                            @endif
+                    </div>
+                </div>
+            @endif
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('firstname', trans('quickadmin.customers.fields.firstname').'*', ['class' => 'control-label']) !!}
@@ -102,31 +118,16 @@
                 </div>
             </div>
             <div class="row">
-                <!-- <div class="col-xs-6">
-                    {!! Form::label('company_id', trans('quickadmin.customers.fields.company').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                <div class="col-xs-6">
+                    {!! Form::label('status', trans('quickadmin.customers.fields.status').'*', ['class' => 'control-label']) !!}
+                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
                     <p class="help-block"></p>
-                    @if($errors->has('company_id'))
+                    @if($errors->has('status'))
                         <p class="help-block">
-                            {{ $errors->first('company_id') }}
+                            {{ $errors->first('status') }}
                         </p>
                     @endif
-                </div> -->
-
-                @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-                    {!! Form::hidden('company_id', auth()->user()->company_id, ['class' => 'form-control']) !!}
-                @else
-                    <div class="col-xs-6">
-                            {!! Form::label('company_id', trans('quickadmin.customers.fields.company').'*', ['class' => 'control-label']) !!}
-                            {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
-                            <p class="help-block"></p>
-                            @if($errors->has('company_id'))
-                                <p class="help-block">
-                                    {{ $errors->first('company_id') }}
-                                </p>
-                            @endif
-                    </div>
-                @endif
+                </div>
                 <div class="col-xs-6">
                     {!! Form::label('zipcode', trans('quickadmin.customers.fields.zipcode').'*', ['class' => 'control-label']) !!}
                     {!! Form::text('zipcode', old('zipcode'), ['class' => 'form-control', 'placeholder' => '', 'required' => '','minlength' => '6','maxlength' => '6']) !!}

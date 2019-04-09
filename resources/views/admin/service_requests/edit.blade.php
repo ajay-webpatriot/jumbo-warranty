@@ -236,13 +236,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row suggestedServiceCenterDiv" style="display: none;">
+                            <div class="row suggestedServiceCenterDiv" {{ (count($supported_service_centers) <= 0) ? 'style=display:none' : ''}}>
                                 <!-- suggested service center -->
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-xs-12">
                                             {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.suggested-service-center').'', ['class' => 'control-label']) !!}
-                                            <div id="suggestedHTML"></div>
+                                            <div id="suggestedHTML">
+                                                @if(count($supported_service_centers) > 0)
+                                                    @foreach ($supported_service_centers as $center)
+                                                        <div>
+                                                            <input type="radio" name="suggested_service_center" <?=($center->id == $service_request->service_center_id)?"checked='checked'":""?> value="{{ $center->id }}"><label class="control-label lblSuggestedCenter fontweight">{{ $center->name }}</label>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+
+                                            </div>
                                             <p class="help-block"></p>
                                             @if($errors->has('service_center_id'))
                                             <p class="help-block">
