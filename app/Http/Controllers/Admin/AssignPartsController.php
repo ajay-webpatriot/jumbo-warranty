@@ -249,7 +249,7 @@ class AssignPartsController extends Controller
                 $tableField['checkbox'] = '';
                 $tableField['sr_no'] =  $assignPart->id;
                 $tableField['company'] = ucfirst($assignPart->company_name);
-                $tableField['part_name'] = $assignPart->part_name;
+                $tableField['part_name'] = ucfirst($assignPart->part_name);
                 $tableField['quantity'] = $assignPart->quantity;
                 $tableField['available_quantity'] = $assignPart->available_quantity;
 
