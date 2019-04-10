@@ -612,3 +612,36 @@ $("#call_type").change(function(){
 		$('.onlineserialnumber').css('display','none');
 	}
 });
+
+function quickadd(type){
+
+	if(type != ''){
+		$.ajax({
+			type:'GET',
+			url:APP_URL+"/admin/quickadd",
+			data:{
+				'type':type,
+				// '_token': '{{csrf_token()}}'
+			},
+			dataType: "json",
+			success:function(data) {
+				
+				if(data.success == 1){
+					if(type == 'company'){
+						$('#renderCompanyHtml').html(data.html);
+						$('#company-modal').modal('show');
+					}else if(type == 'customer'){
+						$('#renderCustomerHtml').html(data.html);
+						$('#customer-modal').modal('show');
+					}else if(type == 'service_center'){
+						$('#renderServiceCenterHtml').html(data.html);
+						$('#service-center-modal').modal('show');
+					}else if(type == 'technician'){
+						$('#renderTechnicianHtml').html(data.html);
+						$('#technician-modal').modal('show');
+					}
+				}
+			}
+		});
+	}
+}

@@ -69,7 +69,9 @@
                                                 @endif
                                             </div>
                                             <div class="col-sm-2 col-xs-3">
-                                                <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                                <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
+                                                <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('company')"><i class="fa fa-plus"></i></button>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -99,7 +101,8 @@
                                             @endif
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
-                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" id="quick_add_customer" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                            <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" id="quick_add_customer" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                     @else
@@ -115,7 +118,8 @@
                                             @endif
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
-                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                            <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div> 
                                     @endif  
@@ -171,7 +175,8 @@
                                             @endif
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
-                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#service-center-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                            <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#service-center-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('service_center')"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -189,7 +194,8 @@
                                             @endif
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
-                                            <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#technician-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button>
+                                            <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#technician-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('technician')"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -685,7 +691,8 @@
                           {!! Form::open(['method' => 'POST', 'route' => ['admin.companies.store']]) !!}
                           <div class="modal-body">
                             <div class="alert alert-danger" style="display:none"></div>
-                            @include('admin.companies.content')
+                            <div id="renderCompanyHtml"></div>
+                            {{-- @include('admin.companies.content') --}}
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -709,7 +716,8 @@
                           {!! Form::open(['method' => 'POST', 'route' => ['admin.customers.store']]) !!}
                           <div class="modal-body">
                             <div class="alert alert-danger" style="display:none"></div>
-                            @include('admin.customers.content')
+                            <div id="renderCustomerHtml"></div>
+                            {{-- @include('admin.customers.content') --}}
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -733,7 +741,8 @@
                           {!! Form::open(['method' => 'POST', 'route' => ['admin.service_centers.store']]) !!}
                           <div class="modal-body">
                             <div class="alert alert-danger" style="display:none"></div>
-                            @include('admin.service_centers.content')
+                            <div id="renderServiceCenterHtml"></div>
+                            {{-- @include('admin.service_centers.content') --}}
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -757,7 +766,8 @@
                           {!! Form::open(['method' => 'POST', 'route' => ['admin.technicians.store']]) !!}
                           <div class="modal-body">
                             <div class="alert alert-danger" style="display:none"></div>
-                            @include('admin.technicians.content')
+                            <div id="renderTechnicianHtml"></div>
+                           {{-- @include('admin.technicians.content') --}}
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>

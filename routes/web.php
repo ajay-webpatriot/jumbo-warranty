@@ -111,7 +111,7 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
     //update paid status
     Route::post('/amountPaid', ['uses' => 'Admin\ServiceRequestsController@amountPaid']);
 
-    Route::post('/quickadd', ['uses' => 'Admin\ServiceRequestsController@quickadd']);
+    Route::get('/quickadd', ['uses' => 'Admin\ServiceRequestsController@quickadd']);
 
     Route::get('service_request_reject/{id}', ['uses' => 'Admin\ServiceRequestsController@rejectServiceRequest', 'as' => 'service_request.reject']);
 

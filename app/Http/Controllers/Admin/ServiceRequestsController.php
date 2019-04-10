@@ -1925,29 +1925,38 @@ class ServiceRequestsController extends Controller
     {   
         $status = 0;
         $returnHTML = '';
+
         if($request['type'] != ''){
+            
             if($request['type'] == 'company'){
+
                 $enum_company_status = \App\Company::$enum_status;
-                // $returnHTML = view('job.userjobs')->with('userjobs', $userjobs)->render();
                 $returnHTML = view('admin.companies.content')->with('enum_company_status', $enum_company_status)->render();
                 $status = 1;
+
             }elseif ($request['type'] == 'customer') {
 
-                $returnHTML = view('admin.customers.content')->render();
+                $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                $enum_customer_status = \App\Customer::$enum_status;
+                $returnHTML = view('admin.customers.content',compact('enum_customer_status', 'companies'))->render();
                 $status = 1;
+
             }elseif ($request['type'] == 'service_center') {
 
-                $returnHTML = view('admin.service_centers.content')->render();
+                $enum_service_center_status = \App\ServiceCenter::$enum_status;
+                $returnHTML = view('admin.service_centers.content')->with('enum_service_center_status', $enum_service_center_status)->render();
                 $status = 1;
+
             }elseif ($request['type'] == 'technician') {
 
-                $returnHTML = view('admin.technicians.content')->render();
+                $enum_technician_status = \App\User::$enum_status;
+                $service_centers = \App\ServiceCenter::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+                $returnHTML = view('admin.technicians.content',compact('enum_technician_status', 'service_centers'))->render();
                 $status = 1;
+
             }
-        
-        // $enum_customer_status = \App\Customer::$enum_status;
-        // $enum_service_center_status = \App\ServiceCenter::$enum_status;
-        // $enum_technician_status = \App\User::$enum_status;
+            
+            // $returnHTML = view('job.userjobs')->with('userjobs', $userjobs)->render();
         }
         return response()->json(array('success' => $status , 'html'=>$returnHTML));
     }
@@ -1959,11 +1968,7 @@ class ServiceRequestsController extends Controller
             if($technicianId != '' && $technicianId != 0 && !empty($technicianId) && $technicianId != NULL){
 
                 $assignedRequest = ServiceRequest::select('service_requests.id','service_requests.service_type',
-                    'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
-                    DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
-                    DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-                    LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
-                    'service_requests.is_accepted'
+                    'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)),LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status','service_requests.is_accepted'
                 )
                 ->where('service_requests.technician_id',$technicianId)
                 ->where('service_requests.id',$lastInsertedId)
@@ -2026,8 +2031,8 @@ class ServiceRequestsController extends Controller
                 // echo "----".$result;
                 // echo "<br>".json_encode( $fields );
                 // Close connection
-		Log::info("== sending notification ==".json_encode( $fields ));
-		Log::info("== sent notification ==".json_encode( $result ));
+		        Log::info("== sending notification ==".json_encode( $fields ));
+		        Log::info("== sent notification ==".json_encode( $result ));
                 curl_close($ch);
                 // exit();
             }
