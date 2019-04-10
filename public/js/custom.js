@@ -618,7 +618,10 @@ $("#call_type").change(function(){
 });
 
 function quickadd(type){
-
+	$('#renderCompanyHtml').html('');
+	$('#renderCustomerHtml').html('');
+	$('#renderServiceCenterHtml').html('');
+	$('#renderTechnicianHtml').html('');
 	if(type != ''){
 		$.ajax({
 			type:'GET',
