@@ -21,6 +21,10 @@ $(document).ready(function(){
 		{
 			$("input[name='suggested_service_center']").attr('checked', false);
 		}
+		else
+		{
+			$("input[name='suggested_service_center'][value='"+serviceCenterId+"']").attr('checked', true);
+		}
 		// get technician according to service center for service request 
 		getTechnicians(serviceCenterId);
 	

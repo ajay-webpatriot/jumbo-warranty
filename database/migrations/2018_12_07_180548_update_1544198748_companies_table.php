@@ -15,7 +15,7 @@ class Update1544198748CompaniesTable extends Migration
         Schema::table('companies', function (Blueprint $table) {
             
 if (!Schema::hasColumn('companies', 'credit')) {
-                $table->string('credit')->nullable();
+                $table->decimal('credit', 10, 2)->nullable()
                 }
         });
 
