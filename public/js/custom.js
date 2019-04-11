@@ -229,10 +229,10 @@ $(document).ready(function(){
 		       		{
 		       			alert(data.message);
 		       			$('#customer-modal').modal('hide');
-		       			if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID || $("#loggedUser_role_id").val() == SUPER_ADMIN_ROLE_ID)
-						{
+		    //    			if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID || $("#loggedUser_role_id").val() == SUPER_ADMIN_ROLE_ID)
+						// {
 		       				$("#company_id").trigger('change');
-		       			}
+		       			// }
 		       		}
 		       		else
 		       		{
