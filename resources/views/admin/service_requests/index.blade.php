@@ -542,7 +542,7 @@
                             // var iColumns = $('#company thead th').length;
 
                             // set 100% width fot table in pdf
-                            doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                            // doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
                             
                             // set alignment of amount and request status column for PDF screen
                             var rowCount = document.getElementById("serviceRequest").rows.length;
