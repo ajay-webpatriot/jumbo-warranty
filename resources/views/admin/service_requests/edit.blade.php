@@ -240,7 +240,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row suggestedServiceCenterDiv" {{ (count($supported_service_centers) <= 0) ? 'style=display:none' : ''}}>
+                            <div class="row suggestedServiceCenterDiv" {{ ((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')) && count($supported_service_centers) > 0) ? '' : 'style=display:none'}}>
                                 <!-- suggested service center -->
                                 <div class="col-md-6">
                                     <div class="row">

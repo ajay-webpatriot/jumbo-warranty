@@ -292,19 +292,23 @@
                     {
                         extend: 'pdf',
                         text: window.pdfButtonTrans,
+                        orientation: 'landscape',
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4, 5]
+                            columns: [0, 1, 2, 3, 4, 5]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#technician thead th').length;
+                            // set 100% width fot table in pdf
+                            doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+
                             // set alignment of amount and request status column for PDF screen
                             var rowCount = document.getElementById("technician").rows.length;
                             
                             for (i = 0; i < rowCount; i++) {
-                                    
-                                    doc.content[1].table.body[i][3].alignment = 'right';
-                                    doc.content[1].table.body[i][4].alignment = 'center';
+                                    doc.content[1].table.body[i][0].alignment = 'center';
+                                    doc.content[1].table.body[i][4].alignment = 'right';
+                                    doc.content[1].table.body[i][5].alignment = 'center';
                                  
                             }
                         }
@@ -314,12 +318,13 @@
                         text: window.printButtonTrans,
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4, 5]
+                            columns: [0, 1, 2, 3, 4, 5]
                         },
                         customize: function (win) {
                             // set alignment of amount and request status column for print screen
-                            $(win.document.body).find('table tbody td:nth-child(4)').css('text-align', 'right');
-                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'right');
+                            $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
                         }
                     }
                 ],
@@ -405,19 +410,24 @@
                     {
                         extend: 'pdf',
                         text: window.pdfButtonTrans,
+                        orientation: 'landscape',
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5, 6]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#company thead th').length;
+
+                            // set 100% width fot table in pdf
+                            doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+
                             // set alignment of amount and request status column for PDF screen
                             var rowCount = document.getElementById("company").rows.length;
                             
                             for (i = 0; i < rowCount; i++) {
-                                    
-                                    doc.content[1].table.body[i][3].alignment = 'right';
-                                    doc.content[1].table.body[i][4].alignment = 'center';
+                                    doc.content[1].table.body[i][0].alignment = 'center';
+                                    doc.content[1].table.body[i][4].alignment = 'right';
+                                    doc.content[1].table.body[i][5].alignment = 'center';
                                  
                             }
                         }
@@ -427,12 +437,13 @@
                         text: window.printButtonTrans,
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5, 6]
                         },
                         customize: function (win) {
                             // set alignment of amount and request status column for print screen
-                            $(win.document.body).find('table tbody td:nth-child(4)').css('text-align', 'right');
-                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'right');
+                            $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
                         }
                     }
                 ],
@@ -522,20 +533,25 @@
                     {
                         extend: 'pdf',
                         text: window.pdfButtonTrans,
+                        orientation: 'landscape',
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#company thead th').length;
+
+                            // set 100% width fot table in pdf
+                            doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                            
                             // set alignment of amount and request status column for PDF screen
                             var rowCount = document.getElementById("serviceRequest").rows.length;
                             
                             for (i = 0; i < rowCount; i++) {
-                                    
-                                    doc.content[1].table.body[i][5].alignment = 'right';
-                                    doc.content[1].table.body[i][6].alignment = 'center';
+                                    doc.content[1].table.body[i][0].alignment = 'center';
+                                    doc.content[1].table.body[i][6].alignment = 'right';
                                     doc.content[1].table.body[i][7].alignment = 'center';
+                                    doc.content[1].table.body[i][8].alignment = 'center';
                                  
                             }
                         }
@@ -545,12 +561,14 @@
                         text: window.printButtonTrans,
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
                         },
                         customize: function (win) {
                             // set alignment of amount and request status column for print screen
-                            $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'right');
-                            $(win.document.body).find('table tbody td:nth-child(7)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(7)').css('text-align', 'right');
+                            $(win.document.body).find('table tbody td:nth-child(8)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(9)').css('text-align', 'center');
                         }
                     }
                 ],
