@@ -265,6 +265,9 @@ class ServiceRequest extends Model
                 $searchVal = $request['search']['value'];
                 $service_requestsQuery->where(function ($query) use ($searchVal) {
 
+                    $RequestedId = trim($searchVal,'JW');
+                    $clearRequestId = ltrim($RequestedId, '0');
+
                     // if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
                     // {
                     //     $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
@@ -284,6 +287,7 @@ class ServiceRequest extends Model
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('service_requests.id', 'like', '%' . $clearRequestId . '%');
                     $query->orWhere('service_requests.status', 'like', '%' . $searchVal . '%');
 
                 });
