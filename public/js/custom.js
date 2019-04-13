@@ -183,6 +183,7 @@ $(document).ready(function(){
 		       			alert(data.message);
 		       			$('#company-modal').modal('hide');
 		       			$("#company_id").html(data.companyOptions);
+		       			$("#company_id").trigger('change');
 		       			// if($("#company_id option[value='"+data.selectedCompany+"']").length != 0){
 			       		// 	$("#company_id").val(data.selectedCompany).trigger('change');
 		       			// }
@@ -228,7 +229,10 @@ $(document).ready(function(){
 		       		{
 		       			alert(data.message);
 		       			$('#customer-modal').modal('hide');
-		       			$("#company_id").trigger('change');
+		    //    			if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID || $("#loggedUser_role_id").val() == SUPER_ADMIN_ROLE_ID)
+						// {
+		       				$("#company_id").trigger('change');
+		       			// }
 		       		}
 		       		else
 		       		{

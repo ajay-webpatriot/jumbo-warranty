@@ -9,7 +9,7 @@ class SendMail
 {
 	public static function sendRequestCreationMail($request_id){
 
-    		// Mail::send([], [], function ($message) {
+      	// Mail::send([], [], function ($message) {
       //             $message->to('hinal.webpatriot@gmail.com')
       //               ->subject('test')
       //               // here comes what you want
@@ -105,7 +105,8 @@ class SendMail
                       $message->to($to_email)
                         ->subject('New Service Request Created')
                         // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
-                        ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+                        // ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+                        ->from(config('mail.from.address'),config('mail.from.name'));
                         // here comes what you want
                         // ->setBody('Hi, welcome user!'); // assuming text/plain
                         // or:
@@ -210,7 +211,8 @@ class SendMail
                         $message->to($to_email)
                           ->subject('Service Request Status Changed')
                           // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
-                          ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+                          // ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+                          ->from(config('mail.from.address'),config('mail.from.name'));
                   });   
           }     
         }
@@ -284,7 +286,8 @@ class SendMail
                     $message->to($to_email)
                       ->subject($subject)
                       // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
-                      ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+                      // ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+                      ->from(config('mail.from.address'),config('mail.from.name'));
                       // here comes what you want
                       // ->setBody('Hi, welcome user!'); // assuming text/plain
                       // or:
@@ -318,7 +321,8 @@ class SendMail
       $message->to($to_email,$name)
       ->subject('Forgot password OTP')
       // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
-      ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+      // ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+      ->from(config('mail.from.address'),config('mail.from.name'));
     });
 
     if (Mail::failures()) {

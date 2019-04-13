@@ -45,7 +45,7 @@ class LoginApiController extends Controller
         $status    = 0;
         $message   = "Some error occurred. Please try again later!";
         $response  = (object)array();
-        $UserArray = (object)array();
+        // $UserArray = (object)array();
 
         /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
@@ -101,9 +101,9 @@ class LoginApiController extends Controller
                     if($LoginQueryResult){
 
                         /* Get technician all data */
-                        $response->UserArray = $this->userData($LoginQueryResult->id);
+                        $response = $this->userData($LoginQueryResult->id);
 
-                        $UserArray  = $response->UserArray;
+                        // $UserArray  = $response->UserArray;
                         $status     = 1;
                         $message    = "Successfully Login.";
                     }
@@ -121,7 +121,7 @@ class LoginApiController extends Controller
         return response()->json([
             'status'    => $status,
             'message'   => $message,
-            'data'      => $UserArray
+            'data'      => $response
 
         ]);
     }
@@ -132,7 +132,7 @@ class LoginApiController extends Controller
         $status    = 0;
         $message   = "Some error occurred. Please try again later!";
         $response  = (object)array();
-        $UserArray = (object)array();
+        // $UserArray = (object)array();
 
         /* Json input */
         $json  = json_decode(file_get_contents("php://input"),true);
@@ -203,7 +203,7 @@ class LoginApiController extends Controller
         return response()->json([
             'status'   => $status,
             'message'  => $message,
-            'data'     => $UserArray
+            'data'     => $response
         ]);
     }
 
