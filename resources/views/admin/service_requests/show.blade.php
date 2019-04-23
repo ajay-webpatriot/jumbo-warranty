@@ -48,7 +48,7 @@
                         <div class="col-md-12">
                             <!-- Request Status -->
                            {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label lablemargin']) !!}
-                            {!! Form::label('status', $service_request->status, ['class' => 'control-label lablemargin fontweight']) !!}
+                            {!! Form::label('status', $service_request->status, ['class' => 'control-label lablemargin fontweight','style' => 'color:'.$enum_status_color[$service_request->status]]) !!}
                         </div>
                     </div>
 
@@ -313,31 +313,37 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6">
-                                    {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').': ', ['class' => 'control-label']) !!}
-                                    {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->completion_date), ['class' => 'control-label fontweight']) !!}
-                                </div>
+                                
 
-                                <div class="col-md-6">
-                                    <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
-                                        <div class="col-md-12">
-                                            {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin']) !!}
-
-                                            <!-- service charge value label -->
-                                            {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge']) !!}
-
-                                        </div>
+                                    <div class="col-md-6">
+                                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                            {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').': ', ['class' => 'control-label']) !!}
+                                            {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->completion_date), ['class' => 'control-label fontweight']) !!}
+                                        @endif
                                     </div>
+                               
+                                <div class="col-md-6">
+                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                        <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
+                                            <div class="col-md-12">
+                                                {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin']) !!}
+
+                                                <!-- service charge value label -->
+                                                {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge']) !!}
+
+                                            </div>
+                                        </div>
                                    
-                                    <div class="row installationChargeDiv" {{ ($service_request->service_type == "repair") ? 'style=display:none' : ''}}>
-                                        <div class="col-md-12">
-                                            {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').': ', ['class' => 'control-label lablemargin']) !!}
-                                            
-                                            <!-- installation charge value label -->
-                                            {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge']) !!}
-                                            
+                                        <div class="row installationChargeDiv" {{ ($service_request->service_type == "repair") ? 'style=display:none' : ''}}>
+                                            <div class="col-md-12">
+                                                {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').': ', ['class' => 'control-label lablemargin']) !!}
+                                                
+                                                <!-- installation charge value label -->
+                                                {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge']) !!}
+                                                
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                     @if($service_request->transportation_charge > 0)
                                     <div class="row">
                                         <div class="col-md-12">
@@ -380,25 +386,27 @@
                                     <hr/>
 
                                     <div class="row">
+                                        <?php 
+                                            $paidStatus = '';
+                                        ?>
+                                        @if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
                                             <?php 
-                                                $paidStatus = '';
+                                                $paidStatus = '( Due ) ';
                                             ?>
-                                            @if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
-                                                <?php 
-                                                    $paidStatus = '( Due ) ';
-                                                ?>
-                                                @if($service_request->status == "Closed" && $service_request->is_paid == 1)
-                                                <?php 
-                                                    $paidStatus = '( Paid ) ';
-                                                ?>
-                                                @endif
+                                            @if($service_request->status == "Closed" && $service_request->is_paid == 1)
+                                            <?php 
+                                                $paidStatus = '( Paid ) ';
+                                            ?>
                                             @endif
-                                        <div class="col-md-12">
+                                        @endif
+                                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                            <div class="col-md-12">
                                                 {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').''.$paidStatus.':', ['class' => 'control-label']) !!}
-                                            
+                                                
                                                 <!-- total amount value label -->
                                                 {!! Form::label('',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
-                                        </div>
+                                            </div>
+                                        @endif
                                     </div>
                                     
                                 </div>

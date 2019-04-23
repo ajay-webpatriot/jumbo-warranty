@@ -35,7 +35,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     {!! Form::label('service_type', trans('quickadmin.service-request.fields.service-type').'*', ['class' => 'control-label']) !!}
-                                    {!! Form::select('service_type', $enum_service_type, old('service_type'), ['class' => 'form-control select2', 'required' => '', 'onchange' => 'requestCharge(this)']) !!}
+                                    {!! Form::select('service_type', $enum_service_type, old('service_type'), ['class' => 'form-control select2', 'required' => '', 'onchange' => 'requestCharge(this)','style' => 'width:100%']) !!}
                                     <p class="help-block"></p>
                                     @if($errors->has('service_type'))
                                         <p class="help-block">
@@ -51,23 +51,31 @@
                                 </div>
                             </div>
                         </div>
+                        <?php
+                            $backgroundColor = '';
+                        ?>
                         @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                        <?php
+                            $backgroundColor = $enum_status_color[$service_request->status];
+                        ?>
                              <!-- Request Status -->
                             <div class="col-md-12">
                                {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
-                                {!! Form::label('', $service_request->status, ['class' => 'control-label fontweight']) !!}
+                                {!! Form::label('', $service_request->status, ['class' => 'control-label fontweight','style' => 'color:'.$backgroundColor]) !!}
                                 {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
                                 <p class="help-block"></p>
                             </div>
                         @else
                             <div class="col-md-12">
+                           
+                            
                                 <!-- Request Status -->
                                 @if($service_request->status == "New")
                                     
                                     {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
                                 @else
                                     {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
-                                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status']) !!}
+                                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status','style' => 'width:100%']) !!}
                                     <p class="help-block"></p>
                                     @if($errors->has('status'))
                                             <p class="help-block">
@@ -105,7 +113,7 @@
                                         <div class="row">
                                             <div class="col-sm-10 col-xs-9">
                                                 {!! Form::label('company_id', trans('quickadmin.service-request.fields.company').'*', ['class' => 'control-label']) !!}
-                                                {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)']) !!}
+                                                {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','onchange' => 'requestCharge(this)','style' => 'width:100%']) !!}
                                                 <p class="help-block"></p>
                                                 @if($errors->has('company_id'))
                                                     <p class="help-block">
@@ -127,7 +135,7 @@
                                     <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>
                                         <div class="col-sm-10 col-xs-9 ">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                            {!! Form::select('customer_id', $customers, old('customer_id'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('customer_id'))
                                                 <p class="help-block">
@@ -203,7 +211,7 @@
                                     <div class="row">
                                         <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('service_center_id', trans('quickadmin.service-request.fields.service-center').'', ['class' => 'control-label']) !!}
-                                            {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2']) !!}
+                                            {!! Form::select('service_center_id', $service_centers, old('service_center_id'), ['class' => 'form-control select2','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('service_center_id'))
                                                 <p class="help-block">
@@ -225,7 +233,7 @@
                                     <div class="row techDiv" {{ ($service_request->service_center_id == "") ? 'style=display:none' : ''}}>
                                         <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
-                                            {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id']) !!}
+                                            {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('technician_id'))
                                                 <p class="help-block">
@@ -289,7 +297,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             {!! Form::label('call_type', trans('quickadmin.service-request.fields.call-type').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('call_type', $enum_call_type, old('call_type'), ['class' => 'form-control select2', 'required' => '','id' => 'call_type']) !!}
+                                            {!! Form::select('call_type', $enum_call_type, old('call_type'), ['class' => 'form-control select2', 'required' => '','id' => 'call_type','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('call_type'))
                                                 <p class="help-block">
@@ -305,7 +313,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             {!! Form::label('call_location', trans('quickadmin.service-request.fields.call-location').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('call_location', $enum_call_location, old('call_location'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                            {!! Form::select('call_location', $enum_call_location, old('call_location'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('call_location'))
                                                 <p class="help-block">
@@ -321,7 +329,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             {!! Form::label('priority', trans('quickadmin.service-request.fields.priority').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('priority', $enum_priority, old('priority'), ['class' => 'form-control select2', 'required' => '']) !!}
+                                            {!! Form::select('priority', $enum_priority, old('priority'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('priority'))
                                                 <p class="help-block">
@@ -348,7 +356,7 @@
 
                                     <div class="form-group">
                                         {!! Form::label('product_id', trans('quickadmin.service-request.fields.product').'*', ['class' => 'control-label']) !!}
-                                        {!! Form::select('product_id', $products, old('product_id'), ['class' => 'form-control select2', 'required' => '', 'onchange' => 'requestCharge(this)']) !!}
+                                        {!! Form::select('product_id', $products, old('product_id'), ['class' => 'form-control select2', 'required' => '', 'onchange' => 'requestCharge(this)','style' => 'width:100%']) !!}
                                         <p class="help-block"></p>
                                         @if($errors->has('product_id'))
                                             <p class="help-block">
@@ -366,7 +374,7 @@
                                             <button type="button" class="btn btn-primary btn-xs" id="deselectbtn-parts">
                                                 {{ trans('quickadmin.qa_deselect_all') }}
                                             </button>
-                                            {!! Form::select('parts[]', $parts, old('parts') ? old('parts') : $service_request->parts->pluck('id')->toArray(), ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-parts' ]) !!}
+                                            {!! Form::select('parts[]', $parts, old('parts') ? old('parts') : $service_request->parts->pluck('id')->toArray(), ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-parts','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('parts'))
                                                 <p class="help-block">
@@ -474,7 +482,7 @@
 
                                     <div class="form-group">
                                         {!! Form::label('mop', trans('quickadmin.service-request.fields.mop').'', ['class' => 'control-label']) !!}
-                                        {!! Form::select('mop', $enum_mop, $service_request->mop, ['class' => 'form-control select2']) !!}
+                                        {!! Form::select('mop', $enum_mop, $service_request->mop, ['class' => 'form-control select2','style' => 'width:100%']) !!}
                                         <p class="help-block"></p>
                                         @if($errors->has('mop'))
                                             <p class="help-block">
@@ -534,57 +542,61 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').'*', ['class' => 'control-label']) !!}
-                                    <div class="input-group">
-                                    {!! Form::text('completion_date', old('completion_date'), ['class' => 'form-control date', 'placeholder' => '', 'required' => '']) !!}
-                                        <label class="input-group-addon btn" for="completion_date">
-                                            <span class="fa fa-calendar"></span>
-                                        </label>
-                                    </div>
-                                    <p class="help-block"></p>
-                                    @if($errors->has('completion_date'))
-                                        <p class="help-block">
-                                            {{ $errors->first('completion_date') }}
-                                        </p>
+                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                        {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').'*', ['class' => 'control-label']) !!}
+                                        <div class="input-group">
+                                        {!! Form::text('completion_date', old('completion_date'), ['class' => 'form-control date', 'placeholder' => '','required' => '']) !!}
+                                            <label class="input-group-addon btn" for="completion_date">
+                                                <span class="fa fa-calendar"></span>
+                                            </label>
+                                        </div>
+                                        <p class="help-block"></p>
+                                        @if($errors->has('completion_date'))
+                                            <p class="help-block">
+                                                {{ $errors->first('completion_date') }}
+                                            </p>
+                                        @endif
                                     @endif
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
-                                        <div class="col-md-12">
-                                            {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').':', ['class' => 'control-label lablemargin']) !!}
+                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                        <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
+                                            <div class="col-md-12">
+                                                {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').':', ['class' => 'control-label lablemargin']) !!}
 
-                                            <!-- service charge value label -->
-                                            {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !!}
+                                                <!-- service charge value label -->
+                                                {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !!}
 
-                                            <!-- service charge hidden field -->
-                                            {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
-                                            <!-- <p class="help-block"></p>
-                                            @if($errors->has('service_charge'))
-                                                <p class="help-block">
-                                                    {{ $errors->first('service_charge') }}
-                                                </p>
-                                            @endif -->
+                                                <!-- service charge hidden field -->
+                                                {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
+                                                <!-- <p class="help-block"></p>
+                                                @if($errors->has('service_charge'))
+                                                    <p class="help-block">
+                                                        {{ $errors->first('service_charge') }}
+                                                    </p>
+                                                @endif -->
+                                            </div>
                                         </div>
-                                    </div>
                                    
-                                    <div class="row installationChargeDiv" {{ ($service_request->service_type == "repair") ? 'style=display:none' : ''}}>
-                                        <div class="col-md-12">
-                                            {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').':', ['class' => 'control-label lablemargin']) !!}
-                                            
-                                            <!-- installation charge value label -->
-                                            {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
-                                            
-                                            <!-- installation charge hidden field -->
-                                            {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
-                                            <!-- <p class="help-block"></p>
-                                            @if($errors->has('installation_charge'))
-                                                <p class="help-block">
-                                                    {{ $errors->first('installation_charge') }}
-                                                </p>
-                                            @endif -->
+                                        <div class="row installationChargeDiv" {{ ($service_request->service_type == "repair") ? 'style=display:none' : ''}}>
+                                            <div class="col-md-12">
+                                                {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').':', ['class' => 'control-label lablemargin']) !!}
+                                                
+                                                <!-- installation charge value label -->
+                                                {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
+                                                
+                                                <!-- installation charge hidden field -->
+                                                {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
+                                                <!-- <p class="help-block"></p>
+                                                @if($errors->has('installation_charge'))
+                                                    <p class="help-block">
+                                                        {{ $errors->first('installation_charge') }}
+                                                    </p>
+                                                @endif -->
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                     <!-- @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                     <div class="row">
                                         <div class="col-md-12">

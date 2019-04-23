@@ -68,6 +68,8 @@ class ServiceRequest extends Model
     
     public static $enum_technician_repair_status = ["Technician assigned" => "Technician assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
 
+    public static $enum_status_color_code = ["Technician assigned" => "#8080ff", "Started" => "#008000", "Pending for parts" => "#ffa500", "Cancelled" => "#a6a6a6", "Transferred to inhouse" => "#00ccff", "Under testing" => "#ff33ff", "Closed" => "#ff0000","Issue for replacement" => "#990033","Service center assigned" => "#99ff33","New" => "#ffb3b3"];
+
     public function getServiceRequestParts($partsIds)
     {
         // get parts name of service request

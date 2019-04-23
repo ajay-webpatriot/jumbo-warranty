@@ -40,12 +40,8 @@ class AdminDashboardController extends Controller
             $serviceTypesQuery->Where('service_requests.company_id', auth()->user()->company_id);
         }
         $ServiceTypes = $serviceTypesQuery->get();
-         
 
-        // echo "<pre>";
-        // print_r($ServiceTypes);
-        // echo "</pre>";
-        // exit();
+        $enum_status_color = ServiceRequest::$enum_status_color_code;
         
         foreach ($ServiceTypes as $key => $SingleServiceTypes) {
 
@@ -119,7 +115,7 @@ class AdminDashboardController extends Controller
         ->where('deleted_at',NULL)
         ->where('status','=','Active')->get();
        
-        return view('admin.admin_dashboard',compact('PendingComplainCount','SolvedComplainCount','PendingInstallationCount','SolvedInstallationCount','ServiceTypeDetails','CompaninesName'));
+        return view('admin.admin_dashboard',compact('PendingComplainCount','SolvedComplainCount','PendingInstallationCount','SolvedInstallationCount','ServiceTypeDetails','CompaninesName','enum_status_color'));
     }
 
     public function getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,$type)

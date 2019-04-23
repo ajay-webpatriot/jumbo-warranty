@@ -216,10 +216,12 @@
                                                 <div class="product-info">
                                                     <?php
                                                         $status = '';
+                                                        $backgroundColor = '';
                                                     ?>
                                                     @if($SingleServiceTypeDetail->status != '')
                                                         <?php
                                                             $status = '( '.$SingleServiceTypeDetail->status.' )';
+                                                            $backgroundColor = $enum_status_color[$SingleServiceTypeDetail->status];
                                                         ?>
                                                     @endif
                                                     <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
@@ -231,7 +233,7 @@
                                                     <span class="product-description">
                                                         {{$SingleServiceTypeDetail->customer_name}}
                                                     </span>
-                                                    <span class="product-description">
+                                                    <span class="product-description" style="color:{{$backgroundColor}}">
                                                         {{$status}}
                                                     </span>
                                                 </div>

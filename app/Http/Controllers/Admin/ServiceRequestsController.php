@@ -312,7 +312,9 @@ class ServiceRequestsController extends Controller
 
             $serviceRequestObj = new ServiceRequest();  
             $requestFilterCount =  $serviceRequestObj->getFilterRequestsCount($request->all());
-            
+
+            $enum_status_color = ServiceRequest::$enum_status_color_code;
+
             $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
@@ -345,11 +347,6 @@ class ServiceRequestsController extends Controller
             }
 
             // filter data from table and store into session variable
-            // echo "<pre>";
-            // print_r($request->input('company'));
-            // echo "</pre>";
-            // exit();
-            
             if(!empty($request->input('company')))
             {   
                 $request->session()->put('filter_company', $request['company']);
@@ -491,6 +488,12 @@ class ServiceRequestsController extends Controller
                 $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
                 $tableField['request_status'] =$SingleServiceRequest->status;
 
+                $tableStatusColor = '';
+                if($SingleServiceRequest->status != ''){
+                    $tableStatusColor = '<span style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
+                }
+                $tableField['request_status'] = $tableStatusColor;
+
                 if (Gate::allows('service_request_view')) {
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
                 }
@@ -513,7 +516,7 @@ class ServiceRequestsController extends Controller
             }
            
         }
-               
+
         $json_data = array(
             "draw"            => intval($request['draw']),  
             "recordsTotal"    => intval($countRecord),  
@@ -815,6 +818,8 @@ class ServiceRequestsController extends Controller
                 $enum_status = ServiceRequest::$enum_installation_status;
             }
         }
+        $enum_status_color = ServiceRequest::$enum_status_color_code;
+
         $additional_charge_array=json_decode($service_request['additional_charges']);
         $additional_charge_title="";
         $additional_charges="";
@@ -939,7 +944,7 @@ class ServiceRequestsController extends Controller
         $enum_customer_status = \App\Customer::$enum_status;
         $enum_service_center_status = \App\ServiceCenter::$enum_status;
         $enum_technician_status = \App\User::$enum_status;
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'supported_service_centers', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status'))->with('no', 1);
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'supported_service_centers', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','enum_status_color'))->with('no', 1);
         // $user_name=ucwords('user name');
         // $subject='sub';
         // return view('admin.emails.service_request_detail_email', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);
@@ -1293,11 +1298,11 @@ class ServiceRequestsController extends Controller
                 $additional_charges=$value;
             }
         }
-        
+        $enum_status_color = ServiceRequest::$enum_status_color_code;
         $service_request['additional_charges']=$additional_charges;
 
         $service_request_logs = $service_request->servicerequestlog;
-        return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title'))->with('no', 1);
+        return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title','enum_status_color'))->with('no', 1);
     }
 
 
