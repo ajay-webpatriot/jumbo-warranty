@@ -497,9 +497,9 @@
                                     @endif
                                 </div>
                             </div>
+                            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                             <div class="row">
                                 <div class="col-md-6">
-                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                         {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').'*', ['class' => 'control-label']) !!}
                                         <div class="input-group">
                                             {!! Form::text('completion_date', old('completion_date'), ['class' => 'form-control date', 'placeholder' => '', 'required' => '']) !!}
@@ -513,10 +513,8 @@
                                             {{ $errors->first('completion_date') }}
                                         </p>
                                         @endif
-                                    @endif 
                                 </div>
                                 <div class="col-md-6">
-                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                     <div class="row serviceChargeDiv" style="display: none;">
                                         <div class="col-xs-12">
                                             {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label lablemargin']) !!}
@@ -525,7 +523,7 @@
                                             {!! Form::label('', old('service_charge'), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_service_charge']) !!}
 
                                             <!-- service charge hidden field -->
-                                            {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','readonly' => '']) !!}
+                                            {{-- !! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','readonly' => '']) !! --}}
                                             <!-- <p class="help-block"></p>
                                             @if($errors->has('service_charge'))
                                             <p class="help-block">
@@ -543,7 +541,7 @@
                                             {!! Form::label('', old('installation_charge'), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
                                             
                                             <!-- installation charge hidden field -->
-                                            {!! Form::hidden('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
+                                            {{-- !! Form::hidden('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !! --}}
 
 <!-- 
                                             <p class="help-block"></p>
@@ -554,7 +552,6 @@
                                             @endif -->
                                         </div>
                                     </div>
-                                    @endif
                                     <div class="row transportationDiv" style="display: none;">
                                         <div class="col-md-12">
                                             <div class="row">
@@ -571,7 +568,7 @@
 
                                                     {!! Form::label('','', ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
                                                 
-                                                    {!! Form::hidden('transportation_charge','', ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
+                                                    {{-- !! Form::hidden('transportation_charge','', ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !! --}}
                                                     @endif
                                                 </div>
                                             </div>
@@ -627,11 +624,11 @@
                                             {!! Form::label('',old('amount'), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
 
                                             <!-- total amount hidden field -->
-                                            {!! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
+                                            {{-- !! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !! --}}
 
 
-                                            {!! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !!}
-                                            {!! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !!}
+                                            {{-- !! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !! --}}
+                                            {{-- !! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !! --}}
                                             <p class="help-block"></p>
                                             @if($errors->has('amount'))
                                             <p class="help-block">
@@ -642,6 +639,17 @@
                                     </div>
                                 </div> 
                             </div>
+                            @endif
+
+                            {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','readonly' => '']) !!}
+                            {!! Form::hidden('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
+                            {!! Form::hidden('transportation_charge','', ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
+                            {!! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
+
+
+                            {!! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !!}
+                            {!! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !!}
+
                             <div class="row">
                                 <div class="col-xs-12 form-group">
                                     {!! Form::label('note', trans('quickadmin.service-request.fields.note').'', ['class' => 'control-label']) !!}

@@ -311,19 +311,16 @@
                                     
                                 </div>
                             </div>
-
+                            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                             <div class="row">
-                                
-
-                                    <div class="col-md-6">
-                                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
-                                            {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').': ', ['class' => 'control-label']) !!}
-                                            {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->completion_date), ['class' => 'control-label fontweight']) !!}
-                                        @endif
-                                    </div>
+                                <div class="col-md-6">
+                                        {!! Form::label('completion_date', trans('quickadmin.service-request.fields.completion-date').': ', ['class' => 'control-label']) !!}
+                                        {!! Form::label('', App\Helpers\CommonFunctions::setDateFormat($service_request->completion_date), ['class' => 'control-label fontweight']) !!}
+                                    
+                                </div>
                                
                                 <div class="col-md-6">
-                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                    
                                         <div class="row serviceChargeDiv" {{ ($service_request->service_type == "installation") ? 'style=display:none' : ''}}>
                                             <div class="col-md-12">
                                                 {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin']) !!}
@@ -343,7 +340,7 @@
                                                 
                                             </div>
                                         </div>
-                                    @endif
+
                                     @if($service_request->transportation_charge > 0)
                                     <div class="row">
                                         <div class="col-md-12">
@@ -411,12 +408,13 @@
                                     
                                 </div>
                             </div>
-                            <div class="row">
+                            @endif
+                            <!-- <div class="row">
                                 <div class="col-xs-12 form-group" style="width: 100%;float: left;height:30px;">
                                     
                                     
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row">
                                 <div class="col-xs-12 form-group">
                                     {!! Form::label('note', trans('quickadmin.service-request.fields.note').': ', ['class' => 'control-label']) !!}
@@ -425,8 +423,7 @@
                                     
                                 </div>
                             </div>
-                            @if($service_request->status == "Closed" && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID')
-                || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
+                            @if($service_request->status == "Closed" && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
                             <div class="col-xs-12 form-group pull-right">
                                 <a target="_blank" href="{{ route('admin.service_request.invoice',[$service_request->id]) }}" class="btn btn-xl btn-primary pull-right">View Invoice</a>
                             </div> 

@@ -242,8 +242,8 @@ class ServiceRequestsController extends Controller
                 2 =>'customers.firstname' ,
                 3 =>'service_requests.service_type' ,
                 4 =>'products.name' ,
-                5 =>'service_requests.amount' ,
-                6 =>'service_requests.status'
+                // 5 =>'service_requests.amount' ,
+                5 =>'service_requests.status'
             );
         }else{
             // admin and super admin
@@ -407,9 +407,14 @@ class ServiceRequestsController extends Controller
                         $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
                         $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
                     }
+
+                    if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID')){
+                        $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
+                    }
+                    
                     $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
+                    // $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.id', 'like', '%' . $clearRequestId . '%');
                     $query->orWhere('service_requests.status', 'like', '%' . $searchVal . '%');
@@ -453,7 +458,7 @@ class ServiceRequestsController extends Controller
             $countRecord = $countRecordQuery->count('service_requests.id');
 
             foreach ($service_requests as $key => $SingleServiceRequest) {
-
+                
                 if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
 
                     // $tableField['company_name'] =$SingleServiceRequest->cname;
@@ -465,6 +470,7 @@ class ServiceRequestsController extends Controller
                 }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
 
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
+                    $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
 
                 }else{
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
@@ -480,12 +486,12 @@ class ServiceRequestsController extends Controller
                         // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';
                         $tableField['checkbox'] = '';
                     }
+                    $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
                 }
                 $tableField['sr_no'] = 'JW'.sprintf("%04d", $SingleServiceRequest->id);
                 $tableField['customer'] = $SingleServiceRequest->firstname;
                 $tableField['service_type'] =ucfirst($SingleServiceRequest->service_type);
                 $tableField['product'] =ucfirst($SingleServiceRequest->pname);
-                $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
                 $tableField['request_status'] =$SingleServiceRequest->status;
 
                 $tableStatusColor = '';

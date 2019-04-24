@@ -234,7 +234,7 @@
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
-                            <th>@lang('quickadmin.service-request.fields.amount')</th>
+                            <!-- <th>@lang('quickadmin.service-request.fields.amount')</th> -->
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_action')</th>
                         </tr>
@@ -415,7 +415,7 @@
                         orientation: 'landscape',
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4,5]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#company thead th').length;
@@ -428,8 +428,8 @@
                             
                             for (i = 0; i < rowCount; i++) {
                                     doc.content[1].table.body[i][0].alignment = 'center';
-                                    doc.content[1].table.body[i][4].alignment = 'right';
-                                    doc.content[1].table.body[i][5].alignment = 'center';
+                                    doc.content[1].table.body[i][4].alignment = 'center';
+                                    // doc.content[1].table.body[i][5].alignment = 'center';
                                  
                             }
                         }
@@ -439,13 +439,13 @@
                         text: window.printButtonTrans,
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4, 5, 6]
+                            columns: [1, 2, 3, 4, 5]
                         },
                         customize: function (win) {
                             // set alignment of amount and request status column for print screen
                             $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
-                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'right');
-                            $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'center');
+                            // $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
                         }
                     }
                 ],
@@ -470,7 +470,7 @@
                     { "data": "customer" },
                     { "data": "service_type" },
                     { "data": "product" },
-                    { "data": "amount" },
+                    // { "data": "amount" },
                     { "data": "request_status" },
                     { "data": "action" }
                 ],
@@ -487,15 +487,16 @@
                     "searchable": true
                 },
                 {
-                    "class": "text-right",
+                    "class": "text-center",
                     "targets":   5
                 },
+                // {
+                //     "class": "text-center",
+                //     "targets":   6
+                // },
                 {
-                    "class": "text-center",
-                    "targets":   6
-                },{
                     "orderable": false,
-                    "targets":   7
+                    "targets":   6
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },
