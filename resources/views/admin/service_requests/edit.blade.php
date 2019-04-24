@@ -61,7 +61,7 @@
                              <!-- Request Status -->
                             <div class="col-md-12">
                                {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
-                                {!! Form::label('', $service_request->status, ['class' => 'control-label fontweight','style' => 'color:'.$backgroundColor]) !!}
+                                {!! Form::label('', $service_request->status, ['class' => 'control-label','style' => 'color:'.$backgroundColor]) !!}
                                 {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
                                 <p class="help-block"></p>
                             </div>
@@ -563,7 +563,9 @@
                                             {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').':', ['class' => 'control-label lablemargin']) !!}
 
                                             <!-- service charge value label -->
-                                            {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !!}
+                                            {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i>'.number_format($service_request->service_charge,2),['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge'])) !!}
+
+                                            {{-- !! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge']) !! --}}
 
                                             <!-- service charge hidden field -->
                                             {{-- !! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !! --}}
@@ -581,7 +583,9 @@
                                             {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').':', ['class' => 'control-label lablemargin']) !!}
                                             
                                             <!-- installation charge value label -->
-                                            {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
+                                            {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i>'.number_format($service_request->installation_charge,2),['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge'])) !!}
+
+                                            {{-- !! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !! --}}
                                             
                                             <!-- installation charge hidden field -->
                                             {{--!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !! --}}
@@ -643,20 +647,29 @@
                                                 <div class="col-sm-4 transportationField">
                                                     @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
 
-                                                    {!! Form::text('transportation_charge',number_format($service_request->transportation_charge,2,'.',''), ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                        <div class="input-group">
+                                                            <label class="input-group-addon" for="transportation_charge">
+                                                                <span class="fa fa-rupee"></span>
+                                                            </label>
+                                                            {!! Form::text('transportation_charge',number_format($service_request->transportation_charge,2,'.',''), ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                        </div>
 
                                                     @else
 
-                                                    {!! Form::label('',number_format($service_request->transportation_charge,2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
-                                                
-                                                    {{-- !! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !! --}}
+                                                        {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i>'.number_format($service_request->transportation_charge,2),['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount'])) !!}
+
+                                                        {{-- !! Form::label('',number_format($service_request->transportation_charge,2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !! --}}
+                                                    
+                                                        {{-- !! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !! --}}
                                                     @endif
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
 
-                                            {!! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge']) !!}
+                                            {!! Html::decode(Form::label('', '(<i class="fa fa-rupee"></i>'.number_format($service_request->km_charge,2).' per km)',['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge'])) !!}
+
+                                            {{-- !! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge']) !! --}}
                                         </div>
                                     </div>
                                     <div class="row">
@@ -682,7 +695,12 @@
                                                 <div class="col-sm-4">
                                                     {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !!}
 
-                                                    {!! Form::text('additional_charges', ($service_request->additional_charges > 0)?$service_request->additional_charges:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                    <div class="input-group">
+                                                        <label class="input-group-addon" for="additional_charges">
+                                                            <span class="fa fa-rupee"></span>
+                                                        </label>
+                                                        {!! Form::text('additional_charges', ($service_request->additional_charges > 0)?$service_request->additional_charges:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                    </div>
 
                                                     <p class="help-block"></p>
                                                     @if($errors->has('additional_charges'))
@@ -715,7 +733,10 @@
                                             {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').''.$paidStatus.':' , ['class' => 'control-label']) !!}
 
                                             <!-- total amount value label -->
-                                            {!! Form::label('totalamount',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
+
+                                            {!! Html::decode(Form::label('totalamount', '<i class="fa fa-rupee"></i>'.number_format($service_request->amount,2),['class' => 'control-label pull-right', 'id' => 'lbl_total_amount'])) !!}
+
+                                            {{-- !! Form::label('totalamount',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !! --}}
 
                                             <!-- total amount hidden field -->
                                             {{-- !! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !! --}}
@@ -1028,6 +1049,7 @@
             $('.date').datetimepicker({
                 format: "{{ config('app.date_format_moment') }}",
                 locale: "{{ App::getLocale() }}",
+                // forceParse: false
             });
             
             // removed disabled attr of select on form submit to store exusting value

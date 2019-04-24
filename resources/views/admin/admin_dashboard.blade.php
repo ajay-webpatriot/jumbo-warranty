@@ -220,21 +220,25 @@
                                                     ?>
                                                     @if($SingleServiceTypeDetail->status != '')
                                                         <?php
-                                                            $status = '( '.$SingleServiceTypeDetail->status.' )';
                                                             $backgroundColor = $enum_status_color[$SingleServiceTypeDetail->status];
+                                                            $status = '( '.$SingleServiceTypeDetail->status.' )';
                                                         ?>
                                                     @endif
                                                     <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
                                                         {{$SingleServiceTypeDetail->servicerequest_title}}
-                                                        <span class="label label-info pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
-                                                        </span>
+
+                                                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                                            <span class="label label-info pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                                            </span>
+                                                        @endif
+
                                                         <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
-                                                    </a>
+                                                    </a> 
+                                                    <span class="headerTitle" style="color:{{$backgroundColor}}">
+                                                        {{$status}} 
+                                                    </span>
                                                     <span class="product-description">
                                                         {{$SingleServiceTypeDetail->customer_name}}
-                                                    </span>
-                                                    <span class="product-description" style="color:{{$backgroundColor}}">
-                                                        {{$status}}
                                                     </span>
                                                 </div>
                                             </li>

@@ -486,17 +486,18 @@ class ServiceRequestsController extends Controller
                         // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';
                         $tableField['checkbox'] = '';
                     }
-                    $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
+                    $tableField['amount'] ='<span> <i class="fa fa-rupee"></i>'.number_format($SingleServiceRequest->amount,2).'</span>';
                 }
                 $tableField['sr_no'] = 'JW'.sprintf("%04d", $SingleServiceRequest->id);
                 $tableField['customer'] = $SingleServiceRequest->firstname;
                 $tableField['service_type'] =ucfirst($SingleServiceRequest->service_type);
                 $tableField['product'] =ucfirst($SingleServiceRequest->pname);
-                $tableField['request_status'] =$SingleServiceRequest->status;
+
+                // $tableField['request_status'] =$SingleServiceRequest->status;
 
                 $tableStatusColor = '';
                 if($SingleServiceRequest->status != ''){
-                    $tableStatusColor = '<span style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
+                    $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
                 }
                 $tableField['request_status'] = $tableStatusColor;
 

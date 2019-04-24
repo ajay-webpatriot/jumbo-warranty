@@ -433,11 +433,11 @@ function requestCharge(ele) {
 				   
 	       		$("#installation_charge").val(data.installation_charge);
 	       		
-	       		$("#lbl_installation_charge").html((parseFloat(data.installation_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+	       		$("#lbl_installation_charge").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.installation_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 	       		 
 	       		$("#service_charge").val(data.service_charge);
 
-	       		$("#lbl_service_charge").html((parseFloat(data.service_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') );
+	       		$("#lbl_service_charge").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.service_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') );
 
 	       		var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
 	       		var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
@@ -445,7 +445,7 @@ function requestCharge(ele) {
 
 	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+(km_distance * km_charge)).toFixed(2);
 	          	$("#amount").val(total_amount);
-	          	$("#lbl_total_amount").html((parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+	          	$("#lbl_total_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
 	          	$("#status").html(data.statusOptions);
 	       	}

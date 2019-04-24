@@ -43,7 +43,11 @@
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
-            @lang('quickadmin.assign-product.title')
+            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                @lang('quickadmin.assign-product.title')
+            @else
+                @lang('quickadmin.assign-product-company-user-admin.title')
+            @endif
         </div>
 
         <div class="panel-body table-responsive">

@@ -168,7 +168,12 @@
                         <li>
                             <a href="{{ route('admin.assign_products.index') }}">
                                 <i class="fa fa-circle-o"></i>
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                 <span>@lang('quickadmin.assign-product.title')</span>
+                                @else
+                                <span>@lang('quickadmin.assign-product-company-user-admin.title')</span>
+                                @endif
+                                
                             </a>
                         </li>
                         <!-- endcan -->
@@ -177,7 +182,12 @@
                         <li>
                             <a href="{{ route('admin.assign_parts.index') }}">
                                 <i class="fa fa-circle-o"></i>
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                 <span>@lang('quickadmin.assign-parts.title')</span>
+                                @else
+                                <span>@lang('quickadmin.assign-parts-company-user-admin.title')</span>
+                                @endif
+                                
                             </a>
                         </li>
                     @endcan

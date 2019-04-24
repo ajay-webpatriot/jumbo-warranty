@@ -286,13 +286,19 @@ return [
 			'status' => 'Status',
 		],
 	],
+
+	'assign-parts-company-user-admin' => [
+		'title' => 'Assigned parts',
+		'fields' => [
+		],
+	],
 	
 	'assign-product' => [
 		'title' => 'Assign product',
 		'fields' => [
 		],
 	],
-	
+
 	'assign-product' => [
 		'title' => 'Assign Products',
 		'menu-title' => 'Products',
@@ -301,6 +307,11 @@ return [
 			'company' => 'Company',
 			'product-id' => 'Product',
 			'status' => 'Status',
+		],
+	],
+	'assign-product-company-user-admin' => [
+		'title' => 'Assigned products',
+		'fields' => [
 		],
 	],
 	'qa_create' => 'Create',

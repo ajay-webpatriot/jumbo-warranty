@@ -562,11 +562,18 @@
                                                 <div class="col-sm-4 transportationField">
                                                     @if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID'))
 
-                                                    {!! Form::text('transportation_charge','', ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                    <div class="input-group">
+                                                        <label class="input-group-addon" for="transportation_charge">
+                                                            <span class="fa fa-rupee"></span>
+                                                        </label>
+                                                        {!! Form::text('transportation_charge','', ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                    </div>
 
                                                     @else
 
-                                                    {!! Form::label('','', ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !!}
+                                                    {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i>',['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount'])) !!}
+
+                                                    {{-- !! Form::label('','', ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !! --}}
                                                 
                                                     {{-- !! Form::hidden('transportation_charge','', ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !! --}}
                                                     @endif
@@ -575,7 +582,9 @@
                                         </div>
                                         <div class="col-md-12">
 
-                                            {!! Form::label('', '('.number_format($km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge']) !!}
+                                        {!! Html::decode(Form::label('', '(<i class="fa fa-rupee"></i>'.number_format($km_charge,2).' per km)',['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge'])) !!}
+                                        
+                                        {{-- !! Form::label('', '('.number_format($km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge']) !! --}}
                                         </div>
                                     </div>
                                     <div class="row">
@@ -600,7 +609,14 @@
 
                                                 <div class="col-sm-4">
                                                     {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !!}
-                                                    {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+
+                                                    <div class="input-group">
+                                                        <label class="input-group-addon" for="additional_charges">
+                                                            <span class="fa fa-rupee"></span>
+                                                        </label>
+                                                        {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                    </div>
+
                                                     <p class="help-block"></p>
                                                     @if($errors->has('additional_charges'))
                                                     <p class="help-block">
@@ -619,10 +635,10 @@
                                             @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                             
                                                 {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
-                                            @endif
+                                            
                                             <!-- total amount value label -->
                                             {!! Form::label('',old('amount'), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
-
+                                            @endif
                                             <!-- total amount hidden field -->
                                             {{-- !! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !! --}}
 
