@@ -72,12 +72,12 @@ class ServiceRequest extends Model
 
      public static $enum_status_color_code = [
         "New" => "#0062ca",
-        "Service center assigned" => "#17a2b8",
-        "Technician assigned" => "#17a2b8",
+        "Service center assigned" => "#ff69a0",
+        "Technician assigned" => "#ff69a0",
         "Started" => "#dc3545",
         "Pending for parts" => "#f39c12",
         "Cancelled" => "#6c757d",
-        "Transferred to inhouse" => "#3c8dbc",
+        "Transferred to inhouse" => "#c571ea",
         "Under testing" => "#00c0ef",
         "Issue for replacement" => "#605ca8" ,
         "Closed" => "#00a65a"
