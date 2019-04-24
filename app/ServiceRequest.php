@@ -68,7 +68,20 @@ class ServiceRequest extends Model
     
     public static $enum_technician_repair_status = ["Technician assigned" => "Technician assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
 
-    public static $enum_status_color_code = ["Technician assigned" => "#8080ff", "Started" => "#008000", "Pending for parts" => "#ffa500", "Cancelled" => "#a6a6a6", "Transferred to inhouse" => "#00ccff", "Under testing" => "#ff33ff", "Closed" => "#ff0000","Issue for replacement" => "#990033","Service center assigned" => "#99ff33","New" => "#ffb3b3"];
+    // public static $enum_status_color_code = ["Technician assigned" => "#8080ff", "Started" => "#008000", "Pending for parts" => "#ffa500", "Cancelled" => "#a6a6a6", "Transferred to inhouse" => "#00ccff", "Under testing" => "#ff33ff", "Closed" => "#ff0000","Issue for replacement" => "#990033","Service center assigned" => "#99ff33","New" => "#ffb3b3"];
+
+     public static $enum_status_color_code = [
+        "New" => "#0062ca",
+        "Service center assigned" => "#17a2b8",
+        "Technician assigned" => "#17a2b8",
+        "Started" => "#dc3545",
+        "Pending for parts" => "#f39c12",
+        "Cancelled" => "#6c757d",
+        "Transferred to inhouse" => "#3c8dbc",
+        "Under testing" => "#00c0ef",
+        "Issue for replacement" => "#605ca8" ,
+        "Closed" => "#00a65a"
+     ];
 
     public function getServiceRequestParts($partsIds)
     {
