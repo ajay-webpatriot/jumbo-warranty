@@ -285,9 +285,14 @@ class ServiceRequest extends Model
                         $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
                         $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
                     }
+
+                    if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID')){
+                        $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
+                    }
+
                     $query->orWhere('customers.firstname', 'like', '%' . $searchVal . '%');
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
+                    // $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.id', 'like', '%' . $clearRequestId . '%');
                     $query->orWhere('service_requests.status', 'like', '%' . $searchVal . '%');
