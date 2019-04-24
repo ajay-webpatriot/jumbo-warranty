@@ -641,14 +641,14 @@
                             </div>
                             @endif
 
-                            {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','readonly' => '']) !!}
-                            {!! Form::hidden('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
-                            {!! Form::hidden('transportation_charge','', ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
-                            {!! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
+                            {!! Form::hidden('service_charge', old('service_charge'), ['id' => 'service_charge']) !!}
+                            {!! Form::hidden('installation_charge', old('installation_charge'), ['id' => 'installation_charge']) !!}
+                            {!! Form::hidden('transportation_charge','', ['id' => 'transportation_charge']) !!}
+                            {!! Form::hidden('amount', old('amount'), ['id' => 'amount']) !!}
 
 
-                            {!! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !!}
-                            {!! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !!}
+                            {!! Form::hidden('km_distance', old('km_distance'), ['id' => 'km_distance']) !!}
+                            {!! Form::hidden('km_charge', old('km_charge'), ['id' => 'km_charge']) !!}
 
                             <div class="row">
                                 <div class="col-xs-12 form-group">

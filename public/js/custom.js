@@ -430,7 +430,7 @@ function requestCharge(ele) {
 	       	},
 	       	dataType: "json",
 	       	success:function(data) {
-	       		
+				   
 	       		$("#installation_charge").val(data.installation_charge);
 	       		
 	       		$("#lbl_installation_charge").html((parseFloat(data.installation_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
