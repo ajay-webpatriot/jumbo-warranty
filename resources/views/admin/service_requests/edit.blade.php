@@ -754,6 +754,12 @@
                                     
                                 </div>
                             </div>
+                            @else
+
+                                {!! Form::hidden('additional_charges_title',$additional_charge_title, ['id' => 'additional_charges_title']) !!}
+
+                                {!! Form::hidden('additional_charges', ($service_request->additional_charges > 0)?$service_request->additional_charges:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'id' => 'additional_charges']) !!}
+
                             @endif
                             {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
 
