@@ -617,7 +617,7 @@
                                                         {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control', 'placeholder' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
                                                     </div>
 
-                                                    <p class="help-block"></p>
+                                                    <p class="help-block addamountError"></p>
                                                     @if($errors->has('additional_charges'))
                                                     <p class="help-block">
                                                         {{ $errors->first('additional_charges') }}

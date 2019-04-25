@@ -699,10 +699,10 @@
                                                         <label class="input-group-addon" for="additional_charges">
                                                             <span class="fa fa-rupee"></span>
                                                         </label>
-                                                        {!! Form::text('additional_charges', ($service_request->additional_charges > 0)?$service_request->additional_charges:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                        {!! Form::text('additional_charges',($service_request->additional_charges > 0)?$service_request->additional_charges:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
                                                     </div>
 
-                                                    <p class="help-block"></p>
+                                                    <p class="help-block addamountError"></p>
                                                     @if($errors->has('additional_charges'))
                                                         <p class="help-block">
                                                             {{ $errors->first('additional_charges') }}

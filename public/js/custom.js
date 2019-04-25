@@ -78,25 +78,27 @@ $(document).ready(function(){
 	    });
 	});
 	$(document).on('submit','#formServiceRequest',function (){
-
+		
 		// validate additional charges title and amount on form submit in add/edit service request page
 		var status = true;
 		$("#additional_charges_title").next(".help-block").html("");
-		$("#additional_charges").next(".help-block").html("");
-
+		// $("#additional_charges").next(".help-block").html("");
+		$(".addamountError").html("");
 		var valueAdditionalCharge = $("#additional_charges").val();
-		var valueAddtitonalChargeTitle = $("#additional_charges_title").val()
-
-		if(typeof(valueAdditionalCharge) !== "undefined" && typeof(valueAddtitonalChargeTitle) !== "undefined"){
+		var valueAdditionalChargeTitle = $("#additional_charges_title").val();
+		
+		if(typeof(valueAdditionalCharge) !== 'undefined' && typeof(valueAdditionalChargeTitle) !== 'undefined'){
 
 			if($("#additional_charges").val().trim() != "" && $("#additional_charges").val() <= 0)
 			{
-				$("#additional_charges").next(".help-block").html("The additional charges must be greater than 0.");
+				// $("#additional_charges").next(".help-block").html("The additional charges must be greater than 0.");
+				$(".addamountError").html("The additional amount must be greater than 0.");
 				status = false;
 			}
 			else if($("#additional_charges_title").val().trim() != "" && $("#additional_charges").val().trim() == "")
 			{
-				$("#additional_charges").next(".help-block").html("The additional amount field is required when additional charges title is present.");
+				// $("#additional_charges").next(".help-block").html("The additional amount field is required when additional charges title is present.");
+				$(".addamountError").html("The additional amount field is required when additional charges title is present.");
 				status = false;
 			}
 			else if($("#additional_charges_title").val().trim() == "" && $("#additional_charges").val().trim() != "")
@@ -104,8 +106,7 @@ $(document).ready(function(){
 				$("#additional_charges_title").next(".help-block").html("The additional charges title field is required when additional amount is present.");
 				status = false;
 			}
-        }
-        
+		}
         return status;
 	});
 	$(document).on('click','#serviceRequest.datatable .select-checkbox, #company.datatable .select-checkbox, #company_admin.datatable .select-checkbox, #company_user.datatable .select-checkbox, #customer.datatable .select-checkbox, #assign_product.datatable .select-checkbox, #assign_part.datatable .select-checkbox, #service_center_admin.datatable .select-checkbox, #technician.datatable .select-checkbox',function (){
