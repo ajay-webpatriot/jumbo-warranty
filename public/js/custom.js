@@ -441,9 +441,11 @@ function requestCharge(ele) {
 
 	       		var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
 	       		var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
-	       		var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
+				   var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
+				   
+				var transportation_charge = isNaN(parseFloat($("#transportation_charge").val()))?0:parseFloat($("#transportation_charge").val());
 
-	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+(km_distance * km_charge)).toFixed(2);
+	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+ transportation_charge).toFixed(2);
 	          	$("#amount").val(total_amount);
 	          	$("#lbl_total_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
