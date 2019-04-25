@@ -828,6 +828,7 @@ week: { dow: 1 } // Monday is the first day of the week
 });
 
         $('.date').datetimepicker({
+            useCurrent:false,
             format: "{{ config('app.date_format_moment') }}",
             locale: "{{ App::getLocale() }}",
         });
