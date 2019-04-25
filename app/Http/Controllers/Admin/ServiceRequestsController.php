@@ -1202,7 +1202,7 @@ class ServiceRequestsController extends Controller
         //     } 
         // }
 
-        $request['amount']=$total_amount;  
+        $request['amount']=$total_amount;        
         // calculate total amount work end
 
         $request_status=$service_request->status;

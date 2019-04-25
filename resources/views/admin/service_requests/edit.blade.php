@@ -756,12 +756,19 @@
                             </div>
                             @endif
                             {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
+
                             {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
 
-                            {!! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
+                            @if(auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID'))
+
+                                {!! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
+
+                            @endif
+
                             {!! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
 
                             {!! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !!}
+
                             {!! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !!}
                             <div class="row">
                                 <div class="col-xs-12 form-group">
@@ -1047,9 +1054,9 @@
             });
             
             $('.date').datetimepicker({
+                useCurrent:false,
                 format: "{{ config('app.date_format_moment') }}",
-                locale: "{{ App::getLocale() }}",
-                // forceParse: false
+                locale: "{{ App::getLocale() }}"
             });
             
             // removed disabled attr of select on form submit to store exusting value

@@ -473,7 +473,7 @@ function totalServiceAmount() {
 	var total_amount=(installation_charge+service_charge+additional_amount+transportation_charge).toFixed(2);
   	
   	$("#amount").val(total_amount);
-  	$("#lbl_total_amount").html((parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+  	$("#lbl_total_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 }
 
 function checkIsDecimalNumber(ele, evt) {
@@ -551,7 +551,7 @@ function getTransporationCharge() {
 		       	},
 		       	dataType: "json",
 		       	success:function(data) {
-
+					
 		       		if(!data.supported)
 		       		{
 		       			if($("#loggedUser_role_id").val() != ADMIN_ROLE_ID && $("#loggedUser_role_id").val() != SUPER_ADMIN_ROLE_ID)

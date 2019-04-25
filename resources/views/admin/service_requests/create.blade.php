@@ -632,13 +632,11 @@
                                         <div class="col-xs-12">
                                            <!--  {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label']) !!}
                                             {!! Form::text('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!} -->
-                                            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
-                                            
-                                                {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
+                                            {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
                                             
                                             <!-- total amount value label -->
                                             {!! Form::label('',old('amount'), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
-                                            @endif
+                                           
                                             <!-- total amount hidden field -->
                                             {{-- !! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !! --}}
 
@@ -658,8 +656,15 @@
                             @endif
 
                             {!! Form::hidden('service_charge', old('service_charge'), ['id' => 'service_charge']) !!}
+                            
                             {!! Form::hidden('installation_charge', old('installation_charge'), ['id' => 'installation_charge']) !!}
-                            {!! Form::hidden('transportation_charge','', ['id' => 'transportation_charge']) !!}
+
+                            @if(auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID'))
+
+                                {!! Form::hidden('transportation_charge','', ['id' => 'transportation_charge']) !!}
+
+                            @endif
+
                             {!! Form::hidden('amount', old('amount'), ['id' => 'amount']) !!}
 
 
