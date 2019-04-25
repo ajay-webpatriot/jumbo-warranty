@@ -659,7 +659,7 @@
                             
                             {!! Form::hidden('installation_charge', old('installation_charge'), ['id' => 'installation_charge']) !!}
 
-                            @if(auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID'))
+                            @if(auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID'))
 
                                 {!! Form::hidden('transportation_charge','', ['id' => 'transportation_charge']) !!}
 
