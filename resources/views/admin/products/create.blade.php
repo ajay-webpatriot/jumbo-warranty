@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('category_id', trans('quickadmin.products.fields.category').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('category_id', $categories, old('category_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('category_id', $categories, old('category_id'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('category_id'))
                         <p class="help-block">
@@ -37,7 +37,13 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('price', trans('quickadmin.products.fields.price').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('price', old('price'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
+                    <div class="input-group">
+                        <label class="input-group-addon" for="price">
+                            <span class="fa fa-rupee"></span>
+                        </label>
+                        {!! Form::text('price', old('price'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
+                    </div>
+                    
                     <p class="help-block"></p>
                     @if($errors->has('price'))
                         <p class="help-block">
@@ -49,7 +55,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('status', trans('quickadmin.products.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('status'))
                         <p class="help-block">

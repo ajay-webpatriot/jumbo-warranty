@@ -22,7 +22,7 @@
                         </tr>
                         <tr>
                             <th>@lang('quickadmin.company.fields.installation-charge')</th>
-                            <td field-key='installation_charge'>{{ $company->installation_charge }}</td>
+                            <td field-key='installation_charge'><i class="fa fa-rupee"></i>{{ $company->installation_charge }}</td>
                         </tr>
                         <tr>
                             <th>@lang('quickadmin.company.fields.address-1')</th>

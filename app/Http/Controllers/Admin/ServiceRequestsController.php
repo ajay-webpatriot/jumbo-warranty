@@ -470,7 +470,7 @@ class ServiceRequestsController extends Controller
                 }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
 
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
-                    $tableField['amount'] =number_format($SingleServiceRequest->amount,2);
+                    $tableField['amount'] = '<span> <i class="fa fa-rupee"></i>'.number_format($SingleServiceRequest->amount,2).'</span>';
 
                 }else{
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';

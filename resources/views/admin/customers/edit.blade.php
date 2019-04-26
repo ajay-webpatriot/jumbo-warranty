@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col-xs-6">
                             {!! Form::label('company_id', trans('quickadmin.customers.fields.company').'*', ['class' => 'control-label']) !!}
-                            {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                            {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                             <p class="help-block"></p>
                             @if($errors->has('company_id'))
                                 <p class="help-block">
@@ -120,7 +120,7 @@
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('status', trans('quickadmin.customers.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('status'))
                         <p class="help-block">
@@ -139,18 +139,18 @@
                     @endif
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-6">
-                    {!! Form::label('status', trans('quickadmin.customers.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
-                    <p class="help-block"></p>
-                    @if($errors->has('status'))
-                        <p class="help-block">
-                            {{ $errors->first('status') }}
-                        </p>
-                    @endif
-                </div>
-            </div>
+            <!-- <div class="row">
+                <div class="col-xs-6"> -->
+                    {{-- !! Form::label('status', trans('quickadmin.customers.fields.status').'*', ['class' => 'control-label']) !! --}}
+                    {{-- !! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !! --}}
+                    <!-- <p class="help-block"></p> -->
+                    {{-- @if($errors->has('status')) --}}
+                        <!-- <p class="help-block"> -->
+                            {{-- $errors->first('status') --}}
+                        <!-- </p> -->
+                    {{-- @endif --}}
+                <!-- </div>
+            </div> -->
             
         </div>
     </div>

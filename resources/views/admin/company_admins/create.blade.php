@@ -11,19 +11,19 @@
         
         <div class="panel-body">
             
-            <div class="row">
-                <div class="col-xs-12 form-group">                    
+            <!-- <div class="row">
+                <div class="col-xs-12 form-group">                     -->
                     {!! Form::hidden('loggedUser_role',$logged_userRole_id, ['class' => 'form-control', 'placeholder' => '','id' => 'loggedUser_role']) !!}
-                    <p class="help-block"></p>
+                    <!-- <p class="help-block"></p>
                     
                 </div>
-            </div>
+            </div> -->
             
             
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.users.fields.company').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2','id' => 'userCompany','required' => '']) !!}
+                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2','id' => 'userCompany','required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('company_id'))
                         <p class="help-block">
@@ -95,7 +95,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('status', trans('quickadmin.users.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('status'))
                         <p class="help-block">

@@ -107,7 +107,7 @@
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('status', trans('quickadmin.service-center.fields.status').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('status'))
                         <p class="help-block">
@@ -119,13 +119,13 @@
                     
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-xs-6">
                 </div>
                 <div class="col-xs-6">
                     
                 </div>
-            </div>
+            </div> -->
             
         </div>
     </div>

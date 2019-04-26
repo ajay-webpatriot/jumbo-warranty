@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.assign-product.fields.company').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '', 'id' => 'assign_company_id','disabled' => '']) !!}
+                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '', 'id' => 'assign_company_id','disabled' => '','style' => 'width:100%']) !!}
                     {!! Form::hidden('company_id', old('company_id'), ['class' => 'form-control']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('company_id'))
@@ -33,7 +33,7 @@
                     <button type="button" class="btn btn-primary btn-xs" id="deselectbtn-product_id">
                         {{ trans('quickadmin.qa_deselect_all') }}
                     </button>
-                    {!! Form::select('product_id[]', $product_ids, old('product_id') ? old('product_id') : $assign_product->product_id, ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-product_id' , 'required' => '']) !!}
+                    {!! Form::select('product_id[]', $product_ids, old('product_id') ? old('product_id') : $assign_product->product_id, ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-product_id' , 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('product_id'))
                         <p class="help-block">

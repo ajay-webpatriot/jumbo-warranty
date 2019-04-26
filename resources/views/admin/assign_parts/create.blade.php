@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('company_id', trans('quickadmin.assign-parts.fields.company').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('company_id', $companies, old('company_id'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('company_id'))
                         <p class="help-block">
@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('product_parts_id', trans('quickadmin.assign-parts.fields.product-parts').'*', ['class' => 'control-label']) !!}
-                    {!! Form::select('product_parts_id', $product_parts, old('product_parts_id'), ['class' => 'form-control select2', 'required' => '']) !!}
+                    {!! Form::select('product_parts_id', $product_parts, old('product_parts_id'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('product_parts_id'))
                         <p class="help-block">
