@@ -807,17 +807,17 @@
     </div>
 
    <!-- Form Buttons -->
-    @if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && !$service_request->is_accepted)
-        <div class="row">
-            <div class="col-md-12 form-group">
-                <a href="{{ route('admin.service_request.accept',[$service_request->id]) }}" 
-                     class="btn btn-danger">
-                @lang('quickadmin.qa_accept')</a>
-                <a href="{{ route('admin.service_request.reject',[$service_request->id]) }}" class="btn btn-default">@lang('quickadmin.qa_reject')</a>
-                {!! Form::close() !!}
-            </div>
-        </div>
-    @else
+    {{-- @if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && !$service_request->is_accepted) --}}
+        <!-- <div class="row">
+            <div class="col-md-12 form-group"> -->
+                <!-- <a href="{{-- route('admin.service_request.accept',[$service_request->id]) --}}" 
+                     class="btn btn-danger"> -->
+                {{-- @lang('quickadmin.qa_accept') --}}</a>
+                <!-- <a href="{{-- route('admin.service_request.reject',[$service_request->id]) --}}" class="btn btn-default">{{-- @lang('quickadmin.qa_reject') --}}</a> -->
+                {{-- !! Form::close() !! --}}
+            <!-- </div> -->
+        <!-- </div> -->
+    {{-- @else --}}
         <div class="row">
             <div class="col-md-12 form-group">
                 @if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
@@ -831,7 +831,7 @@
                 {!! Form::close() !!}
             </div>
         </div>
-    @endif
+    {{-- @endif --}}
     <div class="panel panel-default">
        
 

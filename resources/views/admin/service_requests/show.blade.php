@@ -23,6 +23,17 @@
         </div>
 
         <div class="panel-body table-responsive">
+            @if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && !$service_request->is_accepted)
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <a href="{{ route('admin.service_request.accept',[$service_request->id]) }}" 
+                            class="btn btn-danger">
+                        @lang('quickadmin.qa_accept')</a>
+                        <a href="{{ route('admin.service_request.reject',[$service_request->id]) }}" class="btn btn-default">@lang('quickadmin.qa_reject')</a>
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            @endif
             <div class="row">
                 <div class="col-md-12">
 

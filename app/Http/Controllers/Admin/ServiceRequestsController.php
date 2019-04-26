@@ -306,16 +306,13 @@ class ServiceRequestsController extends Controller
         // }
 
             $tableFieldData = [];
-            $ViewButtons = '';
-            $EditButtons = '';
-            $DeleteButtons = '';
 
             $serviceRequestObj = new ServiceRequest();  
             $requestFilterCount =  $serviceRequestObj->getFilterRequestsCount($request->all());
 
             $enum_status_color = ServiceRequest::$enum_status_color_code;
 
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.is_accepted','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
@@ -458,7 +455,11 @@ class ServiceRequestsController extends Controller
             $countRecord = $countRecordQuery->count('service_requests.id');
 
             foreach ($service_requests as $key => $SingleServiceRequest) {
-                
+
+                $ViewButtons = '';
+                $EditButtons = '';
+                $DeleteButtons = '';
+
                 if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
 
                     // $tableField['company_name'] =$SingleServiceRequest->cname;
@@ -504,9 +505,15 @@ class ServiceRequestsController extends Controller
                 if (Gate::allows('service_request_view')) {
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
                 }
-                if (Gate::allows('service_request_edit')) {
-                    $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info">Edit</a>';
+
+                if(auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->is_accepted == 1)){
+
+                    if (Gate::allows('service_request_edit')) {
+                        $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info">Edit</a>';
+                    }
+                    
                 }
+
                 if (Gate::allows('service_request_delete')) {
                     $DeleteButtons = '<form action="'.route('admin.service_requests.destroy',$SingleServiceRequest->id).'" method="post" onsubmit="return confirm(\'Are you sure ?\');" style="display: inline-block;">
 

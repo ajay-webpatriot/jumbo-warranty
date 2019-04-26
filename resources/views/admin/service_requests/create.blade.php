@@ -340,7 +340,7 @@
                                         <button type="button" class="btn btn-primary btn-xs" id="deselectbtn-parts">
                                             {{ trans('quickadmin.qa_deselect_all') }}
                                         </button>
-                                        {!! Form::select('parts[]', array(), old('parts'), ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-parts' ]) !!}
+                                        {!! Form::select('parts[]', array(), old('parts'), ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-parts','style' => 'width:100%']) !!}
                                         <p class="help-block"></p>
                                         @if($errors->has('parts'))
                                         <p class="help-block">
