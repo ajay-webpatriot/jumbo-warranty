@@ -5,6 +5,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Hash;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 //permission plugin
 // use Spatie\Permission\Traits\HasRoles;
