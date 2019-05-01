@@ -33,7 +33,7 @@ class User extends Authenticatable
 {
     // permission plugin
     // use HasRoles;
-    use SoftDeletes;
+//    use SoftDeletes;
 
     use Notifiable;
     protected $fillable = ['name', 'phone', 'address_1', 'address_2', 'city', 'state', 'zipcode', 'email', 'password', 'remember_token', 'status', 'location_latitude', 'location_longitude', 'role_id', 'company_id', 'service_center_id'];
