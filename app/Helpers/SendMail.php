@@ -9,7 +9,7 @@ class SendMail
 {
 	public static function sendRequestCreationMail($request_id){
 
-      	// Mail::send([], [], function ($message) {
+      // Mail::send([], [], function ($message) {
       //             $message->to('hinal.webpatriot@gmail.com')
       //               ->subject('test')
       //               // here comes what you want
@@ -17,33 +17,85 @@ class SendMail
       //               // or:
       //               ->setBody('<h1>Hi, welcome user!</h1>', 'text/html'); // for HTML rich messages
       //       });
-    		$service_request = ServiceRequest::findOrFail($request_id);
+        $service_request = ServiceRequest::findOrFail($request_id);
+        
+        
     		// $service_request=$service_request[0];
     		// echo "<pre>"; print_r ($service_request); echo "</pre>"; exit();
     		// echo $service_request->additional_charges;
-    		 // echo "<pre>"; print_r ($service_request); echo "</pre>"; exit();
-    		$additional_charge_array=json_decode($service_request['additional_charges']);
-        $additional_charge_title="";
-        $additional_charges="";
-        $admin_email= "";
-        $company_admin_email = "";
-        $customer_email = "";
+         // echo "<pre>"; print_r ($service_request); echo "</pre>"; exit();
+        if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID')){
 
-        if(!empty($additional_charge_array))
-        {
-            // Worked to display json value in edit page
-            foreach ($additional_charge_array as $key => $value) {
-                if (strpos($key,'_empty_') === false) {
+          $additional_charge_array=json_decode($service_request['additional_charges']);
+          $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
 
-                  $additional_charge_title=str_replace('_empty_', '', $key);
-                  $additional_charges=$value;
-                }
-            }
+          if(!empty($additional_charge_array->option)){
+            $additional_charge_title['option'] = '';
+            $additional_charges['option'] = '';
+              foreach ($additional_charge_array->option as $OptionKey => $value) {
+
+                  $AdditionalChargeTitle =  key((array)$value);
+                  foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
+                      if($AdditionalChargeTitle === $arr_val){
+
+                          $additional_charge_title['option'][$PreArrayKey] = $AdditionalChargeTitle;
+                          $additional_charges['option'][$PreArrayKey] = $value->$arr_val;
+                      
+                      }
+                  }
+              }
+          }  
+          if(!empty($additional_charge_array->other)){
+              foreach ($additional_charge_array->other as $key => $value) {
+                
+                  
+                  $additional_charge_title['other'] = str_replace('_empty_', '', $key);
+                  $additional_charges['other'] = $value;
+              }                                      
+          }
+          
+          // $additional_charge_title=[];
+          // $additional_charges=[];
+          $admin_email= "";
+          $company_admin_email = "";
+          $customer_email = "";
+
+          // if(!empty($additional_charge_array))
+          // {
+          //     $keyVlaue = [];
+          //     $AmountVlaue = [];
+          //     if(isset($additional_charge_array->option)){
+          //       foreach ($additional_charge_array->option as $key => $value) {
+                
+          //         $keyVlaue[$key] = key((array)$value);
+          //         $Vlaue = $keyVlaue[$key];
+          //         $AmountVlaue[] = $value->$Vlaue;
+          //       } 
+          //     }
+
+          //     if(isset($additional_charge_array->other)){
+          //       if (strpos(key((array)$additional_charge_array->other),'_empty_') === false) {
+          //         array_push($keyVlaue,key((array)$additional_charge_array->other));
+          //         $value = key((array)$additional_charge_array->other);
+          //         $AmountVlaue[] = $additional_charge_array->other->$value;
+          //       }
+          //     }
+          //     $additional_charge_title=$keyVlaue;
+          //     $additional_charges=$AmountVlaue;
+              // Worked to display json value in edit page
+              // foreach ($additional_charge_array as $key => $value) {
+              //     $key = $keyVlaue[$key];
+              //     if (strpos($key,'_empty_') === false) {
+              //       $additional_charge_title[]=str_replace('_empty_', '', $key);
+              //       $additional_charges[]=$value->$key;
+              //     }
+              // }
+          // }
+         
+          
+          $service_request['additional_charges']=$additional_charges;
+          $service_request['additional_charges_title']=$additional_charge_title;
         }
-       
-        $service_request['additional_charges']=$additional_charges;
-        $service_request['additional_charges_title']=$additional_charge_title;
-
         // get receiver user data
     		$company_admin= \App\User::where('company_id',$service_request->company_id)
                                   ->where('status','Active')
@@ -74,7 +126,7 @@ class SendMail
         $receiver_email=array('admin' => $admin_email,
                               'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
-                              'hinal' => 'hinal.webpatriot@gmail.com'
+                              'rajdip' => 'rajdip.webpatriot@gmail.com'
 		                        );
         foreach ($receiver_email as $key => $value) {
           if(!empty($value))
@@ -100,7 +152,7 @@ class SendMail
                   'service_request' => $service_request,
                   'receiver_email' => $value
                   );
-        
+
             Mail::send('admin.emails.service_request_detail_email',$data, function ($message)  use ( $to_email){
                       $message->to($to_email)
                         ->subject('New Service Request Created')

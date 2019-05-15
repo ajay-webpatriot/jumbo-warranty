@@ -642,7 +642,10 @@ class ServiceRequestsController extends Controller
         $enum_service_center_status = \App\ServiceCenter::$enum_status;
         $enum_technician_status = \App\User::$enum_status;
 
-        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status'));
+        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
+        // Config::get('constants.PRE_ADDITIONAL_CHARGES_FOR');
+
+        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','pre_additional_charge_array'));
     }
 
     /**
@@ -677,9 +680,31 @@ class ServiceRequestsController extends Controller
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
 
-        // convert to json
-        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
+        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
 
+        $predefine_additional_charge_array = [];
+        $actual_value = '';
+
+        if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != '' ){
+
+            foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {
+            
+                $actual_value = ($pre_additional_charge_array[$existingAdditional_charge_for_Vlaue] == "")?0:number_format((float)$request['existingAdditional_charge'][$key], 2, '.', '');
+                
+                $total_amount+=$actual_value;
+
+                $predefine_additional_charge_array['option'][$key]= array($pre_additional_charge_array[$existingAdditional_charge_for_Vlaue] => number_format((float)$actual_value, 2, '.', ''));
+                
+            }
+        
+            // convert to json
+            $predefine_additional_charge_array['other'] = array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', ''));
+        
+            // array_push( $predefine_additional_charge_array, $actual_additional_charge );
+
+            $request['additional_charges']= json_encode($predefine_additional_charge_array);
+        }
+        
         $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
         $km_charge = 0;
         if(!empty($distance_charge))
@@ -733,10 +758,11 @@ class ServiceRequestsController extends Controller
         $request['amount']=$total_amount;  
         // calculate total amount work end
 
-
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
         SendMailHelper::sendRequestCreationMail($service_request->id);
+
+        // SendMailHelper::sendRequestCreationMail(161);
 
         // service request log for new request
         $insertServiceRequestLogArr = array(
@@ -768,10 +794,7 @@ class ServiceRequestsController extends Controller
             if($request->technician_id != '' && $request->technician_id != 0 && !empty($request->technician_id) && $request->technician_id != NULL){
                 $this->sendPushNotificationTechnician($request->technician_id,$service_request->id);
             }
-
-        }
-        
-            
+        }  
 
         return redirect()->route('admin.service_requests.index')->with('success','Service Request created successfully!');
     }
@@ -835,18 +858,83 @@ class ServiceRequestsController extends Controller
         $enum_status_color = ServiceRequest::$enum_status_color_code;
 
         $additional_charge_array=json_decode($service_request['additional_charges']);
-        $additional_charge_title="";
-        $additional_charges="";
-        if(!empty($additional_charge_array))
-        {
-            // Worked to display json value in edit page
-            foreach ($additional_charge_array as $key => $value) {
-                $additional_charge_title=str_replace('_empty_', '', $key);
-                $additional_charges=$value;
-            }
-        }
         
-        $service_request['additional_charges']=$additional_charges;
+        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
+
+        $additional_charge_title = [];
+        $additional_charge = [];
+
+        if(!empty($additional_charge_array->option)){
+                
+                
+            foreach ($additional_charge_array->option as $OptionKey => $value) {
+              
+                $AdditionalChargeTitle =  key((array)$value);
+               
+                
+                
+                foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
+                   
+                    if($AdditionalChargeTitle === $arr_val){
+                        $additional_charge_title['option'][$OptionKey] = $PreArrayKey;
+                        $additional_charge['option'][$OptionKey] = $value->$arr_val;
+                    }
+                }
+            }
+        }  
+        if(!empty($additional_charge_array->other)){
+            foreach ($additional_charge_array->other as $key => $value) {
+               
+                
+                $additional_charge_title['other'] = str_replace('_empty_', '', $key);
+                $additional_charge['other'] = $value;
+            }                                      
+        }
+        // $additional_charge_title=[];
+        // $additional_charges=[];
+        // if(!empty($additional_charge_array))
+        // {
+
+        //     $keyVlaue = [];
+        //     $AmountVlaue = [];
+        //     if(isset($additional_charge_array->option)){
+        //       foreach ($additional_charge_array->option as $key => $value) {
+
+        //         $keyVlaue[$key] = key((array)$value);
+        //         $Vlaue = $keyVlaue[$key];
+        //         $AmountVlaue[] = $value->$Vlaue;
+
+        //       } 
+        //     }
+
+        //     if(isset($additional_charge_array->other)){
+        //       if (strpos(key((array)$additional_charge_array->other),'_empty_') === false) {
+        //         array_push($keyVlaue,key((array)$additional_charge_array->other));
+        //         $value = key((array)$additional_charge_array->other);
+        //         $AmountVlaue[] = $additional_charge_array->other->$value;
+        //       }
+        //     }
+        //     $additional_charge_title=$keyVlaue;
+        //     $additional_charges=$AmountVlaue;
+
+        //     // $keyVlaue = [];
+        //     // foreach ($additional_charge_array as $key => $value) {
+        //     //   $keyVlaue[$key] = key((array)$value);
+        //     // }
+        //     // // Worked to display json value in edit page
+        //     // foreach ($additional_charge_array as $key => $value) {
+        //     //     $key = $keyVlaue[$key];
+        //     //     $additional_charge_title[]=str_replace('_empty_', '', $key);
+        //     //     $additional_charges[]=$value->$key;
+        //     // }
+        // }
+        
+        // echo "<pre>";
+        // print_r($additional_charge_title);
+        // echo "</pre>";
+        // exit();
+        
+        $service_request['additional_charges']=$additional_charge;
 
         $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
                                         ->where('status','Active')
@@ -958,7 +1046,7 @@ class ServiceRequestsController extends Controller
         $enum_customer_status = \App\Customer::$enum_status;
         $enum_service_center_status = \App\ServiceCenter::$enum_status;
         $enum_technician_status = \App\User::$enum_status;
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'supported_service_centers', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','enum_status_color'))->with('no', 1);
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'supported_service_centers', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','enum_status_color','additional_charge_array','pre_additional_charge_array'))->with('no', 1);
         // $user_name=ucwords('user name');
         // $subject='sub';
         // return view('admin.emails.service_request_detail_email', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);
@@ -1161,8 +1249,31 @@ class ServiceRequestsController extends Controller
         // calculate total amount work start
         $total_amount=$request['installation_charge']+$request['service_charge']+(($request['additional_charges'] == "")?0:number_format((float)$request['additional_charges'], 2, '.', ''));
 
+        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
+
+        $predefine_additional_charge_array = [];
+        $actual_value = '';
+
+        if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != '' ){
+        
+            foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {
+              
+                $actual_value = ($pre_additional_charge_array[$existingAdditional_charge_for_Vlaue] == "")?0:number_format((float)$request['existingAdditional_charge'][$key], 2, '.', '');
+
+                $total_amount+=$actual_value;
+
+                $predefine_additional_charge_array['option'][]= (object)array($pre_additional_charge_array[$existingAdditional_charge_for_Vlaue] => number_format((float)$actual_value, 2, '.', ''));
+              
+            }
+
+        
+            // convert to json
+            $predefine_additional_charge_array['other'] = array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', ''));
+
+            $request['additional_charges']= json_encode($predefine_additional_charge_array);
+        }
         // convert to json
-        $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
+        // $request['additional_charges']= json_encode(array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', '')));
 
 
         $distance_charge=\App\ManageCharge::get()->where('status','Active')->first();
@@ -1209,7 +1320,7 @@ class ServiceRequestsController extends Controller
         //     } 
         // }
 
-        $request['amount']=$total_amount;        
+        $request['amount']=$total_amount;
         // calculate total amount work end
 
         $request_status=$service_request->status;
@@ -1301,17 +1412,114 @@ class ServiceRequestsController extends Controller
         }
         $service_request = ServiceRequest::findOrFail($id);
 
+        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
+
         $additional_charge_array=json_decode($service_request['additional_charges']);
-        $additional_charge_title="";
-        $additional_charges="";
-        if(!empty($additional_charge_array))
-        {
-            // Worked to display json value in edit page
-            foreach ($additional_charge_array as $key => $value) {
-                $additional_charge_title=str_replace('_empty_', '', $key);
-                $additional_charges=$value;
+
+        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
+
+        $additional_charge_title = [];
+        $additional_charges = [];
+
+        if(!empty($additional_charge_array->option)){
+               
+            foreach ($additional_charge_array->option as $OptionKey => $value) {
+                
+                $AdditionalChargeTitle =  key((array)$value);
+                foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
+                    if($AdditionalChargeTitle === $arr_val){
+
+                        $additional_charge_title['option'][$OptionKey] = $AdditionalChargeTitle;
+                        $additional_charges['option'][$OptionKey] = $value->$arr_val;
+                    
+                    }
+                }
             }
+        }  
+        if(!empty($additional_charge_array->other)){
+            foreach ($additional_charge_array->other as $key => $value) {
+               
+                
+                $additional_charge_title['other'] = str_replace('_empty_', '', $key);
+                $additional_charges['other'] = $value;
+            }                                      
         }
+        // echo "<pre>";
+        // print_r($additional_charge_title);
+        // echo "</pre>";
+        // exit();
+        
+        // $additional_charge_title=[];
+        // $additional_charges=[];
+        // if(!empty($additional_charge_array))
+        // {
+        //     foreach ($additional_charge_array->option as $additionalChargeKey => $value) {
+
+        //         $ActualAdditionalChargeFor =  key((array)$value);
+              
+        //         foreach($pre_additional_charge_array as $key => $arr_val){
+                    
+        //             if($arr_val === $ActualAdditionalChargeFor){
+        //                 $additional_charge_title[] = $arr_val;
+        //                 if(count($value) > 0){
+        //                     $additional_charges[] = $value->$ActualAdditionalChargeFor;
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     if(!empty($additional_charge_array->other)){
+        //         foreach ($additional_charge_array->other as $key => $value) {
+        //             $additional_charge_title[] = str_replace('_empty_', '', $key);
+        //             $additional_charges[] = $value;
+                
+        //         }                                      
+        //     }
+           
+            // $keyVlaue = [];
+            // $AmountVlaue = [];
+            // if(isset($additional_charge_array->option)){
+            //   foreach ($additional_charge_array->option as $key => $value) {
+            //     $keyVlaue[$key] = key((array)$value);
+               
+            //     $Vlaue = $keyVlaue[$key];
+            //     if($Vlaue != 0){
+
+            //         $AmountVlaue[] = $value->$Vlaue;
+            //     }
+            //     echo "<pre>";
+            //     print_r($AmountVlaue);
+            //     echo "</pre>";
+            //     exit();
+                
+            //   } 
+            // }
+
+            // if(isset($additional_charge_array->other)){
+            //   if (strpos(key((array)$additional_charge_array->other),'_empty_') === false) {
+            //     array_push($keyVlaue,key((array)$additional_charge_array->other));
+            //     $value = key((array)$additional_charge_array->other);
+            //     $AmountVlaue[] = $additional_charge_array->other->$value;
+            //   }
+            // }
+            // $additional_charge_title=$keyVlaue;
+            // $additional_charges=$AmountVlaue;
+            // echo "<pre>";
+            // print_r($additional_charges);
+            // echo "</pre>";
+            // exit();
+
+            // $keyVlaue = [];
+            // foreach ($additional_charge_array as $key => $value) {
+            //     $keyVlaue[$key] = key((array)$value);
+            // }
+            // // Worked to display json value in edit page
+            // foreach ($additional_charge_array as $key => $value) {
+            //     $key = $keyVlaue[$key];
+            //     $additional_charge_title[]=str_replace('_empty_', '', $key);
+            //     $additional_charges[]=$value->$key;
+            // }
+        // }
+
         $enum_status_color = ServiceRequest::$enum_status_color_code;
         $service_request['additional_charges']=$additional_charges;
 
@@ -1631,7 +1839,7 @@ class ServiceRequestsController extends Controller
             
             
         }
-        
+
         echo json_encode($data);
         exit;
     }

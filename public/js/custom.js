@@ -79,6 +79,17 @@ $(document).ready(function(){
 	});
 	$(document).on('submit','#formServiceRequest',function (){
 		
+		$(".error-block").text('');
+		$('*[id^="Additional_charge_for_existing-"]').each(function() {
+			selectedid = $(this).attr("id");
+			selectedid = selectedid.split('-');
+			var selectedOption =$("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val();
+			if(selectedOption == '' || selectedOption == 0){
+				$(".error-block_"+selectedid[1]).text('Please select option');
+				return false;
+			}
+		});
+		
 		// validate additional charges title and amount on form submit in add/edit service request page
 		var status = true;
 		$("#additional_charges_title").next(".help-block").html("");
@@ -431,7 +442,7 @@ function requestCharge(ele) {
 	       	},
 	       	dataType: "json",
 	       	success:function(data) {
-				   
+
 	       		$("#installation_charge").val(data.installation_charge);
 	       		
 	       		$("#lbl_installation_charge").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.installation_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
@@ -440,13 +451,20 @@ function requestCharge(ele) {
 
 	       		$("#lbl_service_charge").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.service_charge)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') );
 
-	       		var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
+				var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
+				   
+				var pre_additional_charge = 0;
+				$('.existingAdditional_charge').each(function() {
+					console.log($(this).val());
+					pre_additional_charge+= isNaN(parseFloat($(this).val()))?0:parseFloat($(this).val());
+				});
+
 	       		var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
 				   var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
 				   
 				var transportation_charge = isNaN(parseFloat($("#transportation_charge").val()))?0:parseFloat($("#transportation_charge").val());
 
-	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+ transportation_charge).toFixed(2);
+	          	var total_amount=(parseFloat(data.installation_charge)+parseFloat(data.service_charge)+additional_amount+ transportation_charge+pre_additional_charge).toFixed(2);
 	          	$("#amount").val(total_amount);
 	          	$("#lbl_total_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
@@ -459,21 +477,26 @@ function requestCharge(ele) {
 function totalServiceAmount() {
 	// called on keyup of additional amount in service request
 
+	var pre_additional_charge = 0;
+	$('.existingAdditional_charge').each(function() {
+		console.log($(this).val());
+		pre_additional_charge+= isNaN(parseFloat($(this).val()))?0:parseFloat($(this).val());
+	});
+	
 	var installation_charge=isNaN(parseFloat($("#installation_charge").val()))?0:parseFloat($("#installation_charge").val());
 	var service_charge=isNaN(parseFloat($("#service_charge").val()))?0:parseFloat($("#service_charge").val());
 
 	var additional_amount=isNaN(parseFloat($("#additional_charges").val()))?0:parseFloat($("#additional_charges").val());
 	var km_charge=isNaN(parseFloat($("#km_charge").val()))?0:parseFloat($("#km_charge").val());
 	var km_distance=isNaN(parseFloat($("#km_distance").val()))?0:parseFloat($("#km_distance").val());
-
-
+	
 	// if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID)
 	// {
 
 	// }
 	var transportation_charge = isNaN(parseFloat($("#transportation_charge").val()))?0:parseFloat($("#transportation_charge").val());
 	// var total_amount=(installation_charge+service_charge+additional_amount+(km_distance * km_charge)).toFixed(2);
-	var total_amount=(installation_charge+service_charge+additional_amount+transportation_charge).toFixed(2);
+	var total_amount=(installation_charge+service_charge+additional_amount+transportation_charge+pre_additional_charge).toFixed(2);
   	
   	$("#amount").val(total_amount);
   	$("#lbl_total_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(total_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));

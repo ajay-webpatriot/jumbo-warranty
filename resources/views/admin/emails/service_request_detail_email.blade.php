@@ -469,14 +469,21 @@
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="col-sm-12">
+                                                                        @foreach($service_request->additional_charges_title as $key => $additional_charges_title)
                                                                         <div class="pull-left" style="width:50%;float:left;">
-                                                                        {!! Form::label('', $service_request->additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !!}
-                                                                    
+                                                                        {{-- !! Form::label('', $service_request->additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !! --}}
+
+                                                                        {!! Form::label('', $additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !!}
+                                                                       
                                                                         </div>
+                                                                       {{-- @endforeach --}}
+
+                                                                        {{-- @foreach($service_request->additional_charges as $key => $additional_charges) --}}
                                                                         <div class="pull-right" style="float:right;">
-                                                                            {{number_format($service_request->additional_charges,2)}}
-                                                                        
+                                                                            {{-- number_format($service_request->additional_charges,2) --}}
+                                                                            {{number_format($service_request->additional_charges[$key],2)}}
                                                                         </div>
+                                                                         @endforeach
                                                                     </div>
                                                                     
                                                                 </div>
