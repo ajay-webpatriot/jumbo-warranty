@@ -57,6 +57,7 @@
                     </div>
                 </div>
 
+                @if(isset($enum_service_center_status))
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
                         {!! Form::label('status', trans('quickadmin.service-center.fields.status').'*', ['class' => 'control-label']) !!}
@@ -69,6 +70,8 @@
                         @endif
                     </div>
                 </div>
+                @endif
+                
             </div>
 
             <div class="col-md-6">

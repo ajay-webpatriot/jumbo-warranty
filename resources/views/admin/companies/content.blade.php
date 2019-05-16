@@ -42,6 +42,7 @@
                         @endif
                     </div>
 
+                    @if(isset($enum_company_status))
                     <div class="col-md-12 col-sm-12">
                         {!! Form::label('status', trans('quickadmin.company.fields.status').'*', ['class' => 'control-label']) !!}
                         {!! Form::select('status', $enum_company_status, old('status'), ['class' => 'form-control select2', 'required' => '', 'id' => 'company_status','style' => 'width:100%']) !!}
@@ -52,6 +53,8 @@
                             </p>
                         @endif
                     </div>
+                    @endif
+
                 </div>
             </div>
 

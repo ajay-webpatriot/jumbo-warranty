@@ -321,7 +321,7 @@ class TechniciansController extends Controller
             'zipcode' => 'required|min:6|max:6',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed',
-            'status' => 'required',
+            // 'status' => 'required',
 
         ]);
         if ($validator->fails()) {

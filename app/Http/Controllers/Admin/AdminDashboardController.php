@@ -20,11 +20,7 @@ class AdminDashboardController extends Controller
          if((auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID')) && (auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))){
             return view('home');
         }
-        // echo "<pre>";
-        // print_r($request->all());
-        // echo "</pre>";
-        // exit();
-        
+       
         $PendingComplainCount       = 0;
         $SolvedComplainCount        = 0;
         $PendingInstallationCount   = 0;
@@ -75,15 +71,14 @@ class AdminDashboardController extends Controller
         ->whereIn('service_requests.service_type',array('repair','installation'))
         ->orderBy('service_requests.created_at','DESC')
         ->limit(10);
+
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
              $ServiceTypeDetailsQuery->Where('service_requests.company_id', auth()->user()->company_id);
         }
 
-       $ServiceTypeDetails = $ServiceTypeDetailsQuery->get();
+        $ServiceTypeDetails = $ServiceTypeDetailsQuery->get();
 
-        
-        
         if($request->ajax())
         {
             $startDate          = $request->startDate;
@@ -126,6 +121,7 @@ class AdminDashboardController extends Controller
         $endDate = date('Y-m-d',strtotime($endDate));
         
         $ServiceCount = ServiceRequest::select('service_requests.service_type','service_requests.status');
+
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
             $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
@@ -139,8 +135,10 @@ class AdminDashboardController extends Controller
             $ServiceCount->where('service_requests.service_type','=','installation')
             ->where('service_requests.status','!=','Closed')
             ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
+
             /*Total Installation count*/
             return $ServiceCount->count();
+
         }elseif ($type == "repair_today") {
             $ServiceCount->where('service_requests.service_type','=','repair')
             ->where('service_requests.status','!=','Closed')
@@ -164,6 +162,91 @@ class AdminDashboardController extends Controller
             return $ServiceCount->count();
 
         }
+    }
+
+    public function getCompanyDashboardDataByType(Request $request)
+    {
+    //    echo "<pre>";
+    //    print_r($request->all());
+    //    echo "</pre>";
+    //    exit();
+       
+        $todayDate = date('Y-m-d');
+        $startDate = date('Y-m-d',strtotime($request->startDate));
+        $endDate = date('Y-m-d',strtotime($request->endDate));
+        $type = $request->type;
+        $typeTitle = '';
+        $dataByType = (object)array();
+        $Status = 0;
+       
+        $ServiceCount = ServiceRequest::select('service_requests.*',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+        LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'));
+
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
+        }else{
+            if($request->SelectedCompanyId != 'all'){
+                    $ServiceCount->where('service_requests.company_id',$request->SelectedCompanyId);
+            }
+        }
+        
+       
+        if($type == "installation_today"){
+
+            $typeTitle = 'TOTAL INSTALLATION REQUESTS';
+
+            $ServiceCount->where('service_requests.service_type','=','installation')
+            ->where('service_requests.status','!=','Closed')
+            ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
+
+            /*Total Installation count*/
+            // $dataByType = $ServiceCount->get();
+
+            // return $ServiceCount->count();
+
+        }elseif ($type == "repair_today") {
+
+            $typeTitle = 'TOTAL SERVICE REQUESTS';
+
+            $ServiceCount->where('service_requests.service_type','=','repair')
+            ->where('service_requests.status','!=','Closed')
+            ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
+            
+            /*Total Repair count*/
+            // $dataByType = $ServiceCount->get();
+
+        }elseif ($type == "delayed_request") {
+            
+            $typeTitle = 'TOTAL DELAYED REQUESTS FROM TODAY';
+
+            $ServiceCount->where('service_requests.status','!=','Closed')
+            ->whereRaw("DATE_FORMAT(service_requests.completion_date, '%Y-%m-%d') < '".$todayDate."'");
+
+            /*Total Delayed count*/
+            // $dataByType = $ServiceCount->get();
+
+        }elseif ($type == "closed_request") {
+
+            $typeTitle = 'TOTAL REQUESTS CLOSED BY TODAY';
+
+            $ServiceCount->where('service_requests.status','=','Closed')
+            ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
+             
+            /*Total Closed count*/
+            
+        }
+        $ServiceCount->join('customers','service_requests.customer_id','=','customers.id')
+        ->join('products','service_requests.product_id','=','products.id')
+        ->whereIn('service_requests.service_type',array('repair','installation'))
+        ->orderBy('service_requests.created_at','DESC');
+        
+        $dataByType = $ServiceCount->get();
+        
+        $enum_status_color = ServiceRequest::$enum_status_color_code;
+
+        return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle'));
+        
     }
 
     // public function getCompanyDashboardRequestCount()

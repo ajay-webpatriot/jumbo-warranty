@@ -117,6 +117,8 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
 
     /* admin dashboard route */
     Route::get('dashboard','Admin\AdminDashboardController@index')->name('index');
+
+    Route::post('dashboard/listdata','Admin\AdminDashboardController@getCompanyDashboardDataByType')->name('request_list');
     // Route::get('getCompanyDashboardRequestCount','Admin\AdminDashboardController@getCompanyDashboardRequestCount')->name('getCompanyDashboardRequestCount');
 
     //company admin ajax data table

@@ -92,7 +92,7 @@ class ServiceCentersController extends Controller
             'state' => 'required',
             'zipcode' => 'required|min:6|max:6',
             'supported_zipcode' => 'required',
-            'status' => 'required'
+            // 'status' => 'required'
 
         ]);
         if ($validator->fails()) {
@@ -132,12 +132,18 @@ class ServiceCentersController extends Controller
 
             $serviceCenterOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
 
-            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get();
+            // $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get();
+
+            $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('id','DESC')->get();
             if(count($service_centers) > 0)
             {
                 foreach($service_centers as $key => $value)
                 {
-                    $serviceCenterOptions.="<option value='".$value->id."'>".$value->name."</option>";   
+                    $selected = '';
+                    if($key == 0){
+                        $selected = 'selected';
+                    }
+                    $serviceCenterOptions.="<option value='".$value->id."' $selected>".$value->name."</option>";   
                 }   
             }
             return response()->json(array(

@@ -85,7 +85,7 @@ class CompaniesController extends Controller
             'city' => 'required',
             'state' => 'required',
             'zipcode' => 'required|min:6|max:6',
-            'status' => 'required',
+            // 'status' => 'required',
 
         ]);
         if ($validator->fails()) {
@@ -119,12 +119,17 @@ class CompaniesController extends Controller
 
             $companyOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
 
-            $companies = \App\Company::where('status','Active')->orderBy('name')->get();
+            // $companies = \App\Company::where('status','Active')->orderBy('name')->get();
+            $companies = \App\Company::where('status','Active')->orderBy('id','DESC')->get();
             if(count($companies) > 0)
             {
                 foreach($companies as $key => $value)
-                {
-                    $companyOptions.="<option value='".$value->id."'>".$value->name."</option>";   
+                {     
+                    $selected = ''; 
+                    if($key == 0){
+                        $selected = 'selected';
+                    }              
+                    $companyOptions.="<option value='".$value->id."' $selected>".$value->name."</option>";   
                 }   
             }
             return response()->json(array(

@@ -231,7 +231,8 @@ class ServiceRequestsController extends Controller
                 3 =>'service_centers.name' ,
                 4 =>'products.name' ,
                 5 =>'service_requests.amount' ,
-                6 =>'service_requests.status'
+                6 =>'service_requests.status',
+                7 =>'service_requests.created_at'
             );
         }else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
             
@@ -243,7 +244,8 @@ class ServiceRequestsController extends Controller
                 3 =>'service_requests.service_type' ,
                 4 =>'products.name' ,
                 // 5 =>'service_requests.amount' ,
-                5 =>'service_requests.status'
+                5 =>'service_requests.status',
+                6 =>'service_requests.created_at'
             );
         }else{
             // admin and super admin
@@ -258,7 +260,8 @@ class ServiceRequestsController extends Controller
                 6 =>'products.name' ,
                 7 =>'service_requests.amount' ,
                 8 =>'service_requests.status',
-                9 =>'service_requests.is_paid'
+                9 =>'service_requests.is_paid',
+                10 =>'service_requests.created_at'
             );
         }
 
@@ -312,7 +315,7 @@ class ServiceRequestsController extends Controller
 
             $enum_status_color = ServiceRequest::$enum_status_color_code;
 
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.is_accepted','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
@@ -410,6 +413,7 @@ class ServiceRequestsController extends Controller
                     }
                     
                     $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
                     // $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
@@ -420,7 +424,7 @@ class ServiceRequestsController extends Controller
             }
             
             $service_requests = $service_requestsQuery->get();
-            
+
         }
 
         // fetch total count according to logged in user
@@ -501,6 +505,8 @@ class ServiceRequestsController extends Controller
                     $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
                 }
                 $tableField['request_status'] = $tableStatusColor;
+
+                $tableField['created_at'] = date('d-m-Y',strtotime($SingleServiceRequest->created_at));
 
                 if (Gate::allows('service_request_view')) {
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
@@ -1858,7 +1864,8 @@ class ServiceRequestsController extends Controller
         {
             $customers = \App\Customer::where('company_id',$details['companyId'])
                                 ->where('status','Active')
-                                ->orderby('firstname')
+                                // ->orderby('firstname')
+                                ->orderby('id','DESC')
                                 ->get();
 
             $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
@@ -1880,10 +1887,15 @@ class ServiceRequestsController extends Controller
             if(count($customers) > 0)
             {
                 foreach($customers as $key => $value)
-                {
-                    $data['custOptions'].="<option value='".$value->id."'>". ucfirst($value->firstname).' '.ucfirst($value->lastname)."</option>";   
-                }   
-            }
+                {   
+                    $selected = '';
+                    if($key == 0){
+                        $selected = 'selected';
+                    }
+
+                    $data['custOptions'].="<option value='".$value->id."' $selected>". ucfirst($value->firstname).' '.ucfirst($value->lastname)."</option>";   
+                }
+            } 
             if(count($product_parts) > 0)
             {
                 foreach($product_parts as $key => $value)
@@ -2015,8 +2027,10 @@ class ServiceRequestsController extends Controller
         $data['options']="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
         if($details['serviceCenterId'] != "")
         {
+            // $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+            //             ->orderby('name');
             $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-                        ->orderby('name');
+                        ->orderby('id','DESC');
 
             $query->where('service_center_id',$details['serviceCenterId']);
             $query->where('status','Active');
@@ -2026,7 +2040,11 @@ class ServiceRequestsController extends Controller
             {
                 foreach($technicians as $key => $value)
                 {
-                    $data['options'].="<option value='".$value->id."'>".$value->name."</option>";
+                    $selected = '';
+                    if($key == 0){
+                        $selected = 'selected';
+                    }
+                    $data['options'].="<option value='".$value->id."' $selected>".$value->name."</option>";
                     
                 }
                 
@@ -2158,28 +2176,34 @@ class ServiceRequestsController extends Controller
             
             if($request['type'] == 'company'){
 
-                $enum_company_status = \App\Company::$enum_status;
-                $returnHTML = view('admin.companies.content')->with('enum_company_status', $enum_company_status)->render();
+                // $enum_company_status = \App\Company::$enum_status;
+                // $returnHTML = view('admin.companies.content')->with('enum_company_status', $enum_company_status)->render();
+                $returnHTML = view('admin.companies.content')->render();
                 $status = 1;
 
             }elseif ($request['type'] == 'customer') {
 
                 $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-                $enum_customer_status = \App\Customer::$enum_status;
-                $returnHTML = view('admin.customers.content',compact('enum_customer_status', 'companies'))->render();
+
+                // $enum_customer_status = \App\Customer::$enum_status;
+                // $returnHTML = view('admin.customers.content',compact('enum_customer_status', 'companies'))->render();
+
+                $returnHTML = view('admin.customers.content',compact('companies'))->render();
                 $status = 1;
 
             }elseif ($request['type'] == 'service_center') {
 
-                $enum_service_center_status = \App\ServiceCenter::$enum_status;
-                $returnHTML = view('admin.service_centers.content')->with('enum_service_center_status', $enum_service_center_status)->render();
+                // $enum_service_center_status = \App\ServiceCenter::$enum_status;
+                // $returnHTML = view('admin.service_centers.content')->with('enum_service_center_status', $enum_service_center_status)->render();
+                $returnHTML = view('admin.service_centers.content')->render();
                 $status = 1;
 
             }elseif ($request['type'] == 'technician') {
 
-                $enum_technician_status = \App\User::$enum_status;
+                // $enum_technician_status = \App\User::$enum_status;
                 $service_centers = \App\ServiceCenter::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
-                $returnHTML = view('admin.technicians.content',compact('enum_technician_status', 'service_centers'))->render();
+                // $returnHTML = view('admin.technicians.content',compact('enum_technician_status', 'service_centers'))->render();
+                $returnHTML = view('admin.technicians.content',compact('service_centers'))->render();
                 $status = 1;
 
             }

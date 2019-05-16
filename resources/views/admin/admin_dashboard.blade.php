@@ -32,7 +32,6 @@
                                         <div class="row">
                                             <div class="col-md-12 col-sm-6 col-xs-12">
                                                 <div class="form-group">
-                                                    <!-- <label>Date range:</label> -->
                                                     <div class="input-group">
                                                         <div class="input-group-addon">
                                                             <i class="fa fa-calendar"></i>
@@ -45,7 +44,6 @@
                                              
                                                 <div class="col-md-12 col-sm-6 col-xs-12">
                                                     <div class="form-group">
-                                                        <!-- <label>Company</label> -->
                                                         <select class="form-control select2" id="companyDropdown" style="width: 100%;">
 
                                                             <option selected="selected" value="all">All Compaines</option>
@@ -59,8 +57,6 @@
                                                 </div>
                                           @endif
                                             <div class="col-md-12 col-sm-6 col-xs-12 margin-bottom">
-                                               
-                                                <!-- <label></label> -->
                                                 <button type="button" onclick="changeDateCompanyGetCount()" class="btn btn-block btn-primary">Filters</button>
                                             </div>
 
@@ -69,64 +65,90 @@
                                     
                                     <div class="col-md-9">
                                         <div class="row">
-                                            <!-- <div class="col-md-12">
-                                                <div class="row"> -->
+                                            
+                                            <!-- Total PENDING complain -->
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'installation_today','target' => '_blank']) !!}
 
-                                                    <!-- Total PENDING complain -->
-                                                    <a href="">
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <div class="info-box bg-aqua">
-                                                                <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
-                                                                <div class="info-box-content">
-                                                                    <span class="info-box-text boxfont">TOTAL INSTALLATION REQUESTS</span>
-                                                                    <span class="info-box-number" id="installationToday">{{-- $installationToday --}}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-
-                                                    <!-- Total PENDING installation -->
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <div class="info-box bg-red">
-                                                            <span class="info-box-icon"><i class="fa fa-tv"></i></span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-text boxfont">TOTAL SERVICE REQUESTS</span>
-                                                                <span class="info-box-number" id="repairToday">{{-- $repairToday --}}</span>
-                                                            </div>
+                                                <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('installation_today')" style="cursor: pointer;">
+                                                    <div class="info-box bg-aqua">
+                                                        <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text boxfont">TOTAL INSTALLATION REQUESTS</span>
+                                                            <span class="info-box-number" id="installationToday">{{-- $installationToday --}}</span>
                                                         </div>
                                                     </div>
-                                                <!-- </div>
-                                            </div> -->
+                                                </div>
+
+                                                {{ Form::hidden('startDate', '', array('id' => 'startDate_installation_today')) }}
+                                                {{ Form::hidden('endDate', '', array('id' => 'endDate_installation_today')) }}
+                                                {{ Form::hidden('SelectedCompanyId', '', array('id' => 'SelectedCompanyId_installation_today')) }}
+                                                {{ Form::hidden('type', '', array('id' => 'type_installation_today')) }}
+
+                                            {!! Form::close() !!}
+
+                                            <!-- Total PENDING installation -->
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'repair_today','target' => '_blank']) !!}
+
+                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('repair_today')" style="cursor: pointer;">
+                                                <div class="info-box bg-red">
+                                                    <span class="info-box-icon"><i class="fa fa-tv"></i></span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text boxfont">TOTAL SERVICE REQUESTS</span>
+                                                        <span class="info-box-number" id="repairToday">{{-- $repairToday --}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{ Form::hidden('startDate', '', array('id' => 'startDate_repair_today')) }}
+                                            {{ Form::hidden('endDate', '', array('id' => 'endDate_repair_today')) }}
+                                            {{ Form::hidden('SelectedCompanyId', '', array('id' => 'SelectedCompanyId_repair_today')) }}
+                                            {{ Form::hidden('type', '', array('id' => 'type_repair_today')) }}
+
+                                            {!! Form::close() !!}
                                         </div>
 
                                         <div class="row">
-                                            <!-- <div class="col-md-12">
-                                                <div class="row"> -->
 
-                                                    <!-- Total solved installation -->
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <div class="info-box bg-green">
-                                                            <span class="info-box-icon"><i class="fa fa-tv"></i></span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-text boxfont">TOTAL DELAYED REQUESTS FROM TODAY</span>
-                                                                <span class="info-box-number" id="delayedRequest">{{-- $delayedRequest --}}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                
-                                                    <!-- Total solved complain -->
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <div class="info-box bg-yellow">
-                                                            <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-text boxfont">TOTAL REQUESTS CLOSED BY TODAY</span>
-                                                                <span class="info-box-number" id="closededRequest">{{-- $closededRequest --}}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                            <!-- Total solved installation -->
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'delayed_request','target' => '_blank']) !!}
 
-                                                <!-- </div>
-                                            </div> -->
+                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('delayed_request')" style="cursor: pointer;">
+                                                <div class="info-box bg-green">
+                                                    <span class="info-box-icon"><i class="fa fa-tv"></i></span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text boxfont">TOTAL DELAYED REQUESTS FROM TODAY</span>
+                                                        <span class="info-box-number" id="delayedRequest">{{-- $delayedRequest --}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{ Form::hidden('startDate', '', array('id' => 'startDate_delayed_request')) }}
+                                            {{ Form::hidden('endDate', '', array('id' => 'endDate_delayed_request')) }}
+                                            {{ Form::hidden('SelectedCompanyId', '', array('id' => 'SelectedCompanyId_delayed_request')) }}
+                                            {{ Form::hidden('type', '', array('id' => 'type_delayed_request')) }}
+
+                                            {!! Form::close() !!}
+                                        
+                                            <!-- Total solved complain --> 
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'closed_request','target' => '_blank']) !!}
+
+                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('closed_request')" style="cursor: pointer;">
+                                                <div class="info-box bg-yellow">
+                                                    <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
+                                                    <div class="info-box-content">
+                                                        <span class="info-box-text boxfont">TOTAL REQUESTS CLOSED BY TODAY</span>
+                                                        <span class="info-box-number" id="closededRequest">{{-- $closededRequest --}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{ Form::hidden('startDate', '', array('id' => 'startDate_closed_request')) }}
+                                            {{ Form::hidden('endDate', '', array('id' => 'endDate_closed_request')) }}
+                                            {{ Form::hidden('SelectedCompanyId', '', array('id' => 'SelectedCompanyId_closed_request')) }}
+                                            {{ Form::hidden('type', '', array('id' => 'type_closed_request')) }}
+
+                                            {!! Form::close() !!}
+                                               
                                         </div>
                                     </div>
 
@@ -204,6 +226,13 @@
                                 <ul class="products-list product-list-in-box">
                                     @if(!empty($ServiceTypeDetails))
                                         @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
+                                        <?php
+                                            // echo "<pre>";
+                                            // print_r($SingleServiceTypeDetail);
+                                            // echo "</pre>";
+                                            // exit();
+                                            
+                                        ?>
                                             <li class="item">
                                                 <div class="product-img">
                                                     <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}">
@@ -228,14 +257,17 @@
                                                         {{$SingleServiceTypeDetail->servicerequest_title}}
 
                                                         @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
-                                                            <span class="label label-info pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                                            <span class="pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
                                                             </span>
                                                         @endif
 
                                                         <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
                                                     </a> 
                                                     <span class="headerTitle" style="color:{{$backgroundColor}}">
-                                                        {{$status}} 
+                                                        {{$status}}
+                                                    </span>
+                                                    <span class="headerTitle">
+                                                        ( {{date('d-m-Y',strtotime($SingleServiceTypeDetail->created_at))}} )
                                                     </span>
                                                     <span class="product-description">
                                                         {{$SingleServiceTypeDetail->customer_name}}
@@ -317,6 +349,23 @@
                     $("#closededRequest").html(data.closededRequest);
                 }
             });
+        }
+
+        function getRequestList(type) {
+            
+            var date = $('#dateRangeFilter').val();
+            var SelectedCompanyId = $('select#companyDropdown option:selected').val();
+            
+            var dates = date.split(" - ");
+            var startDate = dates[0];
+            var endDate = dates[1];
+           
+            $('#startDate_'+type).val(startDate);
+            $('#endDate_'+type).val(endDate);
+            $('#SelectedCompanyId_'+type).val(SelectedCompanyId);
+            $('#type_'+type).val(type);
+
+            $('#'+type).submit();
         }
     </script>
 @stop

@@ -205,6 +205,7 @@
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
+                            <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_action')</th>
                             
@@ -235,6 +236,7 @@
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <!-- <th>@lang('quickadmin.service-request.fields.amount')</th> -->
+                            <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_action')</th>
                         </tr>
@@ -258,6 +260,7 @@
                             <th>@lang('quickadmin.service-request.fields.service-center')</th>
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
+                            <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_paid')</th>
                             <th>@lang('quickadmin.qa_action')</th>
@@ -353,6 +356,7 @@
                     /*{ "data": "service_center","name": "service_center" },*/
                     { "data": "product","name": "product" },
                     { "data": "amount","name": "amount" },
+                    { "data": "created_at","name": "created_at" },
                     { "data": "request_status","name": "request_status" },
                     { "data": "action" }
                 ],
@@ -392,8 +396,12 @@
                     "targets":   5
                 },
                 {
-                    "orderable": false,
+                    "class": "text-center",
                     "targets":   6
+                },
+                {
+                    "orderable": false,
+                    "targets":   7
                 }]
             });
             
@@ -471,6 +479,7 @@
                     { "data": "service_type" },
                     { "data": "product" },
                     // { "data": "amount" },
+                    { "data": "created_at" },
                     { "data": "request_status" },
                     { "data": "action" }
                 ],
@@ -489,14 +498,12 @@
                 {
                     "class": "text-center",
                     "targets":   5
-                },
-                // {
-                //     "class": "text-center",
-                //     "targets":   6
-                // },
-                {
-                    "orderable": false,
+                },{
+                    "class": "text-center",
                     "targets":   6
+                },{
+                    "orderable": false,
+                    "targets":   7
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },
@@ -600,6 +607,7 @@
                     { "data": "service_center" },
                     { "data": "product" },
                     { "data": "amount" },
+                    { "data": "created_at" },
                     { "data": "request_status" },
                     { "data": "amount_paid" },
                     { "data": "action" }
@@ -631,8 +639,12 @@
                     "class": "text-center",
                     "targets":   9
                 },{
-                    "orderable": false,
+                    "orderable": true,
                     "targets":   10,
+                    "searchable": false
+                },{
+                    "orderable": false,
+                    "targets":   11,
                     "searchable": false
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
