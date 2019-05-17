@@ -166,15 +166,12 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardDataByType(Request $request)
     {
-    //    echo "<pre>";
-    //    print_r($request->all());
-    //    echo "</pre>";
-    //    exit();
        
         $todayDate = date('Y-m-d');
         $startDate = date('Y-m-d',strtotime($request->startDate));
         $endDate = date('Y-m-d',strtotime($request->endDate));
         $type = $request->type;
+        $companyId = $request->SelectedCompanyId;
         $typeTitle = '';
         $dataByType = (object)array();
         $Status = 0;
@@ -186,8 +183,8 @@ class AdminDashboardController extends Controller
         {
             $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
         }else{
-            if($request->SelectedCompanyId != 'all'){
-                    $ServiceCount->where('service_requests.company_id',$request->SelectedCompanyId);
+            if($companyId != 'all'){
+                    $ServiceCount->where('service_requests.company_id',$companyId);
             }
         }
         
@@ -241,11 +238,62 @@ class AdminDashboardController extends Controller
         ->whereIn('service_requests.service_type',array('repair','installation'))
         ->orderBy('service_requests.created_at','DESC');
         
+        // if($request->ajax()){
+
+        //     $ServiceCount = ServiceRequest::select('service_requests.*',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)),LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'));
+
+        //     if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        //     {
+        //         $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
+        //     }else{
+        //         if($request->companyId != 'all'){
+        //                 $ServiceCount->where('service_requests.company_id',$request->companyId);
+        //         }
+        //     }
+            
+       
+        //     if($type == "installation_today"){
+
+        //         $ServiceCount->where('service_requests.service_type','=','installation')
+        //         ->where('service_requests.status','!=','Closed')
+        //         ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request->startDate."' AND '".$request->endDate."'");
+
+        //     }elseif ($type == "repair_today") {
+        //         $ServiceCount->where('service_requests.service_type','=','repair')
+        //         ->where('service_requests.status','!=','Closed')
+        //         ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request->startDate."' AND '".$request->endDate."'");
+
+        //     }elseif ($type == "delayed_request") {
+
+        //         $ServiceCount->where('service_requests.status','!=','Closed')
+        //         ->whereRaw("DATE_FORMAT(service_requests.completion_date, '%Y-%m-%d') < '".$request->todayDate."'");
+
+        //     }elseif ($type == "closed_request") {
+
+        //         $ServiceCount->where('service_requests.status','=','Closed')
+        //         ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$request->todayDate."'");
+        //     }
+        //     $ServiceCount->join('customers','service_requests.customer_id','=','customers.id')
+        //     ->join('products','service_requests.product_id','=','products.id')
+        //     ->whereIn('service_requests.service_type',array('repair','installation'))
+        //     ->orderBy('service_requests.created_at','DESC');
+
+        //     $ServiceCount->limit(10)->offset($request->limitStart);
+
+        // }else{
+            // $ServiceCount->limit(10);
+        // }
         $dataByType = $ServiceCount->get();
-        
+
         $enum_status_color = ServiceRequest::$enum_status_color_code;
 
-        return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle'));
+        // if($request->ajax()){
+        //     return response()->json(['dataByType' => $dataByType,
+        //     'enum_status_color' => $enum_status_color]);
+        // }else{
+        //     $ServiceCount->limit(10);
+        // }
+        return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate'));
         
     }
 

@@ -104,6 +104,7 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
     // service request filter
     Route::get('/clearRequestFilterAjax','Admin\ServiceRequestsController@clearRequestFilterAjax');
     Route::get('/getFilterCompanyDetails','Admin\ServiceRequestsController@getFilterCompanyDetails');
+    Route::get('/getFilterStatusDetails','Admin\ServiceRequestsController@getFilterStatusDetails');
     Route::get('/getFilterTechnicians','Admin\ServiceRequestsController@getFilterTechnicians');
     
     Route::get('service_request_accept/{id}', ['uses' => 'Admin\ServiceRequestsController@acceptServiceRequest', 'as' => 'service_request.accept']);

@@ -69,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row form-group">
+                <div class="row">
                     <div>
                         <div class="col-md-4">
                             <div class="row"> 
@@ -93,20 +93,38 @@
                                         {!! Form::text('technician_name', auth()->user()->name, ['class' => 'form-control', 'placeholder' => 'Service Center Name','disabled' => '']) !!}
                                         {!! Form::hidden('filter_technician', auth()->user()->id, ['class' => 'form-control', 'id' => 'filter_technician']) !!}
                                     @else
-                                        {!! Form::select('filter_technician', $technicians, ($request->session()->has('filter_technician'))? $request->session()->get('filter_technician'):'', ['class' => 'form-control select2', 'id' => 'filter_technician']) !!}
+                                        {!! Form::select('filter_technician', $technicians, ($request->session()->has('filter_technician'))? $request->session()->get('filter_technician'):'', ['class' => 'form-control select2', 'id' => 'filter_technician','style' => 'width: 100%;']) !!}
                                     @endif
                                 </div>
                             </div> 
                         </div>
                     </div>
-                    <div class="col-md-4 pull-right">
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
                         <div class="row">
-                            <div class="col-xs-12">
-                                <label class="control-label"></label>
-                                <p class="paddingFormele text-right">
-                                    <a href="{{url('/admin/clearRequestFilterAjax')}}"  id="clearRequestFilter" class="btn btn-danger">@lang('quickadmin.service-request.clear-filter')</a>
-                                    
-                                </p>
+                            <div class="col-md-4 col-xs-12">
+                                {!! Form::label('request_status', trans('quickadmin.service-request.fields.status').'', ['class' => 'control-label']) !!}
+
+                                {!! Form::select('request_status', $request_stauts, ($request->session()->has('filter_request_status'))? $request->session()->get('filter_request_status'):'', ['class' => 'form-control select2','onchange' => 'requestStatusFilter(this)', 'id' => 'filter_request_status','style' => 'width:100%']) !!}
+
+                            </div>
+
+                            <div class="col-md-4 col-xs-12">
+                                {!! Form::label('request_type', trans('quickadmin.service-request.fields.service-type').'', ['class' => 'control-label']) !!}
+
+                                {!! Form::select('request_type', $request_type, ($request->session()->has('filter_request_type'))? $request->session()->get('filter_request_type'):'', ['class' => 'form-control select2','onchange' => 'requestStatusFilter(this)', 'id' => 'filter_request_type','style' => 'width:100%']) !!}
+                            </div>
+
+                            <div class="col-md-4 col-xs-12 pull-right">
+                                <!-- <div class="row"> -->
+                                    <!-- <div class="col-xs-12"> -->
+                                        <label class="control-label"></label>
+                                        <p class="paddingFormele text-right">
+                                            <a href="{{url('/admin/clearRequestFilterAjax')}}"  id="clearRequestFilter" class="btn btn-danger">@lang('quickadmin.service-request.clear-filter')</a>
+                                        </p>
+                                    <!-- </div> -->
+                                <!-- </div> -->
                             </div>
                         </div>
                     </div>
@@ -152,33 +170,55 @@
                         @endif
                     </div>
                 </div>
-                    @if((auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')))
-                    <div class="row form-group">
-                        <div class="col-md-4 filterTechnicianDiv">
-                       
-                            <div class="row"> 
-                                <div class="col-xs-12">
-                                    {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-4 col-xs-12">
+                                {!! Form::label('request_status', trans('quickadmin.service-request.fields.status').'', ['class' => 'control-label']) !!}
 
-                                    {!! Form::select('filter_technician', $technicians, ($request->session()->has('filter_technician'))? $request->session()->get('filter_technician'):'', ['class' => 'form-control select2', 'id' => 'filter_technician','style' => 'width:100%']) !!}
-                                    
-                                </div>
-                            </div> 
+                                {!! Form::select('request_status', $request_stauts, ($request->session()->has('filter_request_status'))? $request->session()->get('filter_request_status'):'', ['class' => 'form-control select2','onchange' => 'requestStatusFilter(this)', 'id' => 'filter_request_status','style' => 'width:100%']) !!}
+
+                            </div>
+
+                            <div class="col-md-4 col-xs-12">
+                                {!! Form::label('request_type', trans('quickadmin.service-request.fields.service-type').'', ['class' => 'control-label']) !!}
+
+                                {!! Form::select('request_type', $request_type, ($request->session()->has('filter_request_type'))? $request->session()->get('filter_request_type'):'', ['class' => 'form-control select2','onchange' => 'requestStatusFilter(this)', 'id' => 'filter_request_type','style' => 'width:100%']) !!}
+                            </div>
                         </div>
-                        <div class="col-md-8">
+                    </div>
+                </div>
+                @if((auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')))
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12">
                             <div class="row">
-                                <div class="col-xs-12">
-                                    <label class="control-label"></label>
-                                    <p class="paddingFormele text-right">
-                                        <a href="{{url('/admin/clearRequestFilterAjax')}}"  id="clearRequestFilter" class="btn btn-danger">@lang('quickadmin.service-request.clear-filter')</a>
-                                        
-                                    </p>
+                                <div class="col-md-4 filterTechnicianDiv">
+                            
+                                    <div class="row"> 
+                                        <div class="col-xs-12">
+                                            {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
+
+                                            {!! Form::select('filter_technician', $technicians, ($request->session()->has('filter_technician'))? $request->session()->get('filter_technician'):'', ['class' => 'form-control select2', 'id' => 'filter_technician','style' => 'width:100%']) !!}
+                                            
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <label class="control-label"></label>
+                                            <p class="paddingFormele text-right">
+                                                <a href="{{url('/admin/clearRequestFilterAjax')}}"  id="clearRequestFilter" class="btn btn-danger">@lang('quickadmin.service-request.clear-filter')</a>
+                                                
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @endif
                 @endif
+            @endif
             </div>
         </div>
     </div>
@@ -344,6 +384,8 @@
                             data.product = $('#filter_product').val();
                             data.serviceCenter = $('#filter_service_center').val();
                             data.technician = $('#filter_technician').val();
+                            data.status = $('#filter_request_status').val();
+                            data.type = $('#filter_request_type').val();
                             data._token = "{{csrf_token()}}";
 
                         },
@@ -466,6 +508,8 @@
                             // data.company = $('#filter_company').val();
                             data.customer = $('#filter_customer').val();
                             data.product = $('#filter_product').val();
+                            data.status = $('#filter_request_status').val();
+                            data.type = $('#filter_request_type').val();
                             data._token = "{{csrf_token()}}";
 
                         },
@@ -589,6 +633,8 @@
                         // "data":{"_token": "{{csrf_token()}}"}
                         "data":function(data) {
                             data.company = $('#filter_company').val();
+                            data.status = $('#filter_request_status').val();
+                            data.type = $('#filter_request_type').val();
                             data.customer = $('#filter_customer').val();
                             data.product = $('#filter_product').val();
                             data.serviceCenter = $('#filter_service_center').val();
@@ -703,6 +749,10 @@
                 }
             });
             
+        }
+
+        function requestStatusFilter(ele) {
+            tableServiceRequest.draw();
         }
 
         function requestTechnicianFilter(ele) {

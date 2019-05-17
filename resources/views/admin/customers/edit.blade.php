@@ -97,7 +97,7 @@
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('email', trans('quickadmin.customers.fields.email').'*', ['class' => 'control-label']) !!}
-                    {!! Form::email('email', old('email'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::email('email', old('email'), ['class' => 'form-control', 'placeholder' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('email'))
                         <p class="help-block">

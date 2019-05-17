@@ -207,8 +207,10 @@ class ServiceRequestsController extends Controller
             }
             
         }
+        $request_stauts = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_status;
+        $request_type = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_service_type;
 
-        return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians'));
+        return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type'));
 
         // $data=array('subject' => 'Request Creation Receive',
         //             'user_name' => 'Hinal patel'
@@ -392,7 +394,27 @@ class ServiceRequestsController extends Controller
             {
                 $request->session()->forget('filter_technician');
             }
+            
+            if(!empty($request->input('status')))
+            {   
+                $request->session()->put('filter_request_status', $request['status']);
+                $service_requestsQuery->Where('service_requests.status', $request['status']);
+            }
+            else
+            {
+                $request->session()->forget('filter_request_status');
+            }
 
+            if(!empty($request->input('type')))
+            {   
+                $request->session()->put('filter_request_type', $request['type']);
+                $service_requestsQuery->Where('service_requests.service_type', $request['type']);
+            }
+            else
+            {
+                $request->session()->forget('filter_request_type');
+            }
+           
             //Search from table
             if(!empty($request->input('search.value')))
             { 
@@ -475,7 +497,7 @@ class ServiceRequestsController extends Controller
                 }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
 
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
-                    $tableField['amount'] = '<span> <i class="fa fa-rupee"></i>'.number_format($SingleServiceRequest->amount,2).'</span>';
+                    $tableField['amount'] = '<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
 
                 }else{
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
@@ -491,7 +513,7 @@ class ServiceRequestsController extends Controller
                         // $tableField['checkbox'] = '<input type="checkbox" class="dt-body-center" style="text-align: center;" name="checkbox_'.$key.'">';
                         $tableField['checkbox'] = '';
                     }
-                    $tableField['amount'] ='<span> <i class="fa fa-rupee"></i>'.number_format($SingleServiceRequest->amount,2).'</span>';
+                    $tableField['amount'] ='<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
                 }
                 $tableField['sr_no'] = 'JW'.sprintf("%04d", $SingleServiceRequest->id);
                 $tableField['customer'] = $SingleServiceRequest->firstname;
@@ -2057,7 +2079,7 @@ class ServiceRequestsController extends Controller
     public function clearRequestFilterAjax(Request $request)
     {
         // clear service request list filter dropdown
-        $request->session()->forget(['filter_company', 'filter_customer', 'filter_product', 'filter_service_center', 'filter_technician']);
+        $request->session()->forget(['filter_company', 'filter_customer', 'filter_product', 'filter_service_center', 'filter_technician','filter_request_status','filter_request_type']);
         
         return redirect()->route('admin.service_requests.index');
     }
@@ -2123,6 +2145,7 @@ class ServiceRequestsController extends Controller
         echo json_encode($data);
         exit;
     }
+
     public function getFilterTechnicians(Request $request)
     {
         

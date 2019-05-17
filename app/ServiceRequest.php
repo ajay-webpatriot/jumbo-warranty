@@ -273,6 +273,14 @@ class ServiceRequest extends Model
             {   
                  $service_requestsQuery->Where('service_requests.technician_id', $request['technician']);
             }
+            if(!empty($request['status']))
+            {   
+                 $service_requestsQuery->Where('service_requests.status', $request['status']);
+            }
+            if(!empty($request['type']))
+            {   
+                 $service_requestsQuery->Where('service_requests.service_type', $request['type']);
+            }
 
             //Search from table
             if(!empty($request['search']['value']))
@@ -304,6 +312,7 @@ class ServiceRequest extends Model
                     }
 
                     $query->orWhere('customers.firstname', 'like', '%' . $searchVal . '%');
+                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
                     $query->orWhere('products.name', 'like', '%' . $searchVal . '%');
                     // $query->orWhere('service_requests.amount', 'like', '%' . $searchVal . '%');
                     $query->orWhere('service_requests.service_type', 'like', '%' . $searchVal . '%');
