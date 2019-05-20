@@ -255,7 +255,7 @@ $(document).ready(function(){
 			// //    			// }
 
 						var company_id = $("#company_id").val();
-						alert(company_id);
+						// alert(company_id);
 
 						var selected = "";
 						if(company_id == data.last_inserted_company_id){

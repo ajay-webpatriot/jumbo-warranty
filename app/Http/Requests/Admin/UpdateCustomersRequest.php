@@ -29,13 +29,13 @@ class UpdateCustomersRequest extends FormRequest
             // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'phone' => 'required|min:11|max:11',
             // 'email' => 'required|email|unique:customers,email,'.$this->route('customer').',id,deleted_at,NULL',
-            'email' => 'nullable|email|unique:customers,email,'.$this->route('customer').',id,deleted_at,NULL',
+            'email' => 'nullable|email,'.$this->route('customer').',id,deleted_at,NULL',
             'company_id' => 'required',
             'address_1' => 'required',
             'city' => 'required',
             'state' => 'required',
             'zipcode' => 'required|min:6|max:6',
-            'status' => 'required',
+            // 'status' => 'required',
         ];
     }
 }

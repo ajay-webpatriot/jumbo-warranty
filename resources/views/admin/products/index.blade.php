@@ -35,7 +35,7 @@
 
                         <th>@lang('quickadmin.products.fields.name')</th>
                         <th>@lang('quickadmin.products.fields.category')</th>
-                        <th>@lang('quickadmin.products.fields.price')</th>
+                        <!-- <th>{{-- @lang('quickadmin.products.fields.price') --}}</th> -->
                         <th>@lang('quickadmin.products.fields.status')</th>
                         {{-- @if( request('show_deleted') == 1 )
                         <th>&nbsp;</th>
@@ -56,7 +56,7 @@
 
                                 <td field-key='name'>{{ $product->name }}</td>
                                 <td field-key='category'>{{ $product->category->name or '' }}</td>
-                                <td class="text-right" field-key='price'> <i class="fa fa-rupee"></i> {{ number_format($product->price,2) }}</td>
+                                <!-- <td class="text-right" field-key='price'> <i class="fa fa-rupee"></i> {{-- number_format($product->price,2) --}}</td> -->
                                 <td field-key='status'>{{ $product->status }}</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>

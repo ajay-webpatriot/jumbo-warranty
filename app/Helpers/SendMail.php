@@ -111,7 +111,10 @@ class SendMail
                                   ->where('status','Active')
                                   ->get()->first();
         if(!empty($customer)){
-    		  $customer_email=$customer->email;
+          if($customer->email != ''){
+            $customer_email=$customer->email;
+          }
+    		  
         }
 
     		$admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
@@ -181,7 +184,10 @@ class SendMail
        
         $customer= \App\Customer::where('id',$service_request->customer_id)->where('status','Active')->get()->first();
         if(!empty($customer)){
-          $customer_email=$customer->email;
+          if($customer->email != ''){
+            $customer_email=$customer->email;
+          }
+          
         }
         
 

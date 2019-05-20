@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="col-md-12 col-sm-12">
-                        {!! Form::label('email', trans('quickadmin.customers.fields.email').'*', ['class' => 'control-label']) !!}
+                        {!! Form::label('email', trans('quickadmin.customers.fields.email').'', ['class' => 'control-label']) !!}
                         {!! Form::email('email', old('email'), ['class' => 'form-control', 'placeholder' => '', '' => '']) !!}
                         <p class="help-block"></p>
                         @if($errors->has('email'))
