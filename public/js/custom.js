@@ -200,10 +200,11 @@ $(document).ready(function(){
 		       			alert(data.message);
 		       			$('#company-modal').modal('hide');
 		       			$("#company_id").html(data.companyOptions);
-		       			$("#company_id").trigger('change');
-		       			// if($("#company_id option[value='"+data.selectedCompany+"']").length != 0){
-			       		// 	$("#company_id").val(data.selectedCompany).trigger('change');
-		       			// }
+						// $("#company_id").trigger('change');
+						   
+		       			if($("#company_id option[value='"+data.last_inserted_company_id+"']").length != 0){
+			       			$("#company_id").val(data.last_inserted_company_id).trigger('change');
+		       			}
 		       		}
 		       		else
 		       		{
@@ -242,14 +243,27 @@ $(document).ready(function(){
 	        	data:form.serialize(),
 		       	dataType: "json",
 		       	success:function(data) {
+					console.log(data);
+					
 		       		if(data.success)
 		       		{
 		       			alert(data.message);
 		       			$('#customer-modal').modal('hide');
-		    //    			if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID || $("#loggedUser_role_id").val() == SUPER_ADMIN_ROLE_ID)
-						// {
-		       				$("#company_id").trigger('change');
-		       			// }
+		    // // //    			if($("#loggedUser_role_id").val() == ADMIN_ROLE_ID || $("#loggedUser_role_id").val() == SUPER_ADMIN_ROLE_ID)
+			// // 			// {
+		    //    				$("#company_id").trigger('change');
+			// //    			// }
+
+						var company_id = $("#company_id").val();
+						alert(company_id);
+
+						var selected = "";
+						if(company_id == data.last_inserted_company_id){
+
+							selected = "selected";
+
+							$('select#customer_id').append('<option '+selected+' value="'+data.last_inserted_customer_id+'" >'+data.last_inserted_customer_name+'</option>');
+						}
 		       		}
 		       		else
 		       		{
@@ -291,8 +305,15 @@ $(document).ready(function(){
 		       		{
 		       			alert(data.message);
 		       			$('#service-center-modal').modal('hide');
-		       			$("#service_center_id").html(data.serviceCenterOptions).trigger("change");
-		       			$("#customer_id").select2().trigger("change");
+						// $("#service_center_id").html(data.serviceCenterOptions).trigger("change");
+						$("#service_center_id").html(data.serviceCenterOptions);
+
+						$("#customer_id").select2().trigger("change");
+
+						if($("#service_center_id option[value='"+data.last_inserted_service_center_id+"']").length != 0){
+
+							$("#service_center_id").val(data.last_inserted_service_center_id).trigger('change');
+						}
 		       		}
 		       		else
 		       		{
@@ -333,9 +354,17 @@ $(document).ready(function(){
 		       	success:function(data) {
 		       		if(data.success)
 		       		{
-		       			alert(data.message);
-		       			$('#technician-modal').modal('hide');
-		       			$("#service_center_id").trigger("change");
+						$('#technician-modal').modal('hide');
+						// $("#service_center_id").trigger("change");
+						var service_centerId = $("#service_center_id").val();
+
+						var selected = "";
+						if(service_centerId == data.last_inserted_serviceCenter_id){
+
+							selected = "selected";
+
+							$('select#technician_id').append('<option '+selected+' value="'+data.last_inserted_technician_id+'" >'+data.last_inserted_technician_name+'</option>');
+						}
 		       		}
 		       		else
 		       		{
@@ -667,7 +696,6 @@ function quickadd(type){
 			},
 			dataType: "json",
 			success:function(data) {
-				
 				if(data.success == 1){
 					if(type == 'company'){
 						$('#renderCompanyHtml').html(data.html);

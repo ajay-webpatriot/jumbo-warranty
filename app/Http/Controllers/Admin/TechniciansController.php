@@ -356,7 +356,10 @@ class TechniciansController extends Controller
         {
             return response()->json(array(
                     'success' => true,
-                    'message' => 'Technician created successfully!'
+                    'message' => 'Technician created successfully!',
+                    'last_inserted_technician_id' => $user->id,
+                    'last_inserted_technician_name' => $user->name,
+                    'last_inserted_serviceCenter_id' => $user->service_center_id
                 ));
         }
         else{

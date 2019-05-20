@@ -1886,8 +1886,8 @@ class ServiceRequestsController extends Controller
         {
             $customers = \App\Customer::where('company_id',$details['companyId'])
                                 ->where('status','Active')
-                                // ->orderby('firstname')
-                                ->orderby('id','DESC')
+                                ->orderby('firstname')
+                                // ->orderby('id','DESC')
                                 ->get();
 
             $product_parts = \App\AssignPart::where('company_id',$details['companyId'])
@@ -1910,12 +1910,12 @@ class ServiceRequestsController extends Controller
             {
                 foreach($customers as $key => $value)
                 {   
-                    $selected = '';
-                    if($key == 0){
-                        $selected = 'selected';
-                    }
+                    // $selected = '';
+                    // if($key == 0){
+                    //     $selected = 'selected';
+                    // }
 
-                    $data['custOptions'].="<option value='".$value->id."' $selected>". ucfirst($value->firstname).' '.ucfirst($value->lastname)."</option>";   
+                    $data['custOptions'].="<option value='".$value->id."'>". ucfirst($value->firstname).' '.ucfirst($value->lastname)."</option>";   
                 }
             } 
             if(count($product_parts) > 0)
@@ -2049,10 +2049,10 @@ class ServiceRequestsController extends Controller
         $data['options']="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
         if($details['serviceCenterId'] != "")
         {
-            // $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-            //             ->orderby('name');
             $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-                        ->orderby('id','DESC');
+                        ->orderby('name');
+            // $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+                        // ->orderby('id','DESC');
 
             $query->where('service_center_id',$details['serviceCenterId']);
             $query->where('status','Active');
@@ -2062,11 +2062,11 @@ class ServiceRequestsController extends Controller
             {
                 foreach($technicians as $key => $value)
                 {
-                    $selected = '';
-                    if($key == 0){
-                        $selected = 'selected';
-                    }
-                    $data['options'].="<option value='".$value->id."' $selected>".$value->name."</option>";
+                    // $selected = '';
+                    // if($key == 0){
+                    //     $selected = 'selected';
+                    // }
+                    $data['options'].="<option value='".$value->id."'>".$value->name."</option>";
                     
                 }
                 

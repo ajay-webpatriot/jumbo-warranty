@@ -380,7 +380,10 @@ class CustomersController extends Controller
                     'success' => true,
                     'message' => 'Customer created successfully!',
                     'custOptions' => $custOptions,
-                    'selectedCustomer' => $customer->id
+                    // 'selectedCustomer' => $customer->id,
+                    'last_inserted_company_id' => $customer->company_id,
+                    'last_inserted_customer_id' => $customer->id,
+                    'last_inserted_customer_name' => ucfirst($customer->firstname).' '.ucfirst($customer->lastname)
                 ));
         }
         else{
