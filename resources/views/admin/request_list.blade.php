@@ -65,7 +65,7 @@
 
                     </ul>
                 </div>
-                <span id="loading">Loading Please wait...</span>
+                <!-- <span id="loading">Loading Please wait...</span> -->
             </div>
         </div>
     </div>
