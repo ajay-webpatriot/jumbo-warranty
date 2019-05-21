@@ -697,7 +697,6 @@
                                                                         <span class="fa fa-rupee"></span>
                                                                     </label>
                                                                     {!! Form::text('transportation_charge',number_format($service_request->transportation_charge,2,'.',''), ['class' => 'form-control pull-right text-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
-                                                                    
                                                                 </div>
 
                                                             @else
@@ -706,8 +705,10 @@
 
                                                                 {{-- !! Form::label('',number_format($service_request->transportation_charge,2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount']) !! --}}
                                                             
-                                                                {{-- !! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !! --}}
+                                                                {!! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
                                                             @endif
+                                                        </div >
+                                                        <div class="col-md-12 col-xs-12">
                                                             {!! Html::decode(Form::label('', '( <i class="fa fa-rupee"></i> '.number_format($service_request->km_charge,2).' per km )',['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge'])) !!}
                                                         </div>
                                                     </div>
@@ -777,7 +778,7 @@
                                                                 {!! Form::text('existingAdditional_charge[]', $service_request['additional_charges']['option'][$additional_charge_title_key], ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','required' => 'required','id' => 'existingAdditional_charge_'.$i,'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
 
-                                                            <a class="text-danger pull-right" onclick='removeAdditionalChargeFor({{$i}});'>Remove</a>
+                                                            <a class="text-danger pull-right removelink" onclick='removeAdditionalChargeFor({{$i}});'>Remove</a>
 
                                                             <p class="help-block addamountError"></p>
                                                             @if($errors->has('existingAdditional_charge'))
@@ -818,8 +819,6 @@
                                                                 {!! Form::text('existingAdditional_charge[]', old('existingAdditional_charge[]'), ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','required' => 'required','id' => 'existingAdditional_charge_1','onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
 
-                                                            <a class="text-info pull-right" onclick='addExistingAdditional_charge();'>Add more</a>
-
                                                             <p class="help-block addamountError"></p>
                                                             @if($errors->has('existingAdditional_charge'))
                                                             <p class="help-block">
@@ -838,7 +837,7 @@
                                                 
                                             <div class="row">
                                                 <div class="col-md-12 col-xs-12">
-                                                    <a class="text-info pull-right" onclick='addExistingAdditional_charge();'>Add more</a>
+                                                    <a class="text-info pull-right addlink" onclick='addExistingAdditional_charge();'>Add more</a>
                                                 </div>
                                             </div>  
                                                 
@@ -1207,6 +1206,13 @@
                 $("#formServiceRequest").find("#selectbtn-parts").hide();
                 $("#formServiceRequest").find("#deselectbtn-parts").hide();
                 $("#formServiceRequest").find(".btn-quick-add").hide();
+                
+                $(".removelink").each(function() {
+                        $(this).hide();
+                });
+                $(".addlink").each(function(e) {
+                    $(this).hide();
+                });
             }
             else
             {
@@ -1227,6 +1233,13 @@
                     $("#formServiceRequest").find("#selectbtn-parts").hide();
                     $("#formServiceRequest").find("#deselectbtn-parts").hide();
                     $("#formServiceRequest").find("#quick_add_customer").hide();
+
+                    $(".removelink").each(function() {
+                        $(this).hide();
+                    });
+                    $(".addlink").each(function(e) {
+                        $(this).hide();
+                    });
                 }
                 else if({{auth()->user()->role_id}} == TECHNICIAN_ROLE_ID)
                 {
@@ -1248,6 +1261,13 @@
                     $("#formServiceRequest").find("#selectall-parts").prop("disabled", false);
                     $("#formServiceRequest").find("#status").prop("disabled", false);
                     $("#formServiceRequest").find("#quick_add_customer").hide();
+
+                    $(".removelink").each(function() {
+                        $(this).hide();
+                    });
+                    $(".addlink").each(function(e) {
+                        $(this).hide();
+                    });
 
 
                     // $("#adavance_amount").prop("readonly", false);
