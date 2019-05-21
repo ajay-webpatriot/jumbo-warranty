@@ -7,7 +7,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-primary">
+            <div class="box box-{{ $color }}">
 
                 <div class="box-header with-border scroll text-center" data-toggle="collapse" href="#collapseRecentServiceRequests">
                     <h3 class="box-title"> {{ $typeTitle }} </h3>

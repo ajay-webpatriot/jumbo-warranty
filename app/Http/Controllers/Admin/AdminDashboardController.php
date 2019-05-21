@@ -175,6 +175,7 @@ class AdminDashboardController extends Controller
         $typeTitle = '';
         $dataByType = (object)array();
         $Status = 0;
+        $color = '';
        
         $ServiceCount = ServiceRequest::select('service_requests.*',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
         LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'));
@@ -192,6 +193,7 @@ class AdminDashboardController extends Controller
         if($type == "installation_today"){
 
             $typeTitle = 'TOTAL INSTALLATION REQUESTS';
+            $color = 'info';
 
             $ServiceCount->where('service_requests.service_type','=','installation')
             ->where('service_requests.status','!=','Closed')
@@ -205,6 +207,7 @@ class AdminDashboardController extends Controller
         }elseif ($type == "repair_today") {
 
             $typeTitle = 'TOTAL SERVICE REQUESTS';
+            $color = 'danger';
 
             $ServiceCount->where('service_requests.service_type','=','repair')
             ->where('service_requests.status','!=','Closed')
@@ -216,6 +219,7 @@ class AdminDashboardController extends Controller
         }elseif ($type == "delayed_request") {
             
             $typeTitle = 'TOTAL DELAYED REQUESTS FROM TODAY';
+            $color = 'success';
 
             $ServiceCount->where('service_requests.status','!=','Closed')
             ->whereRaw("DATE_FORMAT(service_requests.completion_date, '%Y-%m-%d') < '".$todayDate."'");
@@ -226,6 +230,7 @@ class AdminDashboardController extends Controller
         }elseif ($type == "closed_request") {
 
             $typeTitle = 'TOTAL REQUESTS CLOSED BY TODAY';
+            $color = 'primary';
 
             $ServiceCount->where('service_requests.status','=','Closed')
             ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
@@ -293,7 +298,7 @@ class AdminDashboardController extends Controller
         // }else{
         //     $ServiceCount->limit(10);
         // }
-        return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate'));
+        return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'));
         
     }
 
