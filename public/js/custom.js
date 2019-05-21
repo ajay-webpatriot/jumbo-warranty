@@ -37,6 +37,7 @@ $(document).ready(function(){
 	});
 	$(document).on("change","#company_id",function(evt)
 	{
+		$("#product_error").html('');
 		// get technician according to service center for service request 
 		var companyId = $(this).val();
 		$(".custAddress").html('');
@@ -48,11 +49,24 @@ $(document).ready(function(){
 	       	},
 	       	dataType: "json",
 	       	success:function(data) {
-	       		$(".custDiv").show();
-	       		$(".custDiv").find(".select2").select2();
-	       		$("#customer_id").html(data.custOptions);
-	       		$("#selectall-parts").html(data.partOptions);
-	       		$("#product_id").html(data.productOptions);
+				   
+				if(data.no_products == 1){
+					
+					$("#product_error").html('<p>There are no products for this company.<a href="'+APP_URL+'/admin/assign_products/create'+'" target="_blank"> Click here to assign.</a> </p>');
+
+					$(".custDiv").hide();
+					$("#customer_id").html('');
+					$("#selectall-parts").html('');
+					$("#product_id").html('');
+					return false;
+				}else{
+					$(".custDiv").show();
+					$(".custDiv").find(".select2").select2();
+					$("#customer_id").html(data.custOptions);
+					$("#selectall-parts").html(data.partOptions);
+					$("#product_id").html(data.productOptions);
+				}
+	       		
 	       	}
 	    });
 	});
@@ -637,7 +651,7 @@ function getTransporationCharge() {
 function getAssignedProducts(ele) {
 	
 	var companyId = $(ele).val();
-
+	alert(companyId);
 	if(companyId != "")
 	{
 

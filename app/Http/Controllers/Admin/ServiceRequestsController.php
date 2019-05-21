@@ -1936,6 +1936,9 @@ class ServiceRequestsController extends Controller
                     //     }
                     // }
                 }   
+            }else{
+                echo json_encode(array('no_products' => 1));
+                exit;
             }
         }
         echo json_encode($data);

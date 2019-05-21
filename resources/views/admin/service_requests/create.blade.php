@@ -67,6 +67,7 @@
                                                     {{ $errors->first('company_id') }}
                                                 </p>
                                                 @endif
+                                                <span class="text-danger" id="product_error"></span>
                                             </div>
                                             <div class="col-sm-2 col-xs-3">
                                                 <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
