@@ -29,7 +29,7 @@ class UpdateCustomersRequest extends FormRequest
             // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'phone' => 'required|min:11|max:11',
             // 'email' => 'required|email|unique:customers,email,'.$this->route('customer').',id,deleted_at,NULL',
-            'email' => 'nullable|email,'.$this->route('customer').',id,deleted_at,NULL',
+            'email' => 'email|nullable',
             'company_id' => 'required',
             'address_1' => 'required',
             'city' => 'required',

@@ -600,7 +600,7 @@
                                                         <label class="input-group-addon" for="transportation_charge">
                                                             <span class="fa fa-rupee"></span>
                                                         </label>
-                                                        {!! Form::text('transportation_charge','', ['class' => 'form-control pull-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                        {!! Form::text('transportation_charge','', ['class' => 'form-control text-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                     </div>
 
                                                     @else

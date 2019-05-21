@@ -573,6 +573,8 @@
                                                     <div class="row">
                                                         <div class="col-md-12 col-xs-12">
                                                             {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format($service_request->service_charge,2),['class' => 'control-label lablemargin pull-right','readonly' => '','id' => 'lbl_service_charge'])) !!}
+
+                                                            {!! Form::hidden('service_charge', old('service_charge'), ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -611,6 +613,8 @@
                                                         <div class="col-md-12 col-xs-12">
                                                             {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format($service_request->installation_charge,2),['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge'])) !!}
 
+                                                            {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '','id' => 'installation_charge']) !!}
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -627,7 +631,7 @@
                                             {{-- !! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !! --}}
                                             
                                             <!-- installation charge hidden field -->
-                                            {{--!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !! --}}
+                                            {{-- !! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !! --}}
                                             <!-- <p class="help-block"></p>
                                             @if($errors->has('installation_charge'))
                                                 <p class="help-block">
@@ -693,6 +697,7 @@
                                                                         <span class="fa fa-rupee"></span>
                                                                     </label>
                                                                     {!! Form::text('transportation_charge',number_format($service_request->transportation_charge,2,'.',''), ['class' => 'form-control pull-right text-right', 'placeholder' => 'Charges for', 'id' => 'transportation_charge', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                                    
                                                                 </div>
 
                                                             @else
@@ -723,8 +728,6 @@
                                                     {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').':', ['class' => 'control-label']) !!}
                                                 </div>
                                             </div>
-
-                                            <div class="addnewDiv"></div>
                                             
                                             <?php
                                                    
@@ -773,21 +776,9 @@
                                                                 </label>
                                                                 {!! Form::text('existingAdditional_charge[]', $service_request['additional_charges']['option'][$additional_charge_title_key], ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','required' => 'required','id' => 'existingAdditional_charge_'.$i,'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
-                                                            <?php
-                                                                if($i == 1){
-                                                            ?>
-
-                                                            <a class="text-info pull-right" onclick='addExistingAdditional_charge();'>Add more</a>
-
-                                                            <?php
-                                                            }else{
-                                                            ?>
 
                                                             <a class="text-danger pull-right" onclick='removeAdditionalChargeFor({{$i}});'>Remove</a>
 
-                                                            <?php
-                                                            }
-                                                            ?>
                                                             <p class="help-block addamountError"></p>
                                                             @if($errors->has('existingAdditional_charge'))
                                                             <p class="help-block">
@@ -843,11 +834,28 @@
                                                 }
                                             ?>
 
+                                            <div class="addnewDiv"></div>
+                                                
                                             <div class="row">
+                                                <div class="col-md-12 col-xs-12">
+                                                    <a class="text-info pull-right" onclick='addExistingAdditional_charge();'>Add more</a>
+                                                </div>
+                                            </div>  
+                                                
+                                            <div class="row">
+                                                <?php
+                                                    $additional_charge_title_other = '';
+                                                    $additional_charges_other = 0;
+                                                    if(!empty($additional_charge_title)){
+                                                        $additional_charge_title_other = $additional_charge_title['other'];
+                                                        $additional_charges_other = $service_request['additional_charges']['other'];
+
+                                                    }
+                                                ?>
                                                 <div class="col-md-8 col-xs-7">
                                                     {!! Form::label('charges_for', trans('quickadmin.service-request.fields.charges_for').'', ['class' => 'control-label fontweight fontsize']) !!}
                                                 
-                                                    {!! Form::text('additional_charges_title',$additional_charge_title['other'], ['class' => 'form-control', 'placeholder' => 'Charges for', 'id' => 'additional_charges_title']) !!}
+                                                    {!! Form::text('additional_charges_title',$additional_charge_title_other, ['class' => 'form-control', 'placeholder' => 'Charges for', 'id' => 'additional_charges_title']) !!}
                                                         <p class="help-block"></p>
                                                         @if($errors->has('additional_charges_title'))
                                                             <p class="help-block">
@@ -865,7 +873,7 @@
                                                                 <label class="input-group-addon" for="additional_charges">
                                                                     <span class="fa fa-rupee"></span>
                                                                 </label>
-                                                                {!! Form::text('additional_charges',($service_request['additional_charges']['other'] > 0)?$service_request['additional_charges']['other']:'', ['class' => 'form-control text-right', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                                {!! Form::text('additional_charges',($additional_charges_other > 0?$additional_charges_other:''), ['class' => 'form-control text-right', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
                                                             </div>
 
                                                             <p class="help-block addamountError"></p>
@@ -910,10 +918,10 @@
                                                     {{-- !! Form::label('totalamount',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !! --}}
 
                                                     <!-- total amount hidden field -->
-                                                    {{-- !! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !! --}}
+                                                    {!! Form::hidden('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!}
 
-                                                    {{-- !! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !! --}}
-                                                    {{-- !! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !! --}}
+                                                    {!! Form::hidden('km_distance', old('km_distance'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_distance']) !!}
+                                                    {!! Form::hidden('km_charge', old('km_charge'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'km_charge']) !!}
                                                     <p class="help-block"></p>
                                                     @if($errors->has('amount'))
                                                         <p class="help-block">
@@ -957,7 +965,7 @@
 
                                 <!-- new add in else -->
 
-                                {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '']) !!}
+                                {!! Form::hidden('installation_charge', $service_request->installation_charge, ['class' => 'form-control', 'placeholder' => '', 'readonly' => '','id' => 'installation_charge']) !!}
 
                                 @if(auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID'))
 

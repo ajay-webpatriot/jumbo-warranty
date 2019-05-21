@@ -310,7 +310,7 @@ class CustomersController extends Controller
             'lastname' => 'required',
             'phone' => 'required|min:11|max:11',
             // 'email' => 'required|email|unique:customers,email,"",id,deleted_at,NULL',
-            'email' => 'nullable|email,"",id,deleted_at,NULL',
+            'email' => 'email|nullable',
             'company_id' => 'required',
             'address_1' => 'required',
             'city' => 'required',

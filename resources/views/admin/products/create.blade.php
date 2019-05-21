@@ -34,24 +34,24 @@
                     @endif
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('price', trans('quickadmin.products.fields.price').'*', ['class' => 'control-label']) !!}
+                    {{-- !! Form::label('price', trans('quickadmin.products.fields.price').'*', ['class' => 'control-label']) !! --}}
                     <div class="input-group">
                         <label class="input-group-addon" for="price">
                             <span class="fa fa-rupee"></span>
                         </label>
-                        {!! Form::text('price', old('price'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
+                        {{-- !! Form::text('price', old('price'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !! --}}
                     </div>
                     
                     <p class="help-block"></p>
-                    @if($errors->has('price'))
+                    {{-- @if($errors->has('price')) --}}
                         <p class="help-block">
-                            {{ $errors->first('price') }}
+                            {{-- $errors->first('price') --}}
                         </p>
-                    @endif
+                    {{-- @endif --}}
                 </div>
-            </div>
+            </div> -->
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('status', trans('quickadmin.products.fields.status').'*', ['class' => 'control-label']) !!}

@@ -431,7 +431,9 @@
                                                                 {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
 
                                                                 <!-- service charge value label -->
-                                                                {!! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge', 'style' => 'float:right;']) !!}
+                                                                {{-- !! Form::label('', number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge', 'style' => 'float:right;']) !! --}}
+
+                                                                {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format($service_request->service_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_service_charge','style' => 'float:right;'])) !!}
 
                                                             </div>
                                                         </div>
@@ -441,7 +443,9 @@
                                                                 {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').': ', ['class' => 'control-label lablemargin', 'style' => 'font-weight:bold;']) !!}
                                                                 
                                                                 <!-- installation charge value label -->
-                                                                {!! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge','style' => 'float:right;']) !!}
+                                                                {{-- !! Form::label('', number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge','style' => 'float:right;']) !! --}}
+
+                                                                {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format($service_request->installation_charge,2), ['class' => 'control-label lablemargin pull-right fontweight','id' => 'lbl_installation_charge','style' => 'float:right;'])) !!}
                                                                 
                                                             </div>
                                                         </div>
@@ -451,11 +455,15 @@
                                                                     {!! Form::label('transportation_charge', trans('quickadmin.service-request.fields.transportation-charge').':', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 
                                                                     <!-- total amount value label -->
-                                                                    {!! Form::label('', number_format(($service_request->transportation_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount','style' => 'float:right;']) !!}
+                                                                    {{-- !! Form::label('', number_format(($service_request->transportation_charge),2), ['class' => 'control-label pull-right', 'id' => 'lbl_trans_amount','style' => 'float:right;']) !! --}}
+
+                                                                    {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format(($service_request->transportation_charge),2), ['class' => 'control-label pull-right fontweight', 'id' => 'lbl_trans_amount','style' => 'float:right;'])) !!}
                                                             </div>
                                                             <div class="col-md-12"  style="width: 100%;float: left;">
 
-                                                                {!! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_trans_amount','style' => 'float:right;font-size:11px;']) !!}
+                                                                {{-- !! Form::label('', '('.number_format($service_request->km_charge,2).' rs per km)', ['class' => 'control-label pull-right fontsize', 'id' => 'lbl_trans_amount','style' => 'float:right;font-size:11px;']) !! --}}
+
+                                                                {!! Html::decode(Form::label('', '( <i class="fa fa-rupee"></i> '.number_format($service_request->km_charge,2).' per km)', ['class' => 'control-label pull-right fontsize fontweight', 'id' => 'lbl_trans_amount','style' => 'float:right;font-size:11px;'])) !!}
                                                             </div>
                                                         </div>
                                                         @endif
@@ -467,9 +475,11 @@
                                                                         {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').':', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                     </div>
                                                                 </div>
+
+                                                                @foreach($service_request['additional_charges_title']['option'] as $key => $additional_charges_title)
                                                                 <div class="row">
                                                                     <div class="col-sm-12">
-                                                                        @foreach($service_request->additional_charges_title as $key => $additional_charges_title)
+                                                                        
                                                                         <div class="pull-left" style="width:50%;float:left;">
                                                                         {{-- !! Form::label('', $service_request->additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !! --}}
 
@@ -480,12 +490,27 @@
 
                                                                         {{-- @foreach($service_request->additional_charges as $key => $additional_charges) --}}
                                                                         <div class="pull-right" style="float:right;">
+                                                                        <i class="fa fa-rupee"></i>  
                                                                             {{-- number_format($service_request->additional_charges,2) --}}
-                                                                            {{number_format($service_request->additional_charges[$key],2)}}
+                                                                            {{ number_format($service_request['additional_charges']['option'][$key],2) }}
                                                                         </div>
-                                                                         @endforeach
+                                                                         
                                                                     </div>
                                                                     
+                                                                </div>
+                                                                @endforeach
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="pull-left" style="width:50%;float:left;">
+                                                                            {!! Form::label('', $service_request['additional_charges_title']['other'].': ', ['class' => 'control-label fontsize', ]) !!}
+                                                                        </div>
+                                                                        <div class="pull-right" style="float:right;">
+                                                                            {{-- number_format($service_request->additional_charges,2) --}}
+                                                                            <i class="fa fa-rupee"></i> 
+                                                                            {{ number_format($service_request['additional_charges']['other'],2) }}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -500,7 +525,9 @@
                                                                     {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 
                                                                     <!-- total amount value label -->
-                                                                    {!! Form::label('',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount', 'style' => 'float:right;']) !!}
+                                                                    {{-- !! Form::label('',number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount', 'style' => 'float:right;']) !! --}}
+
+                                                                    {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format($service_request->amount,2), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount','style' => 'float:right;'])) !!}
                                                             </div>
                                                         </div>
                                                         

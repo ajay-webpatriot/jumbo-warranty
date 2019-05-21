@@ -19,7 +19,6 @@ class SendMail
       //       });
         $service_request = ServiceRequest::findOrFail($request_id);
         
-        
     		// $service_request=$service_request[0];
     		// echo "<pre>"; print_r ($service_request); echo "</pre>"; exit();
     		// echo $service_request->additional_charges;
@@ -28,23 +27,24 @@ class SendMail
 
           $additional_charge_array=json_decode($service_request['additional_charges']);
           $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
-
+         
           if(!empty($additional_charge_array->option)){
-            $additional_charge_title['option'] = '';
-            $additional_charges['option'] = '';
               foreach ($additional_charge_array->option as $OptionKey => $value) {
 
                   $AdditionalChargeTitle =  key((array)$value);
                   foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
                       if($AdditionalChargeTitle === $arr_val){
 
-                          $additional_charge_title['option'][$PreArrayKey] = $AdditionalChargeTitle;
-                          $additional_charges['option'][$PreArrayKey] = $value->$arr_val;
+                          $additional_charge_title['option'][$OptionKey] = $AdditionalChargeTitle;
+                          $additional_charges['option'][$OptionKey] = $value->$arr_val;
+                          // $additional_charge_title['option'][$PreArrayKey] = $AdditionalChargeTitle;
+                          // $additional_charges['option'][$PreArrayKey] = $value->$arr_val;
                       
                       }
                   }
               }
           }  
+         
           if(!empty($additional_charge_array->other)){
               foreach ($additional_charge_array->other as $key => $value) {
                 
@@ -53,7 +53,6 @@ class SendMail
                   $additional_charges['other'] = $value;
               }                                      
           }
-          
           // $additional_charge_title=[];
           // $additional_charges=[];
           $admin_email= "";
@@ -91,8 +90,7 @@ class SendMail
               //     }
               // }
           // }
-         
-          
+
           $service_request['additional_charges']=$additional_charges;
           $service_request['additional_charges_title']=$additional_charge_title;
         }
@@ -110,11 +108,11 @@ class SendMail
     		$customer= \App\Customer::where('id',$service_request->customer_id)
                                   ->where('status','Active')
                                   ->get()->first();
+        $customer_email = '';
         if(!empty($customer)){
           if($customer->email != ''){
             $customer_email=$customer->email;
           }
-    		  
         }
 
     		$admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
@@ -130,7 +128,7 @@ class SendMail
                               'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
                               'rajdip' => 'rajdip.webpatriot@gmail.com'
-		                        );
+                            );
         foreach ($receiver_email as $key => $value) {
           if(!empty($value))
           {
@@ -154,6 +152,7 @@ class SendMail
                   'role_id' => $role_id,
                   'service_request' => $service_request,
                   'receiver_email' => $value
+                  // 'pre_additional_charge_array' => $pre_additional_charge_array
                   );
 
             Mail::send('admin.emails.service_request_detail_email',$data, function ($message)  use ( $to_email){

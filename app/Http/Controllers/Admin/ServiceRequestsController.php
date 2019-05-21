@@ -790,7 +790,7 @@ class ServiceRequestsController extends Controller
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
         SendMailHelper::sendRequestCreationMail($service_request->id);
 
-        // SendMailHelper::sendRequestCreationMail(161);
+        // SendMailHelper::sendRequestCreationMail(188);
 
         // service request log for new request
         $insertServiceRequestLogArr = array(
@@ -1450,7 +1450,6 @@ class ServiceRequestsController extends Controller
         $additional_charges = [];
 
         if(!empty($additional_charge_array->option)){
-               
             foreach ($additional_charge_array->option as $OptionKey => $value) {
                 
                 $AdditionalChargeTitle =  key((array)$value);
