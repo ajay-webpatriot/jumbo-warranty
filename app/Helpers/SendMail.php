@@ -108,7 +108,6 @@ class SendMail
     		$customer= \App\Customer::where('id',$service_request->customer_id)
                                   ->where('status','Active')
                                   ->get()->first();
-        $customer_email = '';
         if(!empty($customer)){
           if($customer->email != ''){
             $customer_email=$customer->email;
@@ -202,7 +201,7 @@ class SendMail
         $receiver_email=array('admin' => $admin_email,
                               // 'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
-                              'hinal' => 'hinal.webpatriot@gmail.com'
+                              'rajdip' => 'rajdip.webpatriot@gmail.com'
                             );
         if($service_request->status == "Closed")
         {
