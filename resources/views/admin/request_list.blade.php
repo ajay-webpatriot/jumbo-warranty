@@ -64,7 +64,7 @@
                        {{-- @endif --}}
 
                     <!-- </ul> -->
-                    <table  id="" class="table table-bordered table-striped datatable" width="100%">
+                    <table  id="ListDatatable" class="table table-bordered table-striped datatable" width="100%">
                         <thead>
                             <tr>
                                 <th>@lang('quickadmin.service-request.fields.request-id')</th>
@@ -88,13 +88,13 @@
                             <?php
                                 $status = '';
                                 $backgroundColor = '';
-                                $company_name = '';
+                                $company_name = '-';
                                 $firstname = '';
                                 $lastname= '';
-                                $service_type= '';
-                                $service_centers= '';
-                                $product= '';
-                                $amount= '';
+                                $service_type= '-';
+                                $service_centers= '-';
+                                $product= '-';
+                                $amount= '-';
 
                                 if( $SingleServiceTypeDetail->company != ''){
                                     $company_name = $SingleServiceTypeDetail->company->name;
@@ -121,8 +121,8 @@
                                     $product= $SingleServiceTypeDetail->product->name;
                                 
                                 }
-                                if($SingleServiceTypeDetail->amount){
-                                    $amount= $SingleServiceTypeDetail->amount;
+                                if($SingleServiceTypeDetail->amount != 0 || $SingleServiceTypeDetail->amount != ''){
+                                    $amount=  $SingleServiceTypeDetail->amount;
                                 }
                             ?>
                             @if($SingleServiceTypeDetail->status != '')
@@ -132,19 +132,19 @@
                                 ?> 
                             @endif
                                 <tr>
-                                    <td><a href="{{ route('admin.service_requests.show',$SingleServiceTypeDetail->id) }}" target="_blank"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </a></td>
+                                    <td align="center"><a href="{{ route('admin.service_requests.show',$SingleServiceTypeDetail->id) }}" target="_blank"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </a></td>
                                     <td>{{ ucfirst($company_name) }}</td>
                                     <td>{{ ucfirst($firstname) }} {{ ucfirst($lastname) }}</td>
-                                    <td>{{ $service_type }}</td>
-                                    <td>{{ $service_centers }}</td>
+                                    <td align="center">{{ $service_type }}</td>
+                                    <td align="center">{{ $service_centers }}</td>
                                     <td>{{ $product }}</td>
                                     @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
-                                        <td>{{ $amount }}</td>
+                                        <td><span class="pull-right"><i class="fa fa-rupee"></i> {{ $amount }}</span></td>
 
                                     @endif
 
-                                    <td>{{ date('Y-m-d',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
+                                    <td>{{ date('d-m-Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
                                     <td>
                                         <span style="color:{{ $backgroundColor }}">
                                                 {{ $status }} 

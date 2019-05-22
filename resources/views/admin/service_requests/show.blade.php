@@ -400,6 +400,7 @@
                                                 </div>
                                             </div>
                                             @endforeach
+                                            @if($additional_charge_title['other'] != '')
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="pull-left">
@@ -416,6 +417,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                     @endif
