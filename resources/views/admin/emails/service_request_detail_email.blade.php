@@ -410,7 +410,7 @@
                                                         
                                                     </div>
                                                 </div>
-
+                                            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                                 <div class="row">
                                                     <div class="col-md-6" style="width: 48%;    float: left;    
                                                         position: relative;
@@ -533,6 +533,7 @@
                                                         
                                                     </div>
                                                 </div>
+                                            @endif
                                                 <div class="row">
                                                     <div class="col-xs-12 form-group" style="width: 100%;float: left;height:30px;">
                                                         
