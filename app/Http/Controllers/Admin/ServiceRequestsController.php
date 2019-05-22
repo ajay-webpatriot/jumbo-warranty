@@ -528,7 +528,7 @@ class ServiceRequestsController extends Controller
                 }
                 $tableField['request_status'] = $tableStatusColor;
 
-                $tableField['created_at'] = date('d-m-Y',strtotime($SingleServiceRequest->created_at));
+                $tableField['created_at'] = date('d/m/Y',strtotime($SingleServiceRequest->created_at));
 
                 if (Gate::allows('service_request_view')) {
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
@@ -638,6 +638,7 @@ class ServiceRequestsController extends Controller
             $products = \App\Product::where('status','Active')
                                     ->orderBy('name')
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+            $company_products = $products;
             $parts = \App\ProductPart::where('status','Active')
                                     ->orderBy('name')
                                     ->get()
@@ -672,8 +673,12 @@ class ServiceRequestsController extends Controller
 
         $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
         // Config::get('constants.PRE_ADDITIONAL_CHARGES_FOR');
-
-        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','pre_additional_charge_array'));
+        $ProductAssignMessage = '';
+        if(count($company_products) == 0){
+            $ProductAssignMessage = 'There are no products assigned to the company. Please contact Administrator';
+        }
+        
+        return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','pre_additional_charge_array','ProductAssignMessage'));
     }
 
     /**
@@ -1281,7 +1286,7 @@ class ServiceRequestsController extends Controller
 
         $predefine_additional_charge_array = [];
         $actual_value = '';
-
+        
         if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != '' ){
         
             foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {
@@ -1439,8 +1444,6 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         $service_request = ServiceRequest::findOrFail($id);
-
-        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
 
         $additional_charge_array=json_decode($service_request['additional_charges']);
 
@@ -1718,20 +1721,45 @@ class ServiceRequestsController extends Controller
 
             // $additional_charges=($request['additional_charges'] != "" && $request['additional_charges'] != 0)? "<tr><td colspan='2'>Additional Charge </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['additional_charges'],2)."</td></tr>":"";
             $additional_charge_array=json_decode($request['additional_charges']);
-            $additional_charges="";
-            if(!empty($additional_charge_array))
-            {
-                // Worked to display json value in edit page
-                foreach ($additional_charge_array as $key => $value) {
 
-                    $additional_charge_title=str_replace('_empty_', '', $key);
-                    if(!empty($additional_charge_title) && !empty($value))
-                    {
-                        $additional_charges="<tr><td colspan='2'>".$additional_charge_title." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
-                    }
+            $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
+            $additional_charges = '';
+            
+            if(!empty($additional_charge_array->option)){
+                foreach ($additional_charge_array->option as $OptionKey => $value) {
                     
+                    $AdditionalChargeTitle =  key((array)$value);
+                    foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
+                        if($AdditionalChargeTitle === $arr_val){
+
+                            $additional_charges.= "<tr><td colspan='2'>".$AdditionalChargeTitle." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value->$arr_val,2)."</td></tr>";
+
+                        }
+                    }
                 }
             }
+
+            if(!empty($additional_charge_array->other)){
+                foreach ($additional_charge_array->other as $key => $value) {
+
+                   $additional_charges.= "<tr><td colspan='2'>".str_replace('_empty_', '', $key)." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
+
+                }                                      
+            }
+            // $additional_charges="";
+            // if(!empty($additional_charge_array))
+            // {
+            //     // Worked to display json value in edit page
+            //     foreach ($additional_charge_array as $key => $value) {
+
+            //         $additional_charge_title=str_replace('_empty_', '', $key);
+            //         if(!empty($additional_charge_title) && !empty($value))
+            //         {
+            //             $additional_charges="<tr><td colspan='2'>".$additional_charge_title." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
+            //         }
+                    
+            //     }
+            // }
 
             $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['amount'],2)."</b></td></tr>";
 

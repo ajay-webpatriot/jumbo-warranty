@@ -67,9 +67,9 @@
                                         <div class="row">
                                             
                                             <!-- Total PENDING complain -->
-                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'installation_today','target' => '_blank']) !!}
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'installation_today','class' => 'requestlistform']) !!}
 
-                                                <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('installation_today')" style="cursor: pointer;">
+                                                <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('installation_today')" style="cursor: pointer;" id="installationTodays">
                                                     <div class="info-box bg-aqua">
                                                         <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
                                                         <div class="info-box-content">
@@ -87,9 +87,9 @@
                                             {!! Form::close() !!}
 
                                             <!-- Total PENDING installation -->
-                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'repair_today','target' => '_blank']) !!}
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'repair_today','class' => 'requestlistform']) !!}
 
-                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('repair_today')" style="cursor: pointer;">
+                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('repair_today')" style="cursor: pointer;" id="repairTodays">
                                                 <div class="info-box bg-red">
                                                     <span class="info-box-icon"><i class="fa fa-tv"></i></span>
                                                     <div class="info-box-content">
@@ -110,9 +110,9 @@
                                         <div class="row">
 
                                             <!-- Total solved installation -->
-                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'delayed_request','target' => '_blank']) !!}
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'delayed_request','class' => 'requestlistform']) !!}
 
-                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('delayed_request')" style="cursor: pointer;">
+                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('delayed_request')" style="cursor: pointer;" id="delayedRequests">
                                                 <div class="info-box bg-green">
                                                     <span class="info-box-icon"><i class="fa fa-tv"></i></span>
                                                     <div class="info-box-content">
@@ -130,9 +130,9 @@
                                             {!! Form::close() !!}
                                         
                                             <!-- Total solved complain --> 
-                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'closed_request','target' => '_blank']) !!}
+                                            {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'closed_request','class' => 'requestlistform']) !!}
 
-                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('closed_request')" style="cursor: pointer;">
+                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('closed_request')" style="cursor: pointer;" id="closededRequests">
                                                 <div class="info-box bg-yellow">
                                                     <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
                                                     <div class="info-box-content">
@@ -157,6 +157,11 @@
 
                         </div>
                     </div>
+                </div>
+
+                <div id="requestlistHtml" style="display:none;">
+
+
                 </div>
 
                 <div class="row">
@@ -226,13 +231,6 @@
                                 <ul class="products-list product-list-in-box">
                                     @if(!empty($ServiceTypeDetails))
                                         @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
-                                        <?php
-                                            // echo "<pre>";
-                                            // print_r($SingleServiceTypeDetail);
-                                            // echo "</pre>";
-                                            // exit();
-                                            
-                                        ?>
                                             <li class="item">
                                                 <div class="product-img">
                                                     <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}">
@@ -342,7 +340,6 @@
                 },
                 dataType: "json",
                 success:function(data) {
-                    
                     $("#installationToday").html(data.installationToday);
                     $("#repairToday").html(data.repairToday);
                     $("#delayedRequest").html(data.delayedRequest);
@@ -367,5 +364,33 @@
 
             $('#'+type).submit();
         }
+
+        $('.requestlistform').on('submit', function(e){
+
+            e.preventDefault(); 
+            var formData = $(this).serializeArray();
+
+            $.ajax({
+                type:'POST',
+                url:APP_URL+'/admin/dashboard/listdata',
+                data:{
+                    "formData":formData,
+                    "_token": "{{ csrf_token() }}"
+                },
+                dataType: "json",
+                success:function(data) {
+                    $('#requestlistHtml').removeAttr('style');
+                    $('#requestlistHtml').html(data.html);
+                    $('.datatable').dataTable();
+                    // $("#installationToday").html(data.installationToday);
+                    // $("#repairToday").html(data.repairToday);
+                    // $("#delayedRequest").html(data.delayedRequest);
+                    // $("#closededRequest").html(data.closededRequest);
+                }
+            });
+            
+        });
+        
+
     </script>
 @stop

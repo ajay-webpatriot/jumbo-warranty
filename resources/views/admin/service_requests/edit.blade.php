@@ -124,7 +124,7 @@
                                             <div class="col-sm-2 col-xs-3">
                                                 <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
 
-                                                <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('company')"><i class="fa fa-plus"></i></button>
+                                                <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('company')" title="Add Company"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
                                             <!-- <button id="quick_add_customer" class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                            <button id="quick_add_customer" class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')"><i class="fa fa-plus"></i></button>
+                                            <button id="quick_add_customer" class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')" title="Add Customer"><i class="fa fa-plus"></i></button>
                                            
                                         </div>
                                     </div>
@@ -221,7 +221,7 @@
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
                                             <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#service-center-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;"  onclick="quickadd('service_center')"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;"  onclick="quickadd('service_center')" title="Add Service Center"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -243,7 +243,7 @@
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
                                             <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#technician-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('technician')"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('technician')" title="Add Technician"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -732,7 +732,7 @@
                                             
                                             <?php
                                                    
-                                                    
+                                                $last_key = @end(array_keys($additional_charge_title['option']));
                                                 if(!empty($additional_charge_title['option'])){
                                                   
                                                     $i = 1;
@@ -777,9 +777,10 @@
                                                                 </label>
                                                                 {!! Form::text('existingAdditional_charge[]', $service_request['additional_charges']['option'][$additional_charge_title_key], ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','required' => 'required','id' => 'existingAdditional_charge_'.$i,'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
-
-                                                            <a class="text-danger pull-right removelink" onclick='removeAdditionalChargeFor({{$i}});'>Remove</a>
-
+                                                            
+                                                            @if($last_key != $additional_charge_title_key)
+                                                                <a class="text-danger pull-right removelink" onclick='removeAdditionalChargeFor({{$i}});'>Remove</a>
+                                                            @endif
                                                             <p class="help-block addamountError"></p>
                                                             @if($errors->has('existingAdditional_charge'))
                                                             <p class="help-block">
@@ -865,8 +866,10 @@
 
                                                 <div class="col-md-4 col-xs-5">
                                                     <div class="row">
-                                                        <div class="col-md-12 col-xs-12">
-                                                            {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !!}
+                                                        <div class="col-md-12 col-xs-12" style="padding-top: 4px;">
+                                                            {{-- !! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !! --}}
+
+                                                            <label for="additional_charges" class="control-label"> </label>
 
                                                             <div class="input-group">
                                                                 <label class="input-group-addon" for="additional_charges">
@@ -946,17 +949,20 @@
                                     
                                 </div>
                             </div>
-                            @else              
-                                {!! Form::hidden('additional_charges_title',$additional_charge_title['other'], ['id' => 'additional_charges_title']) !!}
-                                
-                                @foreach($additional_charge_title['option'] as $key => $value)
-                                                
-                                    {!! Form::hidden('existingAdditional_charge_for['.$key.']',$value, ['id' => 'existingAdditional_charge_for'.$key]) !!}
+                            @else
+                                @if(isset($additional_charge_title['other']) || isset($additional_charge_title['option']) )
 
-                                    {!! Form::hidden('existingAdditional_charge['.$key.']',$service_request['additional_charges']['option'][$key], ['id' => 'existingAdditional_charge'.$key]) !!}
-                                
+                                    {!! Form::hidden('additional_charges_title',$additional_charge_title['other'], ['id' => 'additional_charges_title']) !!}
+                                    
+                                    @foreach($additional_charge_title['option'] as $key => $value)
+                                                    
+                                        {!! Form::hidden('existingAdditional_charge_for['.$key.']',$value, ['id' => 'existingAdditional_charge_for'.$key]) !!}
 
-                                @endforeach  
+                                        {!! Form::hidden('existingAdditional_charge['.$key.']',$service_request['additional_charges']['option'][$key], ['id' => 'existingAdditional_charge'.$key]) !!}
+                                    
+
+                                    @endforeach
+                                @endif
 
                                 {!! Form::hidden('additional_charges', ($service_request['additional_charges']['other'] > 0)? $service_request['additional_charges']['other']:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'id' => 'additional_charges']) !!}
 

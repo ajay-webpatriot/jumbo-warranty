@@ -1,3 +1,6 @@
+<div class="message">
+</div>
+
 <div class="panel panel-default">
     <div class="panel-heading headerTitle">
         @lang('quickadmin.company.formTitle')
@@ -32,8 +35,15 @@
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
+                        
                         {!! Form::label('installation_charge', trans('quickadmin.company.fields.installation-charge').'*', ['class' => 'control-label']) !!}
-                        {!! Form::text('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
+
+                        <div class="input-group">
+                            <label class="input-group-addon" for="transportation_charge">
+                                <span class="fa fa-rupee"></span>
+                            </label>
+                            {!! Form::text('installation_charge', old('installation_charge'), ['class' => 'form-control', 'placeholder' => '', 'required' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)']) !!}
+                        </div>
                         <p class="help-block"></p>
                         @if($errors->has('installation_charge'))
                             <p class="help-block">

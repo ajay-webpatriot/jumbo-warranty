@@ -16,9 +16,13 @@
             font-size: 12px!important;
         }
     </style>
+    @if($ProductAssignMessage != '')
+        <div class="alert alert-danger alert-dismissable">
+            {{ $ProductAssignMessage }}
+        </div>
+    @endif
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store'], 'id' => 'formServiceRequest']) !!}
-
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
             @lang('quickadmin.service-request.formTitle')
@@ -71,7 +75,7 @@
                                             </div>
                                             <div class="col-sm-2 col-xs-3">
                                                 <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#company-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                                <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('company')"><i class="fa fa-plus"></i></button>
+                                                <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('company')" title="Add Company"><i class="fa fa-plus"></i></button>
                                                 
                                             </div>
                                         </div>
@@ -103,7 +107,7 @@
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
                                             <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" id="quick_add_customer" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')" title="Add Customer"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                     @else
@@ -120,7 +124,7 @@
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
                                             <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#customer-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('customer')" title="Add Customer"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div> 
                                     @endif  
@@ -177,7 +181,7 @@
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
                                             <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#service-center-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('service_center')"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('service_center')" title="Add Service Center"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -196,7 +200,7 @@
                                         </div>
                                         <div class="col-sm-2 col-xs-3">
                                             <!-- <button class="btn btn-success btn-quick-add" data-toggle="modal" data-target="#technician-modal" type="button" style="margin-top: 23px;"><i class="fa fa-plus"></i></button> -->
-                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('technician')"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-quick-add" type="button" style="margin-top: 23px;" onclick="quickadd('technician')" title="Add Technician"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -521,13 +525,15 @@
                                         <div class="col-md-12 col-xs-12">
                                             <div class="row">
                                                 <div class="col-md-8 col-xs-7">
-                                                    {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').'', ['class' => 'control-label lablemargin']) !!}
+                                                    {!! Form::label('service_charge', trans('quickadmin.service-request.fields.service-charge').':', ['class' => 'control-label lablemargin']) !!}
                                                 </div> 
                                                 
                                                 <div class="col-md-4 col-xs-5">
                                                     <div class="row">
                                                         <div class="col-md-12 col-xs-12">
-                                                            {!! Form::label('', old('service_charge'), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_service_charge']) !!}
+                                                            {{-- !! Form::label('', old('service_charge'), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_service_charge']) !! --}}
+
+                                                            {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> 0.00', ['class' => 'control-label lablemargin pull-right','id' => 'lbl_service_charge'])) !!}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -556,13 +562,15 @@
                                         <div class="col-md-12 col-xs-12">
                                             <div class="row">
                                                 <div class="col-md-8 col-xs-7">
-                                                {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').'', ['class' => 'control-label lablemargin']) !!}
+                                                {!! Form::label('installation_charge', trans('quickadmin.service-request.fields.installation-charge').':', ['class' => 'control-label lablemargin']) !!}
                                                 </div> 
                                                 
                                                 <div class="col-md-4 col-xs-5">
                                                     <div class="row">
                                                         <div class="col-md-12 col-xs-12">
-                                                            {!! Form::label('', old('installation_charge'), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !!}
+                                                            {{-- !! Form::label('0.00', old('installation_charge'), ['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge']) !! --}}
+
+                                                            {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> 0.00',['class' => 'control-label lablemargin pull-right','id' => 'lbl_installation_charge'])) !!}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -663,9 +671,6 @@
                                                                 </label>
                                                                 {!! Form::text('existingAdditional_charge[]', old('existingAdditional_charge[]'), ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','required' => 'required','id' => 'existingAdditional_charge_1','onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
-
-                                                            <a class="text-info pull-right" onclick='addExistingAdditional_charge();'>Add more</a>
-
                                                             <p class="help-block addamountError"></p>
                                                             @if($errors->has('existingAdditional_charge'))
                                                             <p class="help-block">
@@ -678,6 +683,12 @@
                                                             <!-- <a class="text-info" onclick='addExistingAdditional_charge();'>Add more</a> -->
                                                         <!-- </div> -->
                                                     </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-12 col-xs-12">
+                                                    <a class="text-info pull-right addlink" onclick='addExistingAdditional_charge();'>Add more</a>
                                                 </div>
                                             </div>
 
@@ -696,14 +707,16 @@
 
                                                 <div class="col-md-4 col-xs-5">
                                                     <div class="row">
-                                                        <div class="col-md-12 col-xs-12">
-                                                            {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !!}
+                                                        <div class="col-md-12 col-xs-12" style="padding-top: 4px;">
+                                                            {{-- !! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label fontweight fontsize']) !! --}}
+
+                                                            {!! Form::label('', trans('').'', ['class' => 'control-label fontweight fontsize']) !!}
 
                                                             <div class="input-group">
                                                                 <label class="input-group-addon" for="additional_charges">
                                                                     <span class="fa fa-rupee"></span>
                                                                 </label>
-                                                                {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control text-right', 'placeholder' => '', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
+                                                                {!! Form::text('additional_charges', old('additional_charges'), ['class' => 'form-control text-right', 'placeholder' => 'Amount', 'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()', 'id' => 'additional_charges']) !!}
                                                             </div>
 
                                                             <p class="help-block addamountError"></p>

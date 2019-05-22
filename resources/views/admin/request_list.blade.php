@@ -1,5 +1,5 @@
-@extends('layouts.app')
-@section('content')
+{{-- @extends('layouts.app') --}}
+{{-- @section('content') --}}
 <style>
 /* .loading { color: green; }
 #loading { display:none; color:green; font-size:20px; } */
@@ -160,9 +160,9 @@
         </div>
     </div>
 
-@endsection
-@section('javascript')
-    @parent
+{{-- @endsection --}}
+{{-- @section('javascript') --}}
+{{-- @parent --}}
     <script>
     // $(function() {
     //     loadResults(0);
@@ -223,4 +223,4 @@
     // }
 
     </script>
-@stop
+{{-- @stop --}}
