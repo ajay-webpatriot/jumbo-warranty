@@ -9,12 +9,12 @@
         <div class="col-md-12">
             <div class="box box-{{ $color }}">
 
-                <div class="box-header with-border scroll text-center" data-toggle="collapse" href="#collapseRecentServiceRequests">
+                <div class="box-header with-border scroll text-center" data-toggle="collapse" href="#collapseServiceRequestsList">
                     <h3 class="box-title"> {{ $typeTitle }} </h3>
                     <span class="btn-box-tool glyphicon glyphicon-minus pull-right" style="font-size:12px;"></span> 
                 </div>
                 
-                <div id="collapseRecentServiceRequests" class="box-body collapse in table-responsive " role="tabpanel">
+                <div id="collapseServiceRequestsList" class="box-body collapse in" role="tabpanel">
                     <!-- <ul class="products-list product-list-in-box" id="uiandli"> -->
 
                         {{-- @if(count($dataByType) > 0) --}}
