@@ -673,9 +673,12 @@ class ServiceRequestsController extends Controller
 
         $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
         // Config::get('constants.PRE_ADDITIONAL_CHARGES_FOR');
-        $ProductAssignMessage = '';
-        if(count($company_products) == 0){
-            $ProductAssignMessage = 'There are no products assigned to the company. Please contact Administrator';
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $ProductAssignMessage = '';
+            if(count($company_products) == 0){
+                $ProductAssignMessage = 'There are no products assigned to the company. Please contact Administrator.';
+            }
         }
         
         return view('admin.service_requests.create', compact('enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName','km_charge', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','pre_additional_charge_array','ProductAssignMessage'));
