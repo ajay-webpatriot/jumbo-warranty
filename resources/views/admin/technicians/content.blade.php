@@ -1,3 +1,6 @@
+<div class="message">
+</div>
+
 <div class="panel panel-default">
     <div class="panel-heading headerTitle">
         @lang('quickadmin.users.technicianFormTitle')

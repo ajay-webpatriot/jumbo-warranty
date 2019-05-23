@@ -166,12 +166,13 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardDataByType(Request $request)
     {
-       
+        
+        
         $todayDate = date('Y-m-d');
-        $startDate = date('Y-m-d',strtotime($request->startDate));
-        $endDate = date('Y-m-d',strtotime($request->endDate));
-        $type = $request->type;
-        $companyId = $request->SelectedCompanyId;
+        $startDate = date('Y-m-d',strtotime($request->formData[1]['value']));
+        $endDate = date('Y-m-d',strtotime($request->formData[2]['value']));
+        $type = $request->formData[4]['value'];
+        $companyId = $request->formData[3]['value'];
         $typeTitle = '';
         $dataByType = (object)array();
         $Status = 0;
@@ -298,7 +299,13 @@ class AdminDashboardController extends Controller
         // }else{
         //     $ServiceCount->limit(10);
         // }
-        return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'));
+
+        
+        $returnHTML = view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'))->render();
+
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
+
+        // return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'));
         
     }
 

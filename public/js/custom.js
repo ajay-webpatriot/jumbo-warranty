@@ -211,14 +211,18 @@ $(document).ready(function(){
 		       	success:function(data) {
 		       		if(data.success)
 		       		{
-		       			alert(data.message);
-		       			$('#company-modal').modal('hide');
+		       			// alert(data.message);
+		       			// $('#company-modal').modal('hide');
 		       			$("#company_id").html(data.companyOptions);
 						// $("#company_id").trigger('change');
 						   
 		       			if($("#company_id option[value='"+data.last_inserted_company_id+"']").length != 0){
 			       			$("#company_id").val(data.last_inserted_company_id).trigger('change');
-		       			}
+						}
+						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Company created successfully!</div>';
+						
+						$("#company-modal").find('.message').html(alertBox);
+						setTimeout(function() {$('#company-modal').modal('hide');}, 2000);
 		       		}
 		       		else
 		       		{
@@ -227,7 +231,17 @@ $(document).ready(function(){
                   			$("#company-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
 		       		}
-		       	}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+
+					var alertBox = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+ thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText +'</div>';
+							
+					$("#company-modal").find('.message').html(alertBox);
+					$('#company-modal').modal('show');
+					// alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+					return false;
+				}
+				   
 		    });
 	    }
 	    return false;
@@ -278,6 +292,10 @@ $(document).ready(function(){
 
 							$('select#customer_id').append('<option '+selected+' value="'+data.last_inserted_customer_id+'" >'+data.last_inserted_customer_name+'</option>');
 						}
+						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Customer created successfully!</div>';
+						
+						$("#customer-modal").find('.message').html(alertBox);
+						setTimeout(function() {$('#customer-modal').modal('hide');}, 2000);
 		       		}
 		       		else
 		       		{
@@ -286,7 +304,17 @@ $(document).ready(function(){
                   			$("#customer-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
 		       		}
-		       	}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					
+					var alertBox = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+ thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText +'</div>';
+							
+					$("#customer-modal").find('.message').html(alertBox);
+					$('#customer-modal').modal('show');
+					// alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+					return false;
+				}
+				   
 		    });
 	    }
 	    return false;
@@ -317,8 +345,8 @@ $(document).ready(function(){
 		       	success:function(data) {
 		       		if(data.success)
 		       		{
-		       			alert(data.message);
-		       			$('#service-center-modal').modal('hide');
+		       			// alert(data.message);
+		       			// $('#service-center-modal').modal('hide');
 						// $("#service_center_id").html(data.serviceCenterOptions).trigger("change");
 						$("#service_center_id").html(data.serviceCenterOptions);
 
@@ -328,6 +356,10 @@ $(document).ready(function(){
 
 							$("#service_center_id").val(data.last_inserted_service_center_id).trigger('change');
 						}
+						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Service Center created successfully!</div>';
+						
+						$("#service-center-modal").find('.message').html(alertBox);
+						setTimeout(function() {$('#service-center-modal').modal('hide');}, 2000);
 		       		}
 		       		else
 		       		{
@@ -336,7 +368,16 @@ $(document).ready(function(){
                   			$("#service-center-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
 		       		}
-		       	}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					
+					var alertBox = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+ thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText +'</div>';
+												
+					$("#service-center-modal").find('.message').html(alertBox);
+					$('#service-center-modal').modal('show');
+					// alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+					return false;
+				}
 		    });
 	    }
 	    return false;
@@ -368,7 +409,7 @@ $(document).ready(function(){
 		       	success:function(data) {
 		       		if(data.success)
 		       		{
-						$('#technician-modal').modal('hide');
+						// $('#technician-modal').modal('hide');
 						// $("#service_center_id").trigger("change");
 						var service_centerId = $("#service_center_id").val();
 
@@ -379,6 +420,12 @@ $(document).ready(function(){
 
 							$('select#technician_id').append('<option '+selected+' value="'+data.last_inserted_technician_id+'" >'+data.last_inserted_technician_name+'</option>');
 						}
+						// var alertBox = '<div class="alert ' + messageAlert + ' alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + messageText + '</div>';
+
+						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Technician created successfully!</div>';
+						
+						$("#technician-modal").find('.message').html(alertBox);
+						setTimeout(function() {$('#technician-modal').modal('hide');}, 2000);
 		       		}
 		       		else
 		       		{
@@ -387,7 +434,17 @@ $(document).ready(function(){
                   			$("#technician-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
 		       		}
-		       	}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+
+					var alertBox = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+ thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText +'</div>';
+						
+					$("#technician-modal").find('.message').html(alertBox);
+					$('#technician-modal').modal('show');
+					// alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+					return false;
+				}
+				   
 		    });
 	    }
 	    return false;
@@ -651,7 +708,7 @@ function getTransporationCharge() {
 function getAssignedProducts(ele) {
 	
 	var companyId = $(ele).val();
-	alert(companyId);
+	// alert(companyId);
 	if(companyId != "")
 	{
 
@@ -725,6 +782,10 @@ function quickadd(type){
 						$('#technician-modal').modal('show');
 					}
 				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				return false;
 			}
 		});
 	}
