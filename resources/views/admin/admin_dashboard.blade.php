@@ -323,6 +323,9 @@
         // });
         
         function changeDateCompanyGetCount() {
+
+            $('#requestlistHtml').hide();
+            
             var date = $('#dateRangeFilter').val();
             var SelectedCompanyId = $('select#companyDropdown option:selected').val();
             

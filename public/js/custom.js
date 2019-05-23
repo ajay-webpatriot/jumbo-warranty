@@ -50,22 +50,22 @@ $(document).ready(function(){
 	       	dataType: "json",
 	       	success:function(data) {
 				   
-				if(data.no_products == 1){
+				// if(data.no_products == 1){
 					
-					$("#product_error").html('<p>There are no products for this company.<a href="'+APP_URL+'/admin/assign_products/create'+'" target="_blank"> Click here to assign.</a> </p>');
+					// $("#product_error").html('<p>There are no products for this company.<a href="'+APP_URL+'/admin/assign_products/create'+'" target="_blank"> Click here to assign.</a> </p>');
 
-					$(".custDiv").hide();
-					$("#customer_id").html('');
-					$("#selectall-parts").html('');
-					$("#product_id").html('');
-					return false;
-				}else{
+					// $(".custDiv").hide();
+					// $("#customer_id").html('');
+					// $("#selectall-parts").html('');
+					// $("#product_id").html('');
+					// return false;
+				// }else{
 					$(".custDiv").show();
 					$(".custDiv").find(".select2").select2();
 					$("#customer_id").html(data.custOptions);
 					$("#selectall-parts").html(data.partOptions);
 					$("#product_id").html(data.productOptions);
-				}
+				// }
 	       		
 	       	}
 	    });
@@ -93,19 +93,37 @@ $(document).ready(function(){
 	});
 	$(document).on('submit','#formServiceRequest',function (){
 		
-		$(".error-block").text('');
-		$('*[id^="Additional_charge_for_existing-"]').each(function() {
-			selectedid = $(this).attr("id");
-			selectedid = selectedid.split('-');
+		var status = true;
+		// $('*[id^="Additional_charge_for_existing-"]').each(function() {
+		$('.multiple_Additional_charge_for').each(function() {
+			var selectedid = $(this).attr("id").split('-');
+			$(".error-block_"+selectedid[1]).text('');
+			$(".error-amount-block_"+selectedid[1]).text('');
+			
 			var selectedOption =$("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val();
-			if(selectedOption == '' || selectedOption == 0){
-				$(".error-block_"+selectedid[1]).text('Please select option');
-				return false;
+			var selectedAmount =$("#existingAdditional_charge_"+selectedid[1]).val();
+
+			if(typeof(selectedOption) !== 'undefined' && typeof(selectedAmount) !== 'undefined'){
+				// console.log('in ');
+				if($("#existingAdditional_charge_"+selectedid[1]).val().trim() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() <= 0){
+					// console.log('in if ');
+					$(".error-amount-block_"+selectedid[1]).text('The additional amount must be greater than 0.');
+					status = false;
+
+				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() == '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() != ''){
+					// console.log('in else if 1 ');
+					$(".error-block_"+selectedid[1]).text('Please select option');
+					status = false;
+				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() == ''){
+					// console.log('in else if 2 ');
+					$(".error-amount-block_"+selectedid[1]).text('Please Enter amount');
+					status = false;
+				}
 			}
 		});
 		
 		// validate additional charges title and amount on form submit in add/edit service request page
-		var status = true;
+		
 		$("#additional_charges_title").next(".help-block").html("");
 		// $("#additional_charges").next(".help-block").html("");
 		$(".addamountError").html("");
@@ -198,6 +216,11 @@ $(document).ready(function(){
 		$("#company_status option:first").prop("selected", "selected");
 	});
 	$("#company-modal").find("form").on('submit', function (e) {
+
+		$("#company-modal").find('.alert-danger').hide();
+		$("#company-modal").find('.message').html('');
+		$("#company_id").html('');
+
 		// add company on click of save button
 		e.preventDefault();
 	    if ($("#company-modal").find("form")[0].checkValidity()) {
@@ -260,6 +283,11 @@ $(document).ready(function(){
 		$("#customer_status option:first").prop("selected", "selected");
 	});
 	$("#customer-modal").find("form").on('submit', function (e) {
+
+		$("#customer-modal").find('.message').html('');
+		$("#customer-modal").find('.alert-danger').hide();
+		$(".custAddress").html('');
+
 		// add company on click of save button
 		e.preventDefault();
 	    if ($("#customer-modal").find("form")[0].checkValidity()) {
@@ -291,6 +319,9 @@ $(document).ready(function(){
 							selected = "selected";
 
 							$('select#customer_id').append('<option '+selected+' value="'+data.last_inserted_customer_id+'" >'+data.last_inserted_customer_name+'</option>');
+
+							$(".custAddress").html(data.last_inserted_customer_address);
+	       					getSuggestedServiceCenter(data.last_inserted_customer_id);
 						}
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Customer created successfully!</div>';
 						
@@ -332,6 +363,11 @@ $(document).ready(function(){
 		$("#service_center_status option:first").prop("selected", "selected");
 	});
 	$("#service-center-modal").find("form").on('submit', function (e) {
+
+		$("#service-center-modal").find('.message').html('');
+		$("#service-center-modal").find('.alert-danger').hide();
+		$("#service_center_id").html('');
+
 		// add service center on click of save button
 		e.preventDefault();
 	    if ($("#service-center-modal").find("form")[0].checkValidity()) {
@@ -396,6 +432,10 @@ $(document).ready(function(){
 		$("#technician_status option:first").prop("selected", "selected");
 	});
 	$("#technician-modal").find("form").on('submit', function (e) {
+
+		$("#technician-modal").find('.message').html('');
+		$("#technician-modal").find('.alert-danger').hide();
+
 		// add technician on click of save button
 		e.preventDefault();
 	    if ($("#technician-modal").find("form")[0].checkValidity()) {
