@@ -50,22 +50,22 @@ $(document).ready(function(){
 	       	dataType: "json",
 	       	success:function(data) {
 				   
-				// if(data.no_products == 1){
+				if(data.no_products == 1){
 					
-					// $("#product_error").html('<p>There are no products for this company.<a href="'+APP_URL+'/admin/assign_products/create'+'" target="_blank"> Click here to assign.</a> </p>');
+					$("#product_error").html('<p>There are no products for this company.<a href="'+APP_URL+'/admin/assign_products/create'+'"> Click here to assign.</a> </p>');
 
-					// $(".custDiv").hide();
-					// $("#customer_id").html('');
-					// $("#selectall-parts").html('');
-					// $("#product_id").html('');
-					// return false;
-				// }else{
+					$(".custDiv").hide();
+					$("#customer_id").html('');
+					$("#selectall-parts").html('');
+					$("#product_id").html('');
+					return false;
+				}else{
 					$(".custDiv").show();
 					$(".custDiv").find(".select2").select2();
 					$("#customer_id").html(data.custOptions);
 					$("#selectall-parts").html(data.partOptions);
 					$("#product_id").html(data.productOptions);
-				// }
+				}
 	       		
 	       	}
 	    });

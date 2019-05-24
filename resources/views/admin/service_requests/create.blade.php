@@ -16,13 +16,13 @@
             font-size: 12px!important;
         }
     </style>
-    {{-- @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')) --}}
-        {{-- @if($ProductAssignMessage != '') --}}
-            <!-- <div class="alert alert-danger alert-dismissable"> -->
-                {{-- $ProductAssignMessage --}}
-            <!-- </div> -->
-        {{-- @endif --}}
-    {{-- @endif --}}
+    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        @if($ProductAssignMessage != '')
+            <div class="alert alert-danger alert-dismissable">
+                {{ $ProductAssignMessage }}
+            </div>
+        @endif
+    @endif
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store'], 'id' => 'formServiceRequest']) !!}
     <div class="panel panel-default">
