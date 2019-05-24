@@ -72,8 +72,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('password_confirmation', trans('quickadmin.users.fields.confirm-password'), ['class' => 'control-label']) !!}
-                    {!! Form::password('password_confirmation', ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::label('password_confirmation', trans('quickadmin.users.fields.confirm-password').'*', ['class' => 'control-label']) !!}
+                    {!! Form::password('password_confirmation', ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('password_confirmation'))
                         <p class="help-block">
