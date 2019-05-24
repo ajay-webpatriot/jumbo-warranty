@@ -534,7 +534,10 @@ class ServiceRequestsController extends Controller
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
                 }
 
-                if(auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->is_accepted == 1)){
+                if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')) 
+                || (auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->status != 'Closed') 
+                || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->is_accepted == 1 && $SingleServiceRequest->status != 'Closed') ) 
+                {
 
                     if (Gate::allows('service_request_edit')) {
                         $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info">Edit</a>';
