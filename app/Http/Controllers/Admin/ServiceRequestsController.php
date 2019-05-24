@@ -534,7 +534,10 @@ class ServiceRequestsController extends Controller
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
                 }
 
-                if(auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->is_accepted == 1)){
+                if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')) 
+                || (auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->status != 'Closed') 
+                || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->is_accepted == 1 && $SingleServiceRequest->status != 'Closed') ) 
+                {
 
                     if (Gate::allows('service_request_edit')) {
                         $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info">Edit</a>';
@@ -721,7 +724,7 @@ class ServiceRequestsController extends Controller
 
         $predefine_additional_charge_array = [];
         $actual_value = '';
-
+        $predefine_additional_charge_array['option'] = [];
         if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != '' ){
 
             foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {
@@ -807,7 +810,7 @@ class ServiceRequestsController extends Controller
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
         SendMailHelper::sendRequestCreationMail($service_request->id);
 
-        // SendMailHelper::sendRequestCreationMail(188);
+        // SendMailHelper::sendRequestCreationMail(195);
 
         // service request log for new request
         $insertServiceRequestLogArr = array(
@@ -1298,6 +1301,7 @@ class ServiceRequestsController extends Controller
         $predefine_additional_charge_array = [];
         $actual_value = '';
         
+        $predefine_additional_charge_array['option'] = [];
         if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != ''){
         
             foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {
