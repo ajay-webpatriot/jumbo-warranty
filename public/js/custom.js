@@ -52,7 +52,7 @@ $(document).ready(function(){
 				   
 				if(data.no_products == 1){
 					
-					$("#product_error").html('<p>There are no products for this company.<a href="'+APP_URL+'/admin/assign_products/create'+'"> Click here to assign.</a> </p>');
+					$("#product_error").html('<p>There are no products for this company.<a href="javascript:void(0);" onclick="AssignProducts('+companyId+')"> Click here to assign.</a> </p>');
 
 					$(".custDiv").hide();
 					$("#customer_id").html('');
@@ -830,3 +830,93 @@ function quickadd(type){
 		});
 	}
 }
+
+$("#assign-products-modal").on('hidden.bs.modal', function() { 
+	// quick add technician model close from add/edit service request
+	$("#assign-products-modal").find('.alert-danger').html('').hide();
+	$("#assign-products-modal").find("form")[0].reset();
+	$("#assign_company_id option:selected").prop("selected", false);
+	$("#assign_company_id option:first").prop("selected", "selected");
+});
+function AssignProducts(company_id) {
+	$('#renderAssignProductsHtml').html('');
+	if(company_id != ''){
+		$.ajax({
+			type:'GET',
+			url:APP_URL+"/admin/ajax_assign_products",
+			data:{
+				'company_id':company_id
+			},
+			dataType: "json",
+			success:function(data) {
+				
+				if(data.success == 1){
+
+					if(data.company_id == ''){
+						$('#assign_company_id').val('').trigger('change');
+					}else{
+						$('#assign_company_id').val(data.company_id).trigger('change');
+					}
+					
+					$('#renderAssignProductsHtml').html(data.html);
+					$(".select2").select2();	
+					$('#assign-products-modal').modal('show');
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				return false;
+			}
+		});
+	}
+}
+$("#assign-products-modal").find("form").on('submit', function (e) {
+
+	$("#assign-products-modal").find('.alert-danger').hide().html('');
+	$("#assign-products-modal").find('.message').html('');
+
+	e.preventDefault();
+
+	if ($("#assign-products-modal").find("form")[0].checkValidity()) {
+		
+		var form=$("#assign-products-modal").find("form");
+			$.ajax({
+			   	type:'POST',
+			   	url:form.attr("action"),
+				data:form.serialize(),
+			   	dataType: "json",
+			   	success:function(data) {
+				   	// console.log(data);
+				   	if(data.success)
+				   	{
+						var company_id = $("#company_id").val();
+						// console.log(company_id);
+						if(company_id == data.last_inserted_company_id){
+							$("#company_id").val(data.last_inserted_company_id).trigger('change');
+						}
+						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Assign Products added successfully!</div>';
+						
+						$("#assign-products-modal").find('.message').html(alertBox);
+						setTimeout(function() {$('#assign-products-modal').modal('hide');}, 2000);
+				   	}
+					else
+					{
+						$.each(data.errors, function(key, value){
+							$("#assign-products-modal").find('.alert-danger').show();
+							$("#assign-products-modal").find('.alert-danger').append('<p>'+value+'</p>');
+						});
+					}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+
+				var alertBox = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+ thrownError + '\r\n' + xhr.statusText + '\r\n' + xhr.responseText +'</div>';
+						
+				$("#assign-products-modal").find('.message').html(alertBox);
+				$('#assign-products-modal').modal('show');
+				return false;
+			}
+			   
+		});
+	}
+	return false;
+});
