@@ -69,7 +69,7 @@
                             <tr>
                                 <th>@lang('quickadmin.service-request.fields.request-id')</th>
 
-                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
                                     <th>@lang('quickadmin.service-request.fields.company')</th>
 
@@ -80,7 +80,7 @@
 
                                 <th>@lang('quickadmin.service-request.fields.service-type')</th>
 
-                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
                                     <th>@lang('quickadmin.service-request.fields.service-center')</th>
 
@@ -175,7 +175,7 @@
 
                                     <td align="center">{{ $service_type }}</td>
 
-                                    @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
                                         <td align="center">{{ $service_centers }}</td>
 
