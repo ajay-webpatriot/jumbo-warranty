@@ -1300,6 +1300,7 @@ class ServiceRequestsController extends Controller
         $predefine_additional_charge_array = [];
         $actual_value = '';
         
+        $predefine_additional_charge_array['option'] = [];
         if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != ''){
         
             foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {

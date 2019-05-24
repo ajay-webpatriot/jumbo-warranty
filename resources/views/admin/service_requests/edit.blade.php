@@ -803,7 +803,22 @@
                                             <div class="row">
                                                 <div class="col-md-8 col-xs-7">
                                                     <div class="form-group">
-                                                        {!! Form::select('existingAdditional_charge_for[]', $pre_additional_charge_array, old('existingAdditional_charge_for'), ['class' => 'form-control multiple_Additional_charge_for','id' => 'Additional_charge_for_existing-1', 'style' => 'width:100%']) !!}
+                                                        {{-- !! Form::select('existingAdditional_charge_for[]', $pre_additional_charge_array,'', ['class' => 'form-control multiple_Additional_charge_for','id' => 'Additional_charge_for_existing-1', 'style' => 'width:100%']) !! --}}
+
+                                                        <select class="form-control multiple_Additional_charge_for" id="Additional_charge_for_existing-1" style="width:100%" name="existingAdditional_charge_for[]">
+                                                        <?php
+                                                            foreach ($pre_additional_charge_array as $key => $value) {
+                                                                if($key == 0){
+                                                                    $key = '';
+                                                                }
+                                                                
+                                                        ?>  
+                                                            <option value="{{ $key }}"> {{ $value }} </option>
+                                                        <?php
+                                                            }
+                                                        ?>
+                                                        </select>
+
                                                     </div>
                                                     <p class="error-block_1 text-danger"></p>
                                                 </div>
@@ -817,7 +832,7 @@
                                                                 <label class="input-group-addon" for="existingAdditional_charge">
                                                                     <span class="fa fa-rupee"></span>
                                                                 </label>
-                                                                {!! Form::text('existingAdditional_charge[]', old('existingAdditional_charge[]'), ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','id' => 'existingAdditional_charge_1','onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                                {!! Form::text('existingAdditional_charge[]', '', ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','id' => 'existingAdditional_charge_1','onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                                 
                                                             </div>
 
