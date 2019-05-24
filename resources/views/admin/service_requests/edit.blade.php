@@ -966,15 +966,16 @@
                                 @if(isset($additional_charge_title['other']) || isset($additional_charge_title['option']) )
 
                                     {!! Form::hidden('additional_charges_title',$additional_charge_title['other'], ['id' => 'additional_charges_title']) !!}
-                                    
-                                    @foreach($additional_charge_title['option'] as $key => $value)
-                                                    
-                                        {!! Form::hidden('existingAdditional_charge_for['.$key.']',$value, ['id' => 'existingAdditional_charge_for'.$key]) !!}
+                                    @if(isset($additional_charge_title['option']))
+                                        @foreach($additional_charge_title['option'] as $key => $value)
+                                                        
+                                            {!! Form::hidden('existingAdditional_charge_for['.$key.']',$value, ['id' => 'existingAdditional_charge_for'.$key]) !!}
 
-                                        {!! Form::hidden('existingAdditional_charge['.$key.']',$service_request['additional_charges']['option'][$key], ['id' => 'existingAdditional_charge'.$key]) !!}
-                                    
+                                            {!! Form::hidden('existingAdditional_charge['.$key.']',$service_request['additional_charges']['option'][$key], ['id' => 'existingAdditional_charge'.$key]) !!}
+                                        
 
-                                    @endforeach
+                                        @endforeach
+                                    @endif
                                 @endif
 
                                 {!! Form::hidden('additional_charges', ($service_request['additional_charges']['other'] > 0)? $service_request['additional_charges']['other']:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'id' => 'additional_charges']) !!}
