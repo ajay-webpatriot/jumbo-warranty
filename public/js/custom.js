@@ -219,7 +219,7 @@ $(document).ready(function(){
 
 		$("#company-modal").find('.alert-danger').hide();
 		$("#company-modal").find('.message').html('');
-		$("#company_id").html('');
+		// $("#company_id").html('');
 
 		// add company on click of save button
 		e.preventDefault();
@@ -366,7 +366,7 @@ $(document).ready(function(){
 
 		$("#service-center-modal").find('.message').html('');
 		$("#service-center-modal").find('.alert-danger').hide();
-		$("#service_center_id").html('');
+		// $("#service_center_id").html('');
 
 		// add service center on click of save button
 		e.preventDefault();
