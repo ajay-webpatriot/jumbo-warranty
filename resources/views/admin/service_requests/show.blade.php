@@ -371,55 +371,60 @@
                                         </div>
                                     </div>
                                     @endif
-                                    @if(!empty($additional_charge_title) && !empty($service_request->additional_charges))
                                     
-                                   
-                                    <div class="row">
-                                        <div class="col-md-12">
+                                    @if(!empty($additional_charge_title) && !empty($service_request->additional_charges))
+
+                                        @if((isset($additional_charge_title['option']) && !empty($additional_charge_title['option']) ) || (isset($additional_charge_title['other']) && !empty( $additional_charge_title['other'])))
+
                                             <div class="row">
-                                                <div class="col-sm-12">
-                                                    {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').':', ['class' => 'control-label']) !!}
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').':', ['class' => 'control-label']) !!}
+                                                        </div>
+                                                    </div>
+                                                    @if(!empty($additional_charge_title['option']))
+                                                        @foreach($additional_charge_title['option'] as $key => $single_additional_charge_title)
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <div class="pull-left">
+                                                                    {{-- !! Form::label('', $additional_charge_title.': ', ['class' => 'control-label fontsize fontweight']) !! --}}
+
+                                                                    {!! Form::label('', $single_additional_charge_title.': ', ['class' => 'control-label fontsize fontweight']) !!}
+
+                                                                    </div>
+                                                                    <div class="pull-right">
+                                                                    <i class="fa fa-rupee"></i> 
+                                                                    {{-- number_format($service_request->additional_charges,2) --}}
+                                                                    {{ number_format($service_request->additional_charges['option'][$key],2) }}
+                                                                    
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+
+                                                    @if($additional_charge_title['other'] != '')
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <div class="pull-left">
+                                                            {{-- !! Form::label('', $additional_charge_title.': ', ['class' => 'control-label fontsize fontweight']) !! --}}
+
+                                                            {!! Form::label('',$additional_charge_title['other'].': ', ['class' => 'control-label fontsize fontweight']) !!}
+
+                                                            </div>
+                                                            <div class="pull-right">
+                                                            <i class="fa fa-rupee"></i> 
+                                                            {{-- number_format($service_request->additional_charges,2) --}}
+                                                            {{ number_format($service_request->additional_charges['other'],2) }}
+                                                            
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
-                                            @foreach($additional_charge_title['option'] as $key => $single_additional_charge_title)
-                                           
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="pull-left">
-                                                    {{-- !! Form::label('', $additional_charge_title.': ', ['class' => 'control-label fontsize fontweight']) !! --}}
-
-                                                    {!! Form::label('', $single_additional_charge_title.': ', ['class' => 'control-label fontsize fontweight']) !!}
-
-                                                    </div>
-                                                    <div class="pull-right">
-                                                    <i class="fa fa-rupee"></i> 
-                                                    {{-- number_format($service_request->additional_charges,2) --}}
-                                                    {{ number_format($service_request->additional_charges['option'][$key],2) }}
-                                                    
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endforeach
-                                            @if($additional_charge_title['other'] != '')
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="pull-left">
-                                                    {{-- !! Form::label('', $additional_charge_title.': ', ['class' => 'control-label fontsize fontweight']) !! --}}
-
-                                                    {!! Form::label('',$additional_charge_title['other'].': ', ['class' => 'control-label fontsize fontweight']) !!}
-
-                                                    </div>
-                                                    <div class="pull-right">
-                                                    <i class="fa fa-rupee"></i> 
-                                                    {{-- number_format($service_request->additional_charges,2) --}}
-                                                    {{ number_format($service_request->additional_charges['other'],2) }}
-                                                    
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endif
-                                        </div>
-                                    </div>
+                                        @endif
                                     @endif
                                     <hr/>
 

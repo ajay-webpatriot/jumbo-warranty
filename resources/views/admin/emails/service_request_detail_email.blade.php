@@ -410,7 +410,7 @@
                                                         
                                                     </div>
                                                 </div>
-                                                @if($role_id == config('constants.ADMIN_ROLE_ID') || $role_id == "customer")
+                                                @if($role_id == config('constants.ADMIN_ROLE_ID'))
                                                 <div class="row">
                                                     <div class="col-md-6" style="width: 48%;    float: left;    
                                                         position: relative;
@@ -468,52 +468,55 @@
                                                         </div>
                                                         @endif
                                                         @if(!empty($service_request->additional_charges) && !empty($service_request->additional_charges_title))
-                                                        <div class="row">
-                                                            <div class="col-md-12" style="width: 100%;float: left;">
+                                                            @if((isset($service_request['additional_charges_title']['option']) && !empty($service_request['additional_charges_title']['option']) ) || (isset($service_request['additional_charges_title']['other']) && !empty( $service_request['additional_charges_title']['other'])))
                                                                 <div class="row">
-                                                                    <div class="col-sm-12">
-                                                                        {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').':', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
+                                                                    <div class="col-md-12" style="width: 100%;float: left;">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                {!! Form::label('additional_charges', trans('quickadmin.service-request.fields.additional-charges').':', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
+                                                                            </div>
+                                                                        </div>
+                                                                        @if(!empty($service_request['additional_charges_title']['option']))
+                                                                            @foreach($service_request['additional_charges_title']['option'] as $key => $additional_charges_title)
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-12">
+                                                                                        
+                                                                                        <div class="pull-left" style="width:50%;float:left;">
+                                                                                        {{-- !! Form::label('', $service_request->additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !! --}}
+
+                                                                                        {!! Form::label('', $additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !!}
+                                                                                    
+                                                                                        </div>
+                                                                                    {{-- @endforeach --}}
+
+                                                                                        {{-- @foreach($service_request->additional_charges as $key => $additional_charges) --}}
+                                                                                        <div class="pull-right" style="float:right;">
+                                                                                        <i class="fa fa-rupee"></i>  
+                                                                                            {{-- number_format($service_request->additional_charges,2) --}}
+                                                                                            {{ number_format($service_request['additional_charges']['option'][$key],2) }}
+                                                                                        </div>
+                                                                                        
+                                                                                    </div>
+                                                                                    
+                                                                                </div>
+                                                                            @endforeach
+                                                                        @endif
+
+                                                                        <div class="row">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="pull-left" style="width:50%;float:left;">
+                                                                                    {!! Form::label('', $service_request['additional_charges_title']['other'].': ', ['class' => 'control-label fontsize', ]) !!}
+                                                                                </div>
+                                                                                <div class="pull-right" style="float:right;">
+                                                                                    {{-- number_format($service_request->additional_charges,2) --}}
+                                                                                    <i class="fa fa-rupee"></i> 
+                                                                                    {{ number_format($service_request['additional_charges']['other'],2) }}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-
-                                                                @foreach($service_request['additional_charges_title']['option'] as $key => $additional_charges_title)
-                                                                <div class="row">
-                                                                    <div class="col-sm-12">
-                                                                        
-                                                                        <div class="pull-left" style="width:50%;float:left;">
-                                                                        {{-- !! Form::label('', $service_request->additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !! --}}
-
-                                                                        {!! Form::label('', $additional_charges_title.': ', ['class' => 'control-label fontsize', ]) !!}
-                                                                       
-                                                                        </div>
-                                                                       {{-- @endforeach --}}
-
-                                                                        {{-- @foreach($service_request->additional_charges as $key => $additional_charges) --}}
-                                                                        <div class="pull-right" style="float:right;">
-                                                                        <i class="fa fa-rupee"></i>  
-                                                                            {{-- number_format($service_request->additional_charges,2) --}}
-                                                                            {{ number_format($service_request['additional_charges']['option'][$key],2) }}
-                                                                        </div>
-                                                                         
-                                                                    </div>
-                                                                    
-                                                                </div>
-                                                                @endforeach
-
-                                                                <div class="row">
-                                                                    <div class="col-sm-12">
-                                                                        <div class="pull-left" style="width:50%;float:left;">
-                                                                            {!! Form::label('', $service_request['additional_charges_title']['other'].': ', ['class' => 'control-label fontsize', ]) !!}
-                                                                        </div>
-                                                                        <div class="pull-right" style="float:right;">
-                                                                            {{-- number_format($service_request->additional_charges,2) --}}
-                                                                            <i class="fa fa-rupee"></i> 
-                                                                            {{ number_format($service_request['additional_charges']['other'],2) }}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                            @endif
                                                         @endif
                                                         <hr style="margin-top: 10px !important;
                                                                 margin-bottom: 10px !important;

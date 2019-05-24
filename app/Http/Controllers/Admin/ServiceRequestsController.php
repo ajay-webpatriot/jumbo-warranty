@@ -724,7 +724,7 @@ class ServiceRequestsController extends Controller
 
         $predefine_additional_charge_array = [];
         $actual_value = '';
-
+        $predefine_additional_charge_array['option'] = [];
         if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != '' ){
 
             foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {
@@ -740,7 +740,10 @@ class ServiceRequestsController extends Controller
                 }
                 
             }
-            $predefine_additional_charge_array['option'] = array_values($predefine_additional_charge_array['option']);
+            if(isset($predefine_additional_charge_array['option'])){
+                $predefine_additional_charge_array['option'] = array_values($predefine_additional_charge_array['option']);
+            }
+            
         }
         // convert to json
         $predefine_additional_charge_array['other'] = array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', ''));
@@ -806,7 +809,7 @@ class ServiceRequestsController extends Controller
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
         SendMailHelper::sendRequestCreationMail($service_request->id);
 
-        // SendMailHelper::sendRequestCreationMail(188);
+        // SendMailHelper::sendRequestCreationMail(195);
 
         // service request log for new request
         $insertServiceRequestLogArr = array(
@@ -1297,6 +1300,7 @@ class ServiceRequestsController extends Controller
         $predefine_additional_charge_array = [];
         $actual_value = '';
         
+        $predefine_additional_charge_array['option'] = [];
         if(isset($request['existingAdditional_charge_for']) && $request['existingAdditional_charge_for'] != ''){
         
             foreach ($request['existingAdditional_charge_for'] as $key => $existingAdditional_charge_for_Vlaue) {
