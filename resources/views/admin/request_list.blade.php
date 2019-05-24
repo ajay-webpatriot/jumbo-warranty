@@ -188,8 +188,8 @@
 
                                     @endif
 
-                                    <td>{{ date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
-                                    <td>
+                                    <td align="center">{{ date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
+                                    <td align="center">
                                         <span style="color:{{ $backgroundColor }}">
                                                 <b>{{ $status }} </b>
                                         </span>

@@ -217,7 +217,7 @@ $(document).ready(function(){
 	});
 	$("#company-modal").find("form").on('submit', function (e) {
 
-		$("#company-modal").find('.alert-danger').hide();
+		$("#company-modal").find('.alert-danger').hide().html('');
 		$("#company-modal").find('.message').html('');
 		// $("#company_id").html('');
 
@@ -285,7 +285,7 @@ $(document).ready(function(){
 	$("#customer-modal").find("form").on('submit', function (e) {
 
 		$("#customer-modal").find('.message').html('');
-		$("#customer-modal").find('.alert-danger').hide();
+		$("#customer-modal").find('.alert-danger').hide().html('');
 		$(".custAddress").html('');
 
 		// add company on click of save button
@@ -365,7 +365,7 @@ $(document).ready(function(){
 	$("#service-center-modal").find("form").on('submit', function (e) {
 
 		$("#service-center-modal").find('.message').html('');
-		$("#service-center-modal").find('.alert-danger').hide();
+		$("#service-center-modal").find('.alert-danger').hide().html('');
 		// $("#service_center_id").html('');
 
 		// add service center on click of save button
@@ -434,7 +434,7 @@ $(document).ready(function(){
 	$("#technician-modal").find("form").on('submit', function (e) {
 
 		$("#technician-modal").find('.message').html('');
-		$("#technician-modal").find('.alert-danger').hide();
+		$("#technician-modal").find('.alert-danger').hide().html('');
 
 		// add technician on click of save button
 		e.preventDefault();

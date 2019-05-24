@@ -516,7 +516,7 @@ class ServiceRequestsController extends Controller
                     $tableField['amount'] ='<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
                 }
                 $tableField['sr_no'] = 'JW'.sprintf("%04d", $SingleServiceRequest->id);
-                $tableField['customer'] = $SingleServiceRequest->firstname;
+                $tableField['customer'] = $SingleServiceRequest->firstname."<br/>(".$SingleServiceRequest->phone.")";
                 $tableField['service_type'] =ucfirst($SingleServiceRequest->service_type);
                 $tableField['product'] =ucfirst($SingleServiceRequest->pname);
 
