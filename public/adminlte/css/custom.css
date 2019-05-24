@@ -27,3 +27,7 @@
 	/* set css for error message */
 	color: #FF0000 !important;
 }
+
+.removelink, .addlink{
+	text-decoration: underline !important;
+}

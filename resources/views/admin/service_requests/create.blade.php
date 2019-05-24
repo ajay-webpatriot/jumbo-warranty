@@ -640,7 +640,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="row  existingAdditional_charge_for_1">
                                                 <div class="col-md-8 col-xs-7">
                                                     <div class="form-group">
                                                         <select class="form-control multiple_Additional_charge_for" id="Additional_charge_for_existing-1" style="width:100%" name="existingAdditional_charge_for[]">
@@ -673,6 +673,8 @@
                                                                 {!! Form::text('existingAdditional_charge[]', old('existingAdditional_charge[]'), ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','id' => 'existingAdditional_charge_1','onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
                                                             <p class="error-amount-block_1 text-danger"></p>
+
+                                                            <a href="javascript:void(0);" class="text-danger pull-right removelink" onclick='removeAdditionalChargeFor(1);'>Remove</a>
                                                         </div>
 
                                                         <!-- <div class="col-md-3 col-xs-2 row"> -->
@@ -738,7 +740,7 @@
                                                     <!--  {!! Form::label('amount', trans('quickadmin.service-request.fields.amount').'', ['class' => 'control-label']) !!}
                                                     {!! Form::text('amount', old('amount'), ['class' => 'form-control', 'placeholder' => '','id' => 'amount', 'readonly' => '']) !!} -->
                                                     {!! Form::label('totalamount', trans('quickadmin.service-request.fields.totalamount').':', ['class' => 'control-label']) !!}
-                                                    
+
                                                     <!-- total amount value label -->
                                                     {{-- !! Form::label('',old('amount'), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !! --}}
                                                 
@@ -759,7 +761,8 @@
                                                 <div class="col-md-4 col-xs-5">
                                                     <div class="row">
                                                         <div class="col-md-12 col-xs-12">
-                                                            {!! Form::label('',old('amount'), ['class' => 'control-label pull-right', 'id' => 'lbl_total_amount']) !!}
+                                                            {!! Html::decode(Form::label('totalamount', '<i class="fa fa-rupee"></i> '.number_format(0,2),['class' => 'control-label pull-right', 'id' => 'lbl_total_amount'])) !!}
+                                                    
                                                         </div>
                                                     </div>
                                                 </div>
