@@ -126,7 +126,8 @@ class SendMail
         $receiver_email=array('admin' => $admin_email,
                               'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
-                              'rajdip' => 'rajdip.webpatriot@gmail.com'
+                              'rajdip' => 'rajdip.webpatriot@gmail.com',
+                              'hinal' => 'hinal.webpatriot@gmail.com'
                             );
         foreach ($receiver_email as $key => $value) {
           if(!empty($value))
@@ -201,7 +202,8 @@ class SendMail
         $receiver_email=array('admin' => $admin_email,
                               // 'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
-                              'rajdip' => 'rajdip.webpatriot@gmail.com'
+                              'rajdip' => 'rajdip.webpatriot@gmail.com',
+                              'hinal' => 'hinal.webpatriot@gmail.com'
                             );
         if($service_request->status == "Closed")
         {
