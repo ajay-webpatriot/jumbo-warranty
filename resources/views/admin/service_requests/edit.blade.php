@@ -1281,13 +1281,14 @@
                     $("#formServiceRequest").find("#selectall-parts").prop("disabled", false);
                     $("#formServiceRequest").find("#status").prop("disabled", false);
                     $("#formServiceRequest").find("#quick_add_customer").hide();
-
-                    $(".removelink").each(function() {
-                        $(this).hide();
-                    });
-                    $(".addlink").each(function(e) {
-                        $(this).hide();
-                    });
+                    $("#formServiceRequest").find(".existingAdditional_charge").prop("readonly", false);
+                    $("#formServiceRequest").find(".multiple_Additional_charge_for").prop("disabled", false);
+                    // $(".removelink").each(function() {
+                    //     $(this).hide();
+                    // });
+                    // $(".addlink").each(function(e) {
+                    //     $(this).hide();
+                    // });
 
 
                     // $("#adavance_amount").prop("readonly", false);
