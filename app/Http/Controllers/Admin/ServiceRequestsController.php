@@ -2285,6 +2285,25 @@ class ServiceRequestsController extends Controller
         return response()->json(array('success' => $status , 'html'=>$returnHTML));
     }
 
+    public function ajaxAssignProducts(Request $request)
+    {
+        $status = 0;
+        $returnHTML = '';
+        $company_id = '';
+        if($request['company_id'] != '' && $request['company_id'] != 0){
+
+            $company_id = $request['company_id'];
+
+            $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+
+            $product_ids = \App\Product::where('status','Active')->orderBy('name')->get()->pluck('name', 'id');
+
+            $returnHTML = view('admin.assign_products.content',compact('companies', 'product_ids'))->render();
+            $status = 1;
+        }
+        return response()->json(array('success' => $status , 'html'=>$returnHTML, 'company_id' => $company_id));
+    }
+
     public function sendPushNotificationTechnician($technicianId,$lastInsertedId)
     {
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
