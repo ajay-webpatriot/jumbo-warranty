@@ -367,6 +367,13 @@ class CustomersController extends Controller
 
             $custOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
 
+            $customerAddress = $customer->address_1."<br/>";
+            if(!empty($customer->address_2))
+            {
+                $customerAddress.=$customer->address_2."<br/>";
+            }
+            $customerAddress.=$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
+
             // $customers = \App\Customer::where('company_id',$details['companyId'])
             //                     ->where('status','Active')->get();
             // if(count($customers) > 0)
@@ -383,6 +390,7 @@ class CustomersController extends Controller
                     // 'selectedCustomer' => $customer->id,
                     'last_inserted_company_id' => $customer->company_id,
                     'last_inserted_customer_id' => $customer->id,
+                    'last_inserted_customer_address' => $customerAddress,
                     'last_inserted_customer_name' => ucfirst($customer->firstname).' '.ucfirst($customer->lastname)
                 ));
         }

@@ -68,24 +68,51 @@
                         <thead>
                             <tr>
                                 <th>@lang('quickadmin.service-request.fields.request-id')</th>
-                                <th>@lang('quickadmin.service-request.fields.company')</th>
+
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+
+                                    <th>@lang('quickadmin.service-request.fields.company')</th>
+
+                                @endif
+
                                 <th>@lang('quickadmin.service-request.fields.customer')</th>
+                                <th>@lang('quickadmin.qa_customer_phone')</th>
+
                                 <th>@lang('quickadmin.service-request.fields.service-type')</th>
-                                <th>@lang('quickadmin.service-request.fields.service-center')</th>
+
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+
+                                    <th>@lang('quickadmin.service-request.fields.service-center')</th>
+
+                                @endif
+
                                 <th>@lang('quickadmin.service-request.fields.product')</th>
+
                                 @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
                                     <th>@lang('quickadmin.service-request.fields.amount')</th>
 
                                 @endif
+
                                 <th>@lang('quickadmin.service-request.fields.created_date')</th>
                                 <th>@lang('quickadmin.service-request.fields.status')</th>
+
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                    <th>@lang('quickadmin.qa_paid')</th>
+                                @endif
+
                             </tr>
                         </thead>
 
                         <tbody>
                             @foreach($dataByType as $key => $SingleServiceTypeDetail)
                             <?php
+                               
+                                $paidStatus = 'Due';
+                                if($SingleServiceTypeDetail->is_paid == 1 && $SingleServiceTypeDetail->status == "Closed" ){
+                                    $paidStatus = 'Paid';
+                                }
+
                                 $status = '';
                                 $backgroundColor = '';
                                 $company_name = '-';
@@ -93,6 +120,7 @@
                                 $lastname= '';
                                 $service_type= '-';
                                 $service_centers= '-';
+                                $customerPhoneNumber = '-';
                                 $product= '-';
                                 $amount= '-';
 
@@ -103,6 +131,7 @@
                                     
                                     $firstname = $SingleServiceTypeDetail->customer->firstname;
                                     $lastname= $SingleServiceTypeDetail->customer->lastname;
+                                    $customerPhoneNumber = $SingleServiceTypeDetail->customer->phone;
                                 }
                             
                                 if( $SingleServiceTypeDetail->service_type != ''){
@@ -133,23 +162,45 @@
                             @endif
                                 <tr>
                                     <td align="center"><a href="{{ route('admin.service_requests.show',$SingleServiceTypeDetail->id) }}" target="_blank"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </a></td>
-                                    <td>{{ ucfirst($company_name) }}</td>
+
+                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+
+                                        <td>{{ ucfirst($company_name) }}</td>
+
+                                    @endif
+
                                     <td>{{ ucfirst($firstname) }} {{ ucfirst($lastname) }}</td>
+
+                                    <td>{{ $customerPhoneNumber }}</td>
+
                                     <td align="center">{{ $service_type }}</td>
-                                    <td align="center">{{ $service_centers }}</td>
+
+                                    @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+
+                                        <td align="center">{{ $service_centers }}</td>
+
+                                    @endif
                                     <td>{{ $product }}</td>
+
                                     @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
                                         <td><span class="pull-right"><i class="fa fa-rupee"></i> {{ $amount }}</span></td>
 
                                     @endif
 
-                                    <td>{{ date('d-m-Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
+                                    <td>{{ date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
                                     <td>
                                         <span style="color:{{ $backgroundColor }}">
                                                 {{ $status }} 
                                         </span>
                                     </td>
+
+                                    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+
+                                        <td align="center">{{ ucfirst($paidStatus) }}</td>
+                                        
+                                    @endif
+
                                 </tr>
                             @endforeach
                         </tbody>

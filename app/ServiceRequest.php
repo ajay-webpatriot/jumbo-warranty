@@ -58,7 +58,7 @@ class ServiceRequest extends Model
 
     public static $enum_mop = ["Cash" => "Cash", "Bank" => "Bank", "Online" => "Online", "Credit / Debit Card" => "Credit / Debit Card"];
 
-    public static $enum_status = ["Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
+    public static $enum_status = ["Started" => "Started", "Pending for parts" => "Pending for parts","Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
 
     public static $enum_installation_status = ["Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Started" => "Started", "Closed" => "Closed"];
 

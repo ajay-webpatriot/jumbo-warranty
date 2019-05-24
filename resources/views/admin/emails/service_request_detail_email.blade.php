@@ -410,7 +410,7 @@
                                                         
                                                     </div>
                                                 </div>
-                                            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                                @if($role_id == config('constants.ADMIN_ROLE_ID') || $role_id == "customer")
                                                 <div class="row">
                                                     <div class="col-md-6" style="width: 48%;    float: left;    
                                                         position: relative;

@@ -16,10 +16,12 @@
             font-size: 12px!important;
         }
     </style>
-    @if($ProductAssignMessage != '')
-        <div class="alert alert-danger alert-dismissable">
-            {{ $ProductAssignMessage }}
-        </div>
+    @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        @if($ProductAssignMessage != '')
+            <div class="alert alert-danger alert-dismissable">
+                {{ $ProductAssignMessage }}
+            </div>
+        @endif
     @endif
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store'], 'id' => 'formServiceRequest']) !!}
@@ -638,12 +640,10 @@
                                                 </div>
                                             </div>
 
-                                            <div class="addnewDiv"></div>
-
                                             <div class="row">
                                                 <div class="col-md-8 col-xs-7">
                                                     <div class="form-group">
-                                                        <select class="form-control" id="Additional_charge_for_existing-1" required=""  style="width:100%" name="existingAdditional_charge_for[]">
+                                                        <select class="form-control multiple_Additional_charge_for" id="Additional_charge_for_existing-1" style="width:100%" name="existingAdditional_charge_for[]">
                                                         <?php
                                                             foreach ($pre_additional_charge_array as $key => $value) {
                                                                 if($key == 0){
@@ -656,8 +656,9 @@
                                                         ?>
                                                         </select>
                                                         {{-- !! Form::select('existingAdditional_charge_for[]', $pre_additional_charge_array, old('existingAdditional_charge_for'), ['class' => 'form-control','id' => 'Additional_charge_for_existing-1', 'required' => '','min' => '1','style' => 'width:100%']) !! --}}
+                                                        <p class="error-block_1 text-danger"></p>
                                                     </div>
-                                                    <p class="error-block_1 text-danger"></p>
+                                                  
                                                 </div>
 
                                                 <div class="col-md-4 col-xs-5">
@@ -669,14 +670,9 @@
                                                                 <label class="input-group-addon" for="existingAdditional_charge">
                                                                     <span class="fa fa-rupee"></span>
                                                                 </label>
-                                                                {!! Form::text('existingAdditional_charge[]', old('existingAdditional_charge[]'), ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','required' => 'required','id' => 'existingAdditional_charge_1','onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
+                                                                {!! Form::text('existingAdditional_charge[]', old('existingAdditional_charge[]'), ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','id' => 'existingAdditional_charge_1','onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
-                                                            <p class="help-block addamountError"></p>
-                                                            @if($errors->has('existingAdditional_charge'))
-                                                            <p class="help-block">
-                                                                {{ $errors->first('existingAdditional_charge') }}
-                                                            </p>
-                                                            @endif
+                                                            <p class="error-amount-block_1 text-danger"></p>
                                                         </div>
 
                                                         <!-- <div class="col-md-3 col-xs-2 row"> -->
@@ -685,10 +681,12 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="addnewDiv"></div>
                                             
                                             <div class="row">
                                                 <div class="col-md-12 col-xs-12">
-                                                    <a class="text-info pull-right addlink" onclick='addExistingAdditional_charge();'>Add more</a>
+                                                    <a href="javascript:void(0);" class="text-info pull-right addlink" onclick='addExistingAdditional_charge();'>Add more</a>
                                                 </div>
                                             </div>
 
@@ -976,7 +974,7 @@
                 combo+= "<option value='"+i+"'>" + el + "</option>";
             });
             
-            var append = '<div class="row existingAdditional_charge_for_'+counter+'"><div class="col-md-8 col-xs-7"><div class="form-group"><select class="form-control existingAdditional_charge_for" required name="existingAdditional_charge_for[]" id="Additional_charge_for_existing-'+counter+'"  style="width:100%">'+ combo +'</select></div><p class="error-block_'+counter+' text-danger"></p></div><div class="col-md-4 col-xs-5"><div class="row"><div class="col-md-12 col-xs-12"><div class="input-group"><label class="input-group-addon" for="existingAdditional_charge_'+counter+'"><span class="fa fa-rupee"></span></label><input type="text" class="form-control text-right existingAdditional_charge" id="existingAdditional_charge_'+counter+'" name="existingAdditional_charge[]" onkeypress="return checkIsDecimalNumber(this,event)" onkeyup="totalServiceAmount()" placeholder="Amount" required></div><a class="text-danger  pull-right" onclick="removeAdditionalChargeFor('+counter+');">Remove</a></div></div></div></div>';
+            var append = '<div class="row existingAdditional_charge_for_'+counter+'"><div class="col-md-8 col-xs-7"><div class="form-group"><select class="form-control multiple_Additional_charge_for"  name="existingAdditional_charge_for[]" id="Additional_charge_for_existing-'+counter+'"  style="width:100%">'+ combo +'</select></div><p class="error-block_'+counter+' text-danger"></p></div><div class="col-md-4 col-xs-5"><div class="row"><div class="col-md-12 col-xs-12"><div class="input-group"><label class="input-group-addon" for="existingAdditional_charge_'+counter+'"><span class="fa fa-rupee"></span></label><input type="text" class="form-control text-right existingAdditional_charge" id="existingAdditional_charge_'+counter+'" name="existingAdditional_charge[]" onkeypress="return checkIsDecimalNumber(this,event)" onkeyup="totalServiceAmount()" placeholder="Amount"></div><a href="javascript:void(0);" class="text-danger  pull-right" onclick="removeAdditionalChargeFor('+counter+');">Remove</a></div><div><p class="error-amount-block_'+counter+' text-danger"></p></div></div></div></div>';
             
             $(".addnewDiv").append(append);
             counter++;
