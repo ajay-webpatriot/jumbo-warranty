@@ -740,7 +740,8 @@ class ServiceRequestsController extends Controller
                 }
                 
             }
-            if(isset($predefine_additional_charge_array['option'])){
+            if(isset($predefine_additional_charge_array['option']))
+            {
                 $predefine_additional_charge_array['option'] = array_values($predefine_additional_charge_array['option']);
             }
             
@@ -1755,11 +1756,12 @@ class ServiceRequestsController extends Controller
                     }
                 }
             }
-
             if(!empty($additional_charge_array->other)){
                 foreach ($additional_charge_array->other as $key => $value) {
-
-                   $additional_charges.= "<tr><td colspan='2'>".str_replace('_empty_', '', $key)." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
+                    if(str_replace('_empty_', '', $key) != "" and $value > 0) 
+                    {
+                        $additional_charges.= "<tr><td colspan='2'>".str_replace('_empty_', '', $key)." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
+                    }
 
                 }                                      
             }
