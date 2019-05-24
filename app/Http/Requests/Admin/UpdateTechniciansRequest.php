@@ -31,7 +31,7 @@ class UpdateTechniciansRequest extends FormRequest
             'city' => 'required',
             'state' => 'required',
             'zipcode' => 'required|min:6|max:6',
-            'email' => 'required|email|unique:users,email,'.$this->route('technician'),
+            'email' => 'required|email|unique:users,email,'.$this->route('technician').',id,deleted_at,NULL',
             'password' => 'confirmed',
             'status' => 'required',
         ];

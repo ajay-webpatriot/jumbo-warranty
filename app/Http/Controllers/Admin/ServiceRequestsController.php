@@ -1758,7 +1758,7 @@ class ServiceRequestsController extends Controller
             }
             if(!empty($additional_charge_array->other)){
                 foreach ($additional_charge_array->other as $key => $value) {
-                    if(str_replace('_empty_', '', $key) != "" and $value > 0) 
+                    if(str_replace('_empty_', '', $key) != "" && $value > 0) 
                     {
                         $additional_charges.= "<tr><td colspan='2'>".str_replace('_empty_', '', $key)." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
                     }

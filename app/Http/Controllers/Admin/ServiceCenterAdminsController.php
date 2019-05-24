@@ -240,7 +240,7 @@ class ServiceCenterAdminsController extends Controller
         // }
 
 
-        return redirect()->route('admin.service_center_admins.index')->with('success','Service Center Admins created successfully!');
+        return redirect()->route('admin.service_center_admins.index')->with('success','Service Center Admin created successfully!');
     }
 
 
@@ -299,7 +299,7 @@ class ServiceCenterAdminsController extends Controller
         //     }
         // }
 
-        return redirect()->route('admin.service_center_admins.index')->with('success','Service Center Admins updated successfully!');
+        return redirect()->route('admin.service_center_admins.index')->with('success','Service Center Admin updated successfully!');
     }
 
 

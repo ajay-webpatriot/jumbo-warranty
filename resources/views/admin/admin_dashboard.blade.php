@@ -229,7 +229,8 @@
                             
                             <div id="collapseRecentServiceRequests" class="box-body collapse in" role="tabpanel">
                                 <ul class="products-list product-list-in-box">
-                                    @if(!empty($ServiceTypeDetails))
+
+                                    @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
                                         @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
                                             <li class="item">
                                                 <div class="product-img">
@@ -276,17 +277,18 @@
                                     @else
                                         <li class="item">
                                             <span class="product-description text-center">
-                                                No Requests
+                                                No Request Available
                                             </span>   
                                         </li>
                                     @endif
 
                                 </ul>
                             </div>
-                           
+                            @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
                             <div class="box-footer text-center">
                                 <a href="{{ route('admin.service_requests.index') }}" class="uppercase">View All Service requests</a>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

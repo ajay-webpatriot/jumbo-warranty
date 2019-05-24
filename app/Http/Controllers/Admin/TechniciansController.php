@@ -319,7 +319,7 @@ class TechniciansController extends Controller
             'city' => 'required',
             'state' => 'required',
             'zipcode' => 'required|min:6|max:6',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:users,email,"",id,deleted_at,NULL',
             'password' => 'required|confirmed',
             // 'status' => 'required',
 

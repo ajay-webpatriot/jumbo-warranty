@@ -501,7 +501,7 @@
                                                                                 </div>
                                                                             @endforeach
                                                                         @endif
-
+                                                                        @if(str_replace('_empty_', '', $service_request['additional_charges_title']['other']) != "" && $service_request['additional_charges']['other'] > 0)
                                                                         <div class="row">
                                                                             <div class="col-sm-12">
                                                                                 <div class="pull-left" style="width:50%;float:left;">
@@ -514,6 +514,7 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                        @endif
                                                                     </div>
                                                                 </div>
                                                             @endif

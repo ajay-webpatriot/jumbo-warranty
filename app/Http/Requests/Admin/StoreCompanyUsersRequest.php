@@ -27,7 +27,7 @@ class StoreCompanyUsersRequest extends FormRequest
             'name' => 'required',
             // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'phone' => 'required|min:11|max:11',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:users,email,"",id,deleted_at,NULL',
             'password' => 'required|confirmed',
             'status' => 'required',
         ];

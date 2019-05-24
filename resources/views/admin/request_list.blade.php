@@ -191,7 +191,7 @@
                                     <td>{{ date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
                                     <td>
                                         <span style="color:{{ $backgroundColor }}">
-                                                {{ $status }} 
+                                                <b>{{ $status }} </b>
                                         </span>
                                     </td>
 
