@@ -933,6 +933,31 @@
                       </div>
                       <!-- /.modal-dialog -->
                 </div>
+
+                <div class="modal fade in" id="assign-products-modal">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Assign Products</h4>
+                          </div>
+                          {!! Form::open(['method' => 'POST', 'route' => ['admin.assign_products.store']]) !!}
+                          <div class="modal-body">
+                            <div class="alert alert-danger" style="display:none"></div>
+                            <div id="renderAssignProductsHtml"></div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                            <button type="submit" id="btnAssignProducts" class="btn btn-primary">Save</button>
+                          </div>
+                          {!! Form::close() !!}
+                        </div>
+                        <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                </div>
+
                 @stop
 
                 @section('javascript')
@@ -951,6 +976,16 @@
             format: "{{ config('app.date_format_moment') }}",
             locale: "{{ App::getLocale() }}",
         });
+    });
+
+    $(document).on('click',"#selectbtn-product_id",function(){
+        $("#selectall-product_id > option").prop("selected","selected");
+        $("#selectall-product_id").trigger("change");
+    });
+
+    $(document).on('click',"#deselectbtn-product_id",function(){
+        $("#selectall-product_id > option").prop("selected","");
+        $("#selectall-product_id").trigger("change");
     });
 </script>
 
