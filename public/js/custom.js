@@ -202,6 +202,13 @@ $(document).ready(function(){
     	$(this).parent().find(".glyphicon").removeClass("glyphicon-plus").addClass("glyphicon-minus");
     }).on('hide.bs.collapse', function(){
     	$(this).parent().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+	});
+	
+	$(document).on('show.bs.collapse',".collapse", function(){
+    	$(this).parent().find(".glyphicon").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+	})
+	$(document).on('hide.bs.collapse',".collapse", function(){
+    	$(this).parent().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
     });
 
     $("#company-modal").on('shown.bs.modal', function(){

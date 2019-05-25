@@ -155,13 +155,15 @@
                                 </div>
                             </div>
 
+                            <div class="" id="overlayClass" style="display:none;">
+                                <i class="fa fa-refresh fa-spin"></i>
+                            </div>
+
                         </div>
                     </div>
                 </div>
 
                 <div id="requestlistHtml" style="display:none;">
-
-
                 </div>
 
                 <div class="row">
@@ -371,7 +373,8 @@
         }
 
         $('.requestlistform').on('submit', function(e){
-
+            $('#overlayClass').removeAttr('style');
+            $('#overlayClass').addClass('overlay');
             e.preventDefault(); 
             var formData = $(this).serializeArray();
 
@@ -384,6 +387,8 @@
                 },
                 dataType: "json",
                 success:function(data) {
+                    $('#overlayClass').hide();
+                    $('#overlayClass').removeClass('overlay');
                     $('#requestlistHtml').removeAttr('style');
                     $('#requestlistHtml').html(data.html);
                     $('.datatable').dataTable();
