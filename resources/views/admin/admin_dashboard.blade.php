@@ -155,7 +155,12 @@
                                 </div>
                             </div>
 
+                            <div class="" id="Addloader" style="display:none;">
+                                <i class="fa fa-refresh fa-spin"></i>
+                            </div>
+
                         </div>
+
                     </div>
                 </div>
 
@@ -371,6 +376,8 @@
         }
 
         $('.requestlistform').on('submit', function(e){
+            $('#Addloader').removeAttr('style');
+            $('#Addloader').addClass('overlay');
 
             e.preventDefault(); 
             var formData = $(this).serializeArray();
@@ -384,6 +391,8 @@
                 },
                 dataType: "json",
                 success:function(data) {
+                    $('#Addloader').hide();
+                    $('#Addloader').removeClass('overlay');
                     $('#requestlistHtml').removeAttr('style');
                     $('#requestlistHtml').html(data.html);
                     $('.datatable').dataTable();
