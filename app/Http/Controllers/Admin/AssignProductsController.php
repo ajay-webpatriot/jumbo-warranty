@@ -384,31 +384,82 @@ class AssignProductsController extends Controller
             return abort(401);
         }
 
-        $assign_product = AssignProduct::where('company_id',$request->company_id);
-        if(!empty($assign_product))
+        if($request->ajax())
         {
-            $assign_product->delete();
-        }
-        
-        $productIds = $request->product_id;
-        if(!empty($productIds))
-        {
-            foreach ($productIds as $key => $value) {
-                
-                $assignProductObj = new AssignProduct([
-                    'company_id' => $request->company_id,
-                    'product_id' => $value,
-                ]);
-                $assignProductObj->save();
+            $assign_product = AssignProduct::where('company_id',$request->company_id);
+            
+            if(!empty($assign_product))
+            {
+                $assign_product->delete();
             }
-        }
+
+            $productIds = $request->product_id;
+
+            if(!empty($productIds))
+            {   
+                foreach ($productIds as $key => $value) {
+                    
+                    $assignProductObj = new AssignProduct([
+                        'company_id' => $request->company_id,
+                        'product_id' => $value,
+                    ]);
+                    $assignProductObj->save();                    
+                }
+            }
+           
+            return response()->json(array(
+                    'success' => true,
+                    'message' => 'Assign Products added successfully!',
+                    'last_inserted_company_id' => $request->company_id
+            ));
+        }else{
+                $assign_product = AssignProduct::where('company_id',$request->company_id);
+                if(!empty($assign_product))
+                {
+                    $assign_product->delete();
+                }
+                
+                $productIds = $request->product_id;
+                if(!empty($productIds))
+                {
+                    foreach ($productIds as $key => $value) {
+                        
+                        $assignProductObj = new AssignProduct([
+                            'company_id' => $request->company_id,
+                            'product_id' => $value,
+                        ]);
+                        $assignProductObj->save();
+                    }
+                }
+            
+            return redirect()->route('admin.assign_products.index')->with('success','Assign Products added successfully!');
+        }  
+
+        // $assign_product = AssignProduct::where('company_id',$request->company_id);
+        // if(!empty($assign_product))
+        // {
+        //     $assign_product->delete();
+        // }
+        
+        // $productIds = $request->product_id;
+        // if(!empty($productIds))
+        // {
+        //     foreach ($productIds as $key => $value) {
+                
+        //         $assignProductObj = new AssignProduct([
+        //             'company_id' => $request->company_id,
+        //             'product_id' => $value,
+        //         ]);
+        //         $assignProductObj->save();
+        //     }
+        // }
         
         // $assign_product = AssignProduct::create($request->all());
         // $assign_product->product_id()->sync(array_filter((array)$request->input('product_id')));
 
 
 
-        return redirect()->route('admin.assign_products.index')->with('success','Assign Products added successfully!');
+        // return redirect()->route('admin.assign_products.index')->with('success','Assign Products added successfully!');
     }
 
 

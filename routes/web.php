@@ -114,6 +114,8 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
 
     Route::get('/quickadd', ['uses' => 'Admin\ServiceRequestsController@quickadd']);
 
+    Route::get('/ajax_assign_products', ['uses' => 'Admin\ServiceRequestsController@ajaxAssignProducts']);
+
     Route::get('service_request_reject/{id}', ['uses' => 'Admin\ServiceRequestsController@rejectServiceRequest', 'as' => 'service_request.reject']);
 
     /* admin dashboard route */
