@@ -303,7 +303,7 @@ class AdminDashboardController extends Controller
         
         $returnHTML = view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'))->render();
 
-        return response()->json(array('success' => true, 'html'=>$returnHTML));
+        return response()->json(array('success' => true, 'html'=>$returnHTML, 'type' => $type, 'color' => $color));
 
         // return view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'));
         
