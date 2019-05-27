@@ -68,14 +68,28 @@
                                             
                                             <!-- Total PENDING complain -->
                                             {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'installation_today','class' => 'requestlistform']) !!}
-
-                                                <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('installation_today')" style="cursor: pointer;" id="installationTodays">
+                                            
+                                                <!-- <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('installation_today')" style="cursor: pointer;" id="installationTodays">
                                                     <div class="info-box bg-aqua">
                                                         <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
                                                         <div class="info-box-content">
                                                             <span class="info-box-text boxfont">TOTAL INSTALLATION REQUESTS</span>
                                                             <span class="info-box-number" id="installationToday">{{-- $installationToday --}}</span>
                                                         </div>
+                                                    </div>
+                                                </div> -->
+
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <div class="small-box bg-aqua">
+                                                        <div class="inner">
+                                                            <h3 id="installationToday"></h3>
+
+                                                            <p>TOTAL INSTALLATION REQUESTS</p>
+                                                        </div>
+                                                        <div class="icon">
+                                                            <i class="ion ion-stats-bars"></i>
+                                                        </div>
+                                                        <a href="javascript:void(0);" class="small-box-footer" onclick="getRequestList('installation_today')">More info <i class="fa fa-arrow-circle-right"></i></a>
                                                     </div>
                                                 </div>
 
@@ -89,13 +103,27 @@
                                             <!-- Total PENDING installation -->
                                             {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'repair_today','class' => 'requestlistform']) !!}
 
-                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('repair_today')" style="cursor: pointer;" id="repairTodays">
+                                            <!-- <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('repair_today')" style="cursor: pointer;" id="repairTodays">
                                                 <div class="info-box bg-red">
                                                     <span class="info-box-icon"><i class="fa fa-tv"></i></span>
                                                     <div class="info-box-content">
                                                         <span class="info-box-text boxfont">TOTAL SERVICE REQUESTS</span>
                                                         <span class="info-box-number" id="repairToday">{{-- $repairToday --}}</span>
                                                     </div>
+                                                </div>
+                                            </div> -->
+
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="small-box bg-red">
+                                                    <div class="inner">
+                                                        <h3 id="repairToday"></h3>
+
+                                                        <p>TOTAL SERVICE REQUESTS</p>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="ion ion-stats-bars"></i>
+                                                    </div>
+                                                    <a href="javascript:void(0);" class="small-box-footer" onclick="getRequestList('repair_today')">More info <i class="fa fa-arrow-circle-right"></i></a>
                                                 </div>
                                             </div>
 
@@ -112,13 +140,27 @@
                                             <!-- Total solved installation -->
                                             {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'delayed_request','class' => 'requestlistform']) !!}
 
-                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('delayed_request')" style="cursor: pointer;" id="delayedRequests">
+                                            <!-- <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('delayed_request')" style="cursor: pointer;" id="delayedRequests">
                                                 <div class="info-box bg-green">
                                                     <span class="info-box-icon"><i class="fa fa-tv"></i></span>
                                                     <div class="info-box-content">
                                                         <span class="info-box-text boxfont">TOTAL DELAYED REQUESTS FROM TODAY</span>
                                                         <span class="info-box-number" id="delayedRequest">{{-- $delayedRequest --}}</span>
                                                     </div>
+                                                </div>
+                                            </div> -->
+
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="small-box bg-green">
+                                                    <div class="inner">
+                                                        <h3 id="delayedRequest"></h3>
+
+                                                        <p>TOTAL DELAYED REQUESTS FROM TODAY</p>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="ion ion-stats-bars"></i>
+                                                    </div>
+                                                    <a href="javascript:void(0);" class="small-box-footer" onclick="getRequestList('delayed_request')">More info <i class="fa fa-arrow-circle-right"></i></a>
                                                 </div>
                                             </div>
 
@@ -132,13 +174,27 @@
                                             <!-- Total solved complain --> 
                                             {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'closed_request','class' => 'requestlistform']) !!}
 
-                                            <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('closed_request')" style="cursor: pointer;" id="closededRequests">
+                                            <!-- <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('closed_request')" style="cursor: pointer;" id="closededRequests">
                                                 <div class="info-box bg-yellow">
                                                     <span class="info-box-icon"><i class="ion ion-ios-gear-outline"></i></span>
                                                     <div class="info-box-content">
                                                         <span class="info-box-text boxfont">TOTAL REQUESTS CLOSED BY TODAY</span>
                                                         <span class="info-box-number" id="closededRequest">{{-- $closededRequest --}}</span>
                                                     </div>
+                                                </div>
+                                            </div> -->
+
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="small-box bg-yellow">
+                                                    <div class="inner">
+                                                        <h3 id="closededRequest"></h3>
+
+                                                        <p>TOTAL REQUESTS CLOSED BY TODAY</p>
+                                                    </div>
+                                                    <div class="icon">
+                                                        <i class="ion ion-stats-bars"></i>
+                                                    </div>
+                                                    <a href="javascript:void(0);" class="small-box-footer" onclick="getRequestList('closed_request')">More info <i class="fa fa-arrow-circle-right"></i></a>
                                                 </div>
                                             </div>
 
