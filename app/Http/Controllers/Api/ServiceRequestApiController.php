@@ -1040,6 +1040,7 @@ class ServiceRequestApiController extends Controller
         );
 
         $response->charges = $charges;
+        $response->defaultAdditionalChargesTitle = $pre_additional_charge_array;
 
         return $response;
     }
