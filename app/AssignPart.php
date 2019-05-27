@@ -3,6 +3,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\ServiceRequest;
 
 /**
  * Class AssignPart
@@ -27,8 +28,7 @@ class AssignPart extends Model
     public function getRequestedServiceParts($assignPartId,$companyId)
     {
         // get total used parts in service request
-        return $usedParts = DB::table('service_requests')
-            ->select('service_requests.id as service_request_id')
+        return $usedParts = ServiceRequest::select('service_requests.id as service_request_id')
             ->distinct()
             ->join('product_part_service_request', 'service_requests.id', '=', 'product_part_service_request.service_request_id')
             ->join('assign_parts', 'assign_parts.product_parts_id', '=', 'product_part_service_request.product_part_id')
