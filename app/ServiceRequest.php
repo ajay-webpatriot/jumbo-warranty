@@ -86,8 +86,8 @@ class ServiceRequest extends Model
     public function getServiceRequestParts($partsIds)
     {
         // get parts name of service request
-        return $parts = DB::table('product_parts')
-            ->select(DB::raw('group_concat(product_parts.name SEPARATOR ", ") as name'))
+        // return $parts = DB::table('product_parts')
+        return $parts = ProductPart::select(DB::raw('group_concat(product_parts.name SEPARATOR ", ") as name'))
             ->join('product_part_service_request', 'product_parts.id', '=', 'product_part_service_request.product_part_id')
             ->whereIn('product_parts.id',$partsIds)
             ->groupBy('product_part_service_request.service_request_id')

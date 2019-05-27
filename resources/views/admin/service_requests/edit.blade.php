@@ -732,11 +732,9 @@
                                             </div>
                                             
                                             <?php
-                                                   
-                                                $last_key = @end(array_keys($additional_charge_title['option']));
-                                                
-                                                
-                                                if(!empty($additional_charge_title['option'])){
+                                                if(isset($additional_charge_title['option']) && !empty($additional_charge_title['option'])){
+
+                                                    $last_key = @end(array_keys($additional_charge_title['option']));
                                                   
                                                     $i = 1;
                                                     foreach ($additional_charge_title['option'] as $additional_charge_title_key => $additional_charge_title_value) {
@@ -860,9 +858,12 @@
                                                     $additional_charge_title_other = '';
                                                     $additional_charges_other = 0;
                                                     if(!empty($additional_charge_title)){
-                                                        $additional_charge_title_other = $additional_charge_title['other'];
-                                                        $additional_charges_other = $service_request['additional_charges']['other'];
 
+                                                        if(isset($additional_charge_title['other']) && !empty($additional_charge_title['other'])){
+
+                                                            $additional_charge_title_other = $additional_charge_title['other'];
+                                                            $additional_charges_other = $service_request['additional_charges']['other'];
+                                                        }
                                                     }
                                                 ?>
                                                 <div class="col-md-8 col-xs-7">
