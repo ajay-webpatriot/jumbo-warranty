@@ -40,7 +40,7 @@ class AssignPartsController extends Controller
             return abort(401);
         }
 
-        // $AssignPart = new AssignPart(); // model object to call custom functions
+        $AssignPart = new AssignPart(); // model object to call custom functions
         
         
         // if (request('show_deleted') == 1) {
@@ -49,23 +49,24 @@ class AssignPartsController extends Controller
         //     }
         //     $assign_parts = AssignPart::onlyTrashed()->get();
         // } else {
-        //     if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
-        //     {
-        //         //get company admin's or user's own company assigned parts if logged in user is company admin or user
-        //         $assign_parts = AssignPart::where('company_id',auth()->user()->company_id)->get();
-        //     }
-        //     else
-        //     {
-        //         $assign_parts = AssignPart::all();
-        //     }
+            if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
+            {
+                //get company admin's or user's own company assigned parts if logged in user is company admin or user
+                $assign_parts = AssignPart::where('company_id',auth()->user()->company_id)->get();
+            }
+            else
+            {
+                $assign_parts = AssignPart::all();
+            }
+            
             
         // }
         
-        // foreach ($assign_parts as $key => $value) {
-        //     $usedParts=$AssignPart->getRequestedServiceParts($value->product_parts_id,$value->company_id);// get quantity of used parts in service requests
-        //     $value['availableQuantity']=$value->quantity-$usedParts;
-        // }
-        
+        foreach ($assign_parts as $key => $value) {
+            $usedParts=$AssignPart->getRequestedServiceParts($value->product_parts_id,$value->company_id);// get quantity of used
+            $value['availableQuantity']=$value->quantity-$usedParts;
+        } 
+
         $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.assign_parts.index', compact('companies'));
     }
