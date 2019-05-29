@@ -290,16 +290,11 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="box box-primary">
+                        <!-- <div class="box box-primary"> 
 
                             <div class="box-header with-border" data-toggle="collapse" href="#collapseRecentServiceRequests">
                                 <h3 class="box-title">Recent Service Requests</h3>
-                                <!-- <div class="box-tools pull-right"> -->
-                                    <!-- <button type="button" class="btn btn-box-tool pull-right"><i class="fa fa-minus"></i>
-                                    </button> -->
-                                    <span class="btn-box-tool glyphicon glyphicon-minus pull-right" style="font-size:12px;"></span> 
-                                    <!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
-                                <!-- </div> -->
+                                    <span class="btn-box-tool glyphicon glyphicon-minus pull-right" style="font-size:12px;"></span>
                             </div>
                             
                             <div id="collapseRecentServiceRequests" class="box-body collapse in" role="tabpanel">
@@ -313,9 +308,6 @@
                                                         <span class="product-title"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </span> 
                                                     </a>
                                                 </div>
-
-                                                
-
                                                 <div class="product-info">
                                                     <?php
                                                         $status = '';
@@ -334,14 +326,12 @@
                                                             <span class="pull-right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
                                                             </span>
                                                         @endif
-
-                                                        <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
                                                     </a> 
                                                     <span class="headerTitle" style="color:{{$backgroundColor}}">
                                                         {{$status}}
                                                     </span>
                                                     <span class="headerTitle">
-                                                        ( {{date('d-m-Y',strtotime($SingleServiceTypeDetail->created_at))}} )
+                                                        ( {{date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at))}} )
                                                     </span>
                                                     <span class="product-description">
                                                         {{$SingleServiceTypeDetail->customer_name}}
@@ -363,8 +353,95 @@
                             <div class="box-footer text-center">
                                 <a href="{{ route('admin.service_requests.index') }}" class="uppercase">View All Service requests</a>
                             </div>
-                            @endif
+                            @endif 
+                        </div> -->
+
+                        <div class="box box-info">
+                            <div class="box-header with-border">
+                              <h3 class="box-title">Recent Service Requests</h3>
+
+                              <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                              </div>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body" style="">
+                              <div class="table-responsive">
+                                <table class="table no-margin recent-service-request">
+                                  <thead>
+                                    <tr>
+                                        <th>@lang('quickadmin.service-request.fields.request-id')</th>
+                                        <th>@lang('quickadmin.service-request.fields.title')</th>
+                                        <th>@lang('quickadmin.service-request.fields.customer')</th>
+                                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+
+                                            <th>@lang('quickadmin.service-request.fields.amount')</th>
+
+                                        @endif
+                                        <th>@lang('quickadmin.service-request.fields.created_date')</th>
+                                        <th>@lang('quickadmin.service-request.fields.status')</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
+                                    @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
+                                      <tr>
+                                        <td align="center">
+                                            <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}">
+                                                    <span class="product-title"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </span> 
+                                                </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
+                                                    {{$SingleServiceTypeDetail->servicerequest_title}}
+
+                                                    <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
+                                            </a>
+                                        </td>
+                                        <td>{{ $SingleServiceTypeDetail->customer_name}}</td>
+                                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                            <td align="right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                            </td>
+                                        @endif
+                                        <td align="center">
+                                          {{date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at))}}
+                                        </td>
+                                        <?php
+                                            $status = '';
+                                            $backgroundColor = '';
+                                        ?>
+                                        @if($SingleServiceTypeDetail->status != '')
+                                            <?php
+                                                $backgroundColor = $enum_status_color[$SingleServiceTypeDetail->status];
+                                                $status = $SingleServiceTypeDetail->status;
+                                            ?>
+                                        @endif
+                                        <td align="center">
+                                            <span class="headerTitle" style="color:{{$backgroundColor}}">
+                                                {{$status}}
+                                            </span>
+                                        </td>
+                                        
+                                      </tr>
+                                      @endforeach
+                                    @endif
+                                  </tbody>
+                                </table>
+                              </div>
+                              <!-- /.table-responsive -->
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer clearfix" style="">
+                                <a href="http://jumbo-warranty.local/admin/service_requests/create" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
+                                @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
+                                    <a href="{{ route('admin.service_requests.index') }}" class="btn btn-sm btn-default btn-flat pull-right">View All Service requests</a>
+                                @endif
+                            </div>
+                            <!-- /.box-footer -->
                         </div>
+                    
                     </div>
                 </div>
             </section>

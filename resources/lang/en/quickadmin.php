@@ -185,7 +185,8 @@ return [
 			'totalamount' => 'Total Amount',
 			'created_date' => 'Creation Date',
 			'total-paid' => 'Total Paid',
-			'total-due' => 'Total Due'
+			'total-due' => 'Total Due',
+			'title' => 'Title'
 		],
 	],
 	

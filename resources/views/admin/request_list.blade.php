@@ -173,7 +173,7 @@
 
                                     <td>{{ $customerPhoneNumber }}</td>
 
-                                    <td align="center">{{ $service_type }}</td>
+                                    <td align="center">{{ ucfirst($service_type) }}</td>
 
                                     @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 

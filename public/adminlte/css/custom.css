@@ -38,3 +38,7 @@
 	padding: 2%;
     margin-right: 5%;
 }
+
+.recent-service-request th{
+	text-align: center !important;
+}
