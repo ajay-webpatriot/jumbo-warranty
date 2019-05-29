@@ -98,6 +98,22 @@
                                 </div>
                             </div> 
                         </div>
+                        <div class="col-md-4 service_center_balance" <?=(!empty(session('filter_service_center')))? 'style="display: block;"':'style="display: none;"'?>>
+                            <div class="row"> 
+                                <div class="col-lg-6 pull-right balance_details">
+                                    {!! Form::label('', '', ['class' => 'control-label']) !!}
+                                    {!! Form::label('', trans('quickadmin.service-request.fields.total-paid').'  : ', ['class' => 'control-label']) !!}
+
+                                    {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format(($total_paid_amount),2), ['class' => 'control-label pull-right fontweight', 'id' => 'total_paid_amount'])) !!}
+
+                                    <br/>
+                                    {!! Form::label('', trans('quickadmin.service-request.fields.total-due').' : ', ['class' => 'control-label']) !!}
+
+                                    {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format(($total_due_amount),2), ['class' => 'control-label pull-right fontweight', 'id' => 'total_due_amount'])) !!}
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -185,6 +201,25 @@
 
                                 {!! Form::select('request_type', $request_type, ($request->session()->has('filter_request_type'))? $request->session()->get('filter_request_type'):'', ['class' => 'form-control select2','onchange' => 'requestStatusFilter(this)', 'id' => 'filter_request_type','style' => 'width:100%']) !!}
                             </div>
+
+                            @if((auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')))
+                            <div class="col-md-4 service_center_balance" style="display: block;">
+                                <div class="row"> 
+                                    <div class="col-lg-6 pull-right balance_details">
+                                        {!! Form::label('', '', ['class' => 'control-label']) !!}
+                                        {!! Form::label('', trans('quickadmin.service-request.fields.total-paid').'  : ', ['class' => 'control-label']) !!}
+
+                                        {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format(($total_paid_amount),2), ['class' => 'control-label pull-right fontweight', 'id' => 'total_paid_amount'])) !!}
+
+                                        <br/>
+                                        {!! Form::label('', trans('quickadmin.service-request.fields.total-due').' : ', ['class' => 'control-label']) !!}
+
+                                        {!! Html::decode(Form::label('', '<i class="fa fa-rupee"></i> '.number_format(($total_due_amount),2), ['class' => 'control-label pull-right fontweight', 'id' => 'total_due_amount'])) !!}
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -247,8 +282,12 @@
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
-                            <th>@lang('quickadmin.qa_action')</th>
+                            @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+                            <!-- paid column will be visiblke to only service center admin) -->
+                            <th>@lang('quickadmin.qa_paid')</th>
+                            @endif
                             
+                            <th>@lang('quickadmin.qa_action')</th>
                             {{--@if( request('show_deleted') == 1 )
                             <th>Action</th>
                             @else
@@ -324,6 +363,91 @@
         
         @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             // service center admin and technician
+
+            @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+                var tableColumns =  [
+                    { "data": "sr_no" },
+                    // { "data": "checkbox" },
+                    { "data": "customer","name": "customer"},
+                    { "data": "service_type","name": "service_type" },
+                    /*{ "data": "service_center","name": "service_center" },*/
+                    { "data": "product","name": "product" },
+                    { "data": "amount","name": "amount" },
+                    { "data": "created_at","name": "created_at" },
+                    { "data": "request_status","name": "request_status" },
+                    { "data": "amount_paid" },
+                    { "data": "action" }
+                ];
+
+                var tableColumnDefs = [{
+                    "orderable": true,
+                    // "className": 'dt-body-center select-checkbox',
+                    "className": 'dt-body-center',
+                    "targets":   0,
+                    "visible": true,
+                    "searchable": true
+                },{
+                    "orderable": true,
+                    "targets":   [1,2,3,4,5]
+                },
+                {
+                    "class": "text-right",
+                    "targets":   4
+                },
+                {
+                    "class": "text-center",
+                    "targets":   5
+                },
+                {
+                    "class": "text-center",
+                    "targets":   6
+                },
+                {
+                    "orderable": false,
+                    "targets":   8
+                }];
+            @else
+                var tableColumns =  [
+                    { "data": "sr_no" },
+                    // { "data": "checkbox" },
+                    { "data": "customer","name": "customer"},
+                    { "data": "service_type","name": "service_type" },
+                    /*{ "data": "service_center","name": "service_center" },*/
+                    { "data": "product","name": "product" },
+                    { "data": "amount","name": "amount" },
+                    { "data": "created_at","name": "created_at" },
+                    { "data": "request_status","name": "request_status" },
+                    { "data": "action" }
+                ];
+
+                var tableColumnDefs = [{
+                    "orderable": true,
+                    // "className": 'dt-body-center select-checkbox',
+                    "className": 'dt-body-center',
+                    "targets":   0,
+                    "visible": true,
+                    "searchable": true
+                },{
+                    "orderable": true,
+                    "targets":   [1,2,3,4,5]
+                },
+                {
+                    "class": "text-right",
+                    "targets":   4
+                },
+                {
+                    "class": "text-center",
+                    "targets":   5
+                },
+                {
+                    "class": "text-center",
+                    "targets":   6
+                },
+                {
+                    "orderable": false,
+                    "targets":   7
+                }];
+            @endif
             var tableServiceRequest = $('#technician').DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -390,61 +514,8 @@
 
                         },
                     },
-                "columns": [
-                    { "data": "sr_no" },
-                    // { "data": "checkbox" },
-                    { "data": "customer","name": "customer"},
-                    { "data": "service_type","name": "service_type" },
-                    /*{ "data": "service_center","name": "service_center" },*/
-                    { "data": "product","name": "product" },
-                    { "data": "amount","name": "amount" },
-                    { "data": "created_at","name": "created_at" },
-                    { "data": "request_status","name": "request_status" },
-                    { "data": "action" }
-                ],
-                "columnDefs": [{
-                    "orderable": true,
-                    // "className": 'dt-body-center select-checkbox',
-                    "className": 'dt-body-center',
-                    "targets":   0,
-                    "visible": true,
-                    "searchable": true
-                },{
-                    "orderable": true,
-                    "targets":   [1,2,3,4,5]
-                },
-                // {
-                //     "orderable": true,
-                //     "targets":   1
-                // },{
-                //     "orderable": true,
-                //     "targets":   2
-                // },{
-                //     "orderable": true,
-                //     "targets":   3
-                // },{
-                //     "orderable": true,
-                //     "targets":   4
-                // },{
-                //     "orderable": true,
-                //     "targets":   5
-                // },
-                {
-                    "class": "text-right",
-                    "targets":   4
-                },
-                {
-                    "class": "text-center",
-                    "targets":   5
-                },
-                {
-                    "class": "text-center",
-                    "targets":   6
-                },
-                {
-                    "orderable": false,
-                    "targets":   7
-                }]
+                "columns": tableColumns,
+                "columnDefs": tableColumnDefs
             });
             
         @elseif(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
@@ -768,10 +839,21 @@
                 success:function(data) {
                     if(serviceCenterId != ""){
                         $(".filterTechnicianDiv").show();
+
+                        // display paid and due amount 
+                        $(".service_center_balance").show();
+                        $("#total_paid_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.paid_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                        $("#total_due_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.due_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') );
+
+                        '<i class="fa fa-rupee"></i>'+(parseFloat(data.paid_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') 
+                    }
+                    else
+                    {
+                        $(".service_center_balance").hide();
                     }
                     $(".filterTechnicianDiv").find(".select2").select2();
                     $("#filter_technician").html(data.options);
-
+                    
                     tableServiceRequest.draw();
                 }
             });

@@ -80,6 +80,8 @@ class ServiceRequestsController extends Controller
        
         $companies = \App\Company::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
+        $total_paid_amount = 0;
+        $total_due_amount = 0;
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
             //if logged in user is company admin and company user
@@ -155,6 +157,9 @@ class ServiceRequestsController extends Controller
                         
                     }
                 }   
+                $total_paid_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',auth()->user()->service_center_id)->where('is_paid','1')->sum('amount');
+
+                $total_due_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',auth()->user()->service_center_id)->where('is_paid','0')->sum('amount');
             }
             else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
@@ -191,6 +196,7 @@ class ServiceRequestsController extends Controller
         }
         else
         {
+            
             $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             if(!empty(session('filter_service_center')))
             {
@@ -200,6 +206,10 @@ class ServiceRequestsController extends Controller
                                     ->where('service_center_id',session('filter_service_center'))
                                     ->orderBy('name')
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+
+                $total_paid_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',session('filter_service_center'))->where('is_paid','1')->sum('amount');
+
+                $total_due_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',session('filter_service_center'))->where('is_paid','0')->sum('amount');
             }
             else
             {
@@ -210,7 +220,7 @@ class ServiceRequestsController extends Controller
         $request_stauts = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_status;
         $request_type = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_service_type;
 
-        return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type'));
+        return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type','total_paid_amount','total_due_amount'));
 
         // $data=array('subject' => 'Request Creation Receive',
         //             'user_name' => 'Hinal patel'
@@ -230,11 +240,12 @@ class ServiceRequestsController extends Controller
                 0 => 'service_requests.id',
                 1 =>'customers.firstname' ,
                 2 =>'service_requests.service_type' ,
-                3 =>'service_centers.name' ,
-                4 =>'products.name' ,
-                5 =>'service_requests.amount' ,
+                3 =>'products.name' ,
+                4 =>'service_requests.amount' ,
+                5 =>'service_requests.created_at',
                 6 =>'service_requests.status',
-                7 =>'service_requests.created_at'
+                7 =>'service_requests.is_paid',
+                
             );
         }else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
             
@@ -498,6 +509,12 @@ class ServiceRequestsController extends Controller
 
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
                     $tableField['amount'] = '<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
+
+                    $paidStatus = 'Due';
+                    if($SingleServiceRequest->is_paid == 1 && $SingleServiceRequest->status == "Closed" ){
+                        $paidStatus = 'Paid';
+                    }
+                    $tableField['amount_paid'] = ucfirst($paidStatus);
 
                 }else{
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
@@ -2202,6 +2219,8 @@ class ServiceRequestsController extends Controller
         
         $details=$request->all();
         $data['options']="<option value=''>".trans('quickadmin.qa_show_all')."</option>";
+        $data['paid_amount'] = 0;
+        $data['due_amount'] = 0;
         if($details['serviceCenterId'] != "")
         {
             $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
@@ -2220,7 +2239,13 @@ class ServiceRequestsController extends Controller
                 }
                 
             }
+            // calculate total paid and due service request
+            $data['paid_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','1')->sum('amount');
+
+            $data['due_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','0')->sum('amount');
         }
+
+
         echo json_encode($data);
         exit;
     

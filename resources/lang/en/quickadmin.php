@@ -184,6 +184,8 @@ return [
 			'charges_for' => 'Charges For',
 			'totalamount' => 'Total Amount',
 			'created_date' => 'Creation Date',
+			'total-paid' => 'Total Paid',
+			'total-due' => 'Total Due'
 		],
 	],
 	

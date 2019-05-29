@@ -270,7 +270,7 @@
                 </a>
             </li>@endcan
             
-            @can('manageInvoices')
+            {{-- @can('manageInvoices')
             <!-- can('invoice_access') -->
                 <li>
                     <a href="{{ route('admin.invoices.index') }}">
@@ -278,7 +278,7 @@
                         <span>@lang('quickadmin.invoices.title')</span>
                     </a>
                 </li>
-            @endcan
+            @endcan --}}
             
             @can('permission_management_access')
             <li class="treeview">
