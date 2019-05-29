@@ -58,15 +58,61 @@ class ServiceRequest extends Model
 
     public static $enum_mop = ["Cash" => "Cash", "Bank" => "Bank", "Online" => "Online", "Credit / Debit Card" => "Credit / Debit Card"];
 
-    public static $enum_status = ["Started" => "Started", "Pending for parts" => "Pending for parts","Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
+    public static $enum_status = ["Started" => "Started", "Pending for parts" => "Pending for parts","Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement","Closed" => "Closed",
+        "Motherboard in order" => "Motherboard in order", 
+        "Powerboard in order" => "Powerboard in order", 
+        "T con in order" => "T con in order", 
+        "Under repair -@ ahm hub" => "Under repair -@ ahm hub",
+        "Under repair -@ primary" => "Under repair -@ primary",
+        "Panel in order" => "Panel in order",
+        "On the way of delivery" => "On the way of delivery",
+        "Ready for dispatch" => "Ready for dispatch",
+        "Pickup pending" => "Pickup pending",
+        "Our country call" => "Our country call",
+        "Customer not available" => "Customer not available",
+        "Onsite solve" => "Onsite solve",
+        "Oncall solve" => "Oncall solve",
+        "Next service center connected" => "Next service center connected",
+        "Box issue" => "Box issue"];
 
     public static $enum_installation_status = ["Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Started" => "Started", "Closed" => "Closed"];
 
-    public static $enum_repair_status = ["Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
+    public static $enum_repair_status = ["Service center assigned" => "Service center assigned","Technician assigned" => "Technician assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement","Closed" => "Closed",
+        "Motherboard in order" => "Motherboard in order", 
+        "Powerboard in order" => "Powerboard in order", 
+        "T con in order" => "T con in order", 
+        "Under repair -@ ahm hub" => "Under repair -@ ahm hub",
+        "Under repair -@ primary" => "Under repair -@ primary",
+        "Panel in order" => "Panel in order",
+        "On the way of delivery" => "On the way of delivery",
+        "Ready for dispatch" => "Ready for dispatch",
+        "Pickup pending" => "Pickup pending",
+        "Our country call" => "Our country call",
+        "Customer not available" => "Customer not available",
+        "Onsite solve" => "Onsite solve",
+        "Oncall solve" => "Oncall solve",
+        "Next service center connected" => "Next service center connected",
+        "Box issue" => "Box issue"];
 
     public static $enum_technician_installation_status = ["Technician assigned" => "Technician assigned", "Started" => "Started", "Closed" => "Closed"];
     
-    public static $enum_technician_repair_status = ["Technician assigned" => "Technician assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement", "Closed" => "Closed"];
+    public static $enum_technician_repair_status = ["Technician assigned" => "Technician assigned", "Started" => "Started", "Pending for parts" => "Pending for parts", "Cancelled" => "Cancelled", "Transferred to inhouse" => "Transferred to inhouse", "Under testing" => "Under testing", "Issue for replacement" => "Issue for replacement",
+        "Closed" => "Closed",
+        "Motherboard in order" => "Motherboard in order", 
+        "Powerboard in order" => "Powerboard in order", 
+        "T con in order" => "T con in order", 
+        "Under repair -@ ahm hub" => "Under repair -@ ahm hub",
+        "Under repair -@ primary" => "Under repair -@ primary",
+        "Panel in order" => "Panel in order",
+        "On the way of delivery" => "On the way of delivery",
+        "Ready for dispatch" => "Ready for dispatch",
+        "Pickup pending" => "Pickup pending",
+        "Our country call" => "Our country call",
+        "Customer not available" => "Customer not available",
+        "Onsite solve" => "Onsite solve",
+        "Oncall solve" => "Oncall solve",
+        "Next service center connected" => "Next service center connected",
+        "Box issue" => "Box issue"];
 
     // public static $enum_status_color_code = ["Technician assigned" => "#8080ff", "Started" => "#008000", "Pending for parts" => "#ffa500", "Cancelled" => "#a6a6a6", "Transferred to inhouse" => "#00ccff", "Under testing" => "#ff33ff", "Closed" => "#ff0000","Issue for replacement" => "#990033","Service center assigned" => "#99ff33","New" => "#ffb3b3"];
 
@@ -80,7 +126,22 @@ class ServiceRequest extends Model
         "Transferred to inhouse" => "#c571ea",
         "Under testing" => "#00c0ef",
         "Issue for replacement" => "#605ca8" ,
-        "Closed" => "#00a65a"
+        "Closed" => "#00a65a",
+        "Motherboard in order" => "#f39c12", 
+        "Powerboard in order" => "#f39c12", 
+        "T con in order" => "#f39c12", 
+        "Under repair -@ ahm hub" => "#f39c12",
+        "Under repair -@ primary" => "#f39c12",
+        "Panel in order" => "#f39c12",
+        "On the way of delivery" => "#f39c12",
+        "Ready for dispatch" => "#f39c12",
+        "Pickup pending" => "#f39c12",
+        "Our country call" => "#f39c12",
+        "Customer not available" => "#f39c12",
+        "Onsite solve" => "#f39c12",
+        "Oncall solve" => "#f39c12",
+        "Next service center connected" => "#f39c12",
+        "Box issue" => "#f39c12"
      ];
 
     public function getServiceRequestParts($partsIds)

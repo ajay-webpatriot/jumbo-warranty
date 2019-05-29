@@ -217,7 +217,10 @@ class ServiceRequestsController extends Controller
             }
             
         }
-        $request_stauts = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_status;
+        $request_stauts = ServiceRequest::$enum_status;
+        asort($request_stauts); // sort array
+        $request_stauts = ['' => trans('quickadmin.qa_show_all')] + $request_stauts;
+
         $request_type = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_service_type;
 
         return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type','total_paid_amount','total_due_amount'));
@@ -902,10 +905,12 @@ class ServiceRequestsController extends Controller
             if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
                 $enum_status = ServiceRequest::$enum_technician_repair_status;
+                asort($enum_status); // sort array
             }
             else
             {
                 $enum_status = ServiceRequest::$enum_repair_status;
+                asort($enum_status); // sort array
             }
             
         }
@@ -914,10 +919,12 @@ class ServiceRequestsController extends Controller
             if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
                 $enum_status = ServiceRequest::$enum_technician_installation_status;
+                asort($enum_status); // sort array
             }
             else
             {
                 $enum_status = ServiceRequest::$enum_installation_status;
+                asort($enum_status); // sort array
             }
         }
         $enum_status_color = ServiceRequest::$enum_status_color_code;
@@ -1903,6 +1910,7 @@ class ServiceRequestsController extends Controller
         if($details['serviceType'] == "installation")
         {
             $enum_status = ServiceRequest::$enum_installation_status;
+            asort($enum_status); // sort array
             foreach($enum_status as $key => $value)
             {
                 $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
@@ -1918,6 +1926,7 @@ class ServiceRequestsController extends Controller
         else if($details['serviceType'] == "repair")
         {
             $enum_status = ServiceRequest::$enum_repair_status;
+            asort($enum_status); // sort array
             foreach($enum_status as $key => $value)
             {
                 $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
