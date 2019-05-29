@@ -905,12 +905,10 @@ class ServiceRequestsController extends Controller
             if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
                 $enum_status = ServiceRequest::$enum_technician_repair_status;
-                asort($enum_status); // sort array
             }
             else
             {
                 $enum_status = ServiceRequest::$enum_repair_status;
-                asort($enum_status); // sort array
             }
             
         }
@@ -919,12 +917,10 @@ class ServiceRequestsController extends Controller
             if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
                 $enum_status = ServiceRequest::$enum_technician_installation_status;
-                asort($enum_status); // sort array
             }
             else
             {
                 $enum_status = ServiceRequest::$enum_installation_status;
-                asort($enum_status); // sort array
             }
         }
         $enum_status_color = ServiceRequest::$enum_status_color_code;
@@ -1910,7 +1906,6 @@ class ServiceRequestsController extends Controller
         if($details['serviceType'] == "installation")
         {
             $enum_status = ServiceRequest::$enum_installation_status;
-            asort($enum_status); // sort array
             foreach($enum_status as $key => $value)
             {
                 $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
@@ -1926,7 +1921,6 @@ class ServiceRequestsController extends Controller
         else if($details['serviceType'] == "repair")
         {
             $enum_status = ServiceRequest::$enum_repair_status;
-            asort($enum_status); // sort array
             foreach($enum_status as $key => $value)
             {
                 $data['statusOptions'].="<option value='".$key."'>".$value."</option>";   
