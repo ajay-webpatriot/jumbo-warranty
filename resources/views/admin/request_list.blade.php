@@ -5,9 +5,9 @@
 #loading { display:none; color:green; font-size:20px; } */
 </style>
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12">
-            <div class="box box-{{ $color }}">
+            <div class="box box-{{-- $color --}}"> -->
 
                 <div class="box-header with-border scroll text-center" data-toggle="collapse" href="#collapseServiceRequestsList">
                     <h3 class="box-title"> {{ $typeTitle }} </h3>
@@ -207,9 +207,9 @@
                     </table>
                 </div>
                 <!-- <span id="loading">Loading Please wait...</span> -->
-            </div>
+            <!-- </div>
         </div>
-    </div>
+    </div> -->
 
 {{-- @endsection --}}
 {{-- @section('javascript') --}}

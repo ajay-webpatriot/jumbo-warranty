@@ -6,7 +6,7 @@
         <ul class="sidebar-menu">
             <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
                 <a href="{{ route('admin.index') }}">
-                    <i class="fa fa-dashboard"></i>
+                    <i class="fa fa-desktop"></i>
                     <span class="title">@lang('quickadmin.qa_dashboard')</span>
                 </a>
             </li>
@@ -14,7 +14,7 @@
             @can('manageServiceRequest')
             <li>
                 <a href="{{ route('admin.service_requests.index') }}">
-                    <i class="fa fa-gears"></i>
+                    <i class="fa fa-wrench"></i>
                     <span>@lang('quickadmin.service-request.title')</span>
                 </a>
             </li>
@@ -34,7 +34,7 @@
                     @can('role_access')
                     <li>
                         <a href="{{ route('admin.roles.index') }}">
-                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.roles.title')</span>
                         </a>
                     </li>
@@ -44,7 +44,7 @@
                     
                     <li>
                         <a href="{{ route('admin.users.index') }}">
-                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.users.title')</span>
                         </a>
                     </li>
@@ -69,7 +69,7 @@
                             <!-- can('manageCategory') -->
                             <li>
                                 <a href="{{ route('admin.categories.index') }}">
-                                    <i class="fa fa-circle-o"></i>
+                                    <i class="fa fa-dot-circle-o"></i>
                                     <span>@lang('quickadmin.categories.title')</span>
                                 </a>
                             </li>
@@ -79,7 +79,7 @@
                             <!-- can('manageProduct') -->
                             <li>
                                 <a href="{{ route('admin.products.index') }}">
-                                    <i class="fa fa-circle-o"></i>
+                                    <i class="fa fa-dot-circle-o"></i>
                                     <span>@lang('quickadmin.products.title')</span>
                                 </a>
                             </li>
@@ -89,7 +89,7 @@
                             <!-- can('manageParts') -->
                             <li>
                                 <a href="{{ route('admin.product_parts.index') }}">
-                                    <i class="fa fa-circle-o"></i>
+                                    <i class="fa fa-dot-circle-o"></i>
                                     <span>@lang('quickadmin.product-parts.title')</span>
                                 </a>
                             </li>
@@ -118,14 +118,14 @@
                         || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                             <li>
                                 <a href="{{ route('admin.companies.index') }}">
-                                    <i class="fa fa-circle-o"></i>
+                                    <i class="fa fa-dot-circle-o"></i>
                                     <span>@lang('quickadmin.company.title')</span>
                                 </a>
                             </li>
                         @elseif(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
                             <li>
                                 <a href="{{ route('admin.companies.show',[auth()->user()->company_id]) }}">
-                                    <i class="fa fa-circle-o"></i>
+                                    <i class="fa fa-dot-circle-o"></i>
                                     <span>@lang('quickadmin.company.company-info')</span>
                                 </a>
                             </li>
@@ -136,7 +136,7 @@
                         || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                         <li>
                             <a href="{{ route('admin.company_admins.index') }}">
-                                <i class="fa fa-circle-o"></i>
+                                <i class="fa fa-dot-circle-o"></i>
                                 <span>@lang('quickadmin.company-admins.menu-title')</span>
                             </a>
                         </li>
@@ -147,7 +147,7 @@
                         || auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
                         <li>
                             <a href="{{ route('admin.company_users.index') }}">
-                                <i class="fa fa-circle-o"></i>
+                                <i class="fa fa-dot-circle-o"></i>
                                 <span>@lang('quickadmin.company-users.menu-title')</span>
                             </a>
                         </li>
@@ -158,7 +158,7 @@
                         <!-- can('manageCompany') -->
                         <li>
                             <a href="{{ route('admin.customers.index') }}">
-                                <i class="fa fa-circle-o"></i>
+                                <i class="fa fa-dot-circle-o"></i>
                                 <span>@lang('quickadmin.customers.title')</span>
                             </a>
                         </li>
@@ -167,7 +167,7 @@
                         <!-- can('assign_product_access') -->
                         <li>
                             <a href="{{ route('admin.assign_products.index') }}">
-                                <i class="fa fa-circle-o"></i>
+                                <i class="fa fa-dot-circle-o"></i>
                                 @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                 <span>@lang('quickadmin.assign-product.title')</span>
                                 @else
@@ -181,7 +181,7 @@
                         <!-- can('assign_part_access') -->
                         <li>
                             <a href="{{ route('admin.assign_parts.index') }}">
-                                <i class="fa fa-circle-o"></i>
+                                <i class="fa fa-dot-circle-o"></i>
                                 @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                 <span>@lang('quickadmin.assign-parts.title')</span>
                                 @else
@@ -226,14 +226,14 @@
                     <li>
                         <!-- service center admin and technician can only view details -->
                         <a href="{{ route('admin.service_centers.show',[auth()->user()->service_center_id]) }}">
-                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.service-center.service-center-info')</span>
                         </a>
                     </li>
                     @else
                     <li>
                         <a href="{{ route('admin.service_centers.index') }}">
-                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.service-center.title')</span>
                         </a>
                     </li>
@@ -243,7 +243,7 @@
                     || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                     <li>
                         <a href="{{ route('admin.service_center_admins.index') }}">
-                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.service-center-admin.title')</span>
                         </a>
                     </li>
@@ -254,7 +254,7 @@
                     || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
                     <li>
                         <a href="{{ route('admin.technicians.index') }}">
-                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.users.technicianTitle')</span>
                         </a>
                     </li>
@@ -265,7 +265,7 @@
             @can('manage_charge_access')
             <li>
                 <a href="{{ route('admin.manage_charges.index') }}">
-                    <i class="fa fa-gears"></i>
+                    <i class="fa fa-rupee"></i>
                     <span>@lang('quickadmin.manage-charges.title')</span>
                 </a>
             </li>@endcan
@@ -274,7 +274,7 @@
             <!-- can('invoice_access') -->
                 <li>
                     <a href="{{ route('admin.invoices.index') }}">
-                        <i class="fa fa-gears"></i>
+                        <i class="fa fa-file-text-o"></i>
                         <span>@lang('quickadmin.invoices.title')</span>
                     </a>
                 </li>
@@ -293,7 +293,7 @@
                    @can('permission_access')
                     <li>
                         <a href="{{ route('admin.permissions.index') }}">
-                            <i class="fa fa-circle-o"></i>
+                            <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.permissions.title')</span>
                         </a>
                     </li>

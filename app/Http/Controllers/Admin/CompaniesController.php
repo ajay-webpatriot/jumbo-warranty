@@ -169,8 +169,9 @@ class CompaniesController extends Controller
        ->where('company_id',$id)
        ->get()->first();
 
-       // echo $companyCredit->used_credit;exit;
-        $available_credit=($companyCredit) ? ($company->credit - $companyCredit->used_credit) : ($company->credit)?$company->credit:0;
+        // echo $companyCredit->used_credit;exit;
+        $available_credit=($companyCredit) ? ($company->credit - $companyCredit->used_credit) : (($company->credit) ?$company->credit:0);
+        
         return view('admin.companies.edit', compact('company', 'available_credit', 'enum_status'));
     }
 

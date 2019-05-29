@@ -912,7 +912,7 @@ class ServiceRequestsController extends Controller
         $additional_charge_title = [];
         $additional_charge = [];
 
-        if(!empty($additional_charge_array->option)){
+        if(isset($additional_charge_array->option) && !empty($additional_charge_array->option)){
                 
                 
             foreach ($additional_charge_array->option as $OptionKey => $value) {
@@ -929,9 +929,9 @@ class ServiceRequestsController extends Controller
             }
         }  
         
-        if(!empty($additional_charge_array->other)){
+        if(isset($additional_charge_array->other) && !empty($additional_charge_array->other)){
+
             foreach ($additional_charge_array->other as $key => $value) {
-               
                 
                 $additional_charge_title['other'] = str_replace('_empty_', '', $key);
                 $additional_charge['other'] = $value;
