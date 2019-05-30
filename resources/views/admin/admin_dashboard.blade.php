@@ -434,7 +434,7 @@
                             </div>
                             <!-- /.box-body -->
                             <div class="box-footer clearfix" style="">
-                                <a href="http://jumbo-warranty.local/admin/service_requests/create" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
+                                <a href="{{ route('admin.service_requests.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
                                 @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
                                     <a href="{{ route('admin.service_requests.index') }}" class="btn btn-sm btn-default btn-flat pull-right">View All Service requests</a>
                                 @endif
