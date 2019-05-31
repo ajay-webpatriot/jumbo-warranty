@@ -830,29 +830,32 @@ class ServiceRequestApiController extends Controller
             $additional_charge_title = [];
             $additional_charges = [];
 
-            $additional_charge_title['option'] = [];
             if(!empty($additional_charge_array->option)){
                 foreach ($additional_charge_array->option as $OptionKey => $value) {
                     
                     $AdditionalChargeTitle =  key((array)$value);
                     foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
                         if($AdditionalChargeTitle === $arr_val){
-
                             $additional_charge_title['option'][$OptionKey] = $AdditionalChargeTitle;
                             $additional_charges['option'][$OptionKey] = $value->$arr_val;
                         
                         }
                     }
                 }
+            }else{
+                $additional_charge_title['option'] = [];
+                $additional_charges['option'] = '0.00';
             }
-            $additional_charge_title['other'] = [];
+            
             if(!empty($additional_charge_array->other)){
-
                 foreach ($additional_charge_array->other as $key => $value) {
                     
                     $additional_charge_title['other'] = str_replace('_empty_', '', $key);
                     $additional_charges['other'] = $value;
                 }                                      
+            }else{
+                $additional_charge_title['other'] = [];
+                $additional_charges['other'] = '0.00';
             } 
             /* Worked to display json value in edit page */ 
             // foreach ($additional_charge_array as $key => $value) {
