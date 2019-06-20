@@ -17,10 +17,10 @@ class AdminDashboardController extends Controller
     }
     public function index(Request $request)
     {
-         if((auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID')) && (auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))){
-            return view('home');
-        }
-       
+        // if((auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID')) && (auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))){
+        //     return view('home');
+        // }
+
         $PendingComplainCount       = 0;
         $SolvedComplainCount        = 0;
         $PendingInstallationCount   = 0;
@@ -31,9 +31,17 @@ class AdminDashboardController extends Controller
         // ->get();
         $serviceTypesQuery = ServiceRequest::select('service_type','status')
         ->whereIn('service_type',array('repair','installation'));
-        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-        {
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
+
             $serviceTypesQuery->Where('service_requests.company_id', auth()->user()->company_id);
+           
+        }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            $serviceTypesQuery->where('service_requests.service_center_id',auth()->user()->service_center_id);
+            
+        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+            $serviceTypesQuery->where('service_requests.technician_id',auth()->user()->id);
         }
         $ServiceTypes = $serviceTypesQuery->get();
 
@@ -76,7 +84,15 @@ class AdminDashboardController extends Controller
 
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
-             $ServiceTypeDetailsQuery->Where('service_requests.company_id', auth()->user()->company_id);
+            $ServiceTypeDetailsQuery->Where('service_requests.company_id', auth()->user()->company_id);
+
+        }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            $ServiceTypeDetailsQuery->where('service_requests.service_center_id',auth()->user()->service_center_id);
+            
+        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+            $ServiceTypeDetailsQuery->where('service_requests.technician_id',auth()->user()->id);
         }
 
         $ServiceTypeDetails = $ServiceTypeDetailsQuery->get();
@@ -127,10 +143,21 @@ class AdminDashboardController extends Controller
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
             $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
+
         }else{
             if($SelectedCompanyId != 'all'){
                     $ServiceCount->where('service_requests.company_id',$SelectedCompanyId);
             }
+        }
+        
+        if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            $ServiceCount->where('service_requests.service_center_id',auth()->user()->service_center_id);
+            
+        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+            $ServiceCount->where('service_requests.technician_id',auth()->user()->id);
+
         }
 
         if($type == "installation_today"){
@@ -168,8 +195,6 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardDataByType(Request $request)
     {
-        
-        
         $todayDate = date('Y-m-d');
         $startDate = date('Y-m-d',strtotime($request->formData[1]['value']));
         $endDate = date('Y-m-d',strtotime($request->formData[2]['value']));
@@ -186,12 +211,22 @@ class AdminDashboardController extends Controller
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
             $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
+
         }else{
             if($companyId != 'all'){
-                    $ServiceCount->where('service_requests.company_id',$companyId);
+                $ServiceCount->where('service_requests.company_id',$companyId);
             }
         }
-        
+
+        if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            $ServiceCount->where('service_requests.service_center_id',auth()->user()->service_center_id);
+            
+        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+            $ServiceCount->where('service_requests.technician_id',auth()->user()->id);
+
+        }
        
         if($type == "installation_today"){
 

@@ -69,7 +69,7 @@
                             <tr>
                                 <th>@lang('quickadmin.service-request.fields.request-id')</th>
 
-                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID') && auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
 
                                     <th>@lang('quickadmin.service-request.fields.company')</th>
 
@@ -80,7 +80,7 @@
 
                                 <th>@lang('quickadmin.service-request.fields.service-type')</th>
 
-                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID') && auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
 
                                     <th>@lang('quickadmin.service-request.fields.service-center')</th>
 
@@ -97,7 +97,7 @@
                                 <th>@lang('quickadmin.service-request.fields.created_date')</th>
                                 <th>@lang('quickadmin.service-request.fields.status')</th>
 
-                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
                                     <th>@lang('quickadmin.qa_paid')</th>
                                 @endif
 
@@ -163,7 +163,7 @@
                                 <tr>
                                     <td align="center"><a href="{{ route('admin.service_requests.show',$SingleServiceTypeDetail->id) }}" target="_blank"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </a></td>
 
-                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID') && auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
 
                                         <td>{{ ucfirst($company_name) }}</td>
 
@@ -175,7 +175,7 @@
 
                                     <td align="center">{{ ucfirst($service_type) }}</td>
 
-                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                    @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID') && auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
 
                                         <td align="center">{{ $service_centers }}</td>
 
@@ -195,7 +195,7 @@
                                         </span>
                                     </td>
 
-                                    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                    @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
 
                                         <td align="center">{{ ucfirst($paidStatus) }}</td>
                                         

@@ -42,7 +42,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
                                                 
                                                     <div class="col-md-12 col-sm-6 col-xs-12">
                                                         <div class="form-group">
@@ -57,7 +57,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                            @endif
+                                                @endif
                                                 <div class="col-md-12 col-sm-6 col-xs-12 margin-bottom">
                                                     <button type="button" onclick="changeDateCompanyGetCount()" class="btn btn-block btn-primary">Filters</button>
                                                 </div>
@@ -386,46 +386,46 @@
                                   </thead>
                                   <tbody>
                                     @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
-                                    @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
-                                      <tr>
-                                        <td align="center">
-                                            <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}">
-                                                    <span class="product-title"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </span> 
-                                                </a>
-                                        </td>
-                                        <td>
-                                            <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
-                                                    {{$SingleServiceTypeDetail->servicerequest_title}}
-
-                                                    <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
-                                            </a>
-                                        </td>
-                                        <td>{{ $SingleServiceTypeDetail->customer_name}}</td>
-                                        @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
-                                            <td align="right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                        @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
+                                        <tr>
+                                            <td align="center">
+                                                <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}">
+                                                        <span class="product-title"> JW{{ sprintf("%04d", $SingleServiceTypeDetail->id) }} </span> 
+                                                    </a>
                                             </td>
-                                        @endif
-                                        <td align="center">
-                                          {{date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at))}}
-                                        </td>
-                                        <?php
-                                            $status = '';
-                                            $backgroundColor = '';
-                                        ?>
-                                        @if($SingleServiceTypeDetail->status != '')
+                                            <td>
+                                                <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}" class="product-title">
+                                                        {{$SingleServiceTypeDetail->servicerequest_title}}
+
+                                                        <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
+                                                </a>
+                                            </td>
+                                            <td>{{ $SingleServiceTypeDetail->customer_name}}</td>
+                                            @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                                <td align="right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                                </td>
+                                            @endif
+                                            <td align="center">
+                                            {{date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at))}}
+                                            </td>
                                             <?php
-                                                $backgroundColor = $enum_status_color[$SingleServiceTypeDetail->status];
-                                                $status = $SingleServiceTypeDetail->status;
+                                                $status = '';
+                                                $backgroundColor = '';
                                             ?>
-                                        @endif
-                                        <td align="center">
-                                            <span class="headerTitle" style="color:{{$backgroundColor}}">
-                                                {{$status}}
-                                            </span>
-                                        </td>
-                                        
-                                      </tr>
-                                      @endforeach
+                                            @if($SingleServiceTypeDetail->status != '')
+                                                <?php
+                                                    $backgroundColor = $enum_status_color[$SingleServiceTypeDetail->status];
+                                                    $status = $SingleServiceTypeDetail->status;
+                                                ?>
+                                            @endif
+                                            <td align="center">
+                                                <span class="headerTitle" style="color:{{$backgroundColor}}">
+                                                    {{$status}}
+                                                </span>
+                                            </td>
+                                            
+                                        </tr>
+                                        @endforeach
                                     @endif
                                   </tbody>
                                 </table>
@@ -434,7 +434,13 @@
                             </div>
                             <!-- /.box-body -->
                             <div class="box-footer clearfix" style="">
-                                <a href="{{ route('admin.service_requests.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
+                            
+                                @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+
+                                    <a href="{{ route('admin.service_requests.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
+
+                                @endif
+
                                 @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
                                     <a href="{{ route('admin.service_requests.index') }}" class="btn btn-sm btn-default btn-flat pull-right">View All Service requests</a>
                                 @endif
