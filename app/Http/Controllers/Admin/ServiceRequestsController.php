@@ -323,7 +323,7 @@ class ServiceRequestsController extends Controller
         //     }
             
         // }
-
+        
             $tableFieldData = [];
 
             $serviceRequestObj = new ServiceRequest();  
@@ -337,6 +337,7 @@ class ServiceRequestsController extends Controller
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
             ->leftjoin('products','service_requests.product_id','=','products.id')
             ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id')
+            ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request['startdate']."' AND '".$request['enddate']."'")
             ->whereNull('companies.deleted_at')
             ->whereNull('customers.deleted_at')
             ->whereNull('products.deleted_at')
@@ -428,6 +429,20 @@ class ServiceRequestsController extends Controller
             {
                 $request->session()->forget('filter_request_type');
             }
+            
+
+            // if(!empty($request->input('startdate')) && !empty($request->input('enddate')))
+            // {   
+            //     $request->session()->put('filter_start_date', $request->input('startdate'));
+            //     $request->session()->put('filter_end_date', $request->input('enddate'));
+            //     $service_requestsQuery->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request->input('enddate')."' AND '".$request->input('enddate')."'");
+                
+            // }
+            // else
+            // {
+            //     $request->session()->forget('filter_start_date');
+            //     $request->session()->forget('filter_end_date');
+            // }
            
             //Search from table
             if(!empty($request->input('search.value')))

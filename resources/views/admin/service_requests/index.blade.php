@@ -254,6 +254,24 @@
                     </div>
                 @endif
             @endif
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12" style="margin-top:10px">
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="dateRangeFilter">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -355,7 +373,45 @@
 @stop
 
 @section('javascript') 
+    <script src="{{ url('adminlte/plugins/daterangepicker/moment.min.js') }}"></script>
+    <script src="{{ url('adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script>
+        var daterangeStartValue = "";
+        var daterangeEndValue = "";
+        // var startdate = "{{ $request->session()->get('filter_start_date') }}";
+        // var enddate = "{{ $request->session()->get('filter_end_date') }}";
+        // startdate = new date(startdate);
+        $(function(){
+            // daterangeStartValue = "{{ $request->session()->get('filter_start_date') }}";
+            // daterangeEndValue = "{{ $request->session()->get('filter_end_date') }}";
+
+            $('#dateRangeFilter').daterangepicker({
+                opens: 'right',
+                locale: {
+                    format: "{{ config('app.date_format_moment') }}"
+                }
+            }, function(start, end, label) {
+                // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
+                daterangeStartValue = start.format('YYYY-MM-DD');
+                daterangeEndValue=end.format('YYYY-MM-DD');
+                tableServiceRequest.draw();
+           });
+
+            //    // set date during initialization
+            //    daterangeStartValue=moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
+            //    daterangeEndValue=moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
+            // if("{{ $request->session()->has('filter_start_date') }}" == 1 && "{{ $request->session()->has('filter_end_date') }}" == 1){
+            //     console.log(startdate);
+            //     daterangeStartValue=moment(startdate.split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
+            //     daterangeEndValue=moment(enddate.split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
+
+            // }else{
+                daterangeStartValue=moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
+                daterangeEndValue=moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
+            // }
+        });
+
         @can('service_request_delete')
             @if ( request('show_deleted') != 1 ) window.route_mass_crud_entries_destroy = '{{ route('admin.service_requests.mass_destroy') }}'; @endif
         @endcan
@@ -510,6 +566,8 @@
                             data.technician = $('#filter_technician').val();
                             data.status = $('#filter_request_status').val();
                             data.type = $('#filter_request_type').val();
+                            data.startdate =daterangeStartValue;
+                            data.enddate =daterangeEndValue;
                             data._token = "{{csrf_token()}}";
 
                         },
@@ -581,6 +639,8 @@
                             data.product = $('#filter_product').val();
                             data.status = $('#filter_request_status').val();
                             data.type = $('#filter_request_type').val();
+                            data.startdate =daterangeStartValue;
+                            data.enddate =daterangeEndValue;
                             data._token = "{{csrf_token()}}";
 
                         },
@@ -710,6 +770,8 @@
                             data.product = $('#filter_product').val();
                             data.serviceCenter = $('#filter_service_center').val();
                             data.technician = $('#filter_technician').val();
+                            data.startdate =daterangeStartValue;
+                            data.enddate =daterangeEndValue;
                             data._token = "{{csrf_token()}}";
 
                         },
