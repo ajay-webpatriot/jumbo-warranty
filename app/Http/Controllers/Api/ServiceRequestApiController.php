@@ -724,67 +724,29 @@ class ServiceRequestApiController extends Controller
 
         /* Service request object, all data */
         $serviceRequestDetail = ServiceRequest::findOrFail($serviceRequestId);
-        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
 
         $additional_charges = NULL;
-        $additional_charge_title = NULL;
         $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge;
         $total_amount+=($serviceRequestDetail->transportation_charge == "") ? 0 : number_format((float)$serviceRequestDetail->transportation_charge, 2, '.', '');
 
-        if(isset($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
-
+        if(isset($json['additionalChargesFor']) && !empty($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
             if(isset($json['additionalCharges']) && !empty($json['additionalCharges']) && $json['additionalCharges'] != 0){
-                $additional_charge_title['option'] = [];
-                $additional_charges['option'] = [];
-                if((isset($json['additionalChargesFor']['option']) && !empty($json['additionalChargesFor']['option'])) && (isset($json['additionalCharges']['option']) && !empty($json['additionalCharges']['option'])) && $json['additionalCharges']['option'] != 0){
 
-                    foreach ($json['additionalChargesFor']['option'] as $OptionKey => $value) {
-                   
-                        if($value != ''){
-                            if(isset($json['additionalCharges']['option'][$OptionKey])){
-                               
-                                $additional_charge_title['option'][$OptionKey]= $value;
-                                $additional_charges['option'][$OptionKey] = $json['additionalCharges']['option'][$OptionKey];
-
-                                $total_amount+=(($json['additionalCharges']['option'][$OptionKey] == "")?0:number_format((float)$json['additionalCharges']['option'][$OptionKey], 2, '.', ''));
-
-                                $additional_charges['option'][$OptionKey] = array($json['additionalChargesFor']['option'][$OptionKey] => number_format((float)$json['additionalCharges']['option'][$OptionKey], 2, '.', ''));
-                            }
-                        }
-                    } 
-                }
                 // $total_amount=$serviceRequestDetail->installation_charge + $serviceRequestDetail->service_charge +(($json['additionalCharges'] == "")?0:number_format((float)$json['additionalCharges'], 2, '.', ''));
+                $total_amount+=(($json['additionalCharges'] == "")?0:number_format((float)$json['additionalCharges'], 2, '.', ''));
 
                 // $total_amount += $serviceRequestDetail->transportation_charge;
-                $additional_charge_title['other'] = [];
-                $additional_charges['other'] = [];
-                if(isset($json['additionalChargesFor']['other']) && !empty($json['additionalChargesFor']['other'])){
-
-                    if(isset($json['additionalCharges']['other']) && !empty($json['additionalCharges']['other']) && $json['additionalCharges']['other'] != 0){
-
-                        $additional_charge_title['other']=  $json['additionalChargesFor']['other'];
-                        $additional_charges['other'] =$json['additionalCharges']['other'];
-                    
-
-                        $total_amount+=(($json['additionalCharges']['other'] == "")?0:number_format((float)$json['additionalCharges']['other'], 2, '.', ''));
-
-                        $additional_charges['other'] = array($json['additionalChargesFor']['other'] => number_format((float)$json['additionalCharges']['other'], 2, '.', ''));
-                    }
-                    
-                }
-                $additional_charges= json_encode($additional_charges);
+                
+                $additional_charges = json_encode(array($json['additionalChargesFor'] => number_format((float)$json['additionalCharges'], 2, '.', '')));
             }
-            
         }
-       
+        
         $serviceRequestDetail->additional_charges = $additional_charges;
         $serviceRequestDetail->amount = $total_amount;
         $serviceRequestDetail->update();
 
         /* Update service request status */
         $serviceRequestDetailStatusUpdate = ServiceRequest::findOrFail($serviceRequestId);
-       
-        
         $serviceRequestDetail->status     = $request_status;
         $serviceRequestDetail->update();
 
@@ -822,59 +784,24 @@ class ServiceRequestApiController extends Controller
         $additional_charges      = "";
         $additional_charge_array = json_decode($serviceRequestDetail['additional_charges']);
 
-        /* Pre additional charge array */
-        $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
-        
         if(!empty($additional_charge_array))
         {
-            $additional_charge_title = [];
-            $additional_charges = [];
-
-            if(!empty($additional_charge_array->option)){
-                foreach ($additional_charge_array->option as $OptionKey => $value) {
-                    
-                    $AdditionalChargeTitle =  key((array)$value);
-                    foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
-                        if($AdditionalChargeTitle === $arr_val){
-                            $additional_charge_title['option'][$OptionKey] = $AdditionalChargeTitle;
-                            $additional_charges['option'][$OptionKey] = $value->$arr_val;
-                        
-                        }
-                    }
-                }
-            }else{
-                $additional_charge_title['option'] = [];
-                $additional_charges['option'] = '0.00';
-            }
-            
-            if(!empty($additional_charge_array->other)){
-                foreach ($additional_charge_array->other as $key => $value) {
-                    
-                    $additional_charge_title['other'] = str_replace('_empty_', '', $key);
-                    $additional_charges['other'] = $value;
-                }                                      
-            }else{
-                $additional_charge_title['other'] = [];
-                $additional_charges['other'] = '0.00';
-            } 
             /* Worked to display json value in edit page */ 
-            // foreach ($additional_charge_array as $key => $value) {
-            //     $additional_charge_title = str_replace('_empty_', '', $key);
-            //     $additional_charges      = $value;
-            // }
+            foreach ($additional_charge_array as $key => $value) {
+                $additional_charge_title = str_replace('_empty_', '', $key);
+                $additional_charges      = $value;
+            }
         }
         
         $serviceRequestDetail->additional_charges = $additional_charges;
 
-        $response->additionalChargesFor = $additional_charge_title;
-
-        // if(!empty($additional_charge_title) && !empty($serviceRequestDetail->additional_charges)){
-        //     $additionalCharges = $serviceRequestDetail->additional_charges;
-        //     $response->additionalChargesFor = $additional_charge_title;
-        // }else{
-        //     $additionalCharges = 0;
-        //     $response->additionalChargesFor = '';
-        // }
+        if(!empty($additional_charge_title) && !empty($serviceRequestDetail->additional_charges)){
+            $additionalCharges = $serviceRequestDetail->additional_charges;
+            $response->additionalChargesFor = $additional_charge_title;
+        }else{
+            $additionalCharges = 0;
+            $response->additionalChargesFor = '';
+        }
 
         /* Ttransportation charge */
         if($serviceRequestDetail->transportation_charge > 0){
@@ -956,9 +883,6 @@ class ServiceRequestApiController extends Controller
 
         $response->serviceRequestStatusList = (object)$newStatusArrayChangeKey;
 
-        /* Status color */
-        $response->serviceRequestStatusColor = ServiceRequest::$enum_status_color_code;
-
         /* Unset customer data */
         unset($serviceRequestDetail->customer->created_at);
         unset($serviceRequestDetail->customer->updated_at);
@@ -1037,13 +961,11 @@ class ServiceRequestApiController extends Controller
             "installationCharge"        => $serviceRequestDetail->installation_charge,
             "kilometersCharges"         => $kilometersCharges,
             "transportationCharges"     => $transportationCharges,
-            // "additionalCharges"         => $additionalCharges,
-            "additionalCharges"         => $additional_charges,
+            "additionalCharges"         => $additionalCharges,
             "totalAmount"               => $serviceRequestDetail->amount
         );
 
         $response->charges = $charges;
-        $response->defaultAdditionalChargesTitle = $pre_additional_charge_array;
 
         return $response;
     }
