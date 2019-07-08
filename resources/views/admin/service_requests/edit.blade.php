@@ -430,7 +430,7 @@
                                     </div>
 
                                     <!-- <div class="form-group"> -->
-                                        {{-- !! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').'*', ['class' => 'control-label']) !!--}}
+                                        {{-- !! Form::label('is_item_in_warrenty', trans('quickadmin.service-request.fields.is-item-in-warrenty').'*', ['class' => 'control-label']) !! --}}
                                         {{-- !! Form::select('is_item_in_warrenty', $enum_is_item_in_warrenty, old('is_item_in_warrenty'), ['class' => 'form-control select2', 'required' => '']) !! --}}
                                         <!-- <p class="help-block"></p> -->
                                         {{-- @if($errors->has('is_item_in_warrenty')) --}}
@@ -708,10 +708,12 @@
                                                             
                                                                 {!! Form::hidden('transportation_charge',($service_request->transportation_charge), ['class' => 'form-control', 'placeholder' => '','id' => 'transportation_charge']) !!}
                                                             @endif
-                                                        </div >
-                                                        <div class="col-md-12 col-xs-12">
-                                                            {!! Html::decode(Form::label('', '( <i class="fa fa-rupee"></i> '.number_format($service_request->km_charge,2).' per km )',['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge'])) !!}
                                                         </div>
+                                                        @if($service_request->transportation_charge > 0)
+                                                            <div class="col-md-12 col-xs-12">
+                                                                {!! Html::decode(Form::label('', '( <i class="fa fa-rupee"></i> '.number_format($service_request->km_charge,2).' per km )',['class' => 'control-label pull-right fontsize', 'id' => 'lbl_km_charge'])) !!}
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
