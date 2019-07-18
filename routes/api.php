@@ -33,7 +33,9 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function () {
        Route::post('/getresolvedrequestlist','ServiceRequestApiController@getResolvedRequestList');
        Route::post('/setRequestStatus','ServiceRequestApiController@setRequestStatus');
        Route::post('/getRequestDetail','ServiceRequestApiController@getRequestDetail');
-       Route::post('updateRequestDetail','ServiceRequestApiController@updateRequestDetail');
+       Route::post('/updateRequestDetail','ServiceRequestApiController@updateRequestDetail');
+       Route::post('/updateRequestDetail_v2','ServiceRequestApiController@updateRequestDetail_v2');
+       Route::post('/getRequestDetail_v2','ServiceRequestApiController@getRequestDetail_v2');
        
 
 });
