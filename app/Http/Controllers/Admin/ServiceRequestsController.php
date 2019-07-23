@@ -1502,8 +1502,14 @@ class ServiceRequestsController extends Controller
 
         $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
 
-        $additional_charge_title = [];
-        $additional_charges = [];
+        // $additional_charge_title = [];
+        // $additional_charges = [];
+
+        $additional_charge_title['option'] = [];
+        $additional_charges['option'] = [];
+
+        $additional_charge_title['other'] = [];
+        $additional_charges['other'] = [];
 
         if(!empty($additional_charge_array->option)){
             foreach ($additional_charge_array->option as $OptionKey => $value) {

@@ -403,8 +403,11 @@
                                                             </div>
                                                         @endforeach
                                                     @endif
-
-                                                    @if($additional_charge_title['other'] != '')
+                                                  
+                                                    <?php
+                                                        if(isset($additional_charge_title['other']) && !empty($additional_charge_title['other'])){
+                                                    ?>
+                                                    {{-- @if($additional_charge_title['other'] != '') --}}
                                                     <div class="row">
                                                         <div class="col-sm-12">
                                                             <div class="pull-left">
@@ -421,7 +424,10 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    @endif
+                                                    <?php
+                                                        }
+                                                    ?>
+                                                    {{-- @endif --}}
                                                 </div>
                                             </div>
                                         @endif
