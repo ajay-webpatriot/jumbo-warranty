@@ -1161,47 +1161,85 @@ class ServiceRequestApiController extends Controller
 
         if(isset($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
 
-            if(isset($json['additionalCharges']) && !empty($json['additionalCharges']) && $json['additionalCharges'] != 0){
-                $additional_charge_title['option'] = [];
-                $additional_charges['option'] = [];
-                if((isset($json['additionalChargesFor']['option']) && !empty($json['additionalChargesFor']['option'])) && (isset($json['additionalCharges']['option']) && !empty($json['additionalCharges']['option'])) && $json['additionalCharges']['option'] != 0){
+            $additional_charges_both['option'] = [];
+            $additional_charges_both['other'] = [];
 
-                    foreach ($json['additionalChargesFor']['option'] as $OptionKey => $value) {
-                
-                        if($value != ''){
-                            if(isset($json['additionalCharges']['option'][$OptionKey])){
-                            
-                                $additional_charge_title['option'][$OptionKey]= $value;
-                                $additional_charges['option'][$OptionKey] = $json['additionalCharges']['option'][$OptionKey];
+            if(isset($json['additionalChargesFor']['option']) && $json['additionalChargesFor']['option'] != ''){
 
-                                $total_amount+=(($json['additionalCharges']['option'][$OptionKey] == "")?0:number_format((float)$json['additionalCharges']['option'][$OptionKey], 2, '.', ''));
+                foreach ($json['additionalChargesFor']['option'] as $OptionKey => $OptionValue) {
 
-                                $additional_charges['option'][$OptionKey] = array($json['additionalChargesFor']['option'][$OptionKey] => number_format((float)$json['additionalCharges']['option'][$OptionKey], 2, '.', ''));
-                            }
+                    if(isset($OptionValue['label']) && isset($OptionValue['amount'])){
+                        if((!empty($OptionValue['label']) && $OptionValue['label'] != '') && ((!empty($OptionValue['amount']) && $OptionValue['amount'] != '')) && $OptionValue['amount'] > 0){
+                    
+                            $additional_charges_both['option'][$OptionKey] =  array($OptionValue['label'] => number_format((float)$OptionValue['amount'], 2, '.', ''));
+
+                            $total_amount+=(($OptionValue['amount'] == "")?0:number_format((float)$OptionValue['amount'], 2, '.', ''));
                         }
-                    } 
-                }
-
-                $additional_charge_title['other'] = [];
-                $additional_charges['other'] = [];
-                if(isset($json['additionalChargesFor']['other']) && !empty($json['additionalChargesFor']['other'])){
-
-                    if(isset($json['additionalCharges']['other']) && !empty($json['additionalCharges']['other']) && $json['additionalCharges']['other'] != 0){
-
-                        $additional_charge_title['other']=  $json['additionalChargesFor']['other'];
-                        $additional_charges['other'] =$json['additionalCharges']['other'];
-                    
-
-                        $total_amount+=(($json['additionalCharges']['other'] == "")?0:number_format((float)$json['additionalCharges']['other'], 2, '.', ''));
-
-                        $additional_charges['other'] = array($json['additionalChargesFor']['other'] => number_format((float)$json['additionalCharges']['other'], 2, '.', ''));
                     }
-                    
+
                 }
-                $additional_charges= json_encode($additional_charges);
             }
             
+            if(isset($json['additionalChargesFor']['other']) && $json['additionalChargesFor']['other'] != ''){
+
+                $otherCharges = $json['additionalChargesFor']['other'];
+
+                if(isset($otherCharges['label']) && isset($otherCharges['amount'])){
+                    if((!empty($otherCharges['label']) && $otherCharges['label'] != '') && ((!empty($otherCharges['amount']) && $otherCharges['amount'] != '')) && $otherCharges['amount'] > 0){
+                        
+                        $additional_charges_both['other'] =  array($otherCharges['label'] => number_format((float)$otherCharges['amount'], 2, '.', ''));
+
+                        $total_amount+=(($otherCharges['amount'] == "")?0:number_format((float)$otherCharges['amount'], 2, '.', ''));
+                    }
+                }
+            }
+            $additional_charges= json_encode($additional_charges_both);
         }
+        
+        /* old additional charge store procedure */
+        // if(isset($json['additionalChargesFor']) && $json['additionalChargesFor'] != ''){
+
+        //     if(isset($json['additionalCharges']) && !empty($json['additionalCharges']) && $json['additionalCharges'] != 0){
+        //         $additional_charge_title['option'] = [];
+        //         $additional_charges['option'] = [];
+        //         if((isset($json['additionalChargesFor']['option']) && !empty($json['additionalChargesFor']['option'])) && (isset($json['additionalCharges']['option']) && !empty($json['additionalCharges']['option'])) && $json['additionalCharges']['option'] != 0){
+
+        //             foreach ($json['additionalChargesFor']['option'] as $OptionKey => $value) {
+                
+        //                 if($value != ''){
+        //                     if(isset($json['additionalCharges']['option'][$OptionKey])){
+                            
+        //                         $additional_charge_title['option'][$OptionKey]= $value;
+        //                         $additional_charges['option'][$OptionKey] = $json['additionalCharges']['option'][$OptionKey];
+
+        //                         $total_amount+=(($json['additionalCharges']['option'][$OptionKey] == "")?0:number_format((float)$json['additionalCharges']['option'][$OptionKey], 2, '.', ''));
+
+        //                         $additional_charges['option'][$OptionKey] = array($json['additionalChargesFor']['option'][$OptionKey] => number_format((float)$json['additionalCharges']['option'][$OptionKey], 2, '.', ''));
+        //                     }
+        //                 }
+        //             } 
+        //         }
+
+        //         $additional_charge_title['other'] = [];
+        //         $additional_charges['other'] = [];
+        //         if(isset($json['additionalChargesFor']['other']) && !empty($json['additionalChargesFor']['other'])){
+
+        //             if(isset($json['additionalCharges']['other']) && !empty($json['additionalCharges']['other']) && $json['additionalCharges']['other'] != 0){
+
+        //                 $additional_charge_title['other']=  $json['additionalChargesFor']['other'];
+        //                 $additional_charges['other'] =$json['additionalCharges']['other'];
+                    
+
+        //                 $total_amount+=(($json['additionalCharges']['other'] == "")?0:number_format((float)$json['additionalCharges']['other'], 2, '.', ''));
+
+        //                 $additional_charges['other'] = array($json['additionalChargesFor']['other'] => number_format((float)$json['additionalCharges']['other'], 2, '.', ''));
+        //             }
+                    
+        //         }
+        //         $additional_charges= json_encode($additional_charges);
+        //     }
+            
+        // }
     
         $serviceRequestDetail->additional_charges = $additional_charges;
         $serviceRequestDetail->amount = $total_amount;
@@ -1250,45 +1288,84 @@ class ServiceRequestApiController extends Controller
 
         /* Pre additional charge array */
         $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
-        
-        if(!empty($additional_charge_array))
-        {
-            $additional_charge_title = [];
-            $additional_charges = [];
 
-            if(!empty($additional_charge_array->option)){
+        $additional_charge_both['option'] = [];
+        $additional_charge_both['other'] = [];
+
+        if(!empty($additional_charge_array)) {
+
+            if(!empty($additional_charge_array->option) && isset($additional_charge_array->option)){
                 foreach ($additional_charge_array->option as $OptionKey => $value) {
-                    
+
                     $AdditionalChargeTitle =  key((array)$value);
+
                     foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
                         if($AdditionalChargeTitle === $arr_val){
-
-                            $additional_charge_title['option'][$OptionKey] = $AdditionalChargeTitle;
-                            $additional_charges['option'][$OptionKey] = $value->$arr_val;
-                        
+                            $additional_charge_both['option'][$OptionKey]['label'] = $AdditionalChargeTitle;
+                            $additional_charge_both['option'][$OptionKey]['amount'] = $value->$arr_val;
                         }
                     }
-                }
-            }else{
-                $additional_charge_title['option'] = [];
-                $additional_charges['option'] = '0.00';
+                } 
             }
-            
-            if(!empty($additional_charge_array->other)){
-                foreach ($additional_charge_array->other as $key => $value) {
+
+            if(!empty($additional_charge_array->other) && isset($additional_charge_array->other)){
+               
+                
+                $AdditionalChargeOtherLabel =  key((array)$additional_charge_array->other);
+                $AdditionalChargeOtherAmount =  array_values((array)$additional_charge_array->other);
+
+                $additional_charge_both['other']['label'] = $AdditionalChargeOtherLabel;
+                $additional_charge_both['other']['amount'] = $AdditionalChargeOtherAmount[0];
+
+                // foreach ($additional_charge_array->other as $key => $value) {
                     
-                    $additional_charge_title['other'] = str_replace('_empty_', '', $key);
-                    $additional_charges['other'] = $value;
-                }                                      
-            }else{
-                $additional_charge_title['other'] = [];
-                $additional_charges['other'] = '0.00';
+                //     $additional_charge_both['other']['label'] = str_replace('_empty_', '', $key);
+                //     $additional_charge_both['other']['amount'] = $value;
+                // }
             }
         }
-        
-        $serviceRequestDetail->additional_charges = $additional_charges;
 
-        $response->additionalChargesFor = $additional_charge_title;
+        $response->additionalChargesFor = $additional_charge_both;
+
+        // if(!empty($additional_charge_array))
+        // {
+        //     $additional_charge_title = [];
+        //     $additional_charges = [];
+
+        //     if(!empty($additional_charge_array->option)){
+        //         foreach ($additional_charge_array->option as $OptionKey => $value) {
+                    
+        //             $AdditionalChargeTitle =  key((array)$value);
+        //             foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
+        //                 if($AdditionalChargeTitle === $arr_val){
+
+        //                     $additional_charge_title['option'][$OptionKey] = $AdditionalChargeTitle;
+        //                     $additional_charges['option'][$OptionKey] = $value->$arr_val;
+                        
+        //                 }
+        //             }
+        //         }
+        //     }else{
+        //         $additional_charge_title['option'] = [];
+        //         $additional_charges['option'] = '0.00';
+        //     }
+            
+        //     if(!empty($additional_charge_array->other)){
+        //         foreach ($additional_charge_array->other as $key => $value) {
+                    
+        //             $additional_charge_title['other'] = str_replace('_empty_', '', $key);
+        //             $additional_charges['other'] = $value;
+        //         }                                      
+        //     }else{
+        //         $additional_charge_title['other'] = [];
+        //         $additional_charges['other'] = '0.00';
+        //     }
+        // }
+        
+        
+        // $serviceRequestDetail->additional_charges = $additional_charges;
+
+        // $response->additionalChargesFor = $additional_charge_title;
 
         /* Ttransportation charge */
         if($serviceRequestDetail->transportation_charge > 0){
@@ -1452,7 +1529,7 @@ class ServiceRequestApiController extends Controller
             "kilometersCharges"         => $kilometersCharges,
             "transportationCharges"     => $transportationCharges,
             // "additionalCharges"         => $additionalCharges,
-            "additionalCharges"         => $additional_charges,
+            // "additionalCharges"         => $additional_charges,
             "totalAmount"               => $serviceRequestDetail->amount
         );
 
