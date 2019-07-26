@@ -42,5 +42,10 @@ class Company extends Model
     public function getNameAttribute($value) {
         return ucfirst($value);
     }
+
+    public function user()
+    {
+        return $this->hasMany(User::class, 'company_id')->withTrashed();
+    }
     
 }

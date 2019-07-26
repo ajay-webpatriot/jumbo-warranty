@@ -40,5 +40,10 @@ class ServiceCenter extends Model
     public function getNameAttribute($value) {
         return ucfirst($value);
     }
+
+    public function user()
+    {
+        return $this->hasMany(User::class, 'service_center_id')->withTrashed();
+    }
     
 }

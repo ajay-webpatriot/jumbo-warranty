@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\ServiceCenter;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -244,8 +245,17 @@ class ServiceCentersController extends Controller
             return abort(401);
         }
         $service_center = ServiceCenter::findOrFail($id);
-        $service_center->delete();
 
+        if(count($service_center) > 0){
+            $service_center->delete();
+            if(count($service_center->user) > 0){
+                foreach ($service_center->user as $key => $value) {
+                    $user = User::findOrFail($value->id);
+                    $user->delete();
+                }
+            } 
+            
+        }
         return redirect()->route('admin.service_centers.index');
     }
 

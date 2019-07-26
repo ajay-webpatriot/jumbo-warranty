@@ -260,6 +260,12 @@ class CompaniesController extends Controller
 
         $company->delete();
 
+        if(count($company->user) > 0){
+            foreach ($company->user as $key => $value) {
+                $user = \App\User::findOrFail($value->id);
+                $user->delete();
+            }
+        }
         return redirect()->route('admin.companies.index');
     }
 
