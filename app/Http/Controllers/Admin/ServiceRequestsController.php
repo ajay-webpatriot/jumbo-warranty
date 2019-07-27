@@ -1333,7 +1333,7 @@ class ServiceRequestsController extends Controller
 
         $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
         
-        $predefine_additional_charge_array = [];
+        // $predefine_additional_charge_array = [];
         $actual_value = '';
         
         $predefine_additional_charge_array['option'] = [];
@@ -1354,8 +1354,8 @@ class ServiceRequestsController extends Controller
             }
             $predefine_additional_charge_array['option'] = array_values($predefine_additional_charge_array['option']);
         }
-        
-        $predefine_additional_charge_array['other'] = [];
+
+        $predefine_additional_charge_array['other'] =(object)array();
         if(!empty($request['additional_charges_title']) && $request['additional_charges_title'] != ''){
             $predefine_additional_charge_array['other'] = array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', ''));
         }

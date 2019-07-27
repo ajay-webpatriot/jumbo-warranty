@@ -1285,12 +1285,12 @@ class ServiceRequestApiController extends Controller
         $additional_charge_title = "";
         $additional_charges      = "";
         $additional_charge_array = json_decode($serviceRequestDetail['additional_charges']);
-
+       
         /* Pre additional charge array */
         $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
 
         $additional_charge_both['option'] = [];
-        $additional_charge_both['other'] = [];
+        $additional_charge_both['other'] = (object)array();
 
         if(!empty($additional_charge_array)) {
 
@@ -1307,15 +1307,17 @@ class ServiceRequestApiController extends Controller
                     }
                 } 
             }
+          
+            // if((!empty($additional_charge_array->other) && isset($additional_charge_array->other)) && $additional_charge_array->other != '' ) {
 
-            if(!empty($additional_charge_array->other) && isset($additional_charge_array->other)){
+            if(!empty((array)$additional_charge_array->other)){
                
                 
                 $AdditionalChargeOtherLabel =  key((array)$additional_charge_array->other);
                 $AdditionalChargeOtherAmount =  array_values((array)$additional_charge_array->other);
-
-                $additional_charge_both['other']['label'] = $AdditionalChargeOtherLabel;
-                $additional_charge_both['other']['amount'] = $AdditionalChargeOtherAmount[0];
+               
+                $additional_charge_both['other']->label = $AdditionalChargeOtherLabel;
+                $additional_charge_both['other']->amount = $AdditionalChargeOtherAmount[0];
 
                 // foreach ($additional_charge_array->other as $key => $value) {
                     
@@ -1326,7 +1328,6 @@ class ServiceRequestApiController extends Controller
         }
 
         $response->additionalChargesFor = $additional_charge_both;
-
         // if(!empty($additional_charge_array))
         // {
         //     $additional_charge_title = [];
