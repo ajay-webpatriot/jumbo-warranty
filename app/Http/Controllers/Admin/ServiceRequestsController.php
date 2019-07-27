@@ -1355,7 +1355,10 @@ class ServiceRequestsController extends Controller
             $predefine_additional_charge_array['option'] = array_values($predefine_additional_charge_array['option']);
         }
         
-        $predefine_additional_charge_array['other'] = array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', ''));
+        $predefine_additional_charge_array['other'] = [];
+        if(!empty($request['additional_charges_title']) && $request['additional_charges_title'] != ''){
+            $predefine_additional_charge_array['other'] = array($request['additional_charges_title'] => number_format((float)$request['additional_charges'], 2, '.', ''));
+        }
 
         $request['additional_charges']= json_encode($predefine_additional_charge_array);
         // convert to json
