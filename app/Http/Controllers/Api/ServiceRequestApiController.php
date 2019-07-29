@@ -1291,6 +1291,7 @@ class ServiceRequestApiController extends Controller
 
         $additional_charge_both['option'] = [];
         $additional_charge_both['other'] = (object)array();
+        $otherArray = [];
 
         if(!empty($additional_charge_array)) {
 
@@ -1309,21 +1310,25 @@ class ServiceRequestApiController extends Controller
             }
           
             // if((!empty($additional_charge_array->other) && isset($additional_charge_array->other)) && $additional_charge_array->other != '' ) {
-
+   
             if(!empty((array)$additional_charge_array->other)){
-               
-                
-                $AdditionalChargeOtherLabel =  key((array)$additional_charge_array->other);
-                $AdditionalChargeOtherAmount =  array_values((array)$additional_charge_array->other);
-               
-                $additional_charge_both['other']->label = $AdditionalChargeOtherLabel;
-                $additional_charge_both['other']->amount = $AdditionalChargeOtherAmount[0];
 
-                // foreach ($additional_charge_array->other as $key => $value) {
-                    
-                //     $additional_charge_both['other']['label'] = str_replace('_empty_', '', $key);
-                //     $additional_charge_both['other']['amount'] = $value;
-                // }
+                foreach ((array)$additional_charge_array->other as $key => $value) {
+                    $otherArray[] = str_replace('_empty_', '', $key);
+                    $otherArray[] = $value;
+                }
+                if(!empty($otherArray[0]) && $otherArray[1] != 0){
+                    $additional_charge_both['other']->label = $otherArray[0];
+                    $additional_charge_both['other']->amount = $otherArray[1];
+                }else{
+                    $additional_charge_both['other'] = (object)array();
+                }
+                // $AdditionalChargeOtherLabel =  key((array)$additional_charge_array->other);
+
+                // $AdditionalChargeOtherAmount =  array_values((array)$additional_charge_array->other);
+               
+                // $additional_charge_both['other']->label = $AdditionalChargeOtherLabel;
+                // $additional_charge_both['other']->amount = $AdditionalChargeOtherAmount[0];
             }
         }
 
