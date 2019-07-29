@@ -400,8 +400,7 @@ class ServiceRequest extends Model
             $assignedRequest->select('service_requests.id','service_requests.service_type',
                 'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
                 DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
-                DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-                LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+                DB::raw('CONCAT("JW","",CONCAT(LPAD(service_requests.id, 4, 0)," ",CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)),LCASE(SUBSTRING(service_requests.service_type, 2)))," - "),products.name)) as servicerequest_title'),'service_requests.status',
                 'service_requests.is_accepted'
             )
             ->join('customers','service_requests.customer_id','=','customers.id')
@@ -428,13 +427,15 @@ class ServiceRequest extends Model
         if($type == 'count'){
             return $dueRequest->count();
         }else{
+            // $dueRequest->select('service_requests.id','service_requests.service_type',
+            //     'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
+            //     DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+            //     DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+            //     LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+            //     'service_requests.is_accepted'
+            // )
             $dueRequest->select('service_requests.id','service_requests.service_type',
-                'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
-                DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
-                DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-                LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
-                'service_requests.is_accepted'
-            )
+            'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT("JW","",CONCAT(LPAD(service_requests.id, 4, 0)," ",CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)),LCASE(SUBSTRING(service_requests.service_type, 2)))," - "),products.name)) as servicerequest_title'),'service_requests.status','service_requests.is_accepted')
             ->join('customers','service_requests.customer_id','=','customers.id')
             ->join('products','service_requests.product_id','=','products.id')
             ->orderBy('service_requests.id','Desc');
@@ -455,8 +456,7 @@ class ServiceRequest extends Model
             $resolvedRequest->select('service_requests.id','service_requests.service_type',
                 'service_requests.created_at','service_requests.customer_id','service_requests.amount','service_requests.completion_date',
                 DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
-                DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-                LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'),'service_requests.status',
+                DB::raw('CONCAT("JW","",CONCAT(LPAD(service_requests.id, 4, 0)," ",CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)),LCASE(SUBSTRING(service_requests.service_type, 2)))," - "),products.name)) as servicerequest_title'),'service_requests.status',
                 'service_requests.is_accepted'
             )
             ->join('customers','service_requests.customer_id','=','customers.id')

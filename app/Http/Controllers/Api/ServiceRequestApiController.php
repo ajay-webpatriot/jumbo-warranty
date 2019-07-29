@@ -400,7 +400,7 @@ class ServiceRequestApiController extends Controller
         
         if($StatusChangeResponse == 1){
 
-            $requestdetail = $this->getRequestDetailJson($serviceRequestId);
+            $requestdetail = $this->getRequestDetailJson_v2($serviceRequestId);
             if($requestdetail != ''){
 
                 $technician_name = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
