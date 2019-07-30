@@ -1540,7 +1540,18 @@ class ServiceRequestApiController extends Controller
         );
 
         $response->charges = $charges;
-        $response->defaultAdditionalChargesTitle = $pre_additional_charge_array;
+        $additionalChargeArray = [];
+        if(!empty($pre_additional_charge_array)){
+            foreach($pre_additional_charge_array as $key => $value){
+                if($key != 0){
+                    $additionalChargeArray[] = $value;
+                }
+            }
+        }
+        
+        // $response->defaultAdditionalChargesTitle = $pre_additional_charge_array;
+
+        $response->defaultAdditionalChargesTitle = $additionalChargeArray;
 
         return $response;
     }
