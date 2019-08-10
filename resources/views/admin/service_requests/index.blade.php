@@ -299,6 +299,7 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.created_date')</th>
+                            <th>@lang('quickadmin.service-request.fields.created_by')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
                             <!-- paid column will be visiblke to only service center admin) -->
@@ -334,6 +335,7 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <!-- <th>@lang('quickadmin.service-request.fields.amount')</th> -->
                             <th>@lang('quickadmin.service-request.fields.created_date')</th>
+                            <th>@lang('quickadmin.service-request.fields.created_by')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_action')</th>
                         </tr>
@@ -358,6 +360,7 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.created_date')</th>
+                            <th>@lang('quickadmin.service-request.fields.created_by')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_paid')</th>
                             <th>@lang('quickadmin.qa_action')</th>
@@ -655,6 +658,7 @@
                     { "data": "product" },
                     // { "data": "amount" },
                     { "data": "created_at" },
+                    { "data": "created_by","name": "created_by" },
                     { "data": "request_status" },
                     { "data": "action" }
                 ],
@@ -673,12 +677,18 @@
                 {
                     "class": "text-center",
                     "targets":   5
-                },{
+                },
+                {
                     "class": "text-center",
                     "targets":   6
-                },{
-                    "orderable": false,
+                },
+                {
+                    "class": "text-center",
                     "targets":   7
+                },
+                {
+                    "orderable": false,
+                    "targets":   8
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },
@@ -787,6 +797,7 @@
                     { "data": "product" },
                     { "data": "amount" },
                     { "data": "created_at" },
+                    { "data": "created_by","name": "created_by" },
                     { "data": "request_status" },
                     { "data": "amount_paid" },
                     { "data": "action" }
@@ -819,11 +830,15 @@
                     "targets":   9
                 },{
                     "orderable": true,
-                    "targets":   10,
+                    "class": "text-center",
+                    "targets":   10
+                },{
+                    "orderable": true,
+                    "targets":   11,
                     "searchable": false
                 },{
                     "orderable": false,
-                    "targets":   11,
+                    "targets":   12,
                     "searchable": false
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);

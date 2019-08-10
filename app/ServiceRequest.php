@@ -41,7 +41,7 @@ class ServiceRequest extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['service_type', 'call_type', 'call_location', 'priority', 'make', 'model_no', 'is_item_in_warrenty', 'bill_no', 'bill_date', 'serial_no', 'mop', 'purchase_from', 'adavance_amount', 'service_charge', 'complain_details', 'note', 'completion_date', 'additional_charges', 'amount', 'status', 'company_id', 'customer_id', 'service_center_id', 'technician_id', 'product_id','installation_charge','km_charge','km_distance','transportation_charge','invoice_number','is_accepted','online_serial_number','warranty_card_number','closed_at'];
+    protected $fillable = ['service_type', 'call_type', 'created_by', 'call_location', 'priority', 'make', 'model_no', 'is_item_in_warrenty', 'bill_no', 'bill_date', 'serial_no', 'mop', 'purchase_from', 'adavance_amount', 'service_charge', 'complain_details', 'note', 'completion_date', 'additional_charges', 'amount', 'status', 'company_id', 'customer_id', 'service_center_id', 'technician_id', 'product_id','installation_charge','km_charge','km_distance','transportation_charge','invoice_number','is_accepted','online_serial_number','warranty_card_number','closed_at'];
     protected $hidden = [];
     
     
@@ -285,7 +285,7 @@ class ServiceRequest extends Model
     public function getFilterRequestsCount($request)
     {
         // get total filter request list count
-        $service_requestsQuery = ServiceRequest::select('customers.firstname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id')
+        $service_requestsQuery = ServiceRequest::select('customers.firstname','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.service_type','service_requests.status','companies.name as cname','service_requests.id','service_requests.created_by')
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')

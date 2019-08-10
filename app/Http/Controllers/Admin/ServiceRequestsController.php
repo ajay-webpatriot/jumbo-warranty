@@ -246,8 +246,9 @@ class ServiceRequestsController extends Controller
                 3 =>'products.name' ,
                 4 =>'service_requests.amount' ,
                 5 =>'service_requests.created_at',
-                6 =>'service_requests.status',
-                7 =>'service_requests.is_paid',
+                6 =>'service_requests.created_by',
+                7 =>'service_requests.status',
+                8 =>'service_requests.is_paid',
                 
             );
         }else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
@@ -261,7 +262,8 @@ class ServiceRequestsController extends Controller
                 4 =>'products.name' ,
                 // 5 =>'service_requests.amount' ,
                 5 =>'service_requests.status',
-                6 =>'service_requests.created_at'
+                6 =>'service_requests.created_at',
+                7 =>'service_requests.created_by',
             );
         }else{
             // admin and super admin
@@ -277,7 +279,8 @@ class ServiceRequestsController extends Controller
                 7 =>'service_requests.amount' ,
                 8 =>'service_requests.status',
                 9 =>'service_requests.is_paid',
-                10 =>'service_requests.created_at'
+                10 =>'service_requests.created_at',
+                11 =>'service_requests.created_by'
             );
         }
 
@@ -331,7 +334,7 @@ class ServiceRequestsController extends Controller
 
             $enum_status_color = ServiceRequest::$enum_status_color_code;
 
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.created_by','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
@@ -549,6 +552,7 @@ class ServiceRequestsController extends Controller
                         $tableField['checkbox'] = '';
                     }
                     $tableField['amount'] ='<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
+                    $tableField['created_by'] = sprintf("%04d", $SingleServiceRequest->created_by);
                 }
                 $tableField['sr_no'] = 'JW'.sprintf("%04d", $SingleServiceRequest->id);
                 $tableField['customer'] = $SingleServiceRequest->firstname."<br/>(".$SingleServiceRequest->phone.")";
@@ -838,7 +842,8 @@ class ServiceRequestsController extends Controller
             $request['status'] ="Technician assigned";
         }
         
-        $request['amount']=$total_amount;  
+        $request['amount']=$total_amount;
+        $request['created_by'] = auth()->user()->id;  
         // calculate total amount work end
 
         $service_request = ServiceRequest::create($request->all());

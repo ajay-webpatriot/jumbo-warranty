@@ -186,7 +186,8 @@ return [
 			'created_date' => 'Creation Date',
 			'total-paid' => 'Total Paid',
 			'total-due' => 'Total Due',
-			'title' => 'Title'
+			'title' => 'Title',
+			'created_by' => 'Created By'
 		],
 	],
 	
