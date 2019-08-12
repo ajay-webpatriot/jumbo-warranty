@@ -16,6 +16,9 @@
         .fontsize{
             font-size: 12px!important;
         }
+        .rowmargin13{
+            margin-bottom: 13px !important;
+        }
     </style>
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -42,41 +45,40 @@
                             <div class="row">
                                 <?php
                                     $createdByName = '-';
-                                    $col = 6;
-                                    
                                     if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
                                         if($userDetail != ''){
                                             $createdByName = $userDetail->name;
                                         }
-                                       $col = 4;
                                     }
                                 ?>
-                                <div class="col-md-<?php echo $col;?>">
+                                <div class="col-md-6">
                                     {!! Form::label('service_type', trans('quickadmin.service-request.fields.service-type').': ', ['class' => 'control-label']) !!}
 
                                     {!! Form::label('service_type', ucfirst($service_request->service_type), ['class' => 'control-label fontweight']) !!}
                                 </div>
-                                
-                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
 
-                                    <div class="col-md-4">
-                                        {!! Form::label('created_by', trans('quickadmin.service-request.fields.created_by').': ', ['class' => 'control-label','readonly' => '']) !!}
-                                        {!! Form::label('created_by',$createdByName, ['class' => 'control-label fontweight','readonly' => '']) !!}
-                                    </div>
-
-                                @endif
-
-                                <div class="col-md-<?php echo $col;?>">
+                                <div class="col-md-6">
                                     {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').': ', ['class' => 'control-label','readonly' => '']) !!}
                                     {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label fontweight','readonly' => '']) !!}
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-md-12">
-                            <!-- Request Status -->
-                           {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label lablemargin']) !!}
-                            {!! Form::label('status', $service_request->status, ['class' => 'control-label lablemargin','style' => 'color:'.$enum_status_color[$service_request->status]]) !!}
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="row rowmargin13">
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                <!-- Request Status -->
+                                    {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label lablemargin']) !!}
+                                    {!! Form::label('status', $service_request->status, ['class' => 'control-label lablemargin','style' => 'color:'.$enum_status_color[$service_request->status]]) !!}
+                                </div>
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                            
+                                        {!! Form::label('created_by', trans('quickadmin.service-request.fields.created_by').': ', ['class' => 'control-label lablemargin','readonly' => '']) !!}
+                                        {!! Form::label('created_by',$createdByName, ['class' => 'control-label fontweight lablemargin','readonly' => '']) !!}
+                                       
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
 

@@ -625,8 +625,8 @@
                         customize: function (win) {
                             // set alignment of amount and request status column for print screen
                             $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
-                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'center');
-                            // $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'left');
+                            $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
                         }
                     }
                 ],
@@ -674,7 +674,7 @@
                     "searchable": true
                 },
                 {
-                    "class": "text-center",
+                    "class": "text-left",
                     "targets":   5
                 },
                 {
@@ -745,7 +745,8 @@
                                     doc.content[1].table.body[i][0].alignment = 'center';
                                     doc.content[1].table.body[i][6].alignment = 'right';
                                     doc.content[1].table.body[i][7].alignment = 'center';
-                                    doc.content[1].table.body[i][8].alignment = 'center';
+                                    doc.content[1].table.body[i][8].alignment = 'left';
+                                    doc.content[1].table.body[i][9].alignment = 'center';
                                  
                             }
                         }
@@ -755,14 +756,15 @@
                         text: window.printButtonTrans,
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9,10]
                         },
                         customize: function (win) {
                             // set alignment of amount and request status column for print screen
                             $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
                             $(win.document.body).find('table tbody td:nth-child(7)').css('text-align', 'right');
-                            $(win.document.body).find('table tbody td:nth-child(8)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(8)').css('text-align', 'left');
                             $(win.document.body).find('table tbody td:nth-child(9)').css('text-align', 'center');
+                            $(win.document.body).find('table tbody td:nth-child(10)').css('text-align', 'center');
                         }
                     }
                 ],
@@ -821,7 +823,7 @@
                     "class": "text-right",
                     "targets":   7
                 },{
-                    "class": "text-center",
+                    "class": "text-left",
                     "targets":   8
                 },{
                     "orderable": true,

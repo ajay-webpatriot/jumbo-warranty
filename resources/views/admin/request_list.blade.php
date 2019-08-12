@@ -197,7 +197,7 @@
 
                                     @endif
                                     @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
-                                        <td align="center">{{ $createdByName }}</td>
+                                        <td align="left">{{ $createdByName }}</td>
                                     @endif
                                     <td align="center">{{ date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
                                     <td align="center">
