@@ -72,10 +72,11 @@ class AdminDashboardController extends Controller
             }
         }
          
-        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.amount','service_requests.service_type','service_requests.id','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
+        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.created_by','service_requests.amount','service_requests.service_type','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
         LCASE(SUBSTRING(customers.firstname, 2)))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)), 
         LCASE(SUBSTRING(customers.lastname, 2)))) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
         LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
+        ->leftjoin('users','service_requests.created_by','=','users.id')
         ->join('customers','service_requests.customer_id','=','customers.id')
         ->join('products','service_requests.product_id','=','products.id')
         ->whereIn('service_requests.service_type',array('repair','installation'))
@@ -205,8 +206,9 @@ class AdminDashboardController extends Controller
         $Status = 0;
         $color = '';
        
-        $ServiceCount = ServiceRequest::select('service_requests.*',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-        LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'));
+        $ServiceCount = ServiceRequest::select('service_requests.*','users.name as createdbyName',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+        LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
+        ->leftjoin('users','service_requests.created_by','=','users.id');
 
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {

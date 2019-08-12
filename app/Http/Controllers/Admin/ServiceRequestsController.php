@@ -334,7 +334,8 @@ class ServiceRequestsController extends Controller
 
             $enum_status_color = ServiceRequest::$enum_status_color_code;
 
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.created_by','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.created_by','users.name as createdbyName','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            ->leftjoin('users','service_requests.created_by','=','users.id')
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
@@ -552,7 +553,7 @@ class ServiceRequestsController extends Controller
                         $tableField['checkbox'] = '';
                     }
                     $tableField['amount'] ='<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
-                    $tableField['created_by'] = sprintf("%04d", $SingleServiceRequest->created_by);
+                    
                 }
                 $tableField['sr_no'] = 'JW'.sprintf("%04d", $SingleServiceRequest->id);
                 $tableField['customer'] = $SingleServiceRequest->firstname."<br/>(".$SingleServiceRequest->phone.")";
@@ -566,6 +567,14 @@ class ServiceRequestsController extends Controller
                     $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
                 }
                 $tableField['request_status'] = $tableStatusColor;
+                
+                if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
+                    $createdByName = '-';
+                    if($SingleServiceRequest->createdbyName != ''){
+                        $createdByName = $SingleServiceRequest->createdbyName;
+                    }
+                    $tableField['created_by'] = ucfirst($createdByName);
+                }
 
                 $tableField['created_at'] = date('d/m/Y',strtotime($SingleServiceRequest->created_at));
 
@@ -843,8 +852,11 @@ class ServiceRequestsController extends Controller
         }
         
         $request['amount']=$total_amount;
-        $request['created_by'] = auth()->user()->id;  
         // calculate total amount work end
+        
+        if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
+            $request['created_by'] = auth()->user()->id;  
+        }
 
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
@@ -920,6 +932,16 @@ class ServiceRequestsController extends Controller
                     // $enum_status = ServiceRequest::$enum_status;
             
         $service_request = ServiceRequest::findOrFail($id);
+
+        $userDetail = '';
+        if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
+
+            if($service_request->created_by != ''){
+                $userDetail=\App\User::findOrFail($service_request->created_by);
+            }
+             
+        }
+
         if($service_request['service_type'] == "repair")
         {
             if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
@@ -1133,7 +1155,7 @@ class ServiceRequestsController extends Controller
         $enum_customer_status = \App\Customer::$enum_status;
         $enum_service_center_status = \App\ServiceCenter::$enum_status;
         $enum_technician_status = \App\User::$enum_status;
-        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'supported_service_centers', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','enum_status_color','additional_charge_array','pre_additional_charge_array'))->with('no', 1);
+        return view('admin.service_requests.edit', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','service_center_supported', 'supported_service_centers', 'enum_company_status', 'enum_customer_status', 'enum_service_center_status', 'enum_technician_status','enum_status_color','additional_charge_array','pre_additional_charge_array','userDetail'))->with('no', 1);
         // $user_name=ucwords('user name');
         // $subject='sub';
         // return view('admin.emails.service_request_detail_email', compact('service_request', 'enum_service_type', 'enum_call_type', 'enum_call_location', 'enum_priority', 'enum_is_item_in_warrenty', 'enum_mop', 'enum_status', 'companies', 'customers', 'service_centers', 'technicians', 'products', 'parts','companyName', 'service_request_logs', 'custAddressData','additional_charge_title','user_name','subject'))->with('no', 1);
@@ -1505,7 +1527,16 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         $service_request = ServiceRequest::findOrFail($id);
+       
+        $userDetail = '';
+        if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
 
+            if($service_request->created_by != ''){
+                $userDetail=\App\User::findOrFail($service_request->created_by);
+            }
+             
+        }
+        
         $additional_charge_array=json_decode($service_request['additional_charges']);
 
         $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
@@ -1621,7 +1652,7 @@ class ServiceRequestsController extends Controller
         $service_request['additional_charges']=$additional_charges;
 
         $service_request_logs = $service_request->servicerequestlog;
-        return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title','enum_status_color'))->with('no', 1);
+        return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title','enum_status_color','userDetail'))->with('no', 1);
     }
 
 

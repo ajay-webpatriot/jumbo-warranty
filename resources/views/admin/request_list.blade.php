@@ -94,6 +94,10 @@
 
                                 @endif
 
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                    <th>@lang('quickadmin.service-request.fields.created_by')</th>
+                                @endif
+
                                 <th>@lang('quickadmin.service-request.fields.created_date')</th>
                                 <th>@lang('quickadmin.service-request.fields.status')</th>
 
@@ -123,6 +127,11 @@
                                 $customerPhoneNumber = '-';
                                 $product= '-';
                                 $amount= '-';
+
+                                $createdByName = '-';
+                                if($SingleServiceTypeDetail->createdbyName != ''){
+                                    $createdByName = $SingleServiceTypeDetail->createdbyName;
+                                }
 
                                 if( $SingleServiceTypeDetail->company != ''){
                                     $company_name = $SingleServiceTypeDetail->company->name;
@@ -187,7 +196,9 @@
                                         <td><span class="pull-right"><i class="fa fa-rupee"></i> {{ $amount }}</span></td>
 
                                     @endif
-
+                                    @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                        <td align="center">{{ $createdByName }}</td>
+                                    @endif
                                     <td align="center">{{ date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at)) }}</td>
                                     <td align="center">
                                         <span style="color:{{ $backgroundColor }}">

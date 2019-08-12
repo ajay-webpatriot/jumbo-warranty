@@ -127,7 +127,6 @@ class SendMail
                               'company_admin' => $company_admin_email,
                               'customer' => $customer_email,
                               'rajdip' => 'rajdip.webpatriot@gmail.com',
-                              'hinal' => 'hinal.webpatriot@gmail.com'
                             );
         foreach ($receiver_email as $key => $value) {
           if(!empty($value))

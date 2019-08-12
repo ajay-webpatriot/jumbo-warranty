@@ -40,13 +40,33 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-6">
+                                <?php
+                                    $createdByName = '-';
+                                    $col = 6;
+                                    
+                                    if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
+                                        if($userDetail != ''){
+                                            $createdByName = $userDetail->name;
+                                        }
+                                       $col = 4;
+                                    }
+                                ?>
+                                <div class="col-md-<?php echo $col;?>">
                                     {!! Form::label('service_type', trans('quickadmin.service-request.fields.service-type').': ', ['class' => 'control-label']) !!}
 
                                     {!! Form::label('service_type', ucfirst($service_request->service_type), ['class' => 'control-label fontweight']) !!}
                                 </div>
+                                
+                                @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
 
-                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        {!! Form::label('created_by', trans('quickadmin.service-request.fields.created_by').': ', ['class' => 'control-label','readonly' => '']) !!}
+                                        {!! Form::label('created_by',$createdByName, ['class' => 'control-label fontweight','readonly' => '']) !!}
+                                    </div>
+
+                                @endif
+
+                                <div class="col-md-<?php echo $col;?>">
                                     {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').': ', ['class' => 'control-label','readonly' => '']) !!}
                                     {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label fontweight','readonly' => '']) !!}
                                 </div>

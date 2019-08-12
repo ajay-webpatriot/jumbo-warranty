@@ -380,6 +380,9 @@
                                             <th>@lang('quickadmin.service-request.fields.amount')</th>
 
                                         @endif
+                                        @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                            <th>@lang('quickadmin.service-request.fields.created_by')</th>
+                                        @endif
                                         <th>@lang('quickadmin.service-request.fields.created_date')</th>
                                         <th>@lang('quickadmin.service-request.fields.status')</th>
                                     </tr>
@@ -387,6 +390,12 @@
                                   <tbody>
                                     @if(!empty($ServiceTypeDetails) && count($ServiceTypeDetails) > 0)
                                         @foreach($ServiceTypeDetails as $key => $SingleServiceTypeDetail)
+                                        <?php
+                                            $createdByName = '-';
+                                            if($SingleServiceTypeDetail->createdbyName != ''){
+                                                $createdByName = $SingleServiceTypeDetail->createdbyName;
+                                            }
+                                        ?>
                                         <tr>
                                             <td align="center">
                                                 <a href="{{route('admin.service_requests.show',$SingleServiceTypeDetail->id)}}">
@@ -404,6 +413,9 @@
                                             @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                                 <td align="right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
                                                 </td>
+                                            @endif
+                                            @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                                <td align="center">{{ $createdByName }} </td>
                                             @endif
                                             <td align="center">
                                             {{date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at))}}

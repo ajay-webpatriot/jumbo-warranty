@@ -299,7 +299,6 @@
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.created_date')</th>
-                            <th>@lang('quickadmin.service-request.fields.created_by')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
                             <!-- paid column will be visiblke to only service center admin) -->
@@ -334,8 +333,8 @@
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <!-- <th>@lang('quickadmin.service-request.fields.amount')</th> -->
-                            <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.created_by')</th>
+                            <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_action')</th>
                         </tr>
@@ -359,8 +358,8 @@
                             <th>@lang('quickadmin.service-request.fields.service-center')</th>
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th>@lang('quickadmin.service-request.fields.amount')</th>
-                            <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.created_by')</th>
+                            <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             <th>@lang('quickadmin.qa_paid')</th>
                             <th>@lang('quickadmin.qa_action')</th>
@@ -657,8 +656,8 @@
                     { "data": "service_type" },
                     { "data": "product" },
                     // { "data": "amount" },
-                    { "data": "created_at" },
                     { "data": "created_by","name": "created_by" },
+                    { "data": "created_at" },
                     { "data": "request_status" },
                     { "data": "action" }
                 ],
@@ -796,8 +795,8 @@
                     { "data": "service_center" },
                     { "data": "product" },
                     { "data": "amount" },
-                    { "data": "created_at" },
                     { "data": "created_by","name": "created_by" },
+                    { "data": "created_at" },
                     { "data": "request_status" },
                     { "data": "amount_paid" },
                     { "data": "action" }

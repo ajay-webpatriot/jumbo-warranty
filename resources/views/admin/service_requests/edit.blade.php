@@ -44,10 +44,28 @@
                                     @endif
                                 </div>
 
+                                <?php
+                                    $createdByName = '-';
+                                    if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
+                                        if($userDetail != ''){
+                                            $createdByName = $userDetail->name;
+                                        }
+                                       
+                                    }
+                                ?>
                                 <div class="col-md-6 form-group">
-                                    {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').':', ['class' => 'control-label lablemargin','readonly' => '']) !!}
-                                    {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
-                                   
+                                    <div class="row">
+                                        @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                            <div class="col-md-6">
+                                            {!! Form::label('created_by', trans('quickadmin.service-request.fields.created_by').':', ['class' => 'control-label lablemargin','readonly' => '']) !!}
+                                            {!! Form::label('created_by',$createdByName, ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
+                                            </div>
+                                        @endif
+                                        <div class="col-md-6">
+                                            {!! Form::label('created_date', trans('quickadmin.service-request.fields.created_date').':', ['class' => 'control-label lablemargin','readonly' => '']) !!}
+                                            {!! Form::label('created_date', App\Helpers\CommonFunctions::setDateFormat($service_request->created_at), ['class' => 'control-label lablemargin fontweight','readonly' => '']) !!}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
