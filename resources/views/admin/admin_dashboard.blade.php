@@ -369,7 +369,7 @@
                             <!-- /.box-header -->
                             <div class="box-body" style="">
                               <div class="table-responsive">
-                                <table class="table no-margin recent-service-request table-striped table-hover table-bordered table-responsive datatable">
+                                <table class="table no-margin recent-service-request table-striped table-hover table-bordered table-responsive">
                                   <thead>
                                     <tr>
                                         <th>@lang('quickadmin.service-request.fields.request-id')</th>
