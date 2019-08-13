@@ -189,11 +189,11 @@
                                         <td align="center">{{ $service_centers }}</td>
 
                                     @endif
-                                    <td>{{ $product }}</td>
+                                    <td nowrap>{{ $product }}</td>
 
                                     @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
-                                        <td><span class="pull-right"><i class="fa fa-rupee"></i> {{ $amount }}</span></td>
+                                        <td nowrap><span class="pull-right"><i class="fa fa-rupee"></i> {{ $amount }}</span></td>
 
                                     @endif
                                     @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))

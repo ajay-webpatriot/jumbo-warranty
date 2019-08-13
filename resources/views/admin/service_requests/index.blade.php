@@ -297,7 +297,7 @@
                             <!-- <th>@lang('quickadmin.service-request.fields.service-center')</th> -->
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
-                            <th>@lang('quickadmin.service-request.fields.amount')</th>
+                            <th nowrap>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
                             @if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
@@ -357,7 +357,7 @@
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
                             <th>@lang('quickadmin.service-request.fields.service-center')</th>
                             <th>@lang('quickadmin.service-request.fields.product')</th>
-                            <th>@lang('quickadmin.service-request.fields.amount')</th>
+                            <th nowrap>@lang('quickadmin.service-request.fields.amount')</th>
                             <th>@lang('quickadmin.service-request.fields.created_by')</th>
                             <th>@lang('quickadmin.service-request.fields.created_date')</th>
                             <th>@lang('quickadmin.service-request.fields.status')</th>
