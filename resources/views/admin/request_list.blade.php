@@ -160,7 +160,7 @@
                                 
                                 }
                                 if($SingleServiceTypeDetail->amount != 0 || $SingleServiceTypeDetail->amount != ''){
-                                    $amount=  $SingleServiceTypeDetail->amount;
+                                    $amount=  number_format($SingleServiceTypeDetail->amount, 2);
                                 }
                             ?>
                             @if($SingleServiceTypeDetail->status != '')

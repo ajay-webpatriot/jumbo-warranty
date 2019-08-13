@@ -369,7 +369,7 @@
                             <!-- /.box-header -->
                             <div class="box-body" style="">
                               <div class="table-responsive">
-                                <table class="table no-margin recent-service-request">
+                                <table class="table no-margin recent-service-request table-striped table-hover table-bordered table-responsive">
                                   <thead>
                                     <tr>
                                         <th>@lang('quickadmin.service-request.fields.request-id')</th>
@@ -411,7 +411,7 @@
                                             </td>
                                             <td>{{ $SingleServiceTypeDetail->customer_name}}</td>
                                             @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
-                                                <td align="right"><i class="fa fa-rupee"></i> {{$SingleServiceTypeDetail->amount}}
+                                                <td align="right"><i class="fa fa-rupee"></i> <?php echo number_format($SingleServiceTypeDetail->amount, 2);?>
                                                 </td>
                                             @endif
                                             @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))

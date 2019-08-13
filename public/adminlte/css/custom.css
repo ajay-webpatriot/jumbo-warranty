@@ -42,3 +42,4 @@
 .recent-service-request th{
 	text-align: center !important;
 }
+table tr th, table tr td{padding-left: 15px !important;padding-right: 15px !important;}
