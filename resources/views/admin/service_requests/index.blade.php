@@ -541,6 +541,14 @@
                         }
                     },
                     {
+                        extend: 'excelHtml5',
+                        text: window.excelButtonTrans,
+                        sheetName: 'Exported Service request',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5,6]
+                        }
+                    },
+                    {
                         extend: 'print',
                         text: window.printButtonTrans,
                         exportOptions: {
@@ -613,6 +621,14 @@
                                     // doc.content[1].table.body[i][5].alignment = 'center';
                                  
                             }
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: window.excelButtonTrans,
+                        sheetName: 'Exported Service request',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4,5,6]
                         }
                     },
                     {
@@ -730,7 +746,7 @@
                         orientation: 'landscape',
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#company thead th').length;
@@ -746,12 +762,93 @@
                                     doc.content[1].table.body[i][6].alignment = 'right';
                                     doc.content[1].table.body[i][7].alignment = 'center';
                                     doc.content[1].table.body[i][8].alignment = 'left';
-                                    doc.content[1].table.body[i][9].alignment = 'center';
+                                    // doc.content[1].table.body[i][9].alignment = 'center';
+                                    // doc.content[1].table.body[i][10].alignment = 'center';
                                  
                             }
                         }
                     },
                     {
+                        extend: 'excelHtml5',
+                        text: window.excelButtonTrans,
+                        sheetName: 'Exported Service request',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
+                        }
+                        // ,customize: function (xlsx) { 
+                           
+                        //     var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        //     var numrows = 9;
+                        //     var clRow = $('row', sheet);
+ 
+                        //     //update Row
+                        //     clRow.each(function () {
+                        //         var attr = $(this).attr('r');
+                        //         var ind = parseInt(attr);
+                        //         ind = ind + numrows;
+                        //         $(this).attr("r", ind);
+                        //     });
+ 
+                        //     // Create row before data
+                        //     $('row c ', sheet).each(function (index) {
+                        //         var attr = $(this).attr('r');
+        
+                        //         var pre = attr.substring(0, 1);
+                        //         var ind = parseInt(attr.substring(1, attr.length));
+                        //         ind = ind + numrows;
+                        //         $(this).attr("r", pre + ind);
+                        //     });
+        
+                        //     function Addrow(index, data) {
+                        //         var row = sheet.createElement('row');
+                        //         row.setAttribute("r", index);              
+                        //         for (i = 0; i < data.length; i++) {
+                        //             var key = data[i].key;
+                        //             var value = data[i].value;
+        
+                        //             var c  = sheet.createElement('c');
+                        //             c.setAttribute("t", "inlineStr");
+                        //             c.setAttribute("s", "2");
+                        //             c.setAttribute("r", key + index);
+        
+                        //             var is = sheet.createElement('is');
+                        //             var t = sheet.createElement('t');
+                        //             var text = sheet.createTextNode(value)
+        
+                        //             t.appendChild(text);                                      
+                        //             is.appendChild(t);
+                        //             c.appendChild(is);
+        
+                        //             row.appendChild(c);             
+                        //         }
+        
+                        //         return row;
+                        //     }
+                            
+                        //     // add row data 
+                        //     var r1 = Addrow(1, [{ key: 'A', value: 'Filters' }, { key: 'B', value: '' }]);
+
+                        //     var r2 = Addrow(2, [{ key: 'A', value: 'Company' }, { key: 'B', value: $("#filter_company option:selected").html() },{ key: 'C', value: '' },{ key: 'D', value: 'Customer' },{ key: 'E', value: $("#filter_customer option:selected").html() },{ key: 'F', value: '' },{ key: 'G', value: 'Product' },{ key: 'H', value: $("#filter_product option:selected").html() }]);
+
+                        //     var r3 = Addrow(3, [{ key: 'A', value: '' }, { key: 'B', value: 'Export Date' }]);
+
+                        //     var r4 = Addrow(4, [{ key: 'A', value: '' }, { key: 'B', value: 'Name' },{ key: 'C', value: 'Columnc' }]);
+
+                        //     var r5 = Addrow(5, [{ key: 'A', value: '' }, { key: 'B', value: 'Name' },{ key: 'C', value: 'Columnc' }]);
+                            
+                        //     var sheetData = sheet.getElementsByTagName('sheetData')[0];
+                           
+                        //     sheetData.insertBefore(r5,sheetData.childNodes[0]);
+                        //     sheetData.insertBefore(r4,sheetData.childNodes[0]);
+                        //     sheetData.insertBefore(r3,sheetData.childNodes[0]);
+                        //     sheetData.insertBefore(r2,sheetData.childNodes[0]);
+                        //     sheetData.insertBefore(r1,sheetData.childNodes[0]);
+
+                            // $('row c[r^="A2"]', sheet).attr('s', '2');
+                            
+                            
+                        //}//customized end
+                    },{
                         extend: 'print',
                         text: window.printButtonTrans,
                         exportOptions: {

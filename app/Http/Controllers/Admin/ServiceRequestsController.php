@@ -196,7 +196,7 @@ class ServiceRequestsController extends Controller
         }
         else
         {
-            
+
             $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
             if(!empty(session('filter_service_center')))
             {
@@ -898,6 +898,11 @@ class ServiceRequestsController extends Controller
 
         return redirect()->route('admin.service_requests.index')->with('success','Service Request created successfully!');
     }
+
+    // public function serviceRequestMail(Type $var = null)
+    // {
+    //     SendMailHelper::sendRequestCreationMail($service_request->id);
+    // }
 
 
     /**
