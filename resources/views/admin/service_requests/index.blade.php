@@ -540,15 +540,105 @@
                             }
                         }
                     },
+                    // {
+                    //     extend: 'excelHtml5',
+                    //     text: window.excelButtonTrans,
+                    //     sheetName: 'Exported Service request',
+                    //     exportOptions: {
+                    //         columns: [0, 1, 2, 3, 4, 5,6]
+                    //     }
+                    // },
                     {
-                        extend: 'excelHtml5',
+                        extend: 'excel',
                         text: window.excelButtonTrans,
+                        title: 'Service request',
                         sheetName: 'Exported Service request',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5,6]
-                        }
-                    },
-                    {
+                            columns: [1, 2, 3, 4, 5, 6, 7]
+                        },
+                        customize: function (xlsx) { 
+                           
+                            // console.log(rels);
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+                            // To add new row count
+                            var numrows = 5;
+
+                            // Get row from sheet
+                            var clRow = $('row', sheet);
+                            
+                            // Update Row
+                            clRow.each(function () {
+                                var attr = $(this).attr('r');
+                                var ind = parseInt(attr);
+                                ind = ind + numrows;
+                                $(this).attr("r", ind);
+                            });
+ 
+                            // Create row before data
+                            $('row c ', sheet).each(function (index) {
+                                var attr = $(this).attr('r');
+        
+                                var pre = attr.substring(0, 1);
+                                var ind = parseInt(attr.substring(1, attr.length));
+                                ind = ind + numrows;
+                                $(this).attr("r", pre + ind);
+                            });
+        
+                            function Addrow(index, data) {
+
+                                var row = sheet.createElement('row');
+
+                                row.setAttribute("r", index);
+
+                                for (i = 0; i < data.length; i++) {
+                                    var key = data[i].key;
+                                    var value = data[i].value;
+        
+                                    var c  = sheet.createElement('c');
+                                    c.setAttribute("t", "inlineStr");
+                                    c.setAttribute("s", "2");
+                                    c.setAttribute("r", key + index);
+        
+                                    var is = sheet.createElement('is');
+                                    var t = sheet.createElement('t');
+                                    var text = sheet.createTextNode(value)
+        
+                                    t.appendChild(text);                                      
+                                    is.appendChild(t);
+                                    c.appendChild(is);
+        
+                                    row.appendChild(c);             
+                                }
+        
+                                return row;
+                            }
+                            
+                            // Add row data 
+                            var r1 = Addrow(1, [{ key: 'A', value: 'Filters' }, { key: 'B', value: '' }]);
+
+                            var r2 = Addrow(2, [{ key: 'A', value: 'Customer: ' }, { key: 'B', value: $("#filter_customer option:selected").html() },{ key: 'C', value: 'Product: ' },{ key: 'D', value: $("#filter_product option:selected").html() }]);
+
+                            var r3 = Addrow(3, [{ key: 'A', value: 'Service Type: ' },{ key: 'B', value: $("#filter_request_type option:selected").html() }]);
+                            
+                            var sheetData = sheet.getElementsByTagName('sheetData')[0];
+
+                           
+                            sheetData.insertBefore(r3,sheetData.childNodes[0]);
+                            sheetData.insertBefore(r2,sheetData.childNodes[0]);
+                            sheetData.insertBefore(r1,sheetData.childNodes[0]);
+
+                            // Style of rows
+                            $('row c[r="A1"]', sheet).attr('s', '7');
+                            $('row c[r="A2"]', sheet).attr('s', '52');
+                            $('row c[r="C2"]', sheet).attr('s', '52');
+                            $('row c[r="A3"]', sheet).attr('s', '52');
+                            $('row c[r="C3"]', sheet).attr('s', '52');
+                            $('row c[r="A4"]', sheet).attr('s', '52');
+                            $('row c[r="C4"]', sheet).attr('s', '52');
+                            
+                        }//customized end
+                    },{
                         extend: 'print',
                         text: window.printButtonTrans,
                         exportOptions: {
@@ -623,15 +713,105 @@
                             }
                         }
                     },
+                    // {
+                    //     extend: 'excelHtml5',
+                    //     text: window.excelButtonTrans,
+                    //     sheetName: 'Exported Service request',
+                    //     exportOptions: {
+                    //         columns: [1, 2, 3, 4,5,6]
+                    //     }
+                    // },
                     {
-                        extend: 'excelHtml5',
+                        extend: 'excel',
                         text: window.excelButtonTrans,
+                        title: 'Service request',
                         sheetName: 'Exported Service request',
                         exportOptions: {
-                            columns: [1, 2, 3, 4,5,6]
-                        }
-                    },
-                    {
+                            columns: [1, 2, 3, 4, 5, 6, 7]
+                        },
+                        customize: function (xlsx) { 
+                           
+                            // console.log(rels);
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+                            // To add new row count
+                            var numrows = 5;
+
+                            // Get row from sheet
+                            var clRow = $('row', sheet);
+                            
+                            // Update Row
+                            clRow.each(function () {
+                                var attr = $(this).attr('r');
+                                var ind = parseInt(attr);
+                                ind = ind + numrows;
+                                $(this).attr("r", ind);
+                            });
+ 
+                            // Create row before data
+                            $('row c ', sheet).each(function (index) {
+                                var attr = $(this).attr('r');
+        
+                                var pre = attr.substring(0, 1);
+                                var ind = parseInt(attr.substring(1, attr.length));
+                                ind = ind + numrows;
+                                $(this).attr("r", pre + ind);
+                            });
+        
+                            function Addrow(index, data) {
+
+                                var row = sheet.createElement('row');
+
+                                row.setAttribute("r", index);
+
+                                for (i = 0; i < data.length; i++) {
+                                    var key = data[i].key;
+                                    var value = data[i].value;
+        
+                                    var c  = sheet.createElement('c');
+                                    c.setAttribute("t", "inlineStr");
+                                    c.setAttribute("s", "2");
+                                    c.setAttribute("r", key + index);
+        
+                                    var is = sheet.createElement('is');
+                                    var t = sheet.createElement('t');
+                                    var text = sheet.createTextNode(value)
+        
+                                    t.appendChild(text);                                      
+                                    is.appendChild(t);
+                                    c.appendChild(is);
+        
+                                    row.appendChild(c);             
+                                }
+        
+                                return row;
+                            }
+                            
+                            // Add row data 
+                            var r1 = Addrow(1, [{ key: 'A', value: 'Filters' }, { key: 'B', value: '' }]);
+
+                            var r2 = Addrow(2, [{ key: 'A', value: 'Customer: ' }, { key: 'B', value: $("#filter_customer option:selected").html() },{ key: 'C', value: 'Product: ' },{ key: 'D', value: $("#filter_product option:selected").html() }]);
+
+                            var r3 = Addrow(3, [{ key: 'A', value: 'Service Type: ' },{ key: 'B', value: $("#filter_request_type option:selected").html() }]);
+                            
+                            var sheetData = sheet.getElementsByTagName('sheetData')[0];
+
+                           
+                            sheetData.insertBefore(r3,sheetData.childNodes[0]);
+                            sheetData.insertBefore(r2,sheetData.childNodes[0]);
+                            sheetData.insertBefore(r1,sheetData.childNodes[0]);
+
+                            // Style of rows
+                            $('row c[r="A1"]', sheet).attr('s', '7');
+                            $('row c[r="A2"]', sheet).attr('s', '52');
+                            $('row c[r="C2"]', sheet).attr('s', '52');
+                            $('row c[r="A3"]', sheet).attr('s', '52');
+                            $('row c[r="C3"]', sheet).attr('s', '52');
+                            $('row c[r="A4"]', sheet).attr('s', '52');
+                            $('row c[r="C4"]', sheet).attr('s', '52');
+                            
+                        }//customized end
+                    },{
                         extend: 'print',
                         text: window.printButtonTrans,
                         exportOptions: {
@@ -769,85 +949,113 @@
                         }
                     },
                     {
-                        extend: 'excelHtml5',
+                        extend: 'excel',
                         text: window.excelButtonTrans,
+                        title: 'Service request',
                         sheetName: 'Exported Service request',
                         exportOptions: {
                             columns: [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
-                        }
-                        // ,customize: function (xlsx) { 
+                        },
+                        customize: function (xlsx) { 
                            
-                        //     var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        //     var numrows = 9;
-                        //     var clRow = $('row', sheet);
+                            // console.log(rels);
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            // var mergeCells = $('mergeCells', sheet);
+                            // console.log(mergeCells[0]);
+
+                            // To add new row count
+                            var numrows = 5;
+
+                            // Get row from sheet
+                            var clRow = $('row', sheet);
+                            
+                            // Update Row
+                            clRow.each(function () {
+                                var attr = $(this).attr('r');
+                                var ind = parseInt(attr);
+                                ind = ind + numrows;
+                                $(this).attr("r", ind);
+                            });
  
-                        //     //update Row
-                        //     clRow.each(function () {
-                        //         var attr = $(this).attr('r');
-                        //         var ind = parseInt(attr);
-                        //         ind = ind + numrows;
-                        //         $(this).attr("r", ind);
-                        //     });
- 
-                        //     // Create row before data
-                        //     $('row c ', sheet).each(function (index) {
-                        //         var attr = $(this).attr('r');
+                            // Create row before data
+                            $('row c ', sheet).each(function (index) {
+                                var attr = $(this).attr('r');
         
-                        //         var pre = attr.substring(0, 1);
-                        //         var ind = parseInt(attr.substring(1, attr.length));
-                        //         ind = ind + numrows;
-                        //         $(this).attr("r", pre + ind);
-                        //     });
+                                var pre = attr.substring(0, 1);
+                                var ind = parseInt(attr.substring(1, attr.length));
+                                ind = ind + numrows;
+                                $(this).attr("r", pre + ind);
+                            });
         
-                        //     function Addrow(index, data) {
-                        //         var row = sheet.createElement('row');
-                        //         row.setAttribute("r", index);              
-                        //         for (i = 0; i < data.length; i++) {
-                        //             var key = data[i].key;
-                        //             var value = data[i].value;
+                            function Addrow(index, data) {
+
+                                var row = sheet.createElement('row');
+
+                                row.setAttribute("r", index);
+
+                                for (i = 0; i < data.length; i++) {
+                                    var key = data[i].key;
+                                    var value = data[i].value;
         
-                        //             var c  = sheet.createElement('c');
-                        //             c.setAttribute("t", "inlineStr");
-                        //             c.setAttribute("s", "2");
-                        //             c.setAttribute("r", key + index);
+                                    var c  = sheet.createElement('c');
+                                    c.setAttribute("t", "inlineStr");
+                                    c.setAttribute("s", "2");
+                                    c.setAttribute("r", key + index);
         
-                        //             var is = sheet.createElement('is');
-                        //             var t = sheet.createElement('t');
-                        //             var text = sheet.createTextNode(value)
+                                    var is = sheet.createElement('is');
+                                    var t = sheet.createElement('t');
+                                    var text = sheet.createTextNode(value)
         
-                        //             t.appendChild(text);                                      
-                        //             is.appendChild(t);
-                        //             c.appendChild(is);
+                                    t.appendChild(text);                                      
+                                    is.appendChild(t);
+                                    c.appendChild(is);
         
-                        //             row.appendChild(c);             
-                        //         }
+                                    row.appendChild(c);             
+                                }
         
-                        //         return row;
-                        //     }
+                                return row;
+                            }
                             
-                        //     // add row data 
-                        //     var r1 = Addrow(1, [{ key: 'A', value: 'Filters' }, { key: 'B', value: '' }]);
+                            // Add row data 
+                            var r1 = Addrow(1, [{ key: 'A', value: 'Filters' }, { key: 'B', value: '' }]);
 
-                        //     var r2 = Addrow(2, [{ key: 'A', value: 'Company' }, { key: 'B', value: $("#filter_company option:selected").html() },{ key: 'C', value: '' },{ key: 'D', value: 'Customer' },{ key: 'E', value: $("#filter_customer option:selected").html() },{ key: 'F', value: '' },{ key: 'G', value: 'Product' },{ key: 'H', value: $("#filter_product option:selected").html() }]);
+                            var r2 = Addrow(2, [{ key: 'A', value: 'Company: ' }, { key: 'B', value: $("#filter_company option:selected").html() },{ key: 'C', value: 'Service Center: ' },{ key: 'D', value: $("#filter_service_center option:selected").html() }]);
 
-                        //     var r3 = Addrow(3, [{ key: 'A', value: '' }, { key: 'B', value: 'Export Date' }]);
+                            var r3 = Addrow(3, [{ key: 'A', value: 'Customer: ' }, { key: 'B', value: $("#filter_customer option:selected").html() },{ key: 'C', value: 'Technician: ' },{ key: 'D', value: $("#filter_technician option:selected").html() }]);
 
-                        //     var r4 = Addrow(4, [{ key: 'A', value: '' }, { key: 'B', value: 'Name' },{ key: 'C', value: 'Columnc' }]);
-
-                        //     var r5 = Addrow(5, [{ key: 'A', value: '' }, { key: 'B', value: 'Name' },{ key: 'C', value: 'Columnc' }]);
+                            var r4 = Addrow(4, [{ key: 'A', value: 'Product: ' }, { key: 'B', value: $("#filter_product option:selected").html() },{ key: 'C', value: 'Service Type: ' },{ key: 'D', value: $("#filter_request_type option:selected").html() }]);
                             
-                        //     var sheetData = sheet.getElementsByTagName('sheetData')[0];
-                           
-                        //     sheetData.insertBefore(r5,sheetData.childNodes[0]);
-                        //     sheetData.insertBefore(r4,sheetData.childNodes[0]);
-                        //     sheetData.insertBefore(r3,sheetData.childNodes[0]);
-                        //     sheetData.insertBefore(r2,sheetData.childNodes[0]);
-                        //     sheetData.insertBefore(r1,sheetData.childNodes[0]);
+                            var sheetData = sheet.getElementsByTagName('sheetData')[0];
 
-                            // $('row c[r^="A2"]', sheet).attr('s', '2');
+                            sheetData.insertBefore(r4,sheetData.childNodes[0]);
+                            sheetData.insertBefore(r3,sheetData.childNodes[0]);
+                            sheetData.insertBefore(r2,sheetData.childNodes[0]);
+                            sheetData.insertBefore(r1,sheetData.childNodes[0]);
+
+                            // Style of rows
+                            $('row c[r="A1"]', sheet).attr('s', '7');
+                            $('row c[r="A2"]', sheet).attr('s', '52');
+                            $('row c[r="C2"]', sheet).attr('s', '52');
+                            $('row c[r="A3"]', sheet).attr('s', '52');
+                            $('row c[r="C3"]', sheet).attr('s', '52');
+                            $('row c[r="A4"]', sheet).attr('s', '52');
+                            $('row c[r="C4"]', sheet).attr('s', '52');
+
+                            // mergeCells('1','3');
+
+                            // var mergeCells = function ( row, colspan ) {
+                            //     var mergeCells = $('mergeCells', rels);
+
+                            //     mergeCells[0].appendChild( _createNode( rels, 'mergeCell', {
+                            //         attr: {
+                            //             ref: 'A'+row+':'+createCellPos(colspan)+row
+                            //         }
+                            //     } ) );
+                            //     mergeCells.attr( 'count', mergeCells.attr( 'count' )+1 );
+                            //     $('row:eq('+(row-1)+') c', rels).attr( 's', '51' ); // centre
+                            // };
                             
-                            
-                        //}//customized end
+                        }//customized end
                     },{
                         extend: 'print',
                         text: window.printButtonTrans,

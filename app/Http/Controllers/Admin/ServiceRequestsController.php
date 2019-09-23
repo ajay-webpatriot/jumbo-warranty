@@ -193,6 +193,7 @@ class ServiceRequestsController extends Controller
                                     ->where('service_center_id',auth()->user()->service_center_id)
                                     ->orderBy('name')
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+            $service_centers = '';
         }
         else
         {
