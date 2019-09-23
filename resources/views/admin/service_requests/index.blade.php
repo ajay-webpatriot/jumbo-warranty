@@ -554,7 +554,7 @@
                         title: 'Service request',
                         sheetName: 'Exported Service request',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6, 7]
+                            columns: [0, 1, 2, 3, 4, 5,6]
                         },
                         customize: function (xlsx) { 
                            
@@ -954,7 +954,7 @@
                         title: 'Service request',
                         sheetName: 'Exported Service request',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
+                            columns: [0,1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
                         },
                         customize: function (xlsx) { 
                            
