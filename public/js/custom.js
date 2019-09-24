@@ -1162,6 +1162,7 @@ $("#assign-products-modal").find("form").on('submit', function (e) {
 	}
 }*/
 function saveButton() {
+	event.preventDefault();
 	var  elementId = event.target.id;
 	// console.log('elementId');
 	// console.log(elementId);
@@ -1215,12 +1216,13 @@ function saveButton() {
 		// console.log('if');
 		$('#'+elementId).attr('disabled', 'disabled');
 		var formId = $('#'+elementId).closest("form").attr('id');
-		$('#'+formId).submit();
+		// $('#'+formId).submit();
+		return true;
 	}else{
 		alert('Please fill required fields');
 		// console.log('remove');
-		// console.log('else');
-		event.preventDefault();
+		// console.log('else');		
 		$('#'+elementId).removeAttr('disabled', 'disabled');
+		return false;
 	}
 }

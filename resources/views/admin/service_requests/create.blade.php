@@ -24,7 +24,7 @@
         @endif
     @endif
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store'], 'id' => 'formServiceRequest']) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_requests.store'], 'id' => 'formServiceRequest','onsubmit' => "return saveButton()"]) !!}
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
             @lang('quickadmin.service-request.formTitle')
@@ -830,7 +830,7 @@
                 </div>
             
 
-                {!! Form::button(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','onclick' => "saveButton()",'id' => "formServiceRequestbutton"]) !!}
+                {!! Form::button(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => "formServiceRequestbutton"]) !!}
                 <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
                 {!! Form::close() !!}
                 <!-- Quick add company modal -->
