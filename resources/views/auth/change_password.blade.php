@@ -11,7 +11,7 @@
 			</div>
 		</div>
 	@else
-		{!! Form::open(['method' => 'PATCH', 'route' => ['auth.change_password']]) !!}
+		{!! Form::open(['method' => 'PATCH', 'route' => ['auth.change_password'],'id' => 'forgotpass']) !!}
 		<!-- If no success message in flash session show change password form  -->
 		<div class="panel panel-default">
 			<div class="panel-heading headerTitle">
@@ -60,7 +60,8 @@
 			</div>
 		</div>
 
-		{!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+		{{-- !! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !! --}}
+		{!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','onclick' => 'saveButton()','id' => 'forgotpassword']) !!}
 		{!! Form::close() !!}
 	@endif
 @stop

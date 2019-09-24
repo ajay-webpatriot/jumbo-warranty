@@ -3,7 +3,7 @@
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.manage-charges.title')</h3> -->
     
-    {!! Form::model($manage_charge, ['method' => 'PUT', 'route' => ['admin.manage_charges.update', $manage_charge->id]]) !!}
+    {!! Form::model($manage_charge, ['method' => 'PUT', 'route' => ['admin.manage_charges.update', $manage_charge->id],'id' => 'formManageCharge']) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formManageChargeButton','onclick' => 'saveButton()']) !!}
     <a href="{{ route('admin.manage_charges.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.product-parts.title')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.product_parts.store']]) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.product_parts.store'],'id' => 'formProductParts']) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formProductPartsButton','onclick' => 'saveButton()']) !!}
     <a href="{{ route('admin.product_parts.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

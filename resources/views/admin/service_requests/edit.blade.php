@@ -1066,12 +1066,12 @@
         <div class="row">
             <div class="col-md-12 form-group">
                 @if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
-                    <button type="button" onclick="updatePaidstatus({{$service_request->id}})"
+                    <button type="button" onclick="updatePaidstatus({{$service_request->id}});saveButton();"
                      class="btn btn-danger">@lang('quickadmin.qa_paid')</button>
                 @endif
 
-        
-                {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate']) !!}
+                
+                {!! Form::button(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate','onclick' => "saveButton()"]) !!}
                 <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
                 {!! Form::close() !!}
             </div>

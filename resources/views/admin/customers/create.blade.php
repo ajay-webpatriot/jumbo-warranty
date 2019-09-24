@@ -4,11 +4,11 @@
     
     <!-- <h3 class="page-title">@lang('quickadmin.customers.title')</h3> -->
     
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.customers.store']]) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.customers.store'],'id' => 'formCustomer']) !!}
 
     @include('admin.customers.content')
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formCustomerButton','onclick' => 'saveButton()']) !!}
     <a href="{{ route('admin.customers.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

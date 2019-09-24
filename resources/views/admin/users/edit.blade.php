@@ -6,7 +6,7 @@
     <!-- <h3 class="page-title">@lang('quickadmin.users.title')</h3> -->
     
     
-    {!! Form::model($user, ['method' => 'PUT', 'route' => ['admin.users.update', $user->id]]) !!}
+    {!! Form::model($user, ['method' => 'PUT', 'route' => ['admin.users.update', $user->id],'id' => 'formUsers']) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formUsersButton','onclick' => 'saveButton()']) !!}
     <a href="{{ route('admin.users.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

@@ -2,11 +2,11 @@
 
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.users.technicianTitle')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.technicians.store']]) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.technicians.store'],'id' => 'formTechnician']) !!}
 
     @include('admin.technicians.content')
     
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formTechnicianButton','onclick' => 'saveButton()']) !!}
     <a href="{{ route('admin.technicians.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

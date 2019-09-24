@@ -602,7 +602,6 @@ function requestCharge(ele) {
 				   
 				var pre_additional_charge = 0;
 				$('.existingAdditional_charge').each(function() {
-					console.log($(this).val());
 					pre_additional_charge+= isNaN(parseFloat($(this).val()))?0:parseFloat($(this).val());
 				});
 
@@ -927,3 +926,301 @@ $("#assign-products-modal").find("form").on('submit', function (e) {
 	}
 	return false;
 });
+
+/* function saveButton(button) {
+
+	var loggedUserId  = $("#loggedUser_role_id").val();
+
+	console.log(COMPANY_ADMIN_ROLE_ID);
+	console.log(SERVICE_ADMIN_ROLE_ID);
+	console.log(TECHNICIAN_ROLE_ID);
+	console.log(COMPANY_USER_ROLE_ID);
+	console.log(ADMIN_ROLE_ID);
+	console.log(SUPER_ADMIN_ROLE_ID);
+	console.log(loggedUserId);
+
+	var  elementId = event.target.id;
+	$('#'+elementId).attr('disabled', 'disabled');
+	var error = 0;
+	// if (email.val() == '') {
+	// 	email.addClass('custom_error');
+	// 	email.next().text("Please enter email");
+	// 	error = 1;
+	// }
+	// if (email.val() != '') {
+	// 	var atpos = email.val().indexOf("@");
+	// 	var dotpos = email.val().lastIndexOf(".");
+	// 	if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.val().length) {
+	// 		email.addClass('custom_error');
+	// 		email.next().text("Please enter valid email address");
+	// 		error = 1;
+	// 	} else {
+	// 		ulname.addClass('custom_valid');
+	// 		ulname.next().text("");
+	// 	}
+	// } 
+
+	if(button == 'forgotpassword'){
+		
+		var currentPassword = $('#current_password').val();
+		var newPassword = $('#new_password').val();
+		var newConfirmPassword = $('#new_password_confirmation').val();
+
+		if ( currentPassword == '') {
+			$('#current_password').next().text("Please enter Current Password");
+			error = 1;
+		} else {
+			$('#current_password').next().text("");
+			error = 0;
+		}
+
+		if ( newPassword == '') {
+			$('#new_password').next().text("Please enter New Password");
+			error = 1;
+		} else {
+			$('#new_password').next().text("");
+			error = 0;
+		}
+
+		if ( newConfirmPassword == '') {
+			$('#new_password_confirmation').next().text("Please enter New Confirm Password");
+			error = 1;
+		} else {
+			$('#new_password_confirmation').next().text("");
+			error = 0;
+		}
+	}else if(button == 'formServiceRequest'){
+
+		if(loggedUserId != '' && loggedUserId != 'undefined'){
+			if(loggedUserId == ADMIN_ROLE_ID || loggedUserId == SUPER_ADMIN_ROLE_ID){
+
+				var comapnyName = $('#company_id').val();
+				var customerName = $('#customer_id').val();
+
+				if ( comapnyName == '') {
+					$('#company_id').next().text("Please select Company");
+					error = 1;
+				} else {
+					$('#company_id').next().text("");
+					error = 0;
+				}
+
+				if ( customerName == '') {
+					$('#customer_id').next().text("Please select Customer");
+					error = 1;
+				} else {
+					$('#customer_id').next().text("");
+					error = 0;
+				}
+			}
+	
+			if(loggedUserId == COMPANY_ADMIN_ROLE_ID || loggedUserId == COMPANY_USER_ROLE_ID){
+
+				var customerName = $('#customer_id').val();
+				if ( customerName == '') {
+					$('#customer_id').next().text("Please select Customer");
+					error = 1;
+				} else {
+					$('#customer_id').next().text("");
+					error = 0;
+				}
+			}
+
+			if(loggedUserId == SUPER_ADMIN_ROLE_ID || loggedUserId == ADMIN_ROLE_ID || loggedUserId == SERVICE_ADMIN_ROLE_ID || loggedUserId == TECHNICIAN_ROLE_ID){
+
+				var serviceCenterName = $('#service_center_id').val();
+				var technicianName = $('#technician_id').val();
+
+				if ( serviceCenterName == '') {
+					$('#service_center_id').next().text("Please select Service Center");
+					error = 1;
+				} else {
+					$('#service_center_id').next().text("");
+					error = 0;
+				}
+
+				if ( technicianName == '') {
+					$('#technician_id').next().text("Please select Technician");
+					error = 1;
+				} else {
+					$('#technician_id').next().text("");
+					error = 0;
+				}
+			}
+
+			if(loggedUserId != COMPANY_ADMIN_ROLE_ID && loggedUserId != COMPANY_USER_ROLE_ID){
+				completion_date
+				var complitionDate = $('#completion_date').val();
+
+				if ( complitionDate == '') {
+					$('#completion_date').next().text("Please select Complition Date");
+					error = 1;
+				} else {
+					$('#completion_date').next().text("");
+					error = 0;
+				}
+			}
+		}
+		var serviceType = $('#service_type').val();
+		var productName = $('#product_id').val();
+
+		if ( serviceType == '') {
+			$('#service_type').next().text("Please select Service Type");
+			error = 1;
+		} else {
+			$('#service_type').next().text("");
+			error = 0;
+		}
+
+		if ( productName == '') {
+			$('#product_id').next().text("Please select Product");
+			error = 1;
+		} else {
+			$('#product_id').next().text("");
+			error = 0;
+		}
+		
+		// if(serviceType == 'repair'){
+		// 	var productParts = $('#selectall-parts').val();
+
+		// 	if ( productParts == '') {
+		// 		$('#selectall-parts').next().text("Please select Product Part");
+		// 		error = 1;
+		// 	} else {
+		// 		$('#selectall-parts').next().text("");
+		// 		error = 0;
+		// 	}
+		// }
+
+		var callType = $('#call_type').val();
+		var callLocation = $('#call_location').val();
+		var priority = $('#priority').val();
+
+		if ( callType == '') {
+			$('#call_type').next().text("Please select Call type");
+			error = 1;
+		} else {
+			$('#call_type').next().text("");
+			error = 0;
+		}
+
+		if(callType == 'Warranty'){
+
+			var onlineSerialNumber = $('#onlineSerialNumber').val();
+			var warrantyCardNumber = $('#warrantyCardNumber').val();
+			
+			if ( onlineSerialNumber == '') {
+				$('#onlineSerialNumber').next().text("Please add Online Serial Number");
+				error = 1;
+			} else {
+				$('#onlineSerialNumber').next().text("");
+				error = 0;
+			}
+	
+			if ( warrantyCardNumber == '') {
+				$('#warrantyCardNumber').next().text("Please select Warranty Card Number");
+				error = 1;
+			} else {
+				$('#warrantyCardNumber').next().text("");
+				error = 0;
+			}
+		}
+		if ( callLocation == '') {
+			$('#call_location').next().text("Please select Product Part");
+			error = 1;
+		} else {
+			$('#call_location').next().text("");
+			error = 0;
+		}
+
+		if ( priority == '') {
+			$('#priority').next().text("Please select Priority");
+			error = 1;
+		} else {
+			$('#priority').next().text("");
+			error = 0;
+		}
+	}
+	if (error > 0) { 
+		console.log("if");
+		console.log('elementId');
+		console.log(elementId);
+		console.log('error');
+		console.log(error);
+		$('#'+elementId).removeAttr('disabled', 'disabled');
+		// $(this).find("input[type='submit']").removeAttr("readonly");
+		event.preventDefault();
+	}else{
+		
+		$('#'+elementId).attr('disabled', 'disabled');
+		console.log('elementId');
+		console.log(elementId);
+		var formId = $('#'+elementId).closest("form").attr('id');
+		console.log('formId');
+		console.log(formId);
+		// $('#'+formId).submit();
+	}
+}*/
+function saveButton() {
+	var  elementId = event.target.id;
+	// console.log('elementId');
+	// console.log(elementId);
+	// console.log('==============');
+	allowdisable = true;
+	$( "input" ).each(function() {
+		// console.log('==============');
+		// console.log('input1');
+		if(this.hasAttribute('required')){
+			
+			if ( $(this).css('display') == 'none')
+			{
+				return true;
+			}else{
+				if($(this).val() == ""){
+					allowdisable = false;
+				}
+			}
+		}
+
+		// console.log('input2');
+		// console.log('==============');
+	});
+
+	$( "select" ).each(function(index,value) {
+		// console.log('==============');
+		// console.log('select1');
+
+		// console.log('======value========');
+		// console.log(value.id);
+		// console.log('======tetetvalue========');
+		// console.log($(this).val());
+		
+		if(this.hasAttribute('required')){
+			if ( $(this).css('display') == 'none')
+			{
+				return true;
+			}else{
+				if($(this).val() == ""){
+					allowdisable = false;
+				}
+			}
+		}
+		// console.log('select2');
+		// console.log('==============');
+	});
+	// console.log('allowdisable');
+	// console.log(allowdisable);
+	if(allowdisable ==  true){
+		// console.log('true');
+		// console.log('if');
+		$('#'+elementId).attr('disabled', 'disabled');
+		var formId = $('#'+elementId).closest("form").attr('id');
+		$('#'+formId).submit();
+	}else{
+		alert('Please add required fields');
+		// console.log('remove');
+		// console.log('else');
+		event.preventDefault();
+		$('#'+elementId).removeAttr('disabled', 'disabled');
+	}
+}

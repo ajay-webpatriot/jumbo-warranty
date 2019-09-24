@@ -2,11 +2,11 @@
 
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.service-center.title')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_centers.store']]) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_centers.store'],'id' => 'formServiceCenter']) !!}
 
     @include('admin.service_centers.content')
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formServiceCenterButton','onclick' => 'saveButton()']) !!}
     <a href="{{ route('admin.service_centers.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

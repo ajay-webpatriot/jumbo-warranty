@@ -3,7 +3,7 @@
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.service-center.title')</h3> -->
     
-    {!! Form::model($service_center, ['method' => 'PUT', 'route' => ['admin.service_centers.update', $service_center->id]]) !!}
+    {!! Form::model($service_center, ['method' => 'PUT', 'route' => ['admin.service_centers.update', $service_center->id],'id' => 'formServiceCenter']) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -130,7 +130,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
+    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formServiceCenterButton','onclick' => 'saveButton()']) !!}
     <a href="{{ route('admin.service_centers.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop
