@@ -1217,7 +1217,7 @@ function saveButton() {
 		var formId = $('#'+elementId).closest("form").attr('id');
 		$('#'+formId).submit();
 	}else{
-		alert('Please add required fields');
+		alert('Please fill required fields');
 		// console.log('remove');
 		// console.log('else');
 		event.preventDefault();
