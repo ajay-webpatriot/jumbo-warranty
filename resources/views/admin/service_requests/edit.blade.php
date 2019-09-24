@@ -252,7 +252,7 @@
                                     <div class="row techDiv" {{ ($service_request->service_center_id == "") ? 'style=display:none' : ''}}>
                                         <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
-                                            {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id','style' => 'width:100%','required' => 'required']) !!}
+                                            {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id','style' => 'width:100%']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('technician_id'))
                                                 <p class="help-block">

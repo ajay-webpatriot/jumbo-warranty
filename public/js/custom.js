@@ -509,7 +509,8 @@ function getTechnicians(serviceCenterId) {
        	dataType: "json",
        	success:function(data) {
        		$(".techDiv").show();
-       		$(".techDiv").find(".select2").select2();
+			$(".techDiv").find(".select2").select2();
+			// $("#technician_id").attr('required','required');
        		$("#technician_id").html(data.options);
        	}
     });
