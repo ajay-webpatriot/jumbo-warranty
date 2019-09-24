@@ -2,11 +2,11 @@
 
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.assign-product.title')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.assign_products.store'],'id' => 'formAssignParts']) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.assign_products.store'],'id' => 'formAssignParts','onsubmit' => "return saveButton()"]) !!}
 
         @include('admin.assign_products.content')
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formAssignPartsButton','onclick' => 'saveButton()']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formAssignPartsButton']) !!}
     <a href="{{ route('admin.assign_products.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

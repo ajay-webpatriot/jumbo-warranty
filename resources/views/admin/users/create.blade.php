@@ -4,7 +4,7 @@
     
     <!-- <h3 class="page-title">@lang('quickadmin.users.title')</h3> -->
     
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.users.store'],'id' => 'formUsers']) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.users.store'],'id' => 'formUsers','onsubmit' => "return saveButton()"]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formUsersButton','onclick' => 'saveButton()']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formUsersButton']) !!}
     <a href="{{ route('admin.users.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

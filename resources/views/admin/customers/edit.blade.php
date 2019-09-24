@@ -4,7 +4,7 @@
     
     <!-- <h3 class="page-title">@lang('quickadmin.customers.title')</h3> -->
     
-    {!! Form::model($customer, ['method' => 'PUT', 'route' => ['admin.customers.update', $customer->id],'id' => 'formCustomer']) !!}
+    {!! Form::model($customer, ['method' => 'PUT', 'route' => ['admin.customers.update', $customer->id],'id' => 'formCustomer','onsubmit' => "return saveButton()"]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -155,7 +155,7 @@
         </div>
     </div>
     
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formCustomerButton','onclick' => 'saveButton()']) !!}
+    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formCustomerButton']) !!}
     <a href="{{ route('admin.customers.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

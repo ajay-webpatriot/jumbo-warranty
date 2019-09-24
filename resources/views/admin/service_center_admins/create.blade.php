@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.service-center-admin.title')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_center_admins.store'],'id' => 'formServiceCenterAdmin']) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.service_center_admins.store'],'id' => 'formServiceCenterAdmin','onsubmit' => "return saveButton()"]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -159,7 +159,7 @@
         </div>
     </div>
     
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formServiceCenterAdminButton','onclick' => 'saveButton()']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formServiceCenterAdminButton']) !!}
     <a href="{{ route('admin.service_center_admins.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

@@ -3,7 +3,7 @@
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.invoices.title')</h3> -->
     
-    {!! Form::model($invoice, ['method' => 'PUT', 'route' => ['admin.invoices.update', $invoice->id],'id' => 'formInvoice']) !!}
+    {!! Form::model($invoice, ['method' => 'PUT', 'route' => ['admin.invoices.update', $invoice->id],'id' => 'formInvoice','onsubmit' => "return saveButton()"]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formInvoiceButton','onclick' => 'saveButton()']) !!}
+    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formInvoiceButton']) !!}
     <a href="{{ route('admin.invoices.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

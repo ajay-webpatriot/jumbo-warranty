@@ -3,7 +3,7 @@
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.product-parts.title')</h3> -->
     
-    {!! Form::model($product_part, ['method' => 'PUT', 'route' => ['admin.product_parts.update', $product_part->id],'id' => 'formProductParts']) !!}
+    {!! Form::model($product_part, ['method' => 'PUT', 'route' => ['admin.product_parts.update', $product_part->id],'id' => 'formProductParts','onsubmit' => "return saveButton()"]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formProductPartsButton','onclick' => 'saveButton()']) !!}
+    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger','id' => 'formProductPartsButton']) !!}
     <a href="{{ route('admin.product_parts.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

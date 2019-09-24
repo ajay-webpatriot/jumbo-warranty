@@ -56,12 +56,14 @@ $(document).ready(function(){
 
 					$(".custDiv").hide();
 					$("#customer_id").html('');
+					$("#customer_id").removeattr('required');
 					$("#selectall-parts").html('');
 					$("#product_id").html('');
 					return false;
 				}else{
 					$(".custDiv").show();
 					$(".custDiv").find(".select2").select2();
+					$('#customer_id').attr('required', 'required');
 					$("#customer_id").html(data.custOptions);
 					$("#selectall-parts").html(data.partOptions);
 					$("#product_id").html(data.productOptions);
@@ -1162,19 +1164,13 @@ $("#assign-products-modal").find("form").on('submit', function (e) {
 	}
 }*/
 function saveButton() {
-	event.preventDefault();
-	var  elementId = event.target.id;
-	// console.log('elementId');
-	// console.log(elementId);
-	// console.log('==============');
+	// var  elementId = event.target.id;
+	var buttonId = $(document.activeElement).attr('id');
 	allowdisable = true;
 	$( "input" ).each(function() {
-		// console.log('==============');
-		// console.log('input1');
 		if(this.hasAttribute('required')){
-			
-			if ( $(this).css('display') == 'none')
-			{
+			// if ( $(this).css('display') === 'none')
+			if ( $(this).is(":visible")){
 				return true;
 			}else{
 				if($(this).val() == ""){
@@ -1182,23 +1178,16 @@ function saveButton() {
 				}
 			}
 		}
-
-		// console.log('input2');
-		// console.log('==============');
 	});
 
 	$( "select" ).each(function(index,value) {
-		// console.log('==============');
-		// console.log('select1');
-
-		// console.log('======value========');
-		// console.log(value.id);
-		// console.log('======tetetvalue========');
-		// console.log($(this).val());
-		
 		if(this.hasAttribute('required')){
-			if ( $(this).css('display') == 'none')
-			{
+			// console.log($(this).css('display'));
+			// console.log($(this).is(":visible"));
+			// $(this).removeAttr('required');
+				
+			if ($(this).is(":visible")){
+				// $(this).attr('required','required');
 				return true;
 			}else{
 				if($(this).val() == ""){
@@ -1206,23 +1195,17 @@ function saveButton() {
 				}
 			}
 		}
-		// console.log('select2');
-		// console.log('==============');
 	});
-	// console.log('allowdisable');
-	// console.log(allowdisable);
+
 	if(allowdisable ==  true){
-		// console.log('true');
-		// console.log('if');
-		$('#'+elementId).attr('disabled', 'disabled');
-		var formId = $('#'+elementId).closest("form").attr('id');
+		
+		$('#'+buttonId).attr('disabled', 'disabled');
+		// var formId = $('#'+elementId).closest("form").attr('id');
 		// $('#'+formId).submit();
 		return true;
 	}else{
-		alert('Please fill required fields');
-		// console.log('remove');
-		// console.log('else');		
-		$('#'+elementId).removeAttr('disabled', 'disabled');
+		event.preventDefault();	
+		$('#'+buttonId).removeAttr('disabled', 'disabled');
 		return false;
 	}
 }

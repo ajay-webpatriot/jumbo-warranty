@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- <h3 class="page-title">@lang('quickadmin.invoices.title')</h3> -->
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.invoices.store'],'id' => 'formInvoice']) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.invoices.store'],'id' => 'formInvoice','onsubmit' => "return saveButton()"]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formInvoiceButton','onclick' => 'saveButton()']) !!}
+    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'formInvoiceButton']) !!}
     <a href="{{ route('admin.invoices.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
     {!! Form::close() !!}
 @stop

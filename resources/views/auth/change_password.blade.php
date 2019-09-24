@@ -3,15 +3,15 @@
 @section('content')
 	<!-- <h3 class="page-title">@lang('quickadmin.qa_change_password')</h3> -->
 
-	@if(session('success'))
+	{{-- @if(session('success')) --}}
 		<!-- If password successfully show message -->
-		<div class="row">
-			<div class="alert alert-success">
-				{{ session('success') }}
-			</div>
-		</div>
-	@else
-		{!! Form::open(['method' => 'PATCH', 'route' => ['auth.change_password'],'id' => 'forgotpass']) !!}
+		<!-- <div class="row"> -->
+			<!-- <div class="alert alert-success"> -->
+				{{-- session('success') --}}
+			<!-- </div> -->
+		<!-- </div> -->
+	{{-- @endif --}}
+		{!! Form::open(['method' => 'PATCH', 'route' => ['auth.change_password'],'id' => 'forgotpass','onsubmit' => "return saveButton()"]) !!}
 		<!-- If no success message in flash session show change password form  -->
 		<div class="panel panel-default">
 			<div class="panel-heading headerTitle">
@@ -61,8 +61,8 @@
 		</div>
 
 		{{-- !! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !! --}}
-		{!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','onclick' => 'saveButton()','id' => 'forgotpassword']) !!}
+		{!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => 'forgotpassword']) !!}
 		{!! Form::close() !!}
-	@endif
+	
 @stop
 

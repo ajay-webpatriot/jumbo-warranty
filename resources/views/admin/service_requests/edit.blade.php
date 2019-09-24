@@ -18,7 +18,7 @@
     </style>
     <!-- <h3 class="page-title">@lang('quickadmin.service-request.title')</h3> -->
     
-    {!! Form::model($service_request, ['method' => 'PUT', 'route' => ['admin.service_requests.update', $service_request->id], 'id' => 'formServiceRequest']) !!}
+    {!! Form::model($service_request, ['method' => 'PUT', 'route' => ['admin.service_requests.update', $service_request->id], 'id' => 'formServiceRequest','onsubmit' => "return saveButton()"]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -252,7 +252,7 @@
                                     <div class="row techDiv" {{ ($service_request->service_center_id == "") ? 'style=display:none' : ''}}>
                                         <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('technician_id', trans('quickadmin.service-request.fields.technician').'', ['class' => 'control-label']) !!}
-                                            {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id','style' => 'width:100%']) !!}
+                                            {!! Form::select('technician_id', $technicians, old('technician_id'), ['class' => 'form-control select2','id' => 'technician_id','style' => 'width:100%','required' => 'required']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('technician_id'))
                                                 <p class="help-block">
@@ -1066,12 +1066,12 @@
         <div class="row">
             <div class="col-md-12 form-group">
                 @if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
-                    <button type="button" onclick="updatePaidstatus({{$service_request->id}});saveButton();"
+                    <button type="button" onclick="updatePaidstatus({{$service_request->id}});"
                      class="btn btn-danger">@lang('quickadmin.qa_paid')</button>
                 @endif
 
                 
-                {!! Form::button(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate','onclick' => "saveButton()"]) !!}
+                {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger', 'id' => 'btnUpdate']) !!}
                 <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
                 {!! Form::close() !!}
             </div>

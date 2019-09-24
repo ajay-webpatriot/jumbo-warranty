@@ -116,7 +116,7 @@
                                     <div class="row custDiv" style="display: none;"> 
                                         <div class="col-sm-10 col-xs-9">
                                             {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer').'*', ['class' => 'control-label']) !!}
-                                            {!! Form::select('customer_id', array('' => trans('quickadmin.qa_please_select')), old('customer_id'), ['class' => 'form-control select2', 'required' => '','style' => 'width:100%','id' => 'customer_id']) !!}
+                                            {!! Form::select('customer_id', array('' => trans('quickadmin.qa_please_select')), old('customer_id'), ['class' => 'form-control select2','style' => 'width:100%','id' => 'customer_id']) !!}
                                             <p class="help-block"></p>
                                             @if($errors->has('customer_id'))
                                             <p class="help-block">
@@ -143,13 +143,13 @@
                                 <div class="col-md-6">
                                     <div class="row custDiv" style="display: none;">
                                         <div class="col-xs-12">
-                                            {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer-address').'', ['class' => 'control-label']) !!}
+                                            {!! Form::label('customer_address', trans('quickadmin.service-request.fields.customer-address').'', ['class' => 'control-label']) !!}
                                             <div class="custAddress">
                                             </div>
                                             <p class="help-block"></p>
-                                            @if($errors->has('customer_id'))
+                                            @if($errors->has('customer_address'))
                                             <p class="help-block">
-                                                {{ $errors->first('customer_id') }}
+                                                {{ $errors->first('customer_address') }}
                                             </p>
                                             @endif
                                         </div>
@@ -830,7 +830,7 @@
                 </div>
             
 
-                {!! Form::button(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => "formServiceRequestbutton"]) !!}
+                {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger','id' => "formServiceRequestbutton"]) !!}
                 <a href="{{ route('admin.service_requests.index') }}" class="btn btn-default">@lang('quickadmin.qa_cancel')</a>
                 {!! Form::close() !!}
                 <!-- Quick add company modal -->
