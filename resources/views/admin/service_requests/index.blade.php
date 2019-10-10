@@ -386,19 +386,47 @@
         $(function(){
             // daterangeStartValue = "{{ $request->session()->get('filter_start_date') }}";
             // daterangeEndValue = "{{ $request->session()->get('filter_end_date') }}";
-
+          
             $('#dateRangeFilter').daterangepicker({
+                autoUpdateInput: false,
                 opens: 'right',
                 locale: {
                     format: "{{ config('app.date_format_moment') }}"
                 }
-            }, function(start, end, label) {
-                // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
 
-                daterangeStartValue = start.format('YYYY-MM-DD');
-                daterangeEndValue=end.format('YYYY-MM-DD');
+            // , function(start, end, label) {
+            //     // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
+            //     // daterangeStartValue = start.format('YYYY-MM-DD');
+            //     // daterangeEndValue=end.format('YYYY-MM-DD');
+            //     // tableServiceRequest.draw();
+            // }
+
+            // $('#dateRangeFilter').on('apply.daterangepicker', function(ev, picker) {
+            //     $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            // });
+
+            // $('#dateRangeFilter').on('cancel.daterangepicker', function(ev, picker) {
+            //     $(this).val('');
+            // });
+            
+
+            $('#dateRangeFilter').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('MM-DD-YYYY') + ' - ' + picker.endDate.format('MM-DD-YYYY'));
+                console.log('load');
+                
+                daterangeStartValue = picker.startDate.format('YYYY-MM-DD');
+               
+                daterangeEndValue= picker.endDate.format('YYYY-MM-DD');
+
                 tableServiceRequest.draw();
-           });
+            });
+
+            $('#dateRangeFilter').on('cancel.daterangepicker', function(ev, picker) {
+                tableServiceRequest.draw();
+                $(this).val('');
+            });
 
             //    // set date during initialization
             //    daterangeStartValue=moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
@@ -409,8 +437,10 @@
             //     daterangeEndValue=moment(enddate.split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
 
             // }else{
-                daterangeStartValue=moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
-                daterangeEndValue=moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
+
+                // daterangeStartValue=moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
+                // daterangeEndValue=moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
+
             // }
         });
 
