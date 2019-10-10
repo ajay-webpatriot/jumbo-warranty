@@ -31,14 +31,14 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    @can('role_access')
-                    <li>
-                        <a href="{{ route('admin.roles.index') }}">
+                    {{-- @can('role_access') --}}
+                    <!-- <li>
+                        <a href="{{-- route('admin.roles.index') --}}">
                             <i class="fa fa-dot-circle-o"></i>
                             <span>@lang('quickadmin.roles.title')</span>
                         </a>
-                    </li>
-                    @endcan
+                    </li> -->
+                    {{-- @endcan --}}
                     
                     <!-- can('user_access') -->
                     

@@ -522,7 +522,7 @@
                         orientation: 'landscape',
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [0, 1, 2, 3, 4, 5]
+                            columns: [0, 1, 2, 3, 4, 5,6]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#technician thead th').length;
@@ -531,7 +531,10 @@
 
                             // set alignment of amount and request status column for PDF screen
                             var rowCount = document.getElementById("technician").rows.length;
-                            
+
+                            // var table = document.getElementById("technician");
+                            // var rowCount = doc.content[1].table.body.length;
+
                             for (i = 0; i < rowCount; i++) {
                                     doc.content[1].table.body[i][0].alignment = 'center';
                                     doc.content[1].table.body[i][4].alignment = 'right';
@@ -694,7 +697,7 @@
                         orientation: 'landscape',
                         exportOptions: {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4,5]
+                            columns: [0,1, 2, 3, 4,5]
                         },
                         customize: function (doc) {
                             // var iColumns = $('#company thead th').length;
@@ -704,12 +707,17 @@
 
                             // set alignment of amount and request status column for PDF screen
                             var rowCount = document.getElementById("company").rows.length;
+                            // console.log(rowCount);
+                            // var table = document.getElementById("company");
+                            // var rowCount = doc.content[1].table.body.length;
                             
                             for (i = 0; i < rowCount; i++) {
+                                // console.log(doc.content[1].table.body[i])
+                                // if(typeof(doc.content[1].table.body[i]) !== 'undefined'){
                                     doc.content[1].table.body[i][0].alignment = 'center';
                                     doc.content[1].table.body[i][4].alignment = 'center';
-                                    // doc.content[1].table.body[i][5].alignment = 'center';
-                                 
+                                    doc.content[1].table.body[i][5].alignment = 'center';
+                                // }
                             }
                         }
                     },
@@ -962,6 +970,38 @@
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             // var mergeCells = $('mergeCells', sheet);
                             // console.log(mergeCells[0]);
+
+                            // var mergeCells = $('mergeCells', sheet);
+                            // console.log(mergeCells);
+                            // mergeCells.appendChild( _createNode( sheet, 'mergeCell', {
+                            //     attr: {
+                            //         ref: 'A1:E1'
+                            //     }
+                            // }));
+ 
+                            // mergeCells.attr( 'count', mergeCells.attr( 'count' )+1 );
+            
+                            // function _createNode( doc, nodeName, opts ) {
+                            //         var tempNode = doc.createElement( nodeName );
+            
+                            //         if ( opts ) {
+                            //             if ( opts.attr ) {
+                            //             $(tempNode).attr( opts.attr );
+                            //             }
+                    
+                            //             if ( opts.children ) {
+                            //             $.each( opts.children, function ( key, value ) {
+                            //                 tempNode.appendChild( value );
+                            //             } );
+                            //             }
+                    
+                            //             if ( opts.text !== null && opts.text !== undefined ) {
+                            //             tempNode.appendChild( doc.createTextNode( opts.text ) );
+                            //             }
+                            //         }
+            
+                            //     return tempNode;
+                            // }
 
                             // To add new row count
                             var numrows = 5;

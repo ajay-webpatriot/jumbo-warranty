@@ -56,7 +56,7 @@ $(document).ready(function(){
 
 					$(".custDiv").hide();
 					$("#customer_id").html('');
-					$("#customer_id").removeattr('required');
+					$("#customer_id").removeAttr('required');
 					$("#selectall-parts").html('');
 					$("#product_id").html('');
 					return false;
