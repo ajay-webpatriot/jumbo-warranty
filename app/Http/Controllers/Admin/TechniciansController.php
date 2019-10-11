@@ -294,7 +294,8 @@ class TechniciansController extends Controller
         }
         $service_centers = \App\ServiceCenter::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         $enum_technician_status = User::$enum_status;
-
+        $logged_userRole_id= auth()->user()->role_id;
+       
         return view('admin.technicians.create', compact('enum_technician_status', 'service_centers','logged_userRole_id'));
     }
 

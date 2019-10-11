@@ -341,9 +341,13 @@ class ServiceRequestsController extends Controller
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
             ->leftjoin('customers','service_requests.customer_id','=','customers.id')
             ->leftjoin('products','service_requests.product_id','=','products.id')
-            ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id')
-            ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request['startdate']."' AND '".$request['enddate']."'")
-            ->whereNull('companies.deleted_at')
+            ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id');
+
+            if(!empty($request['startdate']) && isset($request['startdate'])){
+                $service_requestsQuery->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request['startdate']."' AND '".$request['enddate']."'");
+            }
+            
+            $service_requestsQuery->whereNull('companies.deleted_at')
             ->whereNull('customers.deleted_at')
             ->whereNull('products.deleted_at')
             ->Where('companies.status','Active')
