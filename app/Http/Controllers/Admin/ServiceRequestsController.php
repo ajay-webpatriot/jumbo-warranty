@@ -1776,12 +1776,11 @@ class ServiceRequestsController extends Controller
     public function createReceiptPDF($id)
     {
         $request = ServiceRequest::findOrFail($id);
+        $requestName = 'JW'.sprintf("%04d", $request['id']).' - '.$request['service_type'];
         $request_parts=$request->parts->pluck('id')->toArray();
 
-        if($request['service_center_id'] != "" && 
-            $request['customer_id'] != ""
-            )
-        {
+        if($request['service_center_id'] != "" && $request['customer_id'] != ""){
+            
             $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
             if($request['technician_id'] != "")
             {
@@ -1805,7 +1804,7 @@ class ServiceRequestsController extends Controller
             
 
             $technician= ($request['technician_id'] != "")? "<div><b>Technician: ".$technicianDetail->name."</b></div>":"";   
-            $centerHTML="<div style='float:left;width:50%;'>
+            $centerHTML="<div style='float:right;width:50%;text-align:right;'>
                             <b>Service Center: ".$centerDetail->name."</b>
                             <div>".$centerDetail->address_1."</div>
                             <div>".$centerDetail->address_2."</div>
@@ -1813,9 +1812,9 @@ class ServiceRequestsController extends Controller
                             ".$technician."
                         </div>";
 
-            $installation_charge=($request['installation_charge'] != "" && $request['installation_charge'] != 0)? "<tr><td colspan='2'>Installation Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['installation_charge'],2)."</td></tr>":"";
+            $installation_charge=($request['installation_charge'] != "" && $request['installation_charge'] != 0)? "<tr><td colspan='2'>&nbsp;Installation Charge :</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['installation_charge'],2)."</td></tr>":"";
 
-            $service_charge=($request['service_charge'] != "" && $request['service_charge'] != 0)? "<tr><td colspan='2'>Service Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['service_charge'],2)."</td></tr>":"";
+            $service_charge=($request['service_charge'] != "" && $request['service_charge'] != 0)? "<tr><td colspan='2'>&nbsp;Service Charge :</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['service_charge'],2)."</td></tr>":"";
 
             // $km_distance=($request['km_distance'] != "" && $request['km_distance'] != 0)? "<tr><td colspan='2'>Distance</td><td class='price'>".$request['km_distance']."</td></tr>":"";
 
@@ -1824,7 +1823,7 @@ class ServiceRequestsController extends Controller
             // {
                 // $km_charge=($request['km_charge'] != "" && $request['km_charge'] != 0)? "<tr><td colspan='2'>Transportation Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['km_charge'] * $request['km_distance'],2)."<br/>(".number_format($request['km_charge'],2)." rs per km)</td></tr>":"";
             // } 
-            $km_charge=($request['transportation_charge'] != "" && $request['transportation_charge'] != 0)? "<tr><td colspan='2'>Transportation Charge</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['transportation_charge'],2)."<br/>(".number_format($request['km_charge'],2)." rs per km)</td></tr>":"";   
+            $km_charge=($request['transportation_charge'] != "" && $request['transportation_charge'] != 0)? "<tr><td colspan='2'>&nbsp;Transportation Charg :</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['transportation_charge'],2)."<br/>(".number_format($request['km_charge'],2)." rs per km)</td></tr>":"";   
             
 
             // $additional_charges=($request['additional_charges'] != "" && $request['additional_charges'] != 0)? "<tr><td colspan='2'>Additional Charge </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['additional_charges'],2)."</td></tr>":"";
@@ -1840,7 +1839,7 @@ class ServiceRequestsController extends Controller
                     foreach($pre_additional_charge_array as $PreArrayKey => $arr_val){
                         if($AdditionalChargeTitle === $arr_val){
 
-                            $additional_charges.= "<tr><td colspan='2'>".$AdditionalChargeTitle." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value->$arr_val,2)."</td></tr>";
+                            $additional_charges.= "<tr><td colspan='2'>&nbsp;".$AdditionalChargeTitle." :</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value->$arr_val,2)."</td></tr>";
 
                         }
                     }
@@ -1850,7 +1849,7 @@ class ServiceRequestsController extends Controller
                 foreach ($additional_charge_array->other as $key => $value) {
                     if(str_replace('_empty_', '', $key) != "" && $value > 0) 
                     {
-                        $additional_charges.= "<tr><td colspan='2'>".str_replace('_empty_', '', $key)." </td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
+                        $additional_charges.= "<tr><td colspan='2'>&nbsp;".str_replace('_empty_', '', $key)." :</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value,2)."</td></tr>";
                     }
 
                 }                                      
@@ -1870,7 +1869,7 @@ class ServiceRequestsController extends Controller
             //     }
             // }
 
-            $total_amount="<tr><td colspan='2'><b>Total amount</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['amount'],2)."</b></td></tr>";
+            $total_amount="<tr><td colspan='2'>&nbsp;<b>Total amount :</b></td><td class='price'><b><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($request['amount'],2)."</b></td></tr>";
 
             $parts_used="";
             if($request['service_type'] == "repair" && count($request_parts) > 0)
@@ -1880,37 +1879,66 @@ class ServiceRequestsController extends Controller
                 $parts_used="<tr><td>Parts Used</td><td colspan='2'>".$parts->name."</td></tr>";  
             }
             
-            $productHTML="<div><table class='table' style='width:100%;'>
-                                <thead>
-                                    <tr>
-                                        <th class='align-text-center'>Product</th>
-                                        <th class='align-text-center'>&nbsp;</th>
-                                        <th class='price'></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class='align-text-center'>".$productDetail->name."</td>
-                                        <td class='align-text-center'></td>
-                                        <td class='price'></td>
-                                    </tr>
-                                    <tr>
-                                    <td style='border:0;'></td>
-                                    </tr>
-                                    <tr>
-                                    <td style='border:0;'></td>
-                                    </tr><tr>
-                                    <td style='border:0;'></td>
-                                    </tr>
-                                    ".$parts_used."
-                                    ".$installation_charge."
-                                    ".$service_charge."
-                                    ".$km_charge."
-                                    ".$additional_charges."
+            // $productHTML="<div><table class='table' style='width:100%;'>
+            //                     <thead>
+            //                         <tr>
+            //                             <th class='align-text-center'>Product</th>
+            //                             <th class='align-text-center'>&nbsp;</th>
+            //                             <th class='price'></th>
+            //                         </tr>
+            //                     </thead>
+            //                     <tbody>
+            //                         <tr>
+            //                             <td class='align-text-center'>".$productDetail->name."</td>
+            //                             <td class='align-text-center'></td>
+            //                             <td class='price'></td>
+            //                         </tr>
+            //                         <tr>
+            //                         <td style='border:0;'></td>
+            //                         </tr>
+            //                         <tr>
+            //                         <td style='border:0;'></td>
+            //                         </tr><tr>
+            //                         <td style='border:0;'></td>
+            //                         </tr>
+            //                         ".$parts_used."
+            //                         ".$installation_charge."
+            //                         ".$service_charge."
+            //                         ".$km_charge."
+            //                         ".$additional_charges."
                                     
-                                    ".$total_amount."
-                                </tbody>
-                        </table></div>";
+            //                         ".$total_amount."
+            //                     </tbody>
+            //             </table></div>";
+
+            $productHTML="<div><table class='table' style='width:100%;'>
+                    <thead>
+                        <tr>
+                            <th class='align-text-center'>Service Request</th>
+                            <th class='align-text-center'>Product</th>
+                            <th class='align-text-center'>Creation date</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class='align-text-center'>".$requestName."</td>
+                        
+                            <td class='align-text-center'>".$productDetail->name."</td>
+
+                            <td class='align-text-center'>".date('d/m/Y',strtotime($request['created_at']))."</td>
+                        </tr>
+                        <tr>
+                        <td style='border:0;'></td>
+                        </tr>
+                        <tr>
+                        <td style='border:0;'></td>
+                        </tr><tr>
+                        <td style='border:0;'></td>
+                        </tr>
+                        ".$parts_used."
+                    </tbody>
+            </table></div>";
 
             // final html of PDF    
             $html="<html>
@@ -1927,9 +1955,22 @@ class ServiceRequestsController extends Controller
                             .align-text-center{
                                 text-align:center;
                             }
+                            .charge-table tr td{
+                                padding: 5px;
+                                vertical-align: top;
+                                border-top: 1px solid #ddd;
+                            }
+                            .center {
+                                display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                                width: 50%;
+                            }
                         </style>
                     </head>";
             $html.="<body>
+            <h1 style='text-align:center;'><img width='250px' src='" . url("adminlte/img/LOGOF.png") . "' alt='Jumbo-Warranty' /></h1>
+                    </br>
                     <h1 style='text-align:center;'>Bill Receipt</h1>";
 
                     if(!empty($request['invoice_number']))
@@ -1941,11 +1982,22 @@ class ServiceRequestsController extends Controller
             $html.="<div style='height:18%;margin-top:5%;'>".$compCustHTML.$centerHTML."</div>";
             $html.=$productHTML;
 
+            $html.="<table class='charge-table' align='right' width='50%'>
+                    <tbody>
+                        ".$installation_charge."
+                        ".$service_charge."
+                        ".$km_charge."
+                        ".$additional_charges."
+                        ".$total_amount."
+                    </tbody>
+                </table>";
+
             $html.="</body></html>";
             // echo $html;exit;
             // print_r ($request); exit(); 
             
             $dompdf = new Dompdf();
+            $dompdf->set_option('isRemoteEnabled', true);
             $dompdf->loadHtml($html);
 
             // (Optional) Setup the paper size and orientation
