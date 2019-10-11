@@ -55,9 +55,7 @@ class SendMail
           }
           // $additional_charge_title=[];
           // $additional_charges=[];
-          $admin_email= "";
-          $company_admin_email = "";
-          $customer_email = "";
+          
 
           // if(!empty($additional_charge_array))
           // {
@@ -94,6 +92,11 @@ class SendMail
           $service_request['additional_charges']=$additional_charges;
           $service_request['additional_charges_title']=$additional_charge_title;
         }
+
+        $admin_email= "";
+        $company_admin_email = "";
+        $customer_email = "";
+
         // get receiver user data
     		$company_admin= \App\User::where('company_id',$service_request->company_id)
                                   ->where('status','Active')
@@ -121,7 +124,6 @@ class SendMail
           // $admin_email=$admin->email;
           $admin_email=$admin;
         }
-		
 
         $receiver_email=array('admin' => $admin_email,
                               'company_admin' => $company_admin_email,

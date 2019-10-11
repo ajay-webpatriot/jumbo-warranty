@@ -8,7 +8,7 @@
 <body class="page-header-fixed">
 
     <div sdf="SF" style="margin-top: 5%;margin-bottom:2%;text-align: center;">
-        <img style="width:25%" src="{{url('adminlte/img/LOGOF.png')}}"
+        <img src="{{url('adminlte/img/LOGOF.png')}}"
                                  alt="Jumbo-Warranty" />
 
     </div>
