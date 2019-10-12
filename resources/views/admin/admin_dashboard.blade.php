@@ -139,40 +139,6 @@
 
                                             <div class="row">
 
-                                                <!-- Total solved installation -->
-                                                {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'delayed_request','class' => 'requestlistform']) !!}
-
-                                                <!-- <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('delayed_request')" style="cursor: pointer;" id="delayedRequests">
-                                                    <div class="info-box bg-green">
-                                                        <span class="info-box-icon"><i class="fa fa-tv"></i></span>
-                                                        <div class="info-box-content">
-                                                            <span class="info-box-text boxfont">TOTAL DELAYED REQUESTS FROM TODAY</span>
-                                                            <span class="info-box-number" id="delayedRequest">{{-- $delayedRequest --}}</span>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
-
-                                                <div class="col-md-6 col-sm-6 col-xs-12">
-                                                    <div class="small-box bg-green">
-                                                        <div class="inner">
-                                                            <h3 id="delayedRequest"></h3>
-
-                                                            <p>TOTAL DELAYED REQUESTS FROM TODAY</p>
-                                                        </div>
-                                                        <div class="icon">
-                                                            <i class="ion ion-stats-bars"></i>
-                                                        </div>
-                                                        <a href="javascript:void(0);" class="small-box-footer" onclick="getRequestList('delayed_request')">More info <i class="fa fa-arrow-circle-right"></i></a>
-                                                    </div>
-                                                </div>
-
-                                                {{ Form::hidden('startDate', '', array('id' => 'startDate_delayed_request')) }}
-                                                {{ Form::hidden('endDate', '', array('id' => 'endDate_delayed_request')) }}
-                                                {{ Form::hidden('SelectedCompanyId', '', array('id' => 'SelectedCompanyId_delayed_request')) }}
-                                                {{ Form::hidden('type', '', array('id' => 'type_delayed_request')) }}
-
-                                                {!! Form::close() !!}
-                                            
                                                 <!-- Total solved complain --> 
                                                 {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'closed_request','class' => 'requestlistform']) !!}
 
@@ -191,7 +157,7 @@
                                                         <div class="inner">
                                                             <h3 id="closededRequest"></h3>
 
-                                                            <p>TOTAL REQUESTS CLOSED BY TODAY</p>
+                                                            <p>TOTAL REQUESTS CLOSED TILL NOW</p>
                                                         </div>
                                                         <div class="icon">
                                                             <i class="ion ion-stats-bars"></i>
@@ -204,6 +170,40 @@
                                                 {{ Form::hidden('endDate', '', array('id' => 'endDate_closed_request')) }}
                                                 {{ Form::hidden('SelectedCompanyId', '', array('id' => 'SelectedCompanyId_closed_request')) }}
                                                 {{ Form::hidden('type', '', array('id' => 'type_closed_request')) }}
+
+                                                {!! Form::close() !!}
+
+                                                <!-- Total solved installation -->
+                                                {!! Form::open(['method' => 'POST', 'route' => ['admin.request_list'],'id' => 'delayed_request','class' => 'requestlistform']) !!}
+
+                                                <!-- <div class="col-md-6 col-sm-6 col-xs-12" onclick="getRequestList('delayed_request')" style="cursor: pointer;" id="delayedRequests">
+                                                    <div class="info-box bg-green">
+                                                        <span class="info-box-icon"><i class="fa fa-tv"></i></span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text boxfont">TOTAL DELAYED REQUESTS FROM TODAY</span>
+                                                            <span class="info-box-number" id="delayedRequest">{{-- $delayedRequest --}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <div class="small-box bg-green">
+                                                        <div class="inner">
+                                                            <h3 id="delayedRequest"></h3>
+
+                                                            <p>TOTAL DELAYED REQUESTS</p>
+                                                        </div>
+                                                        <div class="icon">
+                                                            <i class="ion ion-stats-bars"></i>
+                                                        </div>
+                                                        <a href="javascript:void(0);" class="small-box-footer" onclick="getRequestList('delayed_request')">More info <i class="fa fa-arrow-circle-right"></i></a>
+                                                    </div>
+                                                </div>
+
+                                                {{ Form::hidden('startDate', '', array('id' => 'startDate_delayed_request')) }}
+                                                {{ Form::hidden('endDate', '', array('id' => 'endDate_delayed_request')) }}
+                                                {{ Form::hidden('SelectedCompanyId', '', array('id' => 'SelectedCompanyId_delayed_request')) }}
+                                                {{ Form::hidden('type', '', array('id' => 'type_delayed_request')) }}
 
                                                 {!! Form::close() !!}
                                                 

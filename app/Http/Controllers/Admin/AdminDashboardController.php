@@ -186,7 +186,8 @@ class AdminDashboardController extends Controller
 
         }elseif ($type == "closed_request") {
             $ServiceCount->where('service_requests.status','=','Closed')
-            ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
+            ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
+            // ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
              
             /*Total Closed count*/
             return $ServiceCount->count();
@@ -258,7 +259,7 @@ class AdminDashboardController extends Controller
 
         }elseif ($type == "delayed_request") {
             
-            $typeTitle = 'TOTAL DELAYED REQUESTS FROM TODAY';
+            $typeTitle = 'TOTAL DELAYED REQUESTS';
             $color = 'success';
 
             $ServiceCount->where('service_requests.status','!=','Closed')
@@ -269,11 +270,12 @@ class AdminDashboardController extends Controller
 
         }elseif ($type == "closed_request") {
 
-            $typeTitle = 'TOTAL REQUESTS CLOSED BY TODAY';
+            $typeTitle = 'TOTAL REQUESTS CLOSED TILL NOW';
             $color = 'primary';
 
             $ServiceCount->where('service_requests.status','=','Closed')
-            ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
+            ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
+            // ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
              
             /*Total Closed count*/
             
