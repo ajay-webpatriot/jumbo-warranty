@@ -1209,9 +1209,7 @@ function saveButton() {
 			
 			var selectedOption =$("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val();
 			var selectedAmount =$("#existingAdditional_charge_"+selectedid[1]).val();
-			console.log('selectedAmount');
-			console.log(selectedAmount);
-			console.log('===============');
+
 			if(typeof(selectedOption) !== 'undefined' && typeof(selectedAmount) !== 'undefined'){
 				// console.log('in ');
 				if($("#existingAdditional_charge_"+selectedid[1]).val().trim() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() <= 0){
