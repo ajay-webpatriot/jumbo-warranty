@@ -93,7 +93,7 @@ $(document).ready(function(){
 	       	}
 	    });
 	});
-	
+
 	// $(document).on('submit','#formServiceRequest',function (){
 		
 		// var status = true;
@@ -1187,10 +1187,7 @@ function saveButton() {
 
 	$( "select" ).each(function(index,value) {
 		if(this.hasAttribute('required')){
-			// console.log($(this).css('display'));
-			// console.log($(this).is(":visible"));
-			// $(this).removeAttr('required');
-				
+
 			if ($(this).is(":visible")){
 				// $(this).attr('required','required');
 				return true;
@@ -1206,9 +1203,6 @@ function saveButton() {
 
 		$('.multiple_Additional_charge_for').each(function() {
 			var selectedid = $(this).attr("id").split('-');
-			console.log('selectedid');
-			console.log(selectedid);
-			console.log('===============');
 			
 			$(".error-block_"+selectedid[1]).text('');
 			$(".error-amount-block_"+selectedid[1]).text('');
@@ -1219,18 +1213,18 @@ function saveButton() {
 			console.log(selectedAmount);
 			console.log('===============');
 			if(typeof(selectedOption) !== 'undefined' && typeof(selectedAmount) !== 'undefined'){
-				console.log('in ');
+				// console.log('in ');
 				if($("#existingAdditional_charge_"+selectedid[1]).val().trim() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() <= 0){
-					console.log('in if ');
+					// console.log('in if ');
 					$(".error-amount-block_"+selectedid[1]).text('The additional amount must be greater than 0.');
 					allowdisable = false;
 	
 				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() == '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() != ''){
-					console.log('in else if 1 ');
+					// console.log('in else if 1 ');
 					$(".error-block_"+selectedid[1]).text('Please select option');
 					allowdisable = false;
 				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() == ''){
-					console.log('in else if 2 ');
+					// console.log('in else if 2 ');
 					$(".error-amount-block_"+selectedid[1]).text('Please Enter amount');
 					allowdisable = false;
 				}
@@ -1246,13 +1240,11 @@ function saveButton() {
 
 			if($("#additional_charges").val().trim() != "" && $("#additional_charges").val() <= 0)
 			{
-				// $("#additional_charges").next(".help-block").html("The additional charges must be greater than 0.");
 				$(".addamountError").html("The additional amount must be greater than 0.");
 				allowdisable = false;
 			}
 			else if($("#additional_charges_title").val().trim() != "" && $("#additional_charges").val().trim() == "")
 			{
-				// $("#additional_charges").next(".help-block").html("The additional amount field is required when additional charges title is present.");
 				$(".addamountError").html("The additional amount field is required when additional charges title is present.");
 				allowdisable = false;
 			}
@@ -1293,16 +1285,11 @@ function saveButton() {
 
 		//Check for conditional required
 		if(allowdisable ==  true){
-			console.log('if');
-			console.log(allowdisable);
-			console.log('=============');
-			// event.preventDefault();	
+			
 			$('#'+buttonId).attr('disabled', 'disabled');
 			return true;
 		}else{
-			console.log('else');
-			console.log(allowdisable);
-			console.log('=============');
+			
 			event.preventDefault();	
 			$('#'+buttonId).removeAttr('disabled', 'disabled');
 			return false;
