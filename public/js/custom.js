@@ -93,67 +93,70 @@ $(document).ready(function(){
 	       	}
 	    });
 	});
-	$(document).on('submit','#formServiceRequest',function (){
+
+	// $(document).on('submit','#formServiceRequest',function (){
 		
-		var status = true;
+		// var status = true;
 		// $('*[id^="Additional_charge_for_existing-"]').each(function() {
-		$('.multiple_Additional_charge_for').each(function() {
-			var selectedid = $(this).attr("id").split('-');
-			$(".error-block_"+selectedid[1]).text('');
-			$(".error-amount-block_"+selectedid[1]).text('');
+		// $('.multiple_Additional_charge_for').each(function() {
+		// 	var selectedid = $(this).attr("id").split('-');
+		// 	$(".error-block_"+selectedid[1]).text('');
+		// 	$(".error-amount-block_"+selectedid[1]).text('');
 			
-			var selectedOption =$("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val();
-			var selectedAmount =$("#existingAdditional_charge_"+selectedid[1]).val();
+		// 	var selectedOption =$("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val();
+		// 	var selectedAmount =$("#existingAdditional_charge_"+selectedid[1]).val();
 
-			if(typeof(selectedOption) !== 'undefined' && typeof(selectedAmount) !== 'undefined'){
-				// console.log('in ');
-				if($("#existingAdditional_charge_"+selectedid[1]).val().trim() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() <= 0){
-					// console.log('in if ');
-					$(".error-amount-block_"+selectedid[1]).text('The additional amount must be greater than 0.');
-					status = false;
+		// 	if(typeof(selectedOption) !== 'undefined' && typeof(selectedAmount) !== 'undefined'){
+		// 		// console.log('in ');
+		// 		if($("#existingAdditional_charge_"+selectedid[1]).val().trim() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() <= 0){
+		// 			// console.log('in if ');
+		// 			$(".error-amount-block_"+selectedid[1]).text('The additional amount must be greater than 0.');
+		// 			status = false;
 
-				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() == '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() != ''){
-					// console.log('in else if 1 ');
-					$(".error-block_"+selectedid[1]).text('Please select option');
-					status = false;
-				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() == ''){
-					// console.log('in else if 2 ');
-					$(".error-amount-block_"+selectedid[1]).text('Please Enter amount');
-					status = false;
-				}
-			}
-		});
+		// 		}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() == '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() != ''){
+		// 			// console.log('in else if 1 ');
+		// 			$(".error-block_"+selectedid[1]).text('Please select option');
+		// 			status = false;
+		// 		}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() == ''){
+		// 			// console.log('in else if 2 ');
+		// 			$(".error-amount-block_"+selectedid[1]).text('Please Enter amount');
+		// 			status = false;
+		// 		}
+		// 	}
+		// });
 		
+
 		// validate additional charges title and amount on form submit in add/edit service request page
 		
-		$("#additional_charges_title").next(".help-block").html("");
-		// $("#additional_charges").next(".help-block").html("");
-		$(".addamountError").html("");
-		var valueAdditionalCharge = $("#additional_charges").val();
-		var valueAdditionalChargeTitle = $("#additional_charges_title").val();
+		// $("#additional_charges_title").next(".help-block").html("");
+		// // $("#additional_charges").next(".help-block").html("");
+		// $(".addamountError").html("");
+		// var valueAdditionalCharge = $("#additional_charges").val();
+		// var valueAdditionalChargeTitle = $("#additional_charges_title").val();
 		
-		if(typeof(valueAdditionalCharge) !== 'undefined' && typeof(valueAdditionalChargeTitle) !== 'undefined'){
+		// if(typeof(valueAdditionalCharge) !== 'undefined' && typeof(valueAdditionalChargeTitle) !== 'undefined'){
 
-			if($("#additional_charges").val().trim() != "" && $("#additional_charges").val() <= 0)
-			{
-				// $("#additional_charges").next(".help-block").html("The additional charges must be greater than 0.");
-				$(".addamountError").html("The additional amount must be greater than 0.");
-				status = false;
-			}
-			else if($("#additional_charges_title").val().trim() != "" && $("#additional_charges").val().trim() == "")
-			{
-				// $("#additional_charges").next(".help-block").html("The additional amount field is required when additional charges title is present.");
-				$(".addamountError").html("The additional amount field is required when additional charges title is present.");
-				status = false;
-			}
-			else if($("#additional_charges_title").val().trim() == "" && $("#additional_charges").val().trim() != "")
-			{
-				$("#additional_charges_title").next(".help-block").html("The additional charges title field is required when additional amount is present.");
-				status = false;
-			}
-		}
-        return status;
-	});
+		// 	if($("#additional_charges").val().trim() != "" && $("#additional_charges").val() <= 0)
+		// 	{
+		// 		// $("#additional_charges").next(".help-block").html("The additional charges must be greater than 0.");
+		// 		$(".addamountError").html("The additional amount must be greater than 0.");
+		// 		status = false;
+		// 	}
+		// 	else if($("#additional_charges_title").val().trim() != "" && $("#additional_charges").val().trim() == "")
+		// 	{
+		// 		// $("#additional_charges").next(".help-block").html("The additional amount field is required when additional charges title is present.");
+		// 		$(".addamountError").html("The additional amount field is required when additional charges title is present.");
+		// 		status = false;
+		// 	}
+		// 	else if($("#additional_charges_title").val().trim() == "" && $("#additional_charges").val().trim() != "")
+		// 	{
+		// 		$("#additional_charges_title").next(".help-block").html("The additional charges title field is required when additional amount is present.");
+		// 		status = false;
+		// 	}
+		// }
+    //     return status;
+	// });
+
 	$(document).on('click','#serviceRequest.datatable .select-checkbox, #company.datatable .select-checkbox, #company_admin.datatable .select-checkbox, #company_user.datatable .select-checkbox, #customer.datatable .select-checkbox, #assign_product.datatable .select-checkbox, #assign_part.datatable .select-checkbox, #service_center_admin.datatable .select-checkbox, #technician.datatable .select-checkbox',function (){
 		// service request check single checkbox work
 		if($(this).closest('tr').hasClass('selected'))
@@ -1168,6 +1171,7 @@ function saveButton() {
 	// var  elementId = event.target.id;
 	var buttonId = $(document.activeElement).attr('id');
 	allowdisable = true;
+
 	$( "input" ).each(function() {
 		if(this.hasAttribute('required')){
 			// if ( $(this).css('display') === 'none')
@@ -1183,10 +1187,7 @@ function saveButton() {
 
 	$( "select" ).each(function(index,value) {
 		if(this.hasAttribute('required')){
-			// console.log($(this).css('display'));
-			// console.log($(this).is(":visible"));
-			// $(this).removeAttr('required');
-				
+
 			if ($(this).is(":visible")){
 				// $(this).attr('required','required');
 				return true;
@@ -1199,11 +1200,99 @@ function saveButton() {
 	});
 
 	if(allowdisable ==  true){
+
+		$('.multiple_Additional_charge_for').each(function() {
+			var selectedid = $(this).attr("id").split('-');
+			
+			$(".error-block_"+selectedid[1]).text('');
+			$(".error-amount-block_"+selectedid[1]).text('');
+			
+			var selectedOption =$("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val();
+			var selectedAmount =$("#existingAdditional_charge_"+selectedid[1]).val();
+
+			if(typeof(selectedOption) !== 'undefined' && typeof(selectedAmount) !== 'undefined'){
+				// console.log('in ');
+				if($("#existingAdditional_charge_"+selectedid[1]).val().trim() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() <= 0){
+					// console.log('in if ');
+					$(".error-amount-block_"+selectedid[1]).text('The additional amount must be greater than 0.');
+					allowdisable = false;
+	
+				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() == '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() != ''){
+					// console.log('in else if 1 ');
+					$(".error-block_"+selectedid[1]).text('Please select option');
+					allowdisable = false;
+				}else if($("#Additional_charge_for_existing-"+selectedid[1]+"  option:selected").val() != '' && $("#existingAdditional_charge_"+selectedid[1]).val().trim() == ''){
+					// console.log('in else if 2 ');
+					$(".error-amount-block_"+selectedid[1]).text('Please Enter amount');
+					allowdisable = false;
+				}
+			}
+		});
+
+		$("#additional_charges_title").next(".help-block").html("");
+		$(".addamountError").html("");
+		var valueAdditionalCharge = $("#additional_charges").val();
+		var valueAdditionalChargeTitle = $("#additional_charges_title").val();
 		
-		$('#'+buttonId).attr('disabled', 'disabled');
-		// var formId = $('#'+elementId).closest("form").attr('id');
-		// $('#'+formId).submit();
-		return true;
+		if(typeof(valueAdditionalCharge) !== 'undefined' && typeof(valueAdditionalChargeTitle) !== 'undefined'){
+
+			if($("#additional_charges").val().trim() != "" && $("#additional_charges").val() <= 0)
+			{
+				$(".addamountError").html("The additional amount must be greater than 0.");
+				allowdisable = false;
+			}
+			else if($("#additional_charges_title").val().trim() != "" && $("#additional_charges").val().trim() == "")
+			{
+				$(".addamountError").html("The additional amount field is required when additional charges title is present.");
+				allowdisable = false;
+			}
+			else if($("#additional_charges_title").val().trim() == "" && $("#additional_charges").val().trim() != "")
+			{
+				$("#additional_charges_title").next(".help-block").html("The additional charges title field is required when additional amount is present.");
+				allowdisable = false;
+			}
+		}
+		// event.preventDefault();	
+		// Check additional charge
+		// var multiAdditionalCharge = $('.multiple_Additional_charge_for').val();
+		// var existingAdditionalCharge = $('.existingAdditional_charge').val();
+		
+		// console.log('existingAdditionalCharge');
+		// console.log(existingAdditionalCharge);
+		// console.log('=============');
+		
+		// if(((multiAdditionalCharge != '' && multiAdditionalCharge <= 0) && (existingAdditionalCharge == '' && existingAdditionalCharge < 0)) || ((multiAdditionalCharge == '' && multiAdditionalCharge == 0) && existingAdditionalCharge != '')){
+		// 	allowdisable =  false;
+		// }
+		
+		
+
+		// Check other addtional charge
+		// var OtherAdditionalCharge = $('#additional_charges_title').val();
+		// var AdditionalCharge = $('#additional_charges').val();
+
+		// $('.multiple_Additional_charge_for').each(function() {
+		// 	var selectedid = $(this).attr("id").split('-');
+		// 	console.log(selectedid);
+			
+		// });
+		
+		// if((OtherAdditionalCharge == '' && AdditionalCharge != '') || (OtherAdditionalCharge != '' && AdditionalCharge == '')){
+		// 	allowdisable =  false;
+		// }	
+
+		//Check for conditional required
+		if(allowdisable ==  true){
+			
+			$('#'+buttonId).attr('disabled', 'disabled');
+			return true;
+		}else{
+			
+			event.preventDefault();	
+			$('#'+buttonId).removeAttr('disabled', 'disabled');
+			return false;
+		}
+		
 	}else{
 		event.preventDefault();	
 		$('#'+buttonId).removeAttr('disabled', 'disabled');

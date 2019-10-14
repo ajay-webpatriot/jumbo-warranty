@@ -764,7 +764,9 @@
                                                 <div class="col-md-8 col-xs-7">
                                                     <div class="form-group">
 
-                                                        <select class="form-control multiple_Additional_charge_for" id="Additional_charge_for_existing-1" style="width:100%" name="existingAdditional_charge_for[]">
+                                                        <!-- <select class="form-control multiple_Additional_charge_for" id="Additional_charge_for_existing-1" style="width:100%" name="existingAdditional_charge_for[]"> -->
+
+                                                        <select class="form-control multiple_Additional_charge_for" id="Additional_charge_for_existing-{{ $i }}" style="width:100%" name="existingAdditional_charge_for[]">
                                                         <?php
                                                             foreach ($pre_additional_charge_array as $key => $value) {
                                                                 $selected = '';
@@ -785,7 +787,7 @@
                                                         </select>
                                                         {{-- !! Form::select('existingAdditional_charge_for[]', $pre_additional_charge_array, $additional_charge_title_value , ['class' => 'form-control','id' => 'Additional_charge_for_existing-1', 'required' => '','style' => 'width:100%']) !! --}}
                                                     </div>
-                                                    <p class="error-block_1 text-danger"></p>
+                                                    <p class="error-block_{{ $i }} text-danger"></p>
                                                 </div>
                                                 
                                                 <div class="col-md-4 col-xs-5">
@@ -799,7 +801,7 @@
                                                                 </label>
                                                                 {!! Form::text('existingAdditional_charge[]', $service_request['additional_charges']['option'][$additional_charge_title_key], ['class' => 'form-control text-right existingAdditional_charge', 'placeholder' => 'Amount','id' => 'existingAdditional_charge_'.$i,'onkeypress' => 'return checkIsDecimalNumber(this,event)', 'onkeyup' => 'totalServiceAmount()']) !!}
                                                             </div>
-                                                            <p class="error-amount-block_1 text-danger"></p>
+                                                            <p class="error-amount-block_{{ $i }} text-danger"></p>
 
                                                             {{-- @if($last_key != $additional_charge_title_key) --}}
                                                             <a href="javascript:void(0);" class="text-danger pull-right removelink" onclick='removeAdditionalChargeFor({{$i}});'>Remove</a>

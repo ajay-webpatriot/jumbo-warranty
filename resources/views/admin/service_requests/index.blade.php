@@ -378,6 +378,55 @@
     <script src="{{ url('adminlte/plugins/daterangepicker/moment.min.js') }}"></script>
     <script src="{{ url('adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script>
+        // newexportaction = '';
+        //  oldExportAction = '';
+        // jQuery(document).ready(function(){
+            var oldExportAction = function  (self, e, dt, button, config) {
+                if (button[0].className.indexOf('buttons-copy') >= 0) {
+                                $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+                    $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+                        $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                } else if (button[0].className.indexOf('buttons-csv') >= 0) {
+                    $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+                        $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+                        $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+                    $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+                        $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                } else if (button[0].className.indexOf('buttons-print') >= 0) {
+                    $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                }
+            }
+
+            var newexportaction = function (e, dt, button, config) {
+                var self = this;
+                var oldStart = dt.settings()[0]._iDisplayStart;
+                dt.one('preXhr', function (e, s, data) {
+                    // Just this once, load all data from the server...
+                    data.start = 0;
+                    data.length = 2147483647;
+                    dt.one('preDraw', function (e, settings) {
+                        // Call the original action function
+                        oldExportAction(self, e, dt, button, config);
+                        dt.one('preXhr', function (e, s, data) {
+                            // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+                            // Set the property to what it was before exporting.
+                            settings._iDisplayStart = oldStart;
+                            data.start = oldStart;
+                        });
+                        // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                        setTimeout(dt.ajax.reload, 0);
+                        // Prevent rendering of the full data to the DOM
+                        return false;
+                    });
+                });
+                // Requery the server with the new one-time export settings
+                dt.ajax.reload();
+            }
+        // });
         var daterangeStartValue = "";
         var daterangeEndValue = "";
         // var startdate = "{{ $request->session()->get('filter_start_date') }}";
@@ -575,7 +624,8 @@
                                     doc.content[1].table.body[i][5].alignment = 'center';
                                  
                             }
-                        }
+                        },
+                        "action": newexportaction,
                     },
                     // {
                     //     extend: 'excelHtml5',
@@ -674,7 +724,8 @@
                             $('row c[r="A4"]', sheet).attr('s', '52');
                             $('row c[r="C4"]', sheet).attr('s', '52');
                             
-                        }//customized end
+                        },//customized end
+                        "action": newexportaction,
                     },{
                         extend: 'print',
                         text: window.printButtonTrans,
@@ -687,7 +738,8 @@
                             $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
                             $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'right');
                             $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
-                        }
+                        },
+                        "action": newexportaction,
                     }
                 ],
                 "ajax":{
@@ -749,11 +801,12 @@
                                 // console.log(doc.content[1].table.body[i])
                                 // if(typeof(doc.content[1].table.body[i]) !== 'undefined'){
                                     doc.content[1].table.body[i][0].alignment = 'center';
-                                    doc.content[1].table.body[i][4].alignment = 'center';
-                                    doc.content[1].table.body[i][5].alignment = 'center';
+                                    doc.content[1].table.body[i][4].alignment = 'left';
+                                    doc.content[1].table.body[i][5].alignment = 'left';
                                 // }
                             }
-                        }
+                        },
+                        "action": newexportaction,
                     },
                     // {
                     //     extend: 'excelHtml5',
@@ -852,7 +905,8 @@
                             $('row c[r="A4"]', sheet).attr('s', '52');
                             $('row c[r="C4"]', sheet).attr('s', '52');
                             
-                        }//customized end
+                        },//customized end
+                        "action": newexportaction,
                     },{
                         extend: 'print',
                         text: window.printButtonTrans,
@@ -865,7 +919,8 @@
                             $(win.document.body).find('table tbody td:nth-child(1)').css('text-align', 'center');
                             $(win.document.body).find('table tbody td:nth-child(5)').css('text-align', 'left');
                             $(win.document.body).find('table tbody td:nth-child(6)').css('text-align', 'center');
-                        }
+                        },
+                        "action": newexportaction,
                     }
                 ],
                 "ajax":{
@@ -951,6 +1006,50 @@
             });
 
         @else
+        
+        // function newexportaction(e, dt, button, config) {
+        //     console.log(config);
+            
+        //         var self = this;
+        //         var oldStart = dt.settings()[0]._iDisplayStart;
+        //         dt.one('preXhr', function (e, s, data) {
+        //             // Just this once, load all data from the server...
+        //             data.start = 0;
+        //             data.length = 2147483647;
+        //             dt.one('preDraw', function (e, settings) {
+        //                 // Call the original action function
+        //                 if (button[0].className.indexOf('buttons-copy') >= 0) {
+        //                     $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+        //                 } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+        //                     $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+        //                         $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+        //                         $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+        //                 } else if (button[0].className.indexOf('buttons-csv') >= 0) {
+        //                     $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+        //                         $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+        //                         $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+        //                 } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+        //                     $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+        //                         $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+        //                         $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+        //                 } else if (button[0].className.indexOf('buttons-print') >= 0) {
+        //                     $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+        //                 }
+        //                 dt.one('preXhr', function (e, s, data) {
+        //                     // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+        //                     // Set the property to what it was before exporting.
+        //                     settings._iDisplayStart = oldStart;
+        //                     data.start = oldStart;
+        //                 });
+        //                 // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+        //                 setTimeout(dt.ajax.reload, 0);
+        //                 // Prevent rendering of the full data to the DOM
+        //                 return false;
+        //             });
+        //         });
+        //         // Requery the server with the new one-time export settings
+        //         dt.ajax.reload();
+        //     }
             // admin and super admin
             var tableServiceRequest = $('#serviceRequest').DataTable({
                 "processing": true,
@@ -961,16 +1060,16 @@
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
-                buttons: [
+                "buttons": [
                     {
-                        extend: 'pdf',
-                        text: window.pdfButtonTrans,
-                        orientation: 'landscape',
-                        exportOptions: {
+                        "extend": 'pdf',
+                        "text": window.pdfButtonTrans,
+                        "orientation": 'landscape',
+                        "exportOptions": {
                             // columns: ':visible'
-                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
+                            "columns": [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
                         },
-                        customize: function (doc) {
+                        "customize": function (doc) {
                             // var iColumns = $('#company thead th').length;
 
                             // set 100% width fot table in pdf
@@ -988,7 +1087,8 @@
                                     // doc.content[1].table.body[i][10].alignment = 'center';
                                  
                             }
-                        }
+                        },
+                        "action": newexportaction,
                     },
                     {
                         extend: 'excel',
@@ -1129,7 +1229,8 @@
                             //     $('row:eq('+(row-1)+') c', rels).attr( 's', '51' ); // centre
                             // };
                             
-                        }//customized end
+                        },//customized end
+                        "action": newexportaction,
                     },{
                         extend: 'print',
                         text: window.printButtonTrans,
@@ -1144,7 +1245,8 @@
                             $(win.document.body).find('table tbody td:nth-child(8)').css('text-align', 'left');
                             $(win.document.body).find('table tbody td:nth-child(9)').css('text-align', 'center');
                             $(win.document.body).find('table tbody td:nth-child(10)').css('text-align', 'center');
-                        }
+                        },
+                        "action": newexportaction,
                     }
                 ],
                 "ajax":{
