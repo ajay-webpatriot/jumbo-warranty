@@ -4,6 +4,11 @@
         .boxfont
         {
             font-size: 12px !important;
+            
+        }
+        .info-box-text{
+            white-space: normal;
+            /* word-wrap: break-word; */
         }
     </style>
     <div class="row">
