@@ -260,6 +260,7 @@ return [
         'GoogleAPIHelper' => App\Helpers\GoogleAPI::class,
         'SendMailHelper' => App\Helpers\SendMail::class,
         'CommonFunctionsHelper' => App\Helpers\CommonFunctions::class,
+        'SMSHelper' => App\Helpers\Sms::class,
         
     ],
 

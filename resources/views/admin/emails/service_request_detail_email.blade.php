@@ -27,7 +27,7 @@
                                 border-bottom: 1px solid transparent;
                                 border-top-left-radius: 3px;
                                 border-top-right-radius: 3px;font-weight: bold;">
-                                @lang('quickadmin.service-request.formTitle')
+                                @lang('quickadmin.service-request.formTitle') ( {{ 'JW'.sprintf("%04d", $service_request->id)}} )
                             </div>
 
                             <div class="panel-body table-responsive" style="margin-bottom: 0;

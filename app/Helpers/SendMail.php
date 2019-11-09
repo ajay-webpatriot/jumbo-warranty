@@ -4,6 +4,7 @@ namespace App\Helpers;
 use Illuminate\Support\Facades\Mail;
 // models
 use App\ServiceRequest;
+use SMSHelper;
 
 class SendMail 
 {
@@ -96,6 +97,7 @@ class SendMail
         $admin_email= "";
         $company_admin_email = "";
         $customer_email = "";
+        $customer_phone = "";
 
         // get receiver user data
     		$company_admin= \App\User::where('company_id',$service_request->company_id)
@@ -114,6 +116,24 @@ class SendMail
         if(!empty($customer)){
           if($customer->email != ''){
             $customer_email=$customer->email;
+          }
+
+          // Send SMS to customer.
+          if(trim($customer->phone) != ''){
+            
+            // Remove special character allow only numbers.
+            $customer_phone = preg_replace('/[^0-9]/', '', $customer->phone);
+
+            // Message parameters. 
+            $msg_requestNumber = 'JW'.sprintf("%04d", $service_request->id);
+            $msg_requestType = $service_request->service_type;
+            $msg_requestProductName = $service_request->product->name;
+
+            // Message body ( sms template which was approved by provider ).
+            $message_body = "We have received your service request to ".$msg_requestType." ".$msg_requestProductName.". Your service request number is ".$msg_requestNumber.".";
+            
+            // Send sms to customer only with fix (approve) template.
+            $resultSMS = SMSHelper::sendsmscustomer($customer_phone,$message_body);
           }
         }
 
@@ -182,6 +202,7 @@ class SendMail
         $service_request = ServiceRequest::findOrFail($request_id);
         
         $customer_email = "";
+        $customer_phone = "";
         $admin_email = "";
         $company_admin_email = "";
         $service_center_admin_email = "";
@@ -192,9 +213,26 @@ class SendMail
           if($customer->email != ''){
             $customer_email=$customer->email;
           }
-          
+
+          // Send SMS to customer.
+          if(trim($customer->phone) != ''){
+            
+            // Remove special character allow only numbers. 
+            $customer_phone = preg_replace('/[^0-9]/', '', $customer->phone);
+
+            // Message parameters.
+            $msg_requestNumber = 'JW'.sprintf("%04d", $service_request->id);
+            $msg_requestType = $service_request->service_type;
+            $msg_requestProductName = $service_request->product->name;
+            $msg_requestStatus = $service_request->status;
+
+            // Message body ( sms template which was approved by provider ).
+            $message_body = "Your service request ".$msg_requestNumber." to ".$msg_requestType." ".$msg_requestProductName." is having status ".$msg_requestStatus.".";
+            
+            //Send sms to customer only with fix (approve) template.
+            $resultSMS = SMSHelper::sendsmscustomer($customer_phone,$message_body);
+          }
         }
-        
 
         $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
                           ->where('status','Active')
