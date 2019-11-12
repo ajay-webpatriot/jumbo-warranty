@@ -27,7 +27,7 @@ class UpdateCompanyAdminsRequest extends FormRequest
             'name' => 'required',
             // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'phone' => 'required|min:11|max:11',
-            'email' => 'required|email|unique:users,email,'.$this->route('company_admin').',id,role_id,4,deleted_at,NULL',
+            'email' => 'required|email|unique:users,email,'.$this->route('company_admin').',id,role_id,'.config('constants.COMPANY_ADMIN_ROLE_ID').',deleted_at,NULL',
             'password' => 'confirmed',
             'status' => 'required',
         ];
