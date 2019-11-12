@@ -26,7 +26,7 @@ class UpdateUsersRequest extends FormRequest
             'name' => 'required',
             // 'phone' => 'required|numeric|regex:/^[0-9]{10}$/',
             'phone' => 'required|min:11|max:11',
-            'email' => 'required|email|unique:users,email,'.$this->route('user').',id,deleted_at,NULL',
+            'email' => 'required|email|unique:users,email,'.$this->route('user').',id,role_id,3,deleted_at,NULL',
             'password' => 'confirmed',
             'status' => 'required',
         ];
