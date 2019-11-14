@@ -1260,6 +1260,12 @@ class ServiceRequestApiController extends Controller
             );
 
             ServiceRequestLog::create($insertServiceRequestLogArr);
+
+            //send mail on every status change
+            $msg='Status is changed from '.$serviceRequestDetailStatusUpdate->status.' to '.$request_status.'.';
+
+            /* send mail */
+            SendMailHelper::sendRequestUpdateMail($serviceRequestId,$msg);
         }
 
         $serviceRequestDetail->status = $request_status;
