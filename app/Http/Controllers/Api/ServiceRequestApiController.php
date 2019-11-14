@@ -7,6 +7,7 @@ use Validator;
 use Hash;
 use App\ServiceRequest;
 use SendMailHelper;
+use App\ServiceRequestLog;
 use App\Http\Controllers\Controller;
 
 class ServiceRequestApiController extends Controller
@@ -1247,9 +1248,21 @@ class ServiceRequestApiController extends Controller
 
         /* Update service request status */
         $serviceRequestDetailStatusUpdate = ServiceRequest::findOrFail($serviceRequestId);
-    
-        
-        $serviceRequestDetail->status     = $request_status;
+
+        /* service request log for status */
+        if($serviceRequestDetailStatusUpdate->status != $request_status){
+            $insertServiceRequestLogArr =  array(
+                'action_made' => "Status is changed from ".$serviceRequestDetailStatusUpdate->status." to ".$request_status.".", 
+                'action_made_company' => "Status is changed from ".$serviceRequestDetailStatusUpdate->status." to ".$request_status.".", 
+                'action_made_service_center' => "Status is changed from ".$serviceRequestDetailStatusUpdate->status." to ".$request_status.".", 
+                'service_request_id' => $serviceRequestId,
+                'user_id' => $user_id
+            );
+
+            ServiceRequestLog::create($insertServiceRequestLogArr);
+        }
+
+        $serviceRequestDetail->status = $request_status;
         $serviceRequestDetail->update();
 
         /* Get request data */
