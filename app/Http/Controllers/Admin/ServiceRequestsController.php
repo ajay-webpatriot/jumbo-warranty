@@ -218,10 +218,11 @@ class ServiceRequestsController extends Controller
             }
             
         }
-        $request_stauts = ServiceRequest::$enum_status;
+        $externalValue = ["Re Opened" => "Re Opened"];
+        $request_stauts = ServiceRequest::$enum_status + $externalValue;
         asort($request_stauts); // sort array
         $request_stauts = ['' => trans('quickadmin.qa_show_all')] + $request_stauts;
-
+        
         $request_type = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_service_type;
 
         return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type','total_paid_amount','total_due_amount'));
@@ -335,7 +336,7 @@ class ServiceRequestsController extends Controller
 
             $enum_status_color = ServiceRequest::$enum_status_color_code;
 
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.created_by','users.name as createdbyName','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.created_by','users.name as createdbyName','service_requests.status','service_requests.is_reopen','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('users','service_requests.created_by','=','users.id')
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
@@ -422,7 +423,14 @@ class ServiceRequestsController extends Controller
             if(!empty($request->input('status')))
             {   
                 $request->session()->put('filter_request_status', $request['status']);
-                $service_requestsQuery->Where('service_requests.status', $request['status']);
+                
+                // Check request stauts
+                if($request->input('status') == "Re Opened"){
+                    $service_requestsQuery->Where('service_requests.is_reopen', 1);
+                }else{
+                    $service_requestsQuery->Where('service_requests.status', $request['status']);
+                }
+                
             }
             else
             {
@@ -569,7 +577,13 @@ class ServiceRequestsController extends Controller
 
                 $tableStatusColor = '';
                 if($SingleServiceRequest->status != ''){
-                    $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
+
+                    $reopenRequest = '';
+                    if($SingleServiceRequest->is_reopen == 1){
+                        $reopenRequest = '<span class="label label-primary">Reopend Request</span>';
+                    }
+
+                    $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>'.$reopenRequest;
                 }
                 $tableField['request_status'] = $tableStatusColor;
                 
@@ -2531,4 +2545,19 @@ class ServiceRequestsController extends Controller
             }
         }
     }
+
+    public function reopenClosedRequest(Request $request)
+    {
+        $service_request = ServiceRequest::findOrFail($request['serviceRequestId']);
+        $request['is_reopen'] = 1;
+        $service_request->update($request->all());
+        echo "<pre>";
+        echo "<br> =============== </br>";
+        print_r($service_request);
+        echo "<br> =============== </br>";
+        echo "</pre>";
+        exit();
+        
+    }
+    
 }

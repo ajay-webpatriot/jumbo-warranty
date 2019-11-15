@@ -151,5 +151,8 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
     // technician ajax data table
     Route::post('/DataTableTechnicianAjax','Admin\TechniciansController@DataTableTechnicianAjax');
 
+    // Reopen Closed Request
+    Route::post('/reopenRequest', ['uses' => 'Admin\ServiceRequestsController@reopenClosedRequest']);
+
 });
   
