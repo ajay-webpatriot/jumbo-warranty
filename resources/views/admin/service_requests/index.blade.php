@@ -264,7 +264,7 @@
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input type="text" class="form-control pull-right" id="dateRangeFilter">
+                                        <input type="text" class="form-control" name="dateRangeFilter" id="dateRangeFilter" autocomplete="off" placeholder="Please select date">
                                     </div>
                                 </div>
 
@@ -437,24 +437,55 @@
             // daterangeEndValue = "{{ $request->session()->get('filter_end_date') }}";
 
             // Daterangepicker starting before 7 days from today. 
-            var start = moment().subtract(7, 'days');
-            var end = moment();
+            // var start = moment().subtract(7, 'days');
+            // var end = moment();
             
+            // $('#dateRangeFilter').daterangepicker({
+            //     // autoUpdateInput: false,
+            //     startDate: start,
+            //     endDate: end,
+            //     opens: 'right',
+            //     locale: {
+            //         format: "{{ config('app.date_format_moment') }}"
+            //     }
+            // }, function(start, end, label) {
+            //     // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
+            //     daterangeStartValue = start.format('YYYY-MM-DD');
+            //     daterangeEndValue=end.format('YYYY-MM-DD');
+            //     tableServiceRequest.draw();
+            // });
+
+            //Date range picker
             $('#dateRangeFilter').daterangepicker({
-                // autoUpdateInput: false,
-                startDate: start,
-                endDate: end,
+                autoUpdateInput: false,
                 opens: 'right',
                 locale: {
                     format: "{{ config('app.date_format_moment') }}"
-                }
-            }, function(start, end, label) {
-                // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                },
+            });
 
-                daterangeStartValue = start.format('YYYY-MM-DD');
-                daterangeEndValue=end.format('YYYY-MM-DD');
+            $('#dateRangeFilter').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+
+                daterangeStartValue = picker.startDate.format('YYYY-MM-DD');
+                daterangeEndValue= picker.endDate.format('YYYY-MM-DD');
                 tableServiceRequest.draw();
             });
+
+            $('#dateRangeFilter').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+
+                daterangeStartValue = '';
+
+                daterangeEndValue= '';
+
+                tableServiceRequest.draw();
+            });
+
+            // daterangeStartValue = moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
+        
+            // daterangeEndValue = moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
 
             // $('#dateRangeFilter').on('apply.daterangepicker', function(ev, picker) {
             //     $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
@@ -491,8 +522,8 @@
 
             // }else{
 
-                daterangeStartValue=moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
-                daterangeEndValue=moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
+                // daterangeStartValue=moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
+                // daterangeEndValue=moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
 
             // }
         });

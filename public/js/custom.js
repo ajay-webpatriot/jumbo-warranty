@@ -257,7 +257,10 @@ $(document).ready(function(){
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Company created successfully!</div>';
 						
 						$("#company-modal").find('.message').html(alertBox);
-						setTimeout(function() {$('#company-modal').modal('hide');}, 2000);
+						setTimeout(function() {
+							$('#company-modal').modal('hide');
+							$('#renderCompanyHtml').html("");
+						}, 2000);
 		       		}
 		       		else
 		       		{
@@ -338,7 +341,10 @@ $(document).ready(function(){
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Customer created successfully!</div>';
 						
 						$("#customer-modal").find('.message').html(alertBox);
-						setTimeout(function() {$('#customer-modal').modal('hide');}, 2000);
+						setTimeout(function() {
+							$('#customer-modal').modal('hide');
+							$("#renderCustomerHtml").html("");
+						}, 2000);
 		       		}
 		       		else
 		       		{
@@ -407,7 +413,10 @@ $(document).ready(function(){
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Service Center created successfully!</div>';
 						
 						$("#service-center-modal").find('.message').html(alertBox);
-						setTimeout(function() {$('#service-center-modal').modal('hide');}, 2000);
+						setTimeout(function() {
+							$('#service-center-modal').modal('hide');
+							$('#renderServiceCenterHtml').html("");
+						}, 2000);
 		       		}
 		       		else
 		       		{
@@ -477,7 +486,10 @@ $(document).ready(function(){
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Technician created successfully!</div>';
 						
 						$("#technician-modal").find('.message').html(alertBox);
-						setTimeout(function() {$('#technician-modal').modal('hide');}, 2000);
+						setTimeout(function() {
+							$('#technician-modal').modal('hide');
+							$('#renderTechnicianHtml').html("");
+						}, 2000);
 		       		}
 		       		else
 		       		{
@@ -1287,7 +1299,7 @@ function saveButton() {
 			$('#'+buttonId).attr('disabled', 'disabled');
 			return true;
 		}else{
-			
+   
 			event.preventDefault();	
 			$('#'+buttonId).removeAttr('disabled', 'disabled');
 			return false;
