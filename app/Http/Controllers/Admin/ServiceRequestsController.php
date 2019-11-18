@@ -1317,6 +1317,8 @@ class ServiceRequestsController extends Controller
             {
                 // if techician is assigned, request is not accepted and any user close the request, is_accepted will be set to 1
                 $request['is_accepted'] = 1;
+
+                //make is_open status zero here.
             }
             else if ($request['status'] =="Service center assigned")
             {
@@ -1368,14 +1370,20 @@ class ServiceRequestsController extends Controller
         }
         if($request['status'] == "Closed")
         {
-            // calculate invoice number
-            $max_invoice_number= ServiceRequest::max('invoice_number');
-            $last_invoice_number=0;
-            if(!empty($max_invoice_number))
-            {
-                $last_invoice_number = $max_invoice_number;
+            if(!empty($service_request->invoice_number)){
+
+                $request['invoice_number'] = $service_request->invoice_number;
+
+            }else{
+                // calculate invoice number
+                $max_invoice_number= ServiceRequest::max('invoice_number');
+                $last_invoice_number=0;
+                if(!empty($max_invoice_number))
+                {
+                    $last_invoice_number = $max_invoice_number;
+                }
+                $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
             }
-            $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
 
             $request['closed_at'] = date('Y-m-d H:i:s');
         }
@@ -2548,16 +2556,58 @@ class ServiceRequestsController extends Controller
 
     public function reopenClosedRequest(Request $request)
     {
-        $service_request = ServiceRequest::findOrFail($request['serviceRequestId']);
-        $request['is_reopen'] = 1;
-        $service_request->update($request->all());
-        echo "<pre>";
-        echo "<br> =============== </br>";
-        print_r($service_request);
-        echo "<br> =============== </br>";
-        echo "</pre>";
-        exit();
+        $service_request = ServiceRequest::findOrFail($request['id']);
+        $status = 0;
         
+        /**
+         * only for super admin and admin.
+         */
+        if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))){
+
+            /**
+             * Update Status and reopen column.
+             */
+            $updateArray = array(
+                'is_reopen' => 1,
+                'status' => 'Technician assigned'
+            );
+            ServiceRequest::where('id',$service_request->id)->update($updateArray);
+
+            /**
+             * Change status log closed to re-opened.
+             */
+            $insertServiceRequestLogArr =  array(
+                'action_made' => "Status is changed from ".$service_request->status." to Re-opened", 
+                'action_made_company' => "Status is changed from ".$service_request->status." to Re-opened", 
+                'action_made_service_center' => "Status is changed from ".$service_request->status." to Re-opened", 
+                'service_request_id' => $service_request->id,
+                'user_id' => auth()->user()->id
+            );
+
+            ServiceRequestLog::create($insertServiceRequestLogArr);
+
+            /**
+             * Change status log re-opened to technician assign.
+             */
+            $insertServiceRequestLog =  array(
+                'action_made' => "Status is changed from Re-opened to Technician assigned", 
+                'action_made_company' => "Status is changed from Re-opened to Technician assigned", 
+                'action_made_service_center' => "Status is changed from Re-opened to Technician assigned", 
+                'service_request_id' => $service_request->id,
+                'user_id' => auth()->user()->id
+            );
+            ServiceRequestLog::create($insertServiceRequestLog);
+
+            //send mail on every status change
+            $msg='Status is changed from '.$service_request->status.' to Re-opened.';
+
+            /* send mail */
+            SendMailHelper::sendRequestUpdateMail($service_request->id,$msg,'Re-opened');
+
+            $status = 1;
+            
+        }
+        return response()->json($status);
     }
     
 }

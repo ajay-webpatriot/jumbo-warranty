@@ -18,7 +18,7 @@
                         
 
                             <div style="margin-top: 2%;">
-                                <h3 style="margin: 1em 0px 1em 0px;">Service Request</h3>
+                                <h3 style="margin: 1em 0px 1em 0px;">Service Request ( {{ 'JW'.sprintf("%04d", $service_request->id) }} )</h3>
                                 <span>{{$update_message}}</span>
                             </div>
                             <div style="margin-top: 2%;">

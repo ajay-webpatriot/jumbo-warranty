@@ -109,18 +109,13 @@
                                             @endif
                                         @endif
                                     </div>
-                                    {{-- @if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))) --}}
+                                    @if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
                                     <div class="col-md-4 col-sm-4 col-xs-4">
-                                        <button class="btn btn-success" type="button" style="margin-top: 23px;" onclick="reopenRequest({{$service_request->id}});" title="Reopen Request">Reopen</button>
+                                        <button class="btn btn-success" type="button" style="margin-top: 23px;" id="requestReopen" onclick="reopenRequest({{$service_request->id}});" title="Reopen Request">Reopen</button>
                                     </div>
-                                    {{-- @endif --}}
+                                    @endif
                                 </div>
                             </div>
-                            
-                            
-                                
-                           
-
                         @endif
                     </div>
 
@@ -1438,21 +1433,33 @@
         }
 
         function reopenRequest(serviceRequestId) {
-            
+            $('#requestReopen').attr('disabled', true);
             $.ajax({
                 type:'POST',
                 url:APP_URL+"/admin/reopenRequest",
                 data:{
-                    'serviceRequestId':serviceRequestId,
+                    'id':serviceRequestId,
                     '_token': '{{csrf_token()}}'
                 },
                 dataType: "json",
                 success:function(data) {
                     if(data == 1){
-                        // window.location.href();
+                        var url = APP_URL+"/admin/service_requests/"+serviceRequestId+"/edit";
+                        window.location.href=url;
                     }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('======Error======');
+                    console.log(jqXHR);
+                    console.log('==============');
+                    console.log(textStatus);
+                    console.log('==============');
+                    console.log(errorThrown);
+                    console.log('=================');
+                    alert('Something went wrong');
+                    $('#requestReopen').attr('disabled', false);
                 }
-               });
+            });
         }
     </script>
 @stop

@@ -1432,14 +1432,22 @@ class ServiceRequestApiController extends Controller
             $zipcode = $serviceRequestDetail->customer->zipcode.'.';
         }
         
+        /**
+         * Re-open request check and set label in mobile.
+         */
+        $reopenRequest = '';
+        if($serviceRequestDetail->is_reopen){
+            $reopenRequest = ' ( Re-opened )';
+        }
+        
         /* Overview data */
         $overview = (object)array(
-            "product_title" => 'JW'.sprintf("%04d", $serviceRequestDetail->id).' '.ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name,
+            "product_title" => 'JW'.sprintf("%04d", $serviceRequestDetail->id).' '.ucfirst($serviceRequestDetail->service_type).''.$reopenRequest.' - '.$serviceRequestDetail->product->name,
             "created_at"    => date('Y-m-d H:i:s',strtotime($serviceRequestDetail->created_at)),
             "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode),
             "service_request_number" => 'JW'.sprintf("%04d", $serviceRequestDetail->id)
-        );   
-        
+        );
+
         $response->overview = $overview;
 
         /* Service request status */

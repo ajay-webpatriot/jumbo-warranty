@@ -69,6 +69,10 @@
                                 <!-- Request Status -->
                                     {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label lablemargin']) !!}
                                     {!! Form::label('status', $service_request->status, ['class' => 'control-label lablemargin','style' => 'color:'.$enum_status_color[$service_request->status]]) !!}
+
+                                    @if($service_request->is_reopen == 1)
+                                       <span class="fontsize">( Re-opend )</span>
+                                    @endif
                                 </div>
                                 @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
                                     <div class="col-md-6 col-sm-6 col-xs-6">
