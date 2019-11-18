@@ -580,7 +580,7 @@ class ServiceRequestsController extends Controller
 
                     $reopenRequest = '';
                     if($SingleServiceRequest->is_reopen == 1){
-                        $reopenRequest = '<span class="label label-primary">Reopend Request</span>';
+                        $reopenRequest = '<span class="label label-primary paddingMarginLeftLabel">Reopened Request</span>';
                     }
 
                     $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>'.$reopenRequest;
@@ -1728,7 +1728,16 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         if ($request->input('ids')) {
-            $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
+
+            $selectedIdArray = array();
+
+            foreach ($request->input('ids') as $key => $value) {
+                $var = ltrim(ltrim($value,'JW'),'0');
+                $selectedIdArray[$key] = $var;
+            }
+
+            // $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
+            $entries = ServiceRequest::whereIn('id', $selectedIdArray)->get();
 
             $not_deleted=0;
             foreach ($entries as $entry) {
