@@ -1014,9 +1014,8 @@
                             @else
                                 @if(isset($additional_charge_title['other']) || isset($additional_charge_title['option']) )
 
-                                    @if(isset($additional_charge_title['other']))
-                                        {!! Form::hidden('additional_charges_title',$additional_charge_title['other'], ['id' => 'additional_charges_title']) !!}
-                                    @endif
+                                    {!! Form::hidden('additional_charges_title',isset($additional_charge_title['other'])? $additional_charge_title['other']:'', ['id' => 'additional_charges_title']) !!}
+
                                     @if(isset($additional_charge_title['option']))
                                         @foreach($additional_charge_title['option'] as $key => $value)
                                                         
