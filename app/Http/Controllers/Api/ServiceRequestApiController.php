@@ -1539,6 +1539,25 @@ class ServiceRequestApiController extends Controller
         $response->note                 = $serviceRequestDetail->note;
         $response->service_type         = $serviceRequestDetail->service_type;
         $response->bill_no              = $serviceRequestDetail->bill_no;
+      
+        $serialNumber = null;
+        $warrantyCardNumber = null;
+
+        if($serviceRequestDetail->call_type == "Warranty"){
+            if(!empty($serviceRequestDetail->online_serial_number)){
+                $serialNumber = trim($serviceRequestDetail->online_serial_number);
+            }
+
+            if(!empty($serviceRequestDetail->warranty_card_number)){
+                $warrantyCardNumber = trim($serviceRequestDetail->warranty_card_number);
+            }
+        }
+        
+        /**
+         * Based on calltype card number and serial number active. 
+         */
+        $response->online_serial_number = $serialNumber;
+        $response->warranty_card_number = $warrantyCardNumber;
 
         /* Complain data */
         $response->complain = $serviceRequestDetail->complain_details;
