@@ -439,6 +439,9 @@
                                                 <span class="headerTitle" style="color:{{$backgroundColor}}">
                                                     {{$status}}
                                                 </span>
+                                                @if($SingleServiceTypeDetail->is_reopen == 1)
+                                                    <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
+                                                @endif
                                             </td>
                                             
                                         </tr>

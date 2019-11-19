@@ -197,7 +197,7 @@ class SendMail
     		
 	}
 
-  public static function sendRequestUpdateMail($request_id,$update_message){
+  public static function sendRequestUpdateMail($request_id,$update_message,$requestStatus = NULL){
 
         $service_request = ServiceRequest::findOrFail($request_id);
         
@@ -226,6 +226,11 @@ class SendMail
             $msg_requestProductName = $service_request->product->name;
             $msg_requestStatus = $service_request->status;
 
+            // Change request status.
+            if(isset($requestStatus) && $requestStatus != NULL){
+              $msg_requestStatus = $requestStatus;
+            }
+            
             // Message body ( sms template which was approved by provider ).
             $message_body = "Your service request ".$msg_requestNumber." to ".$msg_requestType." ".$msg_requestProductName." is having status ".$msg_requestStatus.".";
             

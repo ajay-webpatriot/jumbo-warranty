@@ -204,6 +204,9 @@
                                         <span style="color:{{ $backgroundColor }}">
                                                 <b>{{ $status }} </b>
                                         </span>
+                                        @if($SingleServiceTypeDetail->is_reopen == 1)
+                                            <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
+                                        @endif
                                     </td>
 
                                     @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))

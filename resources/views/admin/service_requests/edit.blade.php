@@ -79,28 +79,52 @@
                              <!-- Request Status -->
                             <div class="col-md-12">
                                {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
+
+                                @if($service_request->is_reopen == 1)
+                                    <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
+                                @endif
+
                                 {!! Form::label('', $service_request->status, ['class' => 'control-label','style' => 'color:'.$backgroundColor]) !!}
                                 {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
                                 <p class="help-block"></p>
                             </div>
                         @else
-                            <div class="col-md-12">
-                           
-                            
-                                <!-- Request Status -->
-                                @if($service_request->status == "New")
-                                    
-                                    {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
-                                @else
-                                    {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
-                                    {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status','style' => 'width:100%']) !!}
-                                    <p class="help-block"></p>
-                                    @if($errors->has('status'))
-                                            <p class="help-block">
-                                                {{ $errors->first('status') }}
-                                            </p>
+                            <div class="col-md-9 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <?php
+                                        // $divDetail = "col-md-12 col-sm-12 col-xs-12";
+
+                                        // if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))){
+                                            $divDetail = "col-md-8 col-sm-8 col-xs-8";
+                                        // }
+                                    ?>
+                                    <div class="{{ $divDetail }}">
+                                        <!-- Request Status -->
+                                        @if($service_request->status == "New")
+                                            
+                                            {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
+                                        @else
+                                            {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
+
+                                            @if($service_request->is_reopen == 1)
+                                                <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
+                                            @endif
+
+                                            {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status','style' => 'width:100%']) !!}
+                                            <p class="help-block"></p>
+                                            @if($errors->has('status'))
+                                                    <p class="help-block">
+                                                        {{ $errors->first('status') }}
+                                                    </p>
+                                            @endif
+                                        @endif
+                                    </div>
+                                    @if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')))
+                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                        <button class="btn btn-success" type="button" style="margin-top: 23px;" id="requestReopen" onclick="reopenRequest({{$service_request->id}});" title="Reopen Request">Reopen</button>
+                                    </div>
                                     @endif
-                                @endif
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -1416,6 +1440,36 @@
             }else{
                 return false;
             }
+        }
+
+        function reopenRequest(serviceRequestId) {
+            $('#requestReopen').attr('disabled', true);
+            $.ajax({
+                type:'POST',
+                url:APP_URL+"/admin/reopenRequest",
+                data:{
+                    'id':serviceRequestId,
+                    '_token': '{{csrf_token()}}'
+                },
+                dataType: "json",
+                success:function(data) {
+                    if(data == 1){
+                        var url = APP_URL+"/admin/service_requests/"+serviceRequestId+"/edit";
+                        window.location.href=url;
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('======Error======');
+                    console.log(jqXHR);
+                    console.log('==============');
+                    console.log(textStatus);
+                    console.log('==============');
+                    console.log(errorThrown);
+                    console.log('=================');
+                    alert('Something went wrong');
+                    $('#requestReopen').attr('disabled', false);
+                }
+            });
         }
     </script>
 @stop

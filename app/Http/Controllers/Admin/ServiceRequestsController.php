@@ -218,10 +218,11 @@ class ServiceRequestsController extends Controller
             }
             
         }
-        $request_stauts = ServiceRequest::$enum_status;
+        $externalValue = ["Re-opened" => "Re-opened"];
+        $request_stauts = ServiceRequest::$enum_status + $externalValue;
         asort($request_stauts); // sort array
         $request_stauts = ['' => trans('quickadmin.qa_show_all')] + $request_stauts;
-
+        
         $request_type = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_service_type;
 
         return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type','total_paid_amount','total_due_amount'));
@@ -335,7 +336,7 @@ class ServiceRequestsController extends Controller
 
             $enum_status_color = ServiceRequest::$enum_status_color_code;
 
-            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.created_by','users.name as createdbyName','service_requests.status','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
+            $service_requestsQuery = ServiceRequest::select('customers.firstname as fname','customers.phone','service_centers.name as sname','products.name as pname','service_requests.amount','service_requests.created_at','service_requests.service_type','service_requests.is_accepted','service_requests.created_by','users.name as createdbyName','service_requests.status','service_requests.is_reopen','companies.name as cname','service_requests.id','service_requests.is_paid',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)),SUBSTRING(customers.firstname, 2))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)),SUBSTRING(customers.lastname, 2))) as firstname'))
             ->leftjoin('users','service_requests.created_by','=','users.id')
             ->leftjoin('companies','service_requests.company_id','=','companies.id')
             ->leftjoin('roles','service_requests.technician_id','=','roles.id')
@@ -422,7 +423,14 @@ class ServiceRequestsController extends Controller
             if(!empty($request->input('status')))
             {   
                 $request->session()->put('filter_request_status', $request['status']);
-                $service_requestsQuery->Where('service_requests.status', $request['status']);
+                
+                // Check request stauts
+                if($request->input('status') == "Re Opened"){
+                    $service_requestsQuery->Where('service_requests.is_reopen', 1);
+                }else{
+                    $service_requestsQuery->Where('service_requests.status', $request['status']);
+                }
+                
             }
             else
             {
@@ -569,7 +577,13 @@ class ServiceRequestsController extends Controller
 
                 $tableStatusColor = '';
                 if($SingleServiceRequest->status != ''){
-                    $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
+
+                    $reopenRequest = '';
+                    if($SingleServiceRequest->is_reopen == 1){
+                        $reopenRequest = '<span class="label label-primary paddingMarginLeftLabel">Re-opened</span>';
+                    }
+
+                    $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>'.$reopenRequest;
                 }
                 $tableField['request_status'] = $tableStatusColor;
                 
@@ -1303,6 +1317,8 @@ class ServiceRequestsController extends Controller
             {
                 // if techician is assigned, request is not accepted and any user close the request, is_accepted will be set to 1
                 $request['is_accepted'] = 1;
+
+                //make is_open status zero here.
             }
             else if ($request['status'] =="Service center assigned")
             {
@@ -1354,14 +1370,20 @@ class ServiceRequestsController extends Controller
         }
         if($request['status'] == "Closed")
         {
-            // calculate invoice number
-            $max_invoice_number= ServiceRequest::max('invoice_number');
-            $last_invoice_number=0;
-            if(!empty($max_invoice_number))
-            {
-                $last_invoice_number = $max_invoice_number;
+            if(!empty($service_request->invoice_number)){
+
+                $request['invoice_number'] = $service_request->invoice_number;
+
+            }else{
+                // calculate invoice number
+                $max_invoice_number= ServiceRequest::max('invoice_number');
+                $last_invoice_number=0;
+                if(!empty($max_invoice_number))
+                {
+                    $last_invoice_number = $max_invoice_number;
+                }
+                $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
             }
-            $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
 
             $request['closed_at'] = date('Y-m-d H:i:s');
         }
@@ -1706,7 +1728,16 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         if ($request->input('ids')) {
-            $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
+
+            $selectedIdArray = array();
+
+            foreach ($request->input('ids') as $key => $value) {
+                $var = ltrim(ltrim($value,'JW'),'0');
+                $selectedIdArray[$key] = $var;
+            }
+
+            // $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
+            $entries = ServiceRequest::whereIn('id', $selectedIdArray)->get();
 
             $not_deleted=0;
             foreach ($entries as $entry) {
@@ -2531,4 +2562,61 @@ class ServiceRequestsController extends Controller
             }
         }
     }
+
+    public function reopenClosedRequest(Request $request)
+    {
+        $service_request = ServiceRequest::findOrFail($request['id']);
+        $status = 0;
+        
+        /**
+         * only for super admin and admin.
+         */
+        if($service_request->status == "Closed" && $service_request->is_paid == 0 && (auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))){
+
+            /**
+             * Update Status and reopen column.
+             */
+            $updateArray = array(
+                'is_reopen' => 1,
+                'status' => 'Technician assigned'
+            );
+            ServiceRequest::where('id',$service_request->id)->update($updateArray);
+
+            /**
+             * Change status log closed to re-opened.
+             */
+            $insertServiceRequestLogArr =  array(
+                'action_made' => "Status is changed from ".$service_request->status." to Re-opened", 
+                'action_made_company' => "Status is changed from ".$service_request->status." to Re-opened", 
+                'action_made_service_center' => "Status is changed from ".$service_request->status." to Re-opened", 
+                'service_request_id' => $service_request->id,
+                'user_id' => auth()->user()->id
+            );
+
+            ServiceRequestLog::create($insertServiceRequestLogArr);
+
+            /**
+             * Change status log re-opened to technician assign.
+             */
+            $insertServiceRequestLog =  array(
+                'action_made' => "Status is changed from Re-opened to Technician assigned", 
+                'action_made_company' => "Status is changed from Re-opened to Technician assigned", 
+                'action_made_service_center' => "Status is changed from Re-opened to Technician assigned", 
+                'service_request_id' => $service_request->id,
+                'user_id' => auth()->user()->id
+            );
+            ServiceRequestLog::create($insertServiceRequestLog);
+
+            //send mail on every status change
+            $msg='Status is changed from '.$service_request->status.' to Re-opened.';
+
+            /* send mail */
+            SendMailHelper::sendRequestUpdateMail($service_request->id,$msg,'Re-opened');
+
+            $status = 1;
+            
+        }
+        return response()->json($status);
+    }
+    
 }

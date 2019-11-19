@@ -7,12 +7,13 @@ class Sms
     public static function sendsmscustomer($customerNumber, $message_body) {
         
         // Main Credential of send sms.
-        $sender = 'JUMBOW';
-        $user = 'info@jumbowarranty.com'; 
-        $ApiPassword = '718789';
+        $sender = config('constants.SMS_SENDER_NAME');
+        $user = config('constants.SMS_USER_ID'); 
+        $ApiPassword = config('constants.SMS_API_PASSWORD');
 
         // $smsGatewayUrl = 'http://apps.smslane.com';
-        // $password = 'Adil@9601334315';
+        // $password = config('constants.SMS_PORTAL_PASSWORD');
+
         // $apiKey = config('constants.SMS_API_KEY');
 
         // Message encode.
