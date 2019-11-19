@@ -921,7 +921,10 @@ $("#assign-products-modal").find("form").on('submit', function (e) {
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Assign Products added successfully!</div>';
 						
 						$("#assign-products-modal").find('.message').html(alertBox);
-						setTimeout(function() {$('#assign-products-modal').modal('hide');}, 2000);
+						setTimeout(function() {
+							$('#assign-products-modal').modal('hide');
+							$('#renderAssignProductsHtml').html('');
+						}, 2000);
 				   	}
 					else
 					{

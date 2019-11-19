@@ -80,12 +80,12 @@
                             <div class="col-md-12">
                                {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
 
+                                {!! Form::label('', $service_request->status, ['class' => 'control-label','style' => 'color:'.$backgroundColor]) !!}
+                                {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
+
                                 @if($service_request->is_reopen == 1)
                                     <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
                                 @endif
-
-                                {!! Form::label('', $service_request->status, ['class' => 'control-label','style' => 'color:'.$backgroundColor]) !!}
-                                {!! Form::hidden('status', old('status'), ['class' => 'form-control', 'placeholder' => '', 'id' => 'status']) !!}
                                 <p class="help-block"></p>
                             </div>
                         @else
@@ -908,7 +908,9 @@
                                                         if(isset($additional_charge_title['other']) && !empty($additional_charge_title['other'])){
 
                                                             $additional_charge_title_other = $additional_charge_title['other'];
-                                                            $additional_charges_other = $service_request['additional_charges']['other'];
+                                                            if(isset($service_request['additional_charges']['other']) && $service_request['additional_charges']['other'] > 0){
+                                                                $additional_charges_other = $service_request['additional_charges']['other'];
+                                                            }
                                                         }
                                                     }
                                                 ?>
@@ -1024,8 +1026,16 @@
                                         @endforeach
                                     @endif
                                 @endif
+                                
+                                <?php
+                                    $othercharge = '';
+                                    if(isset($service_request['additional_charges']['other']) && $service_request['additional_charges']['other'] > 0){
+                                        $othercharge = $service_request['additional_charges']['other'];
+                                    }
+                                ?>
+                                {!! Form::hidden('additional_charges', $othercharge, ['class' => 'form-control', 'placeholder' => 'Amount', 'id' => 'additional_charges']) !!}
 
-                                {!! Form::hidden('additional_charges', ($service_request['additional_charges']['other'] > 0)? $service_request['additional_charges']['other']:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'id' => 'additional_charges']) !!}
+                                {{-- !! Form::hidden('additional_charges', ($service_request['additional_charges']['other'] > 0)? $service_request['additional_charges']['other']:'', ['class' => 'form-control', 'placeholder' => 'Amount', 'id' => 'additional_charges']) !! --}}
 
                                 {!! Form::hidden('service_charge', $service_request->service_charge, ['class' => 'form-control', 'placeholder' => '','id' => 'service_charge', 'readonly' => '']) !!}
 
