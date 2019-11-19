@@ -218,7 +218,7 @@ class ServiceRequestsController extends Controller
             }
             
         }
-        $externalValue = ["Re Opened" => "Re Opened"];
+        $externalValue = ["Re-opened" => "Re-opened"];
         $request_stauts = ServiceRequest::$enum_status + $externalValue;
         asort($request_stauts); // sort array
         $request_stauts = ['' => trans('quickadmin.qa_show_all')] + $request_stauts;
@@ -580,7 +580,7 @@ class ServiceRequestsController extends Controller
 
                     $reopenRequest = '';
                     if($SingleServiceRequest->is_reopen == 1){
-                        $reopenRequest = '<span class="label label-primary paddingMarginLeftLabel">Reopened Request</span>';
+                        $reopenRequest = '<span class="label label-primary paddingMarginLeftLabel">Re-opened</span>';
                     }
 
                     $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>'.$reopenRequest;

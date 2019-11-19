@@ -81,7 +81,7 @@
                                {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label']) !!}
 
                                 @if($service_request->is_reopen == 1)
-                                    <span class="label label-primary paddingMarginLeftLabel">Reopened Request</span>
+                                    <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
                                 @endif
 
                                 {!! Form::label('', $service_request->status, ['class' => 'control-label','style' => 'color:'.$backgroundColor]) !!}
@@ -107,7 +107,7 @@
                                             {!! Form::label('status', trans('quickadmin.service-request.fields.status').'*', ['class' => 'control-label']) !!}
 
                                             @if($service_request->is_reopen == 1)
-                                                <span class="label label-primary paddingMarginLeftLabel">Reopened Request</span>
+                                                <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
                                             @endif
 
                                             {!! Form::select('status', $enum_status, old('status'), ['class' => 'form-control select2', 'required' => '','id' => 'status','style' => 'width:100%']) !!}

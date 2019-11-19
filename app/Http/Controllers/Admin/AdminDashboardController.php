@@ -139,7 +139,7 @@ class AdminDashboardController extends Controller
         $startDate = date('Y-m-d',strtotime($startDate));
         $endDate = date('Y-m-d',strtotime($endDate));
         
-        $ServiceCount = ServiceRequest::select('service_requests.service_type','service_requests.status');
+        $ServiceCount = ServiceRequest::select('service_requests.service_type','service_requests.status','service_requests.is_reopen');
 
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {

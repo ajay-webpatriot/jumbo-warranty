@@ -1437,12 +1437,12 @@ class ServiceRequestApiController extends Controller
          */
         $reopenRequest = '';
         if($serviceRequestDetail->is_reopen){
-            $reopenRequest = ' ( Re-opened )';
+            $reopenRequest = ' (Re-opened)';
         }
         
         /* Overview data */
         $overview = (object)array(
-            "product_title" => 'JW'.sprintf("%04d", $serviceRequestDetail->id).' '.ucfirst($serviceRequestDetail->service_type).''.$reopenRequest.' - '.$serviceRequestDetail->product->name,
+            "product_title" => 'JW'.sprintf("%04d", $serviceRequestDetail->id).' '.ucfirst($serviceRequestDetail->service_type).' - '.$serviceRequestDetail->product->name.''.$reopenRequest,
             "created_at"    => date('Y-m-d H:i:s',strtotime($serviceRequestDetail->created_at)),
             "address"       => trim($address_1.''.$address_2.''.$city.''.$state.''.$zipcode),
             "service_request_number" => 'JW'.sprintf("%04d", $serviceRequestDetail->id)
