@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-xs-6">
                     {!! Form::label('commission', trans('quickadmin.service-center.fields.commission'), ['class' => 'control-label']) !!}
-                    {!! Form::number('commission', old('commission'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {!! Form::number('commission', old('commission'), ['class' => 'form-control numbers', 'placeholder' => '','min' => "1", 'step' => "1"]) !!}
                     <p class="help-block"></p>
                     @if($errors->has('commission'))
                         <p class="help-block">

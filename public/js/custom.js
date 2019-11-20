@@ -1314,3 +1314,7 @@ function saveButton() {
 		return false;
 	}
 }
+
+$("input.numbers").keypress(function(event) {
+	return /\d/.test(String.fromCharCode(event.keyCode));
+});
