@@ -94,7 +94,7 @@ class ServiceCentersController extends Controller
             'zipcode' => 'required|min:6|max:6',
             'supported_zipcode' => 'required',
             // 'status' => 'required'
-            'commission' => 'min:0',
+            'commission' => 'numeric|min:0|nullable',
 
         ]);
         if ($validator->fails()) {
@@ -202,7 +202,7 @@ class ServiceCentersController extends Controller
             'zipcode' => 'required|min:6|max:6',
             'supported_zipcode' => 'required',
             // 'status' => 'required'
-            'commission' => 'numeric|min:1',
+            'commission' => 'numeric|min:0|nullable',
 
         ]);
         
