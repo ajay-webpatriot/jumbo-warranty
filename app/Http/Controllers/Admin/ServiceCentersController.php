@@ -94,6 +94,7 @@ class ServiceCentersController extends Controller
             'zipcode' => 'required|min:6|max:6',
             'supported_zipcode' => 'required',
             // 'status' => 'required'
+            'commission' => 'min:0',
 
         ]);
         if ($validator->fails()) {
@@ -189,6 +190,32 @@ class ServiceCentersController extends Controller
         if (! Gate::allows('service_center_edit')) {
             return abort(401);
         }
+        
+        $validator = Validator::make($request->all(), [
+
+            'name' => 'required',
+            'address_1' => 'required',
+            'location_latitude'=>'required',
+            'location_longitude'=>'required',
+            'city' => 'required',
+            'state' => 'required',
+            'zipcode' => 'required|min:6|max:6',
+            'supported_zipcode' => 'required',
+            // 'status' => 'required'
+            'commission' => 'numeric|min:1',
+
+        ]);
+        
+        if ($validator->fails()) {
+
+            return redirect()->back()->withInput(Input::all())->with(array(
+                'success' => false,
+                'errors' => $validator->getMessageBag()
+
+            ));
+            exit;
+        }
+
         $service_center = ServiceCenter::findOrFail($id);
 
 
@@ -207,8 +234,6 @@ class ServiceCentersController extends Controller
         }     
         
         $service_center->update($request->all());
-
-
 
         return redirect()->route('admin.service_centers.index')->with('success','Service Center updated successfully!');
     }
