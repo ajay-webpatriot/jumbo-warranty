@@ -143,7 +143,13 @@
                                 <div class="col-md-6">
                                     <div class="row custDiv" style="display: none;">
                                         <div class="col-xs-12">
-                                            {!! Form::label('customer_address', trans('quickadmin.service-request.fields.customer-address').'', ['class' => 'control-label']) !!}
+                                            <!-- show email and phone show in edit and insert -->
+                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label']) !!}
+                                            {!! Form::label('', '', ['class' => 'control-label fontweight cusEmail']) !!}
+                                            <br>
+                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label']) !!}
+                                             {!! Form::label('', '', ['class' => 'control-label fontweight cusPhone ']) !!}<br>
+                                            {!! Form::label('customer_address', trans('quickadmin.service-request.fields.customer-address').':', ['class' => 'control-label']) !!}
                                             <div class="custAddress">
                                             </div>
                                             <p class="help-block"></p>

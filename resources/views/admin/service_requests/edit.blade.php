@@ -205,7 +205,14 @@
                                 <div class="col-md-6">
                                     <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>
                                         <div class="col-xs-12">
-                                            {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer-address').'', ['class' => 'control-label']) !!}
+                                            <!-- show email and phone show in edit and insert -->
+                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label']) !!}
+                                            {!! Form::label('', $service_request->customer->email, ['class' => 'control-label fontweight cusEmail']) !!}
+                                            <br>
+                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label']) !!}
+                                                    {!! Form::label('', $service_request->customer->phone, ['class' => 'control-label fontweight cusPhone ']) !!}  
+                                                    <br>
+                                            {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer-address').':', ['class' => 'control-label']) !!}
                                             <div class="custAddress">
                                                 @if(!empty($custAddressData))
                                                 {{$custAddressData->address_1}}

@@ -187,7 +187,9 @@ return [
 			'total-paid' => 'Total Paid',
 			'total-due' => 'Total Due',
 			'title' => 'Title',
-			'created_by' => 'Created By'
+			'created_by' => 'Created By',
+			'email' => 'Email',
+			'phone'		=>'Phone'
 		],
 	],
 	

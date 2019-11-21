@@ -41,6 +41,8 @@ $(document).ready(function(){
 		// get technician according to service center for service request 
 		var companyId = $(this).val();
 		$(".custAddress").html('');
+		$(".cusEmail").html('');
+		$(".cusPhone").html('');		
 		$.ajax({
 	       	type:'GET',
 	       	url:APP_URL+'/admin/getCompanyDetails',
@@ -87,6 +89,9 @@ $(document).ready(function(){
 	       	success:function(data) {
 	       		$(".custDiv").show();
 	       		$(".custAddress").html(data.address);
+	       		//show email and phone show in edit and insert
+	       		$(".cusEmail").html(data.email);
+	       		$(".cusPhone").html(data.phone);
 	       		getSuggestedServiceCenter(customerId);
 
 	       		
@@ -336,6 +341,9 @@ $(document).ready(function(){
 							$('select#customer_id').append('<option '+selected+' value="'+data.last_inserted_customer_id+'" >'+data.last_inserted_customer_name+'</option>');
 
 							$(".custAddress").html(data.last_inserted_customer_address);
+							//show email and phone show in edit and insert
+							$(".cusEmail").html(data.last_inserted_customer_email);
+							$(".cusPhone").html(data.last_inserted_customer_phone);
 	       					getSuggestedServiceCenter(data.last_inserted_customer_id);
 						}
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Customer created successfully!</div>';

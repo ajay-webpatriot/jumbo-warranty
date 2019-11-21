@@ -2242,6 +2242,8 @@ class ServiceRequestsController extends Controller
         
         $details=$request->all();
         $data['address']="";
+        $data['email']="";
+        $data['phone']="";
         if($details['customerId'] != "")
         {
             $customer = \App\Customer::where('id',$details['customerId'])
@@ -2249,6 +2251,15 @@ class ServiceRequestsController extends Controller
             // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
             if(!empty($customer))
             {
+                //Show email and phone in edit service request
+                if(!empty($customer->email))
+                {
+                    $data['email'].=$customer->email;
+                }
+                if(!empty($customer->phone))
+                {
+                    $data['phone'].=$customer->phone;
+                }
                 $data['address'].=$customer->address_1."<br/>";
                 if(!empty($customer->address_2))
                 {

@@ -365,7 +365,7 @@ class CustomersController extends Controller
         if($request->ajax())
         {
             // get company details and return in ajax response
-
+            $customerPhone=$customerEmail='';
             $custOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
 
             $customerAddress = $customer->address_1."<br/>";
@@ -374,6 +374,14 @@ class CustomersController extends Controller
                 $customerAddress.=$customer->address_2."<br/>";
             }
             $customerAddress.=$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
+            if(!empty($customer->phone))
+            {
+                $customerPhone.=$customer->phone;
+            }
+            if(!empty($customer->email))
+            {
+                $customerEmail.=$customer->email;
+            }
 
             // $customers = \App\Customer::where('company_id',$details['companyId'])
             //                     ->where('status','Active')->get();
@@ -392,6 +400,8 @@ class CustomersController extends Controller
                     'last_inserted_company_id' => $customer->company_id,
                     'last_inserted_customer_id' => $customer->id,
                     'last_inserted_customer_address' => $customerAddress,
+                    'last_inserted_customer_email' => $customerEmail,
+                    'last_inserted_customer_phone' => $customerPhone,
                     'last_inserted_customer_name' => ucfirst($customer->firstname).' '.ucfirst($customer->lastname)
                 ));
         }
