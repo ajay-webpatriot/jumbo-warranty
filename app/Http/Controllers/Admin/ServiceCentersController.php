@@ -271,7 +271,7 @@ class ServiceCentersController extends Controller
         }
         $service_center = ServiceCenter::findOrFail($id);
 
-        if(count($service_center) > 0){
+        if(isset($service_center) && $service_center->count() > 0){
             $service_center->delete();
             if(count($service_center->user) > 0){
                 foreach ($service_center->user as $key => $value) {
