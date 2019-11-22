@@ -121,6 +121,7 @@ class ServiceCentersController extends Controller
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
         //Check lat & long for request zipcode
         $validvalidatorError=array();
+            
         if($resultLocation){    
             $request['location_latitude']=$resultLocation['lat'];
             $request['location_longitude']=$resultLocation['lng'];
@@ -128,7 +129,6 @@ class ServiceCentersController extends Controller
             //Check lat & long for request zipcode
             $validvalidatorError['location_latitude'] ='Invalid zipcode.';
             return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError);
-            
         }
 
         $service_center = ServiceCenter::create($request->all());
@@ -196,7 +196,7 @@ class ServiceCentersController extends Controller
         if (! Gate::allows('service_center_edit')) {
             return abort(401);
         }
-        
+
         $validator = Validator::make($request->all(), [
 
             'name' => 'required',
@@ -211,7 +211,6 @@ class ServiceCentersController extends Controller
             'commission' => 'numeric|min:0|nullable',
 
         ]);
-        
         if ($validator->fails()) {
 
             return redirect()->back()->withInput(Input::all())->with(array(
@@ -233,6 +232,7 @@ class ServiceCentersController extends Controller
                 $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
                 //Check lat & long for zipcode
                 $validvalidatorError=array();
+                    
                 if($resultLocation){    
                     $request['location_latitude']=$resultLocation['lat'];
                     $request['location_longitude']=$resultLocation['lng'];
@@ -245,6 +245,8 @@ class ServiceCentersController extends Controller
         }     
         
         $service_center->update($request->all());
+
+
 
         return redirect()->route('admin.service_centers.index')->with('success','Service Center updated successfully!');
     }
@@ -282,7 +284,7 @@ class ServiceCentersController extends Controller
         }
         $service_center = ServiceCenter::findOrFail($id);
 
-        if(isset($service_center) && $service_center->count() > 0){
+        if($service_center->count() > 0){
             $service_center->delete();
             if(count($service_center->user) > 0){
                 foreach ($service_center->user as $key => $value) {

@@ -9,12 +9,13 @@
         
     </p>
     @endcan
-<style type="text/css">
-/* table th td align ment verticle center*/
-td,th{
-  vertical-align: middle!important;
-}
-</style>
+    <style type="text/css">
+    /* table th td align ment verticle center*/
+    td,th{
+      vertical-align: middle!important;
+    }
+    </style>
+
     @can('assign_product_delete')
     <!-- <p>
         <ul class="list-inline">

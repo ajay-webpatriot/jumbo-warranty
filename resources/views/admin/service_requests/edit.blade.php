@@ -207,16 +207,17 @@
                                         <div class="col-xs-12">
                                             <!-- show email and phone show in edit and insert -->
                                             <div class="cusEmailbl" <?php if(empty($service_request->customer->email)){ echo 'style="display:none;"';} ?>>
-                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label ']) !!}
+                                                {!! Form::label('customer_email', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label ']) !!}
                                                 {!! Form::label('', $service_request->customer->email, ['class' => 'control-label fontweight cusEmail']) !!}
-                                            <br>
+                                                <br>
                                             </div>
                                             <div class="cusPhonelbl" <?php if(empty($service_request->customer->phone)){ echo 'style="display:none;"';} ?>>
-                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label ']) !!}
-                                                        {!! Form::label('', $service_request->customer->phone, ['class' => 'control-label fontweight cusPhone ']) !!}  
-                                                    <br>
+                                                {!! Form::label('customer_phone', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label ']) !!}
+                                                {!! Form::label('', $service_request->customer->phone, ['class' => 'control-label fontweight cusPhone ']) !!}  
+                                                <br>
                                             </div>
-                                            {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer-address').':', ['class' => 'control-label custAddresslbl']) !!}
+                                            {!! Form::label('customer_address', trans('quickadmin.service-request.fields.customer-address').':', ['class' => 'control-label custAddresslbl']) !!}
+
                                             <div class="custAddress">
                                                 @if(!empty($custAddressData))
                                                 {{$custAddressData->address_1}}

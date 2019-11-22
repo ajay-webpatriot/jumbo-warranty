@@ -346,8 +346,7 @@ class CustomersController extends Controller
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
         
         $request['location_latitude']=0; 
-        $request['location_longitude']=0; 
-
+        $request['location_longitude']=0;
         //Check lat & long for zipcode
         $validvalidatorError=array();  
         if($resultLocation){    
@@ -373,7 +372,7 @@ class CustomersController extends Controller
         if($request->ajax())
         {
             // get company details and return in ajax response
-            $customerPhone=$customerEmail='';
+        	$customerPhone=$customerEmail='';
             $custOptions="<option value=''>".trans('quickadmin.qa_please_select')."</option>";
 
             $customerAddress = $customer->address_1."<br/>";
@@ -382,12 +381,11 @@ class CustomersController extends Controller
                 $customerAddress.=$customer->address_2."<br/>";
             }
             $customerAddress.=$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
-            if(!empty($customer->phone))
-            {
+
+            if(!empty($customer->phone)){
                 $customerPhone.=$customer->phone;
             }
-            if(!empty($customer->email))
-            {
+            if(!empty($customer->email)){
                 $customerEmail.=$customer->email;
             }
 
@@ -472,10 +470,11 @@ class CustomersController extends Controller
             if($customer->zipcode !== $request['zipcode'])
             {
                 $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
-                //Check lat & long for zipcode
-                $validvalidatorError=array(); 
+                
                 $request['location_latitude']=0; 
-                $request['location_longitude']=0;     
+                $request['location_longitude']=0;
+                //Check lat & long for zipcode
+                $validvalidatorError=array();
                 if($resultLocation){    
                     $request['location_latitude']=$resultLocation['lat'];
                     $request['location_longitude']=$resultLocation['lng'];
@@ -484,11 +483,6 @@ class CustomersController extends Controller
                     $validvalidatorError['location_latitude'] ='Invalid zipcode.';
                     return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
                 }
-                // else
-                // {
-                //     $request['location_latitude']=112;
-                //     $request['location_longitude']=113;
-                // }
             }
         }
         // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();

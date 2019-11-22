@@ -69,9 +69,7 @@
                                 <!-- Request Status -->
                                     {!! Form::label('status', trans('quickadmin.service-request.fields.status').': ', ['class' => 'control-label lablemargin']) !!}
                                     {!! Form::label('status', $service_request->status, ['class' => 'control-label lablemargin','style' => 'color:'.$enum_status_color[$service_request->status]]) !!}
-
                                     @if($service_request->is_reopen == 1)
-                                       <!-- <span class="fontsize">( Re-opend )</span> -->
                                        <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
                                     @endif
                                 </div>
@@ -141,18 +139,17 @@
                                     <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>
                                         <div class="col-xs-12">
                                             <!-- show email and phone show in edit and insert -->
-                                                @if(!empty($service_request->customer->email))
-
-                                                    {!! Form::label('company_id', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label']) !!}
-                                                    {!! Form::label('', $service_request->customer->email, ['class' => 'control-label fontweight']) !!}
-                                                    <br>
-                                                @endif    
-                                                @if(!empty($service_request->customer->phone))
-                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label']) !!}
-                                                {!! Form::label('', $service_request->customer->phone, ['class' => 'control-label fontweight']) !!} 
-                                                 <br>
-                                                @endif  
-                                                {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer-address').': ', ['class' => 'control-label']) !!}
+                                            @if(!empty($service_request->customer->email))
+                                                {!! Form::label('customer_email', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label']) !!}
+                                                {!! Form::label('', $service_request->customer->email, ['class' => 'control-label fontweight']) !!}
+                                                <br>
+                                            @endif
+                                            @if(!empty($service_request->customer->phone))
+                                                {!! Form::label('customer_phone', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label']) !!}
+                                                {!! Form::label('', $service_request->customer->phone, ['class' => 'control-label fontweight']) !!}
+                                                <br>
+                                            @endif                                            
+                                            {!! Form::label('customer_address', trans('quickadmin.service-request.fields.customer-address').': ', ['class' => 'control-label']) !!}
                                             <div class="custAddress">
                                                 {{$service_request->customer->address_1}}
                                                 <br/>

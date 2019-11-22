@@ -9,6 +9,12 @@
         
     </p>
     @endcan
+    <style type="text/css">
+    /* table th td align ment verticle center*/
+    td,th{
+      vertical-align: middle!important;
+    }
+    </style>
 
     @can('product_part_delete')
     <!-- <p>
@@ -18,12 +24,7 @@
         </ul>
     </p> -->
     @endcan
-<style type="text/css">
-/* table th td align ment verticle center*/
-td,th{
-  vertical-align: middle!important;
-}
-</style>
+
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -86,22 +87,20 @@ td,th{
                                     <a href="{{ route('admin.product_parts.edit',[$product_part->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan
                                     @can('product_part_delete')
-                                     <form method="POST" action="<?php echo route('admin.product_parts.destroy',$product_part->id);?>" accept-charset="UTF-8" style="display: inline-block;" onsubmit="return confirm('Are you sure ?');"><input name="_method" type="hidden" value="DELETE"><input name="_token" type="hidden" value="<?php echo csrf_token();?>">
+                                    <form method="POST" action="<?php echo route('admin.product_parts.destroy',$product_part->id);?>" accept-charset="UTF-8" style="display: inline-block;" onsubmit="return confirm('Are you sure ?');"><input name="_method" type="hidden" value="DELETE"><input name="_token" type="hidden" value="<?php echo csrf_token();?>">
                                     <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                     <?php
                                     /*Old Code
-
-{!! Form::open(array(
+                                    {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
                                         'route' => ['admin.product_parts.destroy', $product_part->id])) !!}
                                     {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
                                     {!! Form::close() !!}
-                                    */
-                                    ?>
+                                    */ ?>
                                     @endcan
                                 </td>
                                 @endif

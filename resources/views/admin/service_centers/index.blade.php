@@ -9,6 +9,12 @@
         
     </p>
     @endcan
+    <style type="text/css">
+    /* table th td align ment verticle center*/
+    td,th{
+      vertical-align: middle!important;
+    }
+    </style>
 
     @can('service_center_delete')
     <!-- <p>
@@ -18,12 +24,7 @@
         </ul>
     </p> -->
     @endcan
-<style type="text/css">
-/* table th td align ment verticle center*/
-td,th{
-  vertical-align: middle!important;
-}
-</style>
+
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -68,7 +69,7 @@ td,th{
 
                                 <td field-key='name'>{{ $service_center->name }}</td>
                                 <td field-key='commission' class="text-right">{{ $service_center->commission }}</td>
-                                <td field-key='status' class="text-center">{{ $service_center->status }}</td>
+                                <td field-key='status' class="text-right">{{ $service_center->status }}</td>
                                 <!-- <td field-key='address_1'>{{ $service_center->address_1 }}</td>
                                 <td field-key='location'>{{ $service_center->location_address }}</td>
 
@@ -78,7 +79,7 @@ td,th{
                                 <td field-key='zipcode'>{{ $service_center->zipcode }}</td> -->
                                 
                                 @if( request('show_deleted') == 1 )
-                                <td class="text-center">
+                                <td class="text-right">
                                     @can('service_center_delete')
                                                                         {!! Form::open(array(
                                         'style' => 'display: inline-block;',
@@ -99,28 +100,24 @@ td,th{
                                 @endcan
                                 </td>
                                 @else
-                                <td class="text-center">
+                                <td class="text-right">
                                     @can('service_center_edit')
-                                    <!-- <a href="{{ route('admin.service_centers.edit',[$service_center->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a> -->
                                     <a href="{{ route('admin.service_centers.edit',[$service_center->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan
                                     @can('service_center_delete')
-                                    <?php 
-                                    /* old code
-{!! Form::open(array(
+                                    <form method="POST" action="<?php echo route('admin.service_centers.destroy',$service_center->id);?>" accept-charset="UTF-8" style="display: inline-block;" onsubmit="return confirm('Are you sure ?');"><input name="_method" type="hidden" value="DELETE"><input name="_token" type="hidden" value="<?php echo csrf_token();?>">
+                                    <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                    <?php /*
+                                    {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
                                         'route' => ['admin.service_centers.destroy', $service_center->id])) !!}
                                     {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
                                     {!! Form::close() !!}
-                                    */
-                                    ?>
-
-                                    <form method="POST" action="<?php echo route('admin.service_centers.destroy',$service_center->id);?>" accept-charset="UTF-8" style="display: inline-block;" onsubmit="return confirm('Are you sure ?');"><input name="_method" type="hidden" value="DELETE"><input name="_token" type="hidden" value="<?php echo csrf_token();?>">
-                                    <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
+                                    */ ?>
                                     @endcan
                                 </td>
                                 @endif

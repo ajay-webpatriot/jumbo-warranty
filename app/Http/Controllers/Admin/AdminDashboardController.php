@@ -71,7 +71,7 @@ class AdminDashboardController extends Controller
 
             }
         }
-        //Add join companies for show company name
+         
         $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.is_reopen','service_requests.created_by','service_requests.amount','service_requests.service_type','companies.name as cname','customers.phone','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
         LCASE(SUBSTRING(customers.firstname, 2)))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)), 
         LCASE(SUBSTRING(customers.lastname, 2)))) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
