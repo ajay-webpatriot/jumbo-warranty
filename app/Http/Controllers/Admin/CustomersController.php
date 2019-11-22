@@ -346,10 +346,17 @@ class CustomersController extends Controller
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
         
         $request['location_latitude']=0; 
-        $request['location_longitude']=0;   
+        $request['location_longitude']=0; 
+
+        //Check lat & long for zipcode
+        $validvalidatorError=array();  
         if($resultLocation){    
             $request['location_latitude']=$resultLocation['lat'];
             $request['location_longitude']=$resultLocation['lng'];
+        }else{
+            //Check lat & long for request zipcode
+            $validvalidatorError['location_latitude'] ='Invalid zipcode.';
+            return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
         }
         // else
         // {
@@ -465,12 +472,17 @@ class CustomersController extends Controller
             if($customer->zipcode !== $request['zipcode'])
             {
                 $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
-                
+                //Check lat & long for zipcode
+                $validvalidatorError=array(); 
                 $request['location_latitude']=0; 
                 $request['location_longitude']=0;     
                 if($resultLocation){    
                     $request['location_latitude']=$resultLocation['lat'];
                     $request['location_longitude']=$resultLocation['lng'];
+                }else{
+                    //Check lat & long for request zipcode
+                    $validvalidatorError['location_latitude'] ='Invalid zipcode.';
+                    return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
                 }
                 // else
                 // {

@@ -119,10 +119,16 @@ class ServiceCentersController extends Controller
         
         }
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
-            
+        //Check lat & long for request zipcode
+        $validvalidatorError=array();
         if($resultLocation){    
             $request['location_latitude']=$resultLocation['lat'];
             $request['location_longitude']=$resultLocation['lng'];
+        }else{
+            //Check lat & long for request zipcode
+            $validvalidatorError['location_latitude'] ='Invalid zipcode.';
+            return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError);
+            
         }
 
         $service_center = ServiceCenter::create($request->all());
@@ -225,10 +231,15 @@ class ServiceCentersController extends Controller
             {
 
                 $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
-                    
+                //Check lat & long for zipcode
+                $validvalidatorError=array();
                 if($resultLocation){    
                     $request['location_latitude']=$resultLocation['lat'];
                     $request['location_longitude']=$resultLocation['lng'];
+                }else{
+                    //Check lat & long for request zipcode
+                    $validvalidatorError['location_latitude'] ='Invalid zipcode.';
+                    return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
                 }
             }
         }     
