@@ -9,6 +9,12 @@
         
     </p>
     @endcan
+    <style type="text/css">
+    /* table th td align ment verticle center*/
+    td,th{
+      vertical-align: middle!important;
+    }
+    </style>
 
     @can('category_delete')
     <!-- <p>
@@ -18,12 +24,6 @@
         </ul>
     </p> -->
     @endcan
-<style type="text/css">
-/* table th td align ment verticle center*/
-td,th{
-  vertical-align: middle!important;
-}
-</style>
 
 
     <div class="panel panel-default">
@@ -84,7 +84,7 @@ td,th{
                                 @endcan
                                 </td>
                                 @else
-                                <td class="text-center"> 
+                                <td class="text-center">
                                     @can('category_edit')
                                     <a href="{{ route('admin.categories.edit',[$category->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan
@@ -94,15 +94,14 @@ td,th{
                                         </button>
                                     </form>
                                     <?php /*
-{!! Form::open(array(
+                                    {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
                                         'route' => ['admin.categories.destroy', $category->id])) !!}
                                     {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
                                     {!! Form::close() !!}
-                                    */
-                                    ?>
+                                    */ ?>
                                     @endcan
                                 </td>
                                 @endif

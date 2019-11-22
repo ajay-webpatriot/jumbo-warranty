@@ -256,7 +256,7 @@ class AssignPartsController extends Controller
 
                 $EditButtons = '';
                 if (Gate::allows('assign_part_edit')) {
-                    $EditButtons = '<a href="'.route('admin.assign_parts.edit',$assignPart->id).'" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>';
+                    $EditButtons = '<a href="'.route('admin.assign_parts.edit',$assignPart->id).'" class="btn btn-xs btn-info data-toggle="tooltip title="Edit"><i class="fa fa-pencil"></i></a>';
                 }
                 $DeleteButtons = '';
                 if (Gate::allows('assign_part_delete')) {

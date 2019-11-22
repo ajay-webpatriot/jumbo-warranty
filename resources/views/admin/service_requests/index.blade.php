@@ -9,6 +9,18 @@
         
     </p>
     @endcan
+    <style type="text/css">
+    /* table th td align ment verticle center*/
+    td,th{
+      vertical-align: middle!important;
+    }
+    .daterangepicker .calendar{
+        max-width: 300px !important;
+    }
+    .table-bordered>thead>tr>th:nth-child(8) {
+        width: 100px!important;
+    }
+    </style>
 
     @can('service_request_delete')
     <!-- <p>
@@ -18,18 +30,7 @@
         </ul>
     </p> -->
     @endcan
-<style type="text/css">
-/* table th td align ment verticle center*/
-td,th{
-  vertical-align: middle!important;
-}
-.daterangepicker .calendar{
-    max-width: 300px !important;
-}
-.table-bordered>thead>tr>th:nth-child(8) {
-    width: 100px!important;
-}
-</style>
+
     <!-- Filter portion start -->
     <div class="panel panel-default">
         <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
@@ -275,7 +276,7 @@ td,th{
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input type="text" class="form-control" name="dateRangeFilter" id="dateRangeFilter" autocomplete="off" placeholder="Please select date" >
+                                        <input type="text" class="form-control" name="dateRangeFilter" id="dateRangeFilter" autocomplete="off" placeholder="Please select date">
                                     </div>
                                 </div>
 
@@ -302,9 +303,8 @@ td,th{
                             {{--@can('service_request_delete')
                                 @if ( request('show_deleted') != 1 )<th style="text-align:center;"><input type="checkbox" class="dt-body-center" id="select-all" /></th>@endif
                             @endcan--}}
-                            
-                            <th>@lang('quickadmin.service-request.fields.customer')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
+                            <th>@lang('quickadmin.service-request.fields.customer')</th>                            
                             <!-- <th>@lang('quickadmin.service-request.fields.service-center')</th> -->
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
@@ -338,9 +338,9 @@ td,th{
                                 <th style="text-align:center;"><input type="checkbox" class="dt-body-center" id="select-all" /></th>
                             @endcan
                             <th>@lang('quickadmin.service-request.fields.request-id')</th>
-                            <!-- <th>@lang('quickadmin.service-request.fields.company')</th> -->
-                            <th>@lang('quickadmin.service-request.fields.customer')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
+                            <!-- <th>@lang('quickadmin.service-request.fields.company')</th> -->
+                            <th>@lang('quickadmin.service-request.fields.customer')</th>                            
                             <!-- <th>@lang('quickadmin.service-request.fields.technician')</th> -->
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <!-- <th>@lang('quickadmin.service-request.fields.amount')</th> -->
@@ -365,7 +365,7 @@ td,th{
                             <th>@lang('quickadmin.service-request.fields.request-id')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
                             <th>@lang('quickadmin.service-request.fields.company')</th>
-                            <th>@lang('quickadmin.service-request.fields.customer')</th> 
+                            <th>@lang('quickadmin.service-request.fields.customer')</th>                            
                             <th>@lang('quickadmin.service-request.fields.service-center')</th>
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th nowrap>@lang('quickadmin.service-request.fields.amount')</th>
@@ -389,55 +389,51 @@ td,th{
     <script src="{{ url('adminlte/plugins/daterangepicker/moment.min.js') }}"></script>
     <script src="{{ url('adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script>
-        // newexportaction = '';
-        //  oldExportAction = '';
-        // jQuery(document).ready(function(){
-            var oldExportAction = function  (self, e, dt, button, config) {
-                if (button[0].className.indexOf('buttons-copy') >= 0) {
-                                $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                    $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
-                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
-                        $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                    $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
-                        $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
-                        $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                    $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
-                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
-                        $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
-                } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                    $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
-                }
+        var oldExportAction = function  (self, e, dt, button, config) {
+            if (button[0].className.indexOf('buttons-copy') >= 0) {
+                    $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+            } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+                $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+                    $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+                    $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+            } else if (button[0].className.indexOf('buttons-csv') >= 0) {
+                $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+                    $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+                    $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+            } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+                $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+                    $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+                    $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+            } else if (button[0].className.indexOf('buttons-print') >= 0) {
+                $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
             }
-
-            var newexportaction = function (e, dt, button, config) {
-                var self = this;
-                var oldStart = dt.settings()[0]._iDisplayStart;
-                dt.one('preXhr', function (e, s, data) {
-                    // Just this once, load all data from the server...
-                    data.start = 0;
-                    data.length = 2147483647;
-                    dt.one('preDraw', function (e, settings) {
-                        // Call the original action function
-                        oldExportAction(self, e, dt, button, config);
-                        dt.one('preXhr', function (e, s, data) {
-                            // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-                            // Set the property to what it was before exporting.
-                            settings._iDisplayStart = oldStart;
-                            data.start = oldStart;
-                        });
-                        // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-                        setTimeout(dt.ajax.reload, 0);
-                        // Prevent rendering of the full data to the DOM
-                        return false;
+        }
+        var newexportaction = function (e, dt, button, config) {
+            var self = this;
+            var oldStart = dt.settings()[0]._iDisplayStart;
+            dt.one('preXhr', function (e, s, data) {
+                // Just this once, load all data from the server...
+                data.start = 0;
+                data.length = 2147483647;
+                dt.one('preDraw', function (e, settings) {
+                    // Call the original action function
+                    oldExportAction(self, e, dt, button, config);
+                    dt.one('preXhr', function (e, s, data) {
+                        // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+                        // Set the property to what it was before exporting.
+                        settings._iDisplayStart = oldStart;
+                        data.start = oldStart;
                     });
+                    // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                    setTimeout(dt.ajax.reload, 0);
+                    // Prevent rendering of the full data to the DOM
+                    return false;
                 });
-                // Requery the server with the new one-time export settings
-                dt.ajax.reload();
-            }
-        // });
+            });
+            // Requery the server with the new one-time export settings
+            dt.ajax.reload();
+        }
+
         var daterangeStartValue = "";
         var daterangeEndValue = "";
         // var startdate = "{{ $request->session()->get('filter_start_date') }}";
@@ -494,10 +490,6 @@ td,th{
                 tableServiceRequest.draw();
             });
 
-            // daterangeStartValue = moment($('#dateRangeFilter').val().split(" - ")[0],'DD/MM/YYYY').format('YYYY-MM-DD');
-        
-            // daterangeEndValue = moment($('#dateRangeFilter').val().split(" - ")[1],'DD/MM/YYYY').format('YYYY-MM-DD');
-
             // $('#dateRangeFilter').on('apply.daterangepicker', function(ev, picker) {
             //     $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             // });
@@ -551,8 +543,8 @@ td,th{
                 var tableColumns =  [
                     { "data": "sr_no" },
                     // { "data": "checkbox" },
-                    { "data": "customer","name": "customer"},
                     { "data": "service_type","name": "service_type" },
+                    { "data": "customer","name": "customer"},                    
                     /*{ "data": "service_center","name": "service_center" },*/
                     { "data": "product","name": "product" },
                     { "data": "amount","name": "amount" },
@@ -587,14 +579,15 @@ td,th{
                 },
                 {
                     "orderable": false,
+                    "class": "text-center",
                     "targets":   8
                 }];
             @else
                 var tableColumns =  [
                     { "data": "sr_no" },
                     // { "data": "checkbox" },
-                    { "data": "customer","name": "customer"},
                     { "data": "service_type","name": "service_type" },
+                    { "data": "customer","name": "customer"},                    
                     /*{ "data": "service_center","name": "service_center" },*/
                     { "data": "product","name": "product" },
                     { "data": "amount","name": "amount" },
@@ -628,6 +621,7 @@ td,th{
                 },
                 {
                     "orderable": false,
+                    "class": "text-center",
                     "targets":   7
                 }];
             @endif
@@ -986,9 +980,9 @@ td,th{
                     
                     { "data": "checkbox" },
                     { "data": "sr_no" },
-                    // { "data": "company_name" },
-                    { "data": "customer" },
                     { "data": "service_type" },
+                    // { "data": "company_name" },
+                    { "data": "customer" },                    
                     { "data": "product" },
                     // { "data": "amount" },
                     { "data": "created_by","name": "created_by" },
@@ -1022,6 +1016,7 @@ td,th{
                 },
                 {
                     "orderable": false,
+                    "class": "text-center",
                     "targets":   8
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
@@ -1044,54 +1039,10 @@ td,th{
                     {
                         $('#serviceRequest').parent().find(".actions").remove();
                     }
-                }	
+                }   
             });
 
         @else
-        
-        // function newexportaction(e, dt, button, config) {
-        //     console.log(config);
-            
-        //         var self = this;
-        //         var oldStart = dt.settings()[0]._iDisplayStart;
-        //         dt.one('preXhr', function (e, s, data) {
-        //             // Just this once, load all data from the server...
-        //             data.start = 0;
-        //             data.length = 2147483647;
-        //             dt.one('preDraw', function (e, settings) {
-        //                 // Call the original action function
-        //                 if (button[0].className.indexOf('buttons-copy') >= 0) {
-        //                     $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
-        //                 } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-        //                     $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
-        //                         $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
-        //                         $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-        //                 } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-        //                     $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
-        //                         $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
-        //                         $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
-        //                 } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-        //                     $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
-        //                         $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
-        //                         $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
-        //                 } else if (button[0].className.indexOf('buttons-print') >= 0) {
-        //                     $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
-        //                 }
-        //                 dt.one('preXhr', function (e, s, data) {
-        //                     // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-        //                     // Set the property to what it was before exporting.
-        //                     settings._iDisplayStart = oldStart;
-        //                     data.start = oldStart;
-        //                 });
-        //                 // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-        //                 setTimeout(dt.ajax.reload, 0);
-        //                 // Prevent rendering of the full data to the DOM
-        //                 return false;
-        //             });
-        //         });
-        //         // Requery the server with the new one-time export settings
-        //         dt.ajax.reload();
-        //     }
             // admin and super admin
             var tableServiceRequest = $('#serviceRequest').DataTable({
                 "processing": true,
@@ -1102,16 +1053,16 @@ td,th{
                 columnDefs: [],
                 "iDisplayLength": 10,
                 "aaSorting": [],
-                "buttons": [
+                buttons: [
                     {
-                        "extend": 'pdf',
-                        "text": window.pdfButtonTrans,
-                        "orientation": 'landscape',
-                        "exportOptions": {
+                        extend: 'pdf',
+                        text: window.pdfButtonTrans,
+                        orientation: 'landscape',
+                        exportOptions: {
                             // columns: ':visible'
-                            "columns": [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
                         },
-                        "customize": function (doc) {
+                        customize: function (doc) {
                             // var iColumns = $('#company thead th').length;
 
                             // set 100% width fot table in pdf
@@ -1287,8 +1238,7 @@ td,th{
                             $(win.document.body).find('table tbody td:nth-child(8)').css('text-align', 'left');
                             $(win.document.body).find('table tbody td:nth-child(9)').css('text-align', 'center');
                             $(win.document.body).find('table tbody td:nth-child(10)').css('text-align', 'center');
-                        },
-                        "action": newexportaction,
+                        }
                     }
                 ],
                 "ajax":{
@@ -1333,7 +1283,7 @@ td,th{
                 // } ]
                 "columnDefs": [{
                     "orderable": false,
-                    "className": 'select-checkbox',
+                    "className": ' select-checkbox',
                     "targets":   0,
                     "searchable": false
                 },{
@@ -1346,6 +1296,7 @@ td,th{
                     "class": "text-right",
                     "targets":   7
                 },{
+                    "class": "text-left",
                     "targets":   8
                 },{
                     "orderable": true,
@@ -1362,9 +1313,9 @@ td,th{
                     "searchable": false
                 },{
                     "orderable": false,
-                    "class": "text-center",
                     "targets":   12,
-                    "searchable": false
+                    "searchable": false,
+                    "class": "text-center",
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },

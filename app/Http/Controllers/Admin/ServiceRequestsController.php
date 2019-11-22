@@ -218,11 +218,12 @@ class ServiceRequestsController extends Controller
             }
             
         }
+        // $request_stauts = ServiceRequest::$enum_status;
         $externalValue = ["Re-opened" => "Re-opened"];
         $request_stauts = ServiceRequest::$enum_status + $externalValue;
         asort($request_stauts); // sort array
         $request_stauts = ['' => trans('quickadmin.qa_show_all')] + $request_stauts;
-        
+
         $request_type = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_service_type;
 
         return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type','total_paid_amount','total_due_amount'));
@@ -344,10 +345,10 @@ class ServiceRequestsController extends Controller
             ->leftjoin('products','service_requests.product_id','=','products.id')
             ->leftjoin('service_centers','service_requests.service_center_id','=','service_centers.id');
 
-            if(!empty($request['startdate']) && isset($request['startdate'])){
+            if(isset($request['startdate']) && !empty($request['startdate']) && isset($request['enddate']) && !empty($request['enddate'])) {
                 $service_requestsQuery->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request['startdate']."' AND '".$request['enddate']."'");
             }
-            
+
             $service_requestsQuery->whereNull('companies.deleted_at')
             ->whereNull('customers.deleted_at')
             ->whereNull('products.deleted_at')
@@ -423,14 +424,12 @@ class ServiceRequestsController extends Controller
             if(!empty($request->input('status')))
             {   
                 $request->session()->put('filter_request_status', $request['status']);
-                
                 // Check request stauts
-                if($request->input('status') == "Re Opened"){
+                if($request->input('status') == "Re-opened"){
                     $service_requestsQuery->Where('service_requests.is_reopen', 1);
                 }else{
                     $service_requestsQuery->Where('service_requests.status', $request['status']);
                 }
-                
             }
             else
             {
@@ -510,6 +509,7 @@ class ServiceRequestsController extends Controller
                             ->Where('products.status','Active')
                             // ->Where('service_centers.status','Active')
                             ;
+        
         if(!empty($service_requests)){
 
             if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
@@ -577,12 +577,11 @@ class ServiceRequestsController extends Controller
 
                 $tableStatusColor = '';
                 if($SingleServiceRequest->status != ''){
-
+                    // $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>';
                     $reopenRequest = '';
                     if($SingleServiceRequest->is_reopen == 1){
                         $reopenRequest = '<span class="label label-primary paddingMarginLeftLabel">Re-opened</span>';
                     }
-
                     $tableStatusColor = '<span class="headerTitle" style="color:'.$enum_status_color[$SingleServiceRequest->status].'">'.$SingleServiceRequest->status.'</span>'.$reopenRequest;
                 }
                 $tableField['request_status'] = $tableStatusColor;
@@ -596,12 +595,12 @@ class ServiceRequestsController extends Controller
                 }
 
                 $tableField['created_at'] = date('d/m/Y',strtotime($SingleServiceRequest->created_at));
+
                 // OLd button
                 /*
                 if (Gate::allows('service_request_view')) {
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
-                }
-                */
+                }*/
                 //New button fa icon
                 if (Gate::allows('service_request_view')) {
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary" data-toggle="tooltip" title="View"><i class="fa fa-eye"></i></a>';
@@ -614,13 +613,11 @@ class ServiceRequestsController extends Controller
                     /* Old Button
                     if (Gate::allows('service_request_edit')) {
                         $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info">Edit</a>';
-                    }
-                    */
+                    }*/
                     //New Button fa icon
                     if (Gate::allows('service_request_edit')) {
                         $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>';
                     }
-                    
                     
                 }
 
@@ -631,9 +628,8 @@ class ServiceRequestsController extends Controller
                     <input type="hidden"
                                name="_token"
                                value="'.csrf_token().'">
-                               <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
+                    <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
                                </button>
-                    
                     </form>';
                 }
 
@@ -1331,8 +1327,6 @@ class ServiceRequestsController extends Controller
             {
                 // if techician is assigned, request is not accepted and any user close the request, is_accepted will be set to 1
                 $request['is_accepted'] = 1;
-
-                //make is_open status zero here.
             }
             else if ($request['status'] =="Service center assigned")
             {
@@ -1384,10 +1378,17 @@ class ServiceRequestsController extends Controller
         }
         if($request['status'] == "Closed")
         {
+            // // calculate invoice number
+            // $max_invoice_number= ServiceRequest::max('invoice_number');
+            // $last_invoice_number=0;
+            // if(!empty($max_invoice_number))
+            // {
+            //     $last_invoice_number = $max_invoice_number;
+            // }
+            // $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
+
             if(!empty($service_request->invoice_number)){
-
                 $request['invoice_number'] = $service_request->invoice_number;
-
             }else{
                 // calculate invoice number
                 $max_invoice_number= ServiceRequest::max('invoice_number');
@@ -1396,9 +1397,8 @@ class ServiceRequestsController extends Controller
                 {
                     $last_invoice_number = $max_invoice_number;
                 }
-                $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT);  
+                $request['invoice_number'] = str_pad(($last_invoice_number + 1), 4, '0', STR_PAD_LEFT); 
             }
-
             $request['closed_at'] = date('Y-m-d H:i:s');
         }
         // calculate total amount work start
@@ -1742,14 +1742,11 @@ class ServiceRequestsController extends Controller
             return abort(401);
         }
         if ($request->input('ids')) {
-
             $selectedIdArray = array();
-
             foreach ($request->input('ids') as $key => $value) {
                 $var = ltrim(ltrim($value,'JW'),'0');
                 $selectedIdArray[$key] = $var;
             }
-
             // $entries = ServiceRequest::whereIn('id', $request->input('ids'))->get();
             $entries = ServiceRequest::whereIn('id', $selectedIdArray)->get();
 
@@ -1821,11 +1818,13 @@ class ServiceRequestsController extends Controller
     public function createReceiptPDF($id)
     {
         $request = ServiceRequest::findOrFail($id);
-        $requestName = 'JW'.sprintf("%04d", $request['id']).' - '.$request['service_type'];
         $request_parts=$request->parts->pluck('id')->toArray();
+        $requestName = 'JW'.sprintf("%04d", $request['id']).' - '.$request['service_type'];
 
-        if($request['service_center_id'] != "" && $request['customer_id'] != ""){
-            
+        if($request['service_center_id'] != "" && 
+            $request['customer_id'] != ""
+            )
+        {
             $centerDetail=\App\ServiceCenter::findOrFail($request['service_center_id']);
             if($request['technician_id'] != "")
             {
@@ -1885,7 +1884,6 @@ class ServiceRequestsController extends Controller
                         if($AdditionalChargeTitle === $arr_val){
 
                             $additional_charges.= "<tr><td colspan='2'>&nbsp;".$AdditionalChargeTitle." :</td><td class='price'><span style='font-family: DejaVu Sans; sans-serif;'>&#8377;</span>".number_format($value->$arr_val,2)."</td></tr>";
-
                         }
                     }
                 }
@@ -1924,37 +1922,37 @@ class ServiceRequestsController extends Controller
                 $parts_used="<tr><td>Parts Used</td><td colspan='2'>".$parts->name."</td></tr>";  
             }
             
-            // $productHTML="<div><table class='table' style='width:100%;'>
-            //                     <thead>
-            //                         <tr>
-            //                             <th class='align-text-center'>Product</th>
-            //                             <th class='align-text-center'>&nbsp;</th>
-            //                             <th class='price'></th>
-            //                         </tr>
-            //                     </thead>
-            //                     <tbody>
-            //                         <tr>
-            //                             <td class='align-text-center'>".$productDetail->name."</td>
-            //                             <td class='align-text-center'></td>
-            //                             <td class='price'></td>
-            //                         </tr>
-            //                         <tr>
-            //                         <td style='border:0;'></td>
-            //                         </tr>
-            //                         <tr>
-            //                         <td style='border:0;'></td>
-            //                         </tr><tr>
-            //                         <td style='border:0;'></td>
-            //                         </tr>
-            //                         ".$parts_used."
-            //                         ".$installation_charge."
-            //                         ".$service_charge."
-            //                         ".$km_charge."
-            //                         ".$additional_charges."
+            /*$productHTML="<div><table class='table' style='width:100%;'>
+                                <thead>
+                                    <tr>
+                                        <th class='align-text-center'>Product</th>
+                                        <th class='align-text-center'>&nbsp;</th>
+                                        <th class='price'></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class='align-text-center'>".$productDetail->name."</td>
+                                        <td class='align-text-center'></td>
+                                        <td class='price'></td>
+                                    </tr>
+                                    <tr>
+                                    <td style='border:0;'></td>
+                                    </tr>
+                                    <tr>
+                                    <td style='border:0;'></td>
+                                    </tr><tr>
+                                    <td style='border:0;'></td>
+                                    </tr>
+                                    ".$parts_used."
+                                    ".$installation_charge."
+                                    ".$service_charge."
+                                    ".$km_charge."
+                                    ".$additional_charges."
                                     
-            //                         ".$total_amount."
-            //                     </tbody>
-            //             </table></div>";
+                                    ".$total_amount."
+                                </tbody>
+                        </table></div>";*/
 
             $productHTML="<div><table class='table' style='width:100%;'>
                     <thead>
@@ -1970,7 +1968,6 @@ class ServiceRequestsController extends Controller
                             <td class='align-text-center'>".$requestName."</td>
                         
                             <td class='align-text-center'>".$productDetail->name."</td>
-
                             <td class='align-text-center'>".date('d/m/Y',strtotime($request['created_at']))."</td>
                         </tr>
                         <tr>
@@ -2014,7 +2011,7 @@ class ServiceRequestsController extends Controller
                         </style>
                     </head>";
             $html.="<body>
-            <h1 style='text-align:center;'><img width='250px' src='" . url("adminlte/img/LOGOF.png") . "' alt='Jumbo-Warranty' /></h1>
+                    <h1 style='text-align:center;'><img width='250px' src='" . url("adminlte/img/LOGOF.png") . "' alt='Jumbo-Warranty' /></h1>
                     </br>
                     <h1 style='text-align:center;'>Bill Receipt</h1>";
 
@@ -2265,21 +2262,19 @@ class ServiceRequestsController extends Controller
             // echo "<pre>"; print_r ($customer); echo "</pre>"; exit();
             if(!empty($customer))
             {
-                //Show email and phone in edit service request
-                if(!empty($customer->email))
-                {
-                    $data['email'].=$customer->email;
-                }
-                if(!empty($customer->phone))
-                {
-                    $data['phone'].=$customer->phone;
-                }
                 $data['address'].=$customer->address_1."<br/>";
                 if(!empty($customer->address_2))
                 {
                     $data['address'].=$customer->address_2."<br/>";
                 }
                 $data['address'].=$customer->city."<br/>".$customer->state."-".$customer->zipcode;  
+                //Show email and phone in edit service request
+                if(!empty($customer->email)){
+                    $data['email'].=$customer->email;
+                }
+                if(!empty($customer->phone)){
+                    $data['phone'].=$customer->phone;
+                }
             }
         }
         echo json_encode($data);
@@ -2643,5 +2638,4 @@ class ServiceRequestsController extends Controller
         }
         return response()->json($status);
     }
-    
 }

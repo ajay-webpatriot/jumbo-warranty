@@ -9,6 +9,12 @@
         
     </p>
     @endcan
+    <style type="text/css">
+    /* table th td align ment verticle center*/
+    td,th{
+      vertical-align: middle!important;
+    }
+    </style>
 
     @can('company_delete')
     <!-- <p>
@@ -18,12 +24,7 @@
         </ul>
     </p> -->
     @endcan
-<style type="text/css">
-/* table th td align ment verticle center*/
-td,th{
-  vertical-align: middle!important;
-}
-</style>
+
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -106,15 +107,14 @@ td,th{
                                     </form>
                                     <?php
                                     /*Old code
-{!! Form::open(array(
+                                    {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
                                         'route' => ['admin.companies.destroy', $company->id])) !!}
                                     {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
                                     {!! Form::close() !!}
-                                    */
-                                    ?>
+                                    */ ?>
                                     @endcan
                                 </td>
                                 @endif
