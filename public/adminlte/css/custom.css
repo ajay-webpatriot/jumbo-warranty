@@ -48,3 +48,6 @@ table tr th, table tr td{padding-left: 15px !important;padding-right: 15px !impo
 	padding: 5px;
 	margin-left: 5px;
 }
+.action_button{
+	white-space: nowrap !important;
+}

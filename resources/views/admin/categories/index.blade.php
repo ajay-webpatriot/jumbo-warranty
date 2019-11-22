@@ -84,7 +84,7 @@
                                 @endcan
                                 </td>
                                 @else
-                                <td class="text-center">
+                                <td class="text-center action_button">
                                     @can('category_edit')
                                     <a href="{{ route('admin.categories.edit',[$category->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan

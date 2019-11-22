@@ -579,7 +579,7 @@
                 },
                 {
                     "orderable": false,
-                    "class": "text-center",
+                    "class": "text-center action_button",
                     "targets":   8
                 }];
             @else
@@ -621,7 +621,7 @@
                 },
                 {
                     "orderable": false,
-                    "class": "text-center",
+                    "class": "text-center action_button",
                     "targets":   7
                 }];
             @endif
@@ -1016,7 +1016,7 @@
                 },
                 {
                     "orderable": false,
-                    "class": "text-center",
+                    "class": "text-center action_button",
                     "targets":   8
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
@@ -1315,7 +1315,7 @@
                     "orderable": false,
                     "targets":   12,
                     "searchable": false,
-                    "class": "text-center",
+                    "class": "text-center action_button",
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },

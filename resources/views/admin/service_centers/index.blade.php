@@ -100,7 +100,7 @@
                                 @endcan
                                 </td>
                                 @else
-                                <td class="text-right">
+                                <td class="text-center action_button">
                                     @can('service_center_edit')
                                     <a href="{{ route('admin.service_centers.edit',[$service_center->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan

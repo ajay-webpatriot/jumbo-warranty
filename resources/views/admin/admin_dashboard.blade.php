@@ -484,7 +484,7 @@
                                                 </form>';
                                                 }
                                             ?>
-                                            <td align="center">
+                                            <td align="center" class="action_button">
                                                 <?php echo $ViewButtons.' '.$EditButtons.' '.$DeleteButtons;?>
                                             </td>
                                         </tr>

@@ -53,7 +53,7 @@
                                 <td field-key='phone' align="center">{{ $user->phone }}</td>
                                 <td field-key='email'>{{ $user->email }}</td>
                                 <td field-key='status' align="center">{{ $user->status }}</td>
-                                <td align="center">
+                                <td align="center" class="action_button">
                                     @can('user_edit')
                                     <a href="{{ route('admin.users.edit',[$user->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan

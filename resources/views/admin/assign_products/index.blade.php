@@ -156,7 +156,7 @@
                     },{
                         "orderable": false,
                         "targets":   4,
-                        "class":'text-center'
+                        "class":'text-center action_button'
                     }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                         $(nRow).attr('data-entry-id', aData.sr_no);
                     },

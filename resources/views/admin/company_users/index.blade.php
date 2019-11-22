@@ -158,7 +158,7 @@
                     },{
                         "orderable": false,
                         "targets":   7,
-                        "className": 'text-center',
+                        "className": 'text-center action_button',
                     },{
                         "targets":   [4,6],
                         "className": 'text-center',
@@ -245,7 +245,7 @@
                         "searchable": false
                     },{
                         "orderable": false,
-                        "className": 'text-center',
+                        "className": 'text-center action_button',
                         "targets":   6
                     }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                         $(nRow).attr('data-entry-id', aData.sr_no);

@@ -177,7 +177,7 @@
                 },{
                     "orderable": false,
                     "targets":   7,
-                    "className": 'text-center',
+                    "className": 'text-center action_button',
                  },{
                     "className": 'text-center',
                     "targets":   6

@@ -169,7 +169,7 @@
                     },{
                         "orderable": false,
                         "targets":   6,
-                        "className": 'text-center',
+                        "className": 'text-center action_button',
                     },{
                         "className": 'text-center',
                         "targets":   [5,3]
@@ -256,7 +256,7 @@
                     },{
                         "orderable": false,
                         "targets":   5,
-                        "className": 'text-center',
+                        "className": 'text-center action_button',
                     }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                         $(nRow).attr('data-entry-id', aData.sr_no);
                     },
