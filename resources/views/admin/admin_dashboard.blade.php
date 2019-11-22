@@ -388,7 +388,9 @@
                                     <tr>
                                         <th>@lang('quickadmin.service-request.fields.request-id')</th>
                                         <th>@lang('quickadmin.service-request.fields.title')</th>
+                                        @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                         <th>@lang('quickadmin.service-request.fields.company')</th>
+                                        @endif  
                                         <th>@lang('quickadmin.service-request.fields.customer')</th>
                                         @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
@@ -425,9 +427,11 @@
                                                         <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
                                                 </a>
                                             </td>
+                                            @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                             <td>
                                                   {{$SingleServiceTypeDetail->cname}}
                                             </td>
+                                            @endif  
                                             <?php
                                             //Show button edit, view ,delete
                                             if (Gate::allows('service_request_view')) {
