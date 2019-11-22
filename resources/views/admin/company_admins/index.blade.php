@@ -9,7 +9,12 @@
         
     </p>
     @endcan
-
+<style type="text/css">
+/* table th td align ment verticle center*/
+td,th{
+  vertical-align: middle!important;
+}
+</style>
     @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         <div class="panel panel-default">
             <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
@@ -78,10 +83,10 @@
                                 <!-- <td field-key='zipcode'>{{ $user->zipcode }}</td> -->
                                 <!-- <td field-key='location'>{{ $user->location_address }}</td> -->
                                 <td field-key='email'>{{ $user->email }}</td>
-                                <td field-key='status'>{{ $user->status }}</td>
+                                <td field-key='status' class="text-center">{{ $user->status }}</td>
                                                                 <td>
                                     @can('user_edit')
-                                    <a href="{{ route('admin.company_admins.edit',[$user->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
+                                    <a href="{{ route('admin.company_admins.edit',[$user->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan
                                     {!! Form::open(array(
                                         'style' => 'display: inline-block;',
@@ -171,7 +176,11 @@
                     "searchable": false
                 },{
                     "orderable": false,
+                    "className": 'text-center',
                     "targets":   7
+                },{
+                    "className": 'text-center',
+                    "targets":   [6,4]
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                     $(nRow).attr('data-entry-id', aData.sr_no);
                 },

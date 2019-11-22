@@ -71,12 +71,13 @@ class AdminDashboardController extends Controller
 
             }
         }
-         
-        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.is_reopen','service_requests.created_by','service_requests.amount','service_requests.service_type','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
+        //Add join companies for show company name
+        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.is_reopen','service_requests.created_by','service_requests.amount','service_requests.service_type','companies.name as cname','customers.phone','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
         LCASE(SUBSTRING(customers.firstname, 2)))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)), 
         LCASE(SUBSTRING(customers.lastname, 2)))) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
         LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
         ->leftjoin('users','service_requests.created_by','=','users.id')
+        ->leftjoin('companies','service_requests.company_id','=','companies.id')
         ->join('customers','service_requests.customer_id','=','customers.id')
         ->join('products','service_requests.product_id','=','products.id')
         ->whereIn('service_requests.service_type',array('repair','installation'))

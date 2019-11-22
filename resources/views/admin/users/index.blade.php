@@ -9,7 +9,12 @@
         <a href="{{ route('admin.users.create') }}" class="btn btn-success">@lang('quickadmin.qa_add_new')</a>
     </p>
     @endcan
-
+<style type="text/css">
+/* table th td align ment verticle center*/
+td,th{
+  vertical-align: middle!important;
+}
+</style>
     
 
     <div class="panel panel-default">
@@ -46,21 +51,31 @@
 
                                 
                                 <td field-key='name'>{{ $user->name }}</td>
-                                <td field-key='phone'>{{ $user->phone }}</td>
+                                <td field-key='phone'align="center">{{ $user->phone }}</td>
                                 <td field-key='email'>{{ $user->email }}</td>
-                                <td field-key='status'>{{ $user->status }}</td>
-                                                                <td>
+                                <td align="center" field-key='status' >{{ $user->status }}</td>
+                                                                <td align="center">
                                     @can('user_edit')
-                                    <a href="{{ route('admin.users.edit',[$user->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
+                                    <a href="{{ route('admin.users.edit',[$user->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan
                                     @can('user_delete')
-{!! Form::open(array(
+                                    <form method="POST" action="<?php echo route('admin.users.destroy',$user->id);?>" accept-charset="UTF-8" style="display: inline-block;" onsubmit="return confirm('Are you sure ?');"><input name="_method" type="hidden" value="DELETE"><input name="_token" type="hidden" value="<?php echo csrf_token();?>">
+                                    <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                    <?php
+                                    /*old code
+                                    ?>
+                                    {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
                                         'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
                                         'route' => ['admin.users.destroy', $user->id])) !!}
                                     {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
                                     {!! Form::close() !!}
+                                    <?php
+                                    */
+                                    ?>
                                     @endcan
                                 </td>
 

@@ -18,7 +18,16 @@
         </ul>
     </p> -->
     @endcan
-
+<style type="text/css">
+/* table th td align ment verticle center*/
+td,th{
+  vertical-align: middle!important;
+}
+.daterangepicker .calendar{
+    max-width: 300px !important;
+}
+}
+</style>
     <!-- Filter portion start -->
     <div class="panel panel-default">
         <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
@@ -264,7 +273,7 @@
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input type="text" class="form-control" name="dateRangeFilter" id="dateRangeFilter" autocomplete="off" placeholder="Please select date">
+                                        <input type="text" class="form-control" name="dateRangeFilter" id="dateRangeFilter" autocomplete="off" placeholder="Please select date" >
                                     </div>
                                 </div>
 
@@ -352,9 +361,9 @@
                                 <th style="text-align:center;"><input type="checkbox" class="dt-body-center select-checkbox" id="select-all" /></th>
                             @endcan
                             <th>@lang('quickadmin.service-request.fields.request-id')</th>
-                            <th>@lang('quickadmin.service-request.fields.company')</th>
-                            <th>@lang('quickadmin.service-request.fields.customer')</th>
                             <th>@lang('quickadmin.service-request.fields.service-type')</th>
+                            <th>@lang('quickadmin.service-request.fields.company')</th>
+                            <th>@lang('quickadmin.service-request.fields.customer')</th> 
                             <th>@lang('quickadmin.service-request.fields.service-center')</th>
                             <th>@lang('quickadmin.service-request.fields.product')</th>
                             <th nowrap>@lang('quickadmin.service-request.fields.amount')</th>
@@ -1303,9 +1312,9 @@
                     
                     { "data": "checkbox" },
                     { "data": "sr_no" },
-                    { "data": "company_name" },
-                    { "data": "customer" },
                     { "data": "service_type" },
+                    { "data": "company_name" },
+                    { "data": "customer" },                    
                     { "data": "service_center" },
                     { "data": "product" },
                     { "data": "amount" },
@@ -1322,7 +1331,7 @@
                 // } ]
                 "columnDefs": [{
                     "orderable": false,
-                    "className": ' select-checkbox',
+                    "className": 'select-checkbox',
                     "targets":   0,
                     "searchable": false
                 },{
@@ -1335,7 +1344,6 @@
                     "class": "text-right",
                     "targets":   7
                 },{
-                    "class": "text-left",
                     "targets":   8
                 },{
                     "orderable": true,
@@ -1348,9 +1356,11 @@
                 },{
                     "orderable": true,
                     "targets":   11,
+                    "class": "text-center",
                     "searchable": false
                 },{
                     "orderable": false,
+                    "class": "text-center",
                     "targets":   12,
                     "searchable": false
                 }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {

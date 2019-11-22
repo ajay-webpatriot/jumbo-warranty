@@ -10,6 +10,10 @@
             white-space: normal;
             /* word-wrap: break-word; */
         }
+        /* table th td align ment verticle center*/
+        td,th{
+          vertical-align: middle!important;
+        }
     </style>
     <div class="row">
         <div class="col-md-12">
@@ -371,6 +375,11 @@
                                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
                             </div>
+                            <?php
+                                $ViewButtons = '';
+                                $EditButtons = '';
+                                $DeleteButtons = '';
+                            ?>
                             <!-- /.box-header -->
                             <div class="box-body" style="">
                               <div class="table-responsive">
@@ -379,6 +388,7 @@
                                     <tr>
                                         <th>@lang('quickadmin.service-request.fields.request-id')</th>
                                         <th>@lang('quickadmin.service-request.fields.title')</th>
+                                        <th>@lang('quickadmin.service-request.fields.company')</th>
                                         <th>@lang('quickadmin.service-request.fields.customer')</th>
                                         @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
@@ -390,6 +400,7 @@
                                         @endif
                                         <th>@lang('quickadmin.service-request.fields.created_date')</th>
                                         <th>@lang('quickadmin.service-request.fields.status')</th>
+                                        <th>@lang('quickadmin.qa_action')</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -414,13 +425,43 @@
                                                         <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
                                                 </a>
                                             </td>
-                                            <td>{{ $SingleServiceTypeDetail->customer_name}}</td>
+                                            <td>
+                                                  {{$SingleServiceTypeDetail->cname}}
+                                            </td>
+                                            <?php
+                                            //Show button edit, view ,delete
+                                            if (Gate::allows('service_request_view')) {
+                                                $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceTypeDetail->id).'" class="btn btn-xs btn-primary" data-toggle="tooltip" title="View"><i class="fa fa-eye"></i></a>';
+                                            }
+                                            if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')) 
+                                            || (auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->status != 'Closed') 
+                                            || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceTypeDetail->is_accepted == 1 && $SingleServiceTypeDetail->status != 'Closed') ) 
+                                                {
+                                                    if (Gate::allows('service_request_edit')) {
+                                                        $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceTypeDetail->id).'" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>';
+                                                }
+                                            }
+                                            if (Gate::allows('service_request_delete')) {
+                                                $DeleteButtons = '<form action="'.route('admin.service_requests.destroy',$SingleServiceTypeDetail->id).'" method="post" onsubmit="return confirm(\'Are you sure ?\');" style="display: inline-block;">
+
+                                                <input name="_method" type="hidden" value="DELETE">
+                                                <input type="hidden"
+                                                name="_token"
+                                                value="'.csrf_token().'">
+                                                <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </button>
+
+                                                </form>';
+                                                }
+                                            ?>
+                                            <!--  Add Customer phone number in  listing -->
+                                            <td>{{ $SingleServiceTypeDetail->customer_name}}@if($SingleServiceTypeDetail->phone != '')<br>({{ $SingleServiceTypeDetail->phone }})  @endif</td>
                                             @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                                 <td align="right" nowrap><i class="fa fa-rupee"></i> <?php echo number_format($SingleServiceTypeDetail->amount, 2);?>
                                                 </td>
                                             @endif
                                             @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
-                                                <td align="left">{{ $createdByName }} </td>
+                                                <td class="text-center">{{ $createdByName }} </td>
                                             @endif
                                             <td align="center">
                                             {{date('d/m/Y',strtotime($SingleServiceTypeDetail->created_at))}}
@@ -442,6 +483,9 @@
                                                 @if($SingleServiceTypeDetail->is_reopen == 1)
                                                     <span class="label label-primary paddingMarginLeftLabel">Re-opened</span>
                                                 @endif
+                                            </td>
+                                            <td align="center">
+                                                <?php echo $ViewButtons.' '.$EditButtons.' '.$DeleteButtons;?>
                                             </td>
                                             
                                         </tr>

@@ -18,7 +18,12 @@
         </ul>
     </p> -->
     @endcan
-
+<style type="text/css">
+/* table th td align ment verticle center*/
+td,th{
+  vertical-align: middle!important;
+}
+</style>
 
     <div class="panel panel-default">
         <div class="panel-heading headerTitle">
@@ -57,9 +62,9 @@
                                 <td field-key='name'>{{ $product->name }}</td>
                                 <td field-key='category'>{{ $product->category->name or '' }}</td>
                                 <!-- <td class="text-right" field-key='price'> <i class="fa fa-rupee"></i> {{-- number_format($product->price,2) --}}</td> -->
-                                <td field-key='status'>{{ $product->status }}</td>
+                                <td field-key='status' class="text-center">{{ $product->status }}</td>
                                 @if( request('show_deleted') == 1 )
-                                <td>
+                                <td class="text-center">
                                     @can('product_delete')
                                                                         {!! Form::open(array(
                                         'style' => 'display: inline-block;',
@@ -80,11 +85,17 @@
                                 @endcan
                                 </td>
                                 @else
-                                <td>
+                                <td class="text-center">
                                     @can('product_edit')
-                                    <a href="{{ route('admin.products.edit',[$product->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
+                                    <a href="{{ route('admin.products.edit',[$product->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>
                                     @endcan
                                     @can('product_delete')
+                                     <form method="POST" action="<?php echo route('admin.products.destroy',$product->id);?>" accept-charset="UTF-8" style="display: inline-block;" onsubmit="return confirm('Are you sure ?');"><input name="_method" type="hidden" value="DELETE"><input name="_token" type="hidden" value="<?php echo csrf_token();?>">
+                                    <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                    <?php
+                                    /*
 {!! Form::open(array(
                                         'style' => 'display: inline-block;',
                                         'method' => 'DELETE',
@@ -92,6 +103,8 @@
                                         'route' => ['admin.products.destroy', $product->id])) !!}
                                     {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
                                     {!! Form::close() !!}
+                                    */
+                                    ?>
                                     @endcan
                                 </td>
                                 @endif

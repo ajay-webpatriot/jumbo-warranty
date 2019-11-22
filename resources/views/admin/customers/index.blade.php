@@ -20,7 +20,12 @@
         </ul>
     </p> -->
     @endcan
-
+<style type="text/css">
+/* table th td align ment verticle center*/
+td,th{
+  vertical-align: middle!important;
+}
+</style>
     @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         <div class="panel panel-default">
             <div class="panel-heading headerTitle" href="#collapseAdvanceFilter" data-toggle="collapse">
@@ -162,7 +167,11 @@
                         "searchable": false
                     },{
                         "orderable": false,
+                        "className": 'text-center',
                         "targets":   6
+                    },{
+                        "className": 'text-center',
+                        "targets":   [5,3]
                     }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                         $(nRow).attr('data-entry-id', aData.sr_no);
                     },
@@ -245,7 +254,8 @@
                         "searchable": false
                     },{
                         "orderable": false,
-                        "targets":   5
+                        "targets":   5,
+                        "className": 'text-center',
                     }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                         $(nRow).attr('data-entry-id', aData.sr_no);
                     },

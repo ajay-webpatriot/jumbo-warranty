@@ -40,9 +40,10 @@ $(document).ready(function(){
 		$("#product_error").html('');
 		// get technician according to service center for service request 
 		var companyId = $(this).val();
-		$(".custAddress").html('');
-		$(".cusEmail").html('');
-		$(".cusPhone").html('');		
+		$(".cusEmailbl").hide();
+		$(".cusPhonelbl").hide();
+		$(".custAddresslbl").hide();		
+		$(".custAddress").html('');		
 		$.ajax({
 	       	type:'GET',
 	       	url:APP_URL+'/admin/getCompanyDetails',
@@ -78,7 +79,10 @@ $(document).ready(function(){
 	{
 		// get technician according to service center for service request 
 		var customerId = $(this).val();
-
+		$(".cusEmailbl").hide();
+		$(".cusPhonelbl").hide();
+		$(".custAddresslbl").hide();		
+		$(".custAddress").html('');	
 		$.ajax({
 	       	type:'GET',
 	       	url:APP_URL+'/admin/getCustomerAddress',
@@ -88,6 +92,21 @@ $(document).ready(function(){
 	       	dataType: "json",
 	       	success:function(data) {
 	       		$(".custDiv").show();
+	       		if(data.email==""){
+	       			$(".cusEmailbl").hide();
+	       		}else{
+	       			$(".cusEmailbl").show();
+	       		}
+	       		if(data.phone==""){
+	       			$(".cusPhonelbl").hide();
+	       		}else{
+	       			$(".cusPhonelbl").show();
+	       		}
+	       		if(data.address==""){
+	       			$(".custAddresslbl").hide();
+	       		}else{
+	       			$(".custAddresslbl").show();
+	       		}
 	       		$(".custAddress").html(data.address);
 	       		//show email and phone show in edit and insert
 	       		$(".cusEmail").html(data.email);
@@ -307,6 +326,8 @@ $(document).ready(function(){
 		$("#customer-modal").find('.message').html('');
 		$("#customer-modal").find('.alert-danger').hide().html('');
 		$(".custAddress").html('');
+		$(".cusEmail").html('');
+		$(".cusPhone").html('');
 
 		// add company on click of save button
 		e.preventDefault();
@@ -342,6 +363,21 @@ $(document).ready(function(){
 
 							$(".custAddress").html(data.last_inserted_customer_address);
 							//show email and phone show in edit and insert
+							if(data.last_inserted_customer_email==""){
+				       			$(".cusEmailbl").hide();
+				       		}else{
+				       			$(".cusEmailbl").show();
+				       		}
+				       		if(data.last_inserted_customer_phone==""){
+				       			$(".cusPhonelbl").hide();
+				       		}else{
+				       			$(".cusPhonelbl").show();
+				       		}
+				       		if(data.last_inserted_customer_address==""){
+				       			$(".custAddresslbl").hide();
+				       		}else{
+				       			$(".custAddresslbl").show();
+				       		}
 							$(".cusEmail").html(data.last_inserted_customer_email);
 							$(".cusPhone").html(data.last_inserted_customer_phone);
 	       					getSuggestedServiceCenter(data.last_inserted_customer_id);

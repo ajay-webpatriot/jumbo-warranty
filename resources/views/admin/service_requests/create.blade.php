@@ -144,12 +144,17 @@
                                     <div class="row custDiv" style="display: none;">
                                         <div class="col-xs-12">
                                             <!-- show email and phone show in edit and insert -->
-                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label']) !!}
-                                            {!! Form::label('', '', ['class' => 'control-label fontweight cusEmail']) !!}
-                                            <br>
-                                            {!! Form::label('company_id', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label']) !!}
-                                             {!! Form::label('', '', ['class' => 'control-label fontweight cusPhone ']) !!}<br>
-                                            {!! Form::label('customer_address', trans('quickadmin.service-request.fields.customer-address').':', ['class' => 'control-label']) !!}
+                                            <div class="cusEmailbl" style="display:none;">
+                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label']) !!}
+                                                {!! Form::label('', '', ['class' => 'control-label fontweight cusEmail']) !!}
+                                                <br>
+                                            </div>
+                                            <div class="cusPhonelbl"style="display:none;">
+                                                {!! Form::label('company_id', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label']) !!}
+                                                 {!! Form::label('', '', ['class' => 'control-label fontweight cusPhone ']) !!}
+                                                 <br>
+                                             </div>
+                                            {!! Form::label('customer_address', trans('quickadmin.service-request.fields.customer-address').':', ['class' => 'control-label custAddresslbl']) !!}
                                             <div class="custAddress">
                                             </div>
                                             <p class="help-block"></p>

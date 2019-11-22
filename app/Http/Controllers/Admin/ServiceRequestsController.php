@@ -596,19 +596,31 @@ class ServiceRequestsController extends Controller
                 }
 
                 $tableField['created_at'] = date('d/m/Y',strtotime($SingleServiceRequest->created_at));
-
+                // OLd button
+                /*
                 if (Gate::allows('service_request_view')) {
                     $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary">View</a>';
+                }
+                */
+                //New button fa icon
+                if (Gate::allows('service_request_view')) {
+                    $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceRequest->id).'" class="btn btn-xs btn-primary" data-toggle="tooltip" title="View"><i class="fa fa-eye"></i></a>';
                 }
 
                 if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')) 
                 || (auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->status != 'Closed') 
                 || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->is_accepted == 1 && $SingleServiceRequest->status != 'Closed') ) 
                 {
-
+                    /* Old Button
                     if (Gate::allows('service_request_edit')) {
                         $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info">Edit</a>';
                     }
+                    */
+                    //New Button fa icon
+                    if (Gate::allows('service_request_edit')) {
+                        $EditButtons = '<a href="'.route('admin.service_requests.edit',$SingleServiceRequest->id).'" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>';
+                    }
+                    
                     
                 }
 
@@ -619,7 +631,9 @@ class ServiceRequestsController extends Controller
                     <input type="hidden"
                                name="_token"
                                value="'.csrf_token().'">
-                    <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+                               <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
+                               </button>
+                    
                     </form>';
                 }
 

@@ -185,7 +185,7 @@ class AssignProductsController extends Controller
 
                 $EditButtons = '';
                 if (Gate::allows('assign_product_edit')) {
-                    $EditButtons = '<a href="'.route('admin.assign_products.edit',$assignProduct->company_id).'" class="btn btn-xs btn-info">Edit</a>';
+                    $EditButtons = '<a href="'.route('admin.assign_products.edit',$assignProduct->company_id).'" class="btn btn-xs btn-info" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>';
                 }
                 $DeleteButtons = '';
                 if (Gate::allows('assign_product_delete')) {
@@ -195,7 +195,8 @@ class AssignProductsController extends Controller
                     <input type="hidden"
                                name="_token"
                                value="'.csrf_token().'">
-                    <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+                    <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </button>
                     </form>';
                 }
 

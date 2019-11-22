@@ -9,7 +9,12 @@
         
     </p>
     @endcan
-
+<style type="text/css">
+/* table th td align ment verticle center*/
+td,th{
+  vertical-align: middle!important;
+}
+</style>
     @can('assign_part_delete')
    <!--  <p>
         <ul class="list-inline">
@@ -155,7 +160,11 @@
                         "searchable": false
                     },{
                         "orderable": false,
+                        "className": 'text-center',
                         "targets":   6
+                    },{
+                        "className": 'text-right',
+                        "targets":   [4,5]
                     }],"fnCreatedRow": function( nRow, aData, iDataIndex ) {
                         $(nRow).attr('data-entry-id', aData.sr_no);
                     },
