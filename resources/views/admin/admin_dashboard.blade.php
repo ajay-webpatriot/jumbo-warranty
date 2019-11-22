@@ -387,7 +387,10 @@
                                     <tr>
                                         <th>@lang('quickadmin.service-request.fields.request-id')</th>
                                         <th>@lang('quickadmin.service-request.fields.title')</th>
+                                        <!-- check role id to show company name -->
+                                         @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                         <th>@lang('quickadmin.service-request.fields.company')</th>
+                                        @endif
                                         <th>@lang('quickadmin.service-request.fields.customer')</th>
                                         @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
 
@@ -424,7 +427,10 @@
                                                         <!-- <span style="margin:auto; display:table;">{{$status}}</span> -->
                                                 </a>
                                             </td>
+                                            <!-- check role id to show company name -->
+                                             @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
                                             <td>{{ $SingleServiceTypeDetail->cname}}</td>
+                                            @endif 
                                             <td>{{ $SingleServiceTypeDetail->customer_name}}@if($SingleServiceTypeDetail->phone != '')<br>({{ $SingleServiceTypeDetail->phone }})  @endif</td>
                                             @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
                                                 <td align="right" nowrap><i class="fa fa-rupee"></i> <?php echo number_format($SingleServiceTypeDetail->amount, 2);?>
