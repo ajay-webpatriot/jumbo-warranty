@@ -26,6 +26,8 @@ td,th{
 .daterangepicker .calendar{
     max-width: 300px !important;
 }
+.table-bordered>thead>tr>th:nth-child(8) {
+    width: 100px!important;
 }
 </style>
     <!-- Filter portion start -->
