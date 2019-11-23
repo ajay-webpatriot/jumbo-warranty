@@ -15,7 +15,7 @@
       vertical-align: middle!important;
     }
     .daterangepicker .calendar{
-        max-width: 300px !important;
+        max-width: 348px !important;
     }
     .table-bordered>thead>tr>th:nth-child(8) {
         width: 100px!important;
