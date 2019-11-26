@@ -353,9 +353,20 @@ class CustomersController extends Controller
             $request['location_latitude']=$resultLocation['lat'];
             $request['location_longitude']=$resultLocation['lng'];
         }else{
+             $validvalidatorError['location_latitude'] ='Invalid zipcode.';
             //Check lat & long for request zipcode
-            $validvalidatorError['location_latitude'] ='Invalid zipcode.';
-            return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
+            if($request->ajax()){
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'Invalid zipcode.',
+                    'errors' => $validvalidatorError
+                ));
+
+            }else{
+               
+                return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
+            exit;
+            }
         }
         // else
         // {
@@ -481,7 +492,19 @@ class CustomersController extends Controller
                 }else{
                     //Check lat & long for request zipcode
                     $validvalidatorError['location_latitude'] ='Invalid zipcode.';
-                    return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
+                    if($request->ajax()){
+                        return response()->json(array(
+                            'success' => false,
+                            'message' => 'There are incorect values in the form!',
+                            'errors' => $validvalidatorError
+                        ));
+
+                    }else{
+                        
+                        return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
+                         exit;
+                    }
+
                 }
             }
         }

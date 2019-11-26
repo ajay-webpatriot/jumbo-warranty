@@ -466,7 +466,7 @@
                                                 $ViewButtons = '<a href="'.route('admin.service_requests.show',$SingleServiceTypeDetail->id).'" class="btn btn-xs btn-primary" data-toggle="tooltip" title="View"><i class="fa fa-eye"></i></a>';
                                             }
                                             if((auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')) 
-                                            || (auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceRequest->status != 'Closed') 
+                                            || (auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceTypeDetail->status != 'Closed') 
                                             || (auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID') && $SingleServiceTypeDetail->is_accepted == 1 && $SingleServiceTypeDetail->status != 'Closed') ) 
                                                 {
                                                     if (Gate::allows('service_request_edit')) {

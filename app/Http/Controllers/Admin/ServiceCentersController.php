@@ -127,8 +127,19 @@ class ServiceCentersController extends Controller
             $request['location_longitude']=$resultLocation['lng'];
         }else{
             //Check lat & long for request zipcode
+
             $validvalidatorError['location_latitude'] ='Invalid zipcode.';
-            return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError);
+            if($request->ajax())
+            {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'There are incorect values in the form!',
+                    'errors' => $validvalidatorError
+                ));
+            }else{
+                return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError);
+                exit;
+            }
         }
 
         $service_center = ServiceCenter::create($request->all());
@@ -239,7 +250,17 @@ class ServiceCentersController extends Controller
                 }else{
                     //Check lat & long for request zipcode
                     $validvalidatorError['location_latitude'] ='Invalid zipcode.';
-                    return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
+                    if($request->ajax())
+                    {
+                        return response()->json(array(
+                            'success' => false,
+                            'message' => 'There are incorect values in the form!',
+                            'errors' => $validvalidatorError
+                        ));
+                    }else{
+                        return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
+                        exit;
+                    }
                 }
             }
         }     
