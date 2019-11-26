@@ -292,7 +292,11 @@ $(document).ready(function(){
                   			$("#company-modal").find('.alert-danger').show();
                   			$("#company-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
-		       		}
+					}
+
+					$("#company-modal").on("hidden.bs.modal", function() {
+						$(".modal-body").html("");
+					});
 				},
 				error: function(xhr, ajaxOptions, thrownError) {
 
@@ -325,10 +329,7 @@ $(document).ready(function(){
 
 		$("#customer-modal").find('.message').html('');
 		$("#customer-modal").find('.alert-danger').hide().html('');
-		$(".custAddress").html('');
-		$(".cusEmail").html('');
-		$(".cusPhone").html('');
-
+		
 		// add company on click of save button
 		e.preventDefault();
 	    if ($("#customer-modal").find("form")[0].checkValidity()) {
@@ -361,25 +362,29 @@ $(document).ready(function(){
 
 							$('select#customer_id').append('<option '+selected+' value="'+data.last_inserted_customer_id+'" >'+data.last_inserted_customer_name+'</option>');
 
-							$(".custAddress").html(data.last_inserted_customer_address);
 							//show email and phone show in edit and insert
 							if(data.last_inserted_customer_email==""){
 				       			$(".cusEmailbl").hide();
 				       		}else{
-				       			$(".cusEmailbl").show();
+								$(".cusEmail").html('');
+								$(".cusEmailbl").show();
+								$(".cusEmail").html(data.last_inserted_customer_email);
 				       		}
 				       		if(data.last_inserted_customer_phone==""){
 				       			$(".cusPhonelbl").hide();
 				       		}else{
-				       			$(".cusPhonelbl").show();
+								$(".cusPhone").html('');
+								$(".cusPhonelbl").show();
+								$(".cusPhone").html(data.last_inserted_customer_phone);
 				       		}
 				       		if(data.last_inserted_customer_address==""){
 				       			$(".custAddresslbl").hide();
 				       		}else{
-				       			$(".custAddresslbl").show();
+								$(".custAddress").html('');
+								$(".custAddresslbl").show();
+								$(".custAddress").html(data.last_inserted_customer_address);
 				       		}
-							$(".cusEmail").html(data.last_inserted_customer_email);
-							$(".cusPhone").html(data.last_inserted_customer_phone);
+							
 	       					getSuggestedServiceCenter(data.last_inserted_customer_id);
 						}
 						var alertBox = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Customer created successfully!</div>';
@@ -396,7 +401,11 @@ $(document).ready(function(){
                   			$("#customer-modal").find('.alert-danger').show();
                   			$("#customer-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
-		       		}
+					}
+					   
+					$("#customer-modal").on("hidden.bs.modal", function() {
+						$(".modal-body").html("");
+					});
 				},
 				error: function(xhr, ajaxOptions, thrownError) {
 					
@@ -468,7 +477,11 @@ $(document).ready(function(){
                   			$("#service-center-modal").find('.alert-danger').show();
                   			$("#service-center-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
-		       		}
+					}
+					
+					$("#service-center-modal").on("hidden.bs.modal", function() {
+						$(".modal-body").html("");
+					});
 				},
 				error: function(xhr, ajaxOptions, thrownError) {
 					
@@ -541,7 +554,11 @@ $(document).ready(function(){
                   			$("#technician-modal").find('.alert-danger').show();
                   			$("#technician-modal").find('.alert-danger').append('<p>'+value+'</p>');
                   		});
-		       		}
+					}
+
+					$("#technician-modal").on("hidden.bs.modal", function() {
+						$(".modal-body").html("");
+					});
 				},
 				error: function(xhr, ajaxOptions, thrownError) {
 

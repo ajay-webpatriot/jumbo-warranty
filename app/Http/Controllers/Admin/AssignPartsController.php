@@ -56,7 +56,7 @@ class AssignPartsController extends Controller
             }
             else
             {
-                $assign_parts = AssignPart::all();
+                $assign_parts = AssignPart::all()->sortByDesc('id');
             }
             
             

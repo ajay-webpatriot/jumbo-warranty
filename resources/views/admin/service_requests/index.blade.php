@@ -110,7 +110,8 @@
                                 </div>
                             </div> 
                         </div>
-                        <div class="col-md-4 service_center_balance" <?=(!empty(session('filter_service_center')))? 'style="display: block;"':'style="display: none;"'?>>
+                        <!-- <div class="col-md-4 service_center_balance" <?//=(!empty(session('filter_service_center')))? 'style="display: block;"':'style="display: none;"'?>> -->
+                        <div class="col-md-4 service_center_balance pull-right">
                             <div class="row"> 
                                 <div class="col-lg-6 pull-right balance_details">
                                     {!! Form::label('', '', ['class' => 'control-label']) !!}
@@ -1402,7 +1403,9 @@
                     }
                     else
                     {
-                        $(".service_center_balance").hide();
+                        // $(".service_center_balance").hide();
+                        $("#total_paid_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.paid_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                        $("#total_due_amount").html('<i class="fa fa-rupee"></i>'+(parseFloat(data.due_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') );
                     }
                     $(".filterTechnicianDiv").find(".select2").select2();
                     $("#filter_technician").html(data.options);

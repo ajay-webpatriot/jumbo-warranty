@@ -50,7 +50,7 @@ class ServiceCentersController extends Controller
             }
             $service_centers = ServiceCenter::onlyTrashed()->get();
         } else {
-            $service_centers = ServiceCenter::all();
+            $service_centers = ServiceCenter::all()->sortByDesc('id');
         }
 
         return view('admin.service_centers.index', compact('service_centers'));

@@ -43,7 +43,7 @@ class ProductPartsController extends Controller
             }
             $product_parts = ProductPart::onlyTrashed()->get();
         } else {
-            $product_parts = ProductPart::all();
+            $product_parts = ProductPart::all()->sortByDesc('id');
         }
 
         return view('admin.product_parts.index', compact('product_parts'));

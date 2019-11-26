@@ -139,7 +139,7 @@ class ServiceRequestsController extends Controller
                     }
                 } 
             }
-            else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+            else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') )
             {
                 // fetch product and customer of assigned request to service center admin for filter functionality
                 $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
@@ -157,9 +157,28 @@ class ServiceRequestsController extends Controller
                         
                     }
                 }   
-                $total_paid_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',auth()->user()->service_center_id)->where('is_paid','1')->sum('amount');
+                
+                /**
+                 * Total Paid amount.
+                 */
+                $total_paid_amounts = ServiceRequest::select('id','amount');
+                
+                if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+                    $total_paid_amounts->where('service_center_id',auth()->user()->service_center_id);
+                }
 
-                $total_due_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',auth()->user()->service_center_id)->where('is_paid','0')->sum('amount');
+                $total_paid_amount = $total_paid_amounts->where('status','Closed')->where('is_paid','1')->sum('amount');
+                
+                /**
+                 * Total Due amount.
+                 */
+                $total_due_amounts = ServiceRequest::select('id','amount');
+
+                if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+                    $total_due_amounts->where('service_center_id',auth()->user()->service_center_id);
+                }
+
+                $total_due_amount = $total_due_amounts->where('status','Closed')->where('is_paid','0')->sum('amount');
             }
             else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
@@ -179,10 +198,8 @@ class ServiceRequestsController extends Controller
                     }
                 }  
             }
-            
-
-            
         }
+
         $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->where('status','Active')->get()->pluck('name');
         
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
@@ -208,9 +225,31 @@ class ServiceRequestsController extends Controller
                                     ->orderBy('name')
                                     ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
 
-                $total_paid_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',session('filter_service_center'))->where('is_paid','1')->sum('amount');
+                // $total_paid_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',session('filter_service_center'))->where('is_paid','1')->sum('amount');
 
-                $total_due_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',session('filter_service_center'))->where('is_paid','0')->sum('amount');
+                // $total_due_amount = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',session('filter_service_center'))->where('is_paid','0')->sum('amount');
+
+                 /**
+                 * Total Paid amount.
+                 */
+                $total_paid_amounts = ServiceRequest::select('id','amount');
+                
+                if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+                    $total_paid_amounts->where('service_center_id',session('filter_service_center'));
+                }
+
+                $total_paid_amount = $total_paid_amounts->where('status','Closed')->where('is_paid','1')->sum('amount');
+                
+                /**
+                 * Total Due amount.
+                 */
+                $total_due_amounts = ServiceRequest::select('id','amount');
+
+                if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+                    $total_due_amounts->where('service_center_id',session('filter_service_center'));
+                }
+
+                $total_due_amount = $total_due_amounts->where('status','Closed')->where('is_paid','0')->sum('amount');
             }
             else
             {
@@ -293,13 +332,9 @@ class ServiceRequestsController extends Controller
         $start = $request->input('start');
         $order = $columnArray[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
-        
-// echo $order;exit;
+
         // $order = $request->input('order');
-        // echo "<pre>";
-        // print_r($request->all());
-        // echo "</pre>";
-        // exit();
+        
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
@@ -545,9 +580,14 @@ class ServiceRequestsController extends Controller
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
                     $tableField['amount'] = '<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
 
-                    $paidStatus = 'Due';
+                    $paidStatus = ' - ';
                     if($SingleServiceRequest->is_paid == 1 && $SingleServiceRequest->status == "Closed" ){
+
                         $paidStatus = 'Paid';
+
+                    }else if($SingleServiceRequest->is_paid == 0 && $SingleServiceRequest->status == "Closed"){
+
+                        $paidStatus = 'Due';
                     }
                     $tableField['amount_paid'] = ucfirst($paidStatus);
 
@@ -555,9 +595,12 @@ class ServiceRequestsController extends Controller
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
                     $tableField['company_name'] =ucfirst($SingleServiceRequest->cname);
 
-                    $paidStatus = 'Due';
+                    $paidStatus = ' - ';
                     if($SingleServiceRequest->is_paid == 1 && $SingleServiceRequest->status == "Closed" ){
                         $paidStatus = 'Paid';
+                    }else if($SingleServiceRequest->is_paid == 0 && $SingleServiceRequest->status == "Closed"){
+                        
+                        $paidStatus = 'Due';
                     }
                     $tableField['amount_paid'] = ucfirst($paidStatus);
 
@@ -2397,7 +2440,7 @@ class ServiceRequestsController extends Controller
         $data['options']="<option value=''>".trans('quickadmin.qa_show_all')."</option>";
         $data['paid_amount'] = 0;
         $data['due_amount'] = 0;
-        if($details['serviceCenterId'] != "")
+        if($details['serviceCenterId'] != "" && $details['serviceCenterId'] != 0)
         {
             $query = \App\User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
                         ->orderby('name');
@@ -2419,9 +2462,12 @@ class ServiceRequestsController extends Controller
             $data['paid_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','1')->sum('amount');
 
             $data['due_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','0')->sum('amount');
+        }else{
+            $data['paid_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('is_paid','1')->sum('amount');
+
+            $data['due_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('is_paid','0')->sum('amount');
         }
-
-
+               
         echo json_encode($data);
         exit;
     

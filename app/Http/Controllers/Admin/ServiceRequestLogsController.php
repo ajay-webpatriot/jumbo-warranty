@@ -52,7 +52,7 @@ class ServiceRequestLogsController extends Controller
         }
         else
         {
-            $service_request_log = ServiceRequest::all();
+            $service_request_log = ServiceRequest::all()->sortByDesc('id');
         }
     	// $service_request_log = ServiceRequestLog::all();
        	return view('admin.service_request_logs.index', compact('service_request_log'));

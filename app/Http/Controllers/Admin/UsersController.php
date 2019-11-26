@@ -45,9 +45,9 @@ class UsersController extends Controller
         //     $users = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('service_center_id',auth()->user()->service_center_id)->get();
         // }
         // else
-        {
-            $users = User::where('role_id',config('constants.ADMIN_ROLE_ID'))->get();
-        }
+        // {
+            $users = User::where('role_id',config('constants.ADMIN_ROLE_ID'))->orderby('id','DESC')->get();
+        // }
         
         
         

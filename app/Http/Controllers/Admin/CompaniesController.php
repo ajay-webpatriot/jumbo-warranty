@@ -46,7 +46,7 @@ class CompaniesController extends Controller
             }
             $companies = Company::onlyTrashed()->get();
         } else {
-            $companies = Company::all();
+            $companies = Company::all()->sortByDesc('id');
         }
 
         return view('admin.companies.index', compact('companies'));

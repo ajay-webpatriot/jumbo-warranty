@@ -43,7 +43,7 @@ class CategoriesController extends Controller
             }
             $categories = Category::onlyTrashed()->get();
         } else {
-            $categories = Category::all();
+            $categories = Category::all()->sortByDesc('id');
         }
 
         return view('admin.categories.index', compact('categories'));
