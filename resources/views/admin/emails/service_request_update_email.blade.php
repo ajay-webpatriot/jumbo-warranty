@@ -21,9 +21,11 @@
                                 <h3 style="margin: 1em 0px 1em 0px;">Service Request ( {{ 'JW'.sprintf("%04d", $service_request->id) }} )</h3>
                                 <span>{{$update_message}}</span>
                             </div>
-                            <div style="margin-top: 2%;">
-                                <a href="{{ route('admin.service_requests.show',[$service_request->id]) }}" class="btn btn-xs btn-primary">Click here for more detail</a>
-                            </div>
+                            @if($role != "customer" && !empty($role))
+                                <div style="margin-top: 2%;">
+                                    <a href="{{ route('admin.service_requests.show',[$service_request->id]) }}" class="btn btn-xs btn-primary">Click here for more detail</a>
+                                </div>
+                            @endif
                         </td>
                     </tr>
 

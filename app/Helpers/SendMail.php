@@ -291,7 +291,8 @@ class SendMail
        
         foreach ($receiver_email as $key => $value) {
           if(!empty($value))
-          {
+          { 
+              $role = "";
               // if($key == 'admin')
               // {
               //   $username = $admin->name;
@@ -308,12 +309,16 @@ class SendMail
               // else if($key == 'customer'){
               //   $username = $customer->firstname.' '.$customer->lastname;
               // }
+              if($key == 'customer'){
+                $role = 'customer';
+              }
               $to_email=$value;
               $data=array('subject' => 'Service Request Status Changed',
                     // 'user_name' => ucwords($username),
                     'service_request' => $service_request,
                     'receiver_email' => $value,
-                    'update_message' => $update_message
+                    'update_message' => $update_message,
+                    'role' => $role,
                     );
           
               Mail::send('admin.emails.service_request_update_email',$data, function ($message)  use ( $to_email){

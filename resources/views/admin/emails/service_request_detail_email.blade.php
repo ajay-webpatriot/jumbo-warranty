@@ -313,7 +313,7 @@
                                                             <div class="form-group">
                                                                 {!! Form::label('parts', trans('quickadmin.service-request.fields.parts').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 @foreach ($service_request->parts as $singleParts)
-                                                                    <span class="label label-info label-many" style="
+                                                                    <span class="label label-many" style="
                                                                     margin-right: 5px;
                                                                     margin-bottom: 5px!important;
                                                                     display: inline-block;
