@@ -4,6 +4,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\ServiceRequestLog;
+// use SendMailHelper;
+use CommonFunctionsHelper;
 
 use DB;// DB library
 /**
@@ -480,6 +483,11 @@ class ServiceRequest extends Model
         $response = 0;
 
         if(isset($requestId) && $requestId != '' && $requestId != 0){
+            $service_request = ServiceRequest::where('id',$requestId)->with('technician')->first();
+
+            $technicianName = $service_request->technician->name;
+            $technicianId = $service_request->technician->id;
+            
             if($status == 1){
             
                 // $updateArray = array(
@@ -489,6 +497,7 @@ class ServiceRequest extends Model
                  $updateArray = array(
                     'is_accepted'  => 1
                 );
+                $statusAction = "accepted";
             }else{
                 // $updateArray = array(
                 //     'is_accepted'   => 0,
@@ -500,11 +509,42 @@ class ServiceRequest extends Model
                     'technician_id' => NULL,
                     'status'        =>'Service center assigned'
                 );
+                $statusAction = "rejected";
             }
+
             $requestStatus = ServiceRequest::where('id',$requestId)
             ->where('status','!=','Closed')->update($updateArray);
 
             if($requestStatus == 1){
+
+                /**
+                 * add service request log.
+                 */
+                $insertServiceRequestLogArr =  array(
+                    'action_made' => "Technician ".$technicianName." has ".$statusAction." request.", 
+                    'action_made_company' => "Technician has ".$statusAction." request.", 
+                    'action_made_service_center' => "Technician ".$technicianName." has ".$statusAction." request.", 
+                    'service_request_id' => $requestId,
+                    'user_id' => $technicianId
+                );
+                ServiceRequestLog::create($insertServiceRequestLogArr);
+
+                /**
+                 * send request status mail.
+                 */
+                // SendMailHelper::sendRequestAcceptRejectMail($requestId,$technicianName);
+
+                /**
+                 * send request status mail.
+                 */
+                $url = config('constants.APP_URL').'/sendMailCurl';
+                $postFields = array(
+                    'functionName' => 'requestStatusApi',
+                    'servicerequestId' => $requestId,
+                    "technicianName" => $technicianName,
+                );
+                $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
+
                 $response = 1;
             }
         }

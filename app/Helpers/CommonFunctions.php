@@ -1,5 +1,6 @@
 <?php
 namespace App\Helpers;
+use Log;
 
 class CommonFunctions 
 {
@@ -41,8 +42,49 @@ class CommonFunctions
         return $token;
     }
 
+    public static function postCURL($url,$fields=array())
+    {
+		$headers = array(
+            'Content-Type: application/json'
+        );
 
-	
+        // Open connection
+        $ch = curl_init();
+
+        // Set the url, number of POST vars, POST data
+        // curl_setopt( $ch, CURLOPT_URL, $url );
+        // curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+        // curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "POST");
+        // curl_setopt( $ch, CURLOPT_POST, 1);
+        // curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $fields ));
+        // curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        // curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
+        // curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt( $ch, CURLOPT_URL, $url );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $fields ));
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        // Execute post
+        $result = curl_exec($ch);
+
+        if ($result === FALSE) {
+            Log::error('Oops! FCM Send Error: ' . curl_error($ch));
+            // die('Oops! FCM Send Error: ' . curl_error($ch));
+        }
+
+        // Close connection
+        Log::info("== sending fields ==".json_encode( $fields ));
+        Log::info("== sending result ==".json_encode( $result ));
+        curl_close($ch);
+
+        return $result;
+
+    }
 }
 
 ?>

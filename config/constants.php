@@ -12,7 +12,8 @@ return [
 	'SMS_SENDER_NAME' => env('SMS_SENDER_NAME',null),
 	'SMS_USER_ID' => env('SMS_USER_ID',null),
 	'SMS_API_PASSWORD' => env('SMS_API_PASSWORD',null),
-	'SMS_PORTAL_PASSWORD' => env('SMS_PORTAL_PASSWORD',null)
+	'SMS_PORTAL_PASSWORD' => env('SMS_PORTAL_PASSWORD',null),
+	'APP_URL' => env('APP_URL',null),
 ];
 
 ?>

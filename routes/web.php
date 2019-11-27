@@ -133,9 +133,6 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
     //Customer ajax data table
     Route::post('/DataTableCustomerAjax','Admin\CustomersController@DataTableCustomerAjax');
 
-    //Customer ajax data table
-    Route::post('/DataTableCustomerAjax','Admin\CustomersController@DataTableCustomerAjax');
-
     //Assign products ajax data table
     Route::post('/DataTableAssignProductAjax','Admin\AssignProductsController@DataTableAssignProductAjax');
     Route::post('/DataTableAssignProductAdminAjax','Admin\AssignProductsController@DataTableAssignProductAdminAjax');
@@ -153,6 +150,9 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
 
     // Reopen Closed Request
     Route::post('/reopenRequest', ['uses' => 'Admin\ServiceRequestsController@reopenClosedRequest']);
-
 });
-  
+
+/**
+ * send mail using curl (this route not under middleware and escaping csrf token)
+ */
+Route::post('/sendMailCurl', ['uses' => 'Admin\ServiceRequestsController@sendMailUsingCURL']);

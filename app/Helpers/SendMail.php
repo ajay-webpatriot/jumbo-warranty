@@ -19,13 +19,14 @@ class SendMail
       //               ->setBody('<h1>Hi, welcome user!</h1>', 'text/html'); // for HTML rich messages
       //       });
         $service_request = ServiceRequest::findOrFail($request_id);
-        
+
     		// $service_request=$service_request[0];
     		// echo "<pre>"; print_r ($service_request); echo "</pre>"; exit();
     		// echo $service_request->additional_charges;
          // echo "<pre>"; print_r ($service_request); echo "</pre>"; exit();
-        if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID')){
 
+        // if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID')){
+         
           $additional_charge_array=json_decode($service_request['additional_charges']);
           $pre_additional_charge_array = config('constants.PRE_ADDITIONAL_CHARGES_FOR');
          
@@ -92,7 +93,7 @@ class SendMail
 
           $service_request['additional_charges']=$additional_charges;
           $service_request['additional_charges_title']=$additional_charge_title;
-        }
+        // }
 
         $admin_email= "";
         $company_admin_email = "";
@@ -248,11 +249,12 @@ class SendMail
         } 
     
 
-        $receiver_email=array('admin' => $admin_email,
-                              // 'company_admin' => $company_admin_email,
-                              'customer' => $customer_email,
-                              'rajdip' => 'rajdip.webpatriot@gmail.com'
-                            );
+        $receiver_email = array('admin' => $admin_email,
+          // 'company_admin' => $company_admin_email,
+          'customer' => $customer_email,
+          'rajdip' => 'rajdip.webpatriot@gmail.com'
+        );
+
         if($service_request->status == "Closed")
         {
           $company_admin= \App\User::where('company_id',$service_request->company_id)
@@ -262,18 +264,8 @@ class SendMail
 
           if(!empty($company_admin)){  
             // $company_admin_email=$company_admin->email;
-            $company_admin_email=$company_admin;
+            $company_admin_email = $company_admin;
             $receiver_email['company_admin'] = $company_admin_email;
-          }
-            
-          $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
-                                          ->where('status','Active')
-                                          ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
-                                          ->get()->pluck('email')->toArray();
-          if(!empty($service_center_admin)){
-            // $service_center_admin_email=$service_center_admin->email;
-            $service_center_admin_email=$service_center_admin;
-            $receiver_email['service_center_admin'] = $service_center_admin_email;
           }
 
           $technician= \App\User::where('id',$service_request->technician_id)
@@ -284,6 +276,17 @@ class SendMail
             $technician_email=$technician->email;
             $receiver_email['technician'] = $technician_email;
           }
+        }
+
+        $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
+          ->where('status','Active')
+          ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
+          ->get()->pluck('email')->toArray();
+
+        if(!empty($service_center_admin)){
+          // $service_center_admin_email=$service_center_admin->email;
+          $service_center_admin_email=$service_center_admin;
+          $receiver_email['service_center_admin'] = $service_center_admin_email;
         }
        
         foreach ($receiver_email as $key => $value) {

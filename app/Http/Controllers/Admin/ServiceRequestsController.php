@@ -18,6 +18,7 @@ use Spatie\Permission\Models\Permission as perm;
 
 // get lat long & distance
 use GoogleAPIHelper;
+use CommonFunctionsHelper;
 use Dompdf\Dompdf;
 use SendMailHelper;
 use Session;
@@ -34,7 +35,7 @@ class ServiceRequestsController extends Controller
                 return abort(404);
             }
             return $next($request);
-        });
+        })->except('sendMailUsingCURL');
     }
     /**
      * Display a listing of ServiceRequest.
@@ -932,10 +933,18 @@ class ServiceRequestsController extends Controller
 
         $service_request = ServiceRequest::create($request->all());
         $service_request->parts()->sync(array_filter((array)$request->input('parts')));
-        SendMailHelper::sendRequestCreationMail($service_request->id);
 
-        // SendMailHelper::sendRequestCreationMail(195);
+        /**
+         * send request status mail.
+         */
+        $url = config('constants.APP_URL').'/sendMailCurl';
+        $postFields = array(
+            'functionName' => 'storeRequest',
+            'servicerequestId' => $service_request->id
+        );
+        $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
 
+        // SendMailHelper::sendRequestCreationMail($service_request->id);
         // service request log for new request
         $insertServiceRequestLogArr = array(
                                         'action_made'     =>   "Service request is created.",
@@ -971,12 +980,6 @@ class ServiceRequestsController extends Controller
         return redirect()->route('admin.service_requests.index')->with('success','Service Request created successfully!');
     }
 
-    // public function serviceRequestMail(Type $var = null)
-    // {
-    //     SendMailHelper::sendRequestCreationMail($service_request->id);
-    // }
-
-
     /**
      * Show the form for editing ServiceRequest.
      *
@@ -988,7 +991,7 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_edit')) {
             return abort(401);
         }
-        // SendMailHelper::sendRequestCreationMail($id);
+
         $companies = \App\Company::where('status','Active')
                                 ->orderBy('name')
                                 ->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
@@ -1549,8 +1552,18 @@ class ServiceRequestsController extends Controller
         {
             //send mail on every status change
             $msg='Status is changed from '.$request_status.' to '.$request['status'].'.';
-            // echo $id;exit;
-            SendMailHelper::sendRequestUpdateMail($id,$msg);
+
+            /**
+             * send request status mail.
+             */
+            $url = config('constants.APP_URL').'/sendMailCurl';
+            $postFields = array(
+                'functionName' => 'statusChange',
+                'servicerequestId' => $id,
+                "message" => $msg,
+            );
+            $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
+            // SendMailHelper::sendRequestUpdateMail($id,$msg);
         }
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
 
@@ -1576,21 +1589,48 @@ class ServiceRequestsController extends Controller
     {
         
         $request = ServiceRequest::find($id);
-        
+
+        $technicianId = $request->technician->id;
+
         if($request) {
             $technician_name = $request->technician->name;
             $request->is_accepted = 1;
             $request->save();
 
-            SendMailHelper::sendRequestAcceptRejectMail($id,$technician_name);
+            /**
+             * Insert status accept request log. 
+             */
+            $insertServiceRequestLogArr =  array(
+                'action_made' => "Technician ".$technician_name." has accepeted request.", 
+                'action_made_company' => "Technician has accepeted request.", 
+                'action_made_service_center' => "Technician ".$technician_name." has accepeted request.", 
+                'service_request_id' => $id,
+                'user_id' => $technicianId
+            );
+            ServiceRequestLog::create($insertServiceRequestLogArr);
+
+            /**
+             * send request status mail.
+             */
+            $url = config('constants.APP_URL').'/sendMailCurl';
+            $postFields = array(
+                'functionName' => 'acceptRequest',
+                'servicerequestId' => $id,
+                "technicianName" => $technician_name,
+            );
+            $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
+
+            // SendMailHelper::sendRequestAcceptRejectMail($id,$technician_name);
         }
         
         return redirect()->route('admin.service_requests.index');
     }
     public function rejectServiceRequest($id)
     {
-        // SendMailHelper::sendRequestAcceptRejectMail($id);
+
         $request = ServiceRequest::find($id);
+
+        $technicianId = $request->technician->id;
 
         if($request) {
             $technician_name = $request->technician->name;
@@ -1598,7 +1638,30 @@ class ServiceRequestsController extends Controller
             $request->status = 'Service center assigned';
             $request->save();
 
-            SendMailHelper::sendRequestAcceptRejectMail($id,$technician_name);
+            /**
+             * Insert status reject request log. 
+             */
+            $insertServiceRequestLogArr =  array(
+                'action_made' => "Technician ".$technician_name." has rejected request.", 
+                'action_made_company' => "Technician has rejected request.", 
+                'action_made_service_center' => "Technician ".$technician_name." has rejected request.", 
+                'service_request_id' => $id,
+                'user_id' => $technicianId
+            );
+            ServiceRequestLog::create($insertServiceRequestLogArr);
+
+            /**
+             * send request status mail.
+             */
+            $url = config('constants.APP_URL').'/sendMailCurl';
+            $postFields = array(
+                'functionName' => 'rejectRequest',
+                'servicerequestId' => $id,
+                "technicianName" => $technician_name,
+            );
+            $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
+
+            // SendMailHelper::sendRequestAcceptRejectMail($id,$technician_name);
         }
         return redirect()->route('admin.service_requests.index');
     }
@@ -2675,13 +2738,56 @@ class ServiceRequestsController extends Controller
 
             //send mail on every status change
             $msg='Status is changed from '.$service_request->status.' to Re-opened.';
+                
+            /**
+             * send request status mail.
+             */
+            $url = config('constants.APP_URL').'/sendMailCurl';
+            $postFields = array(
+                'functionName' => 'reopenRequest',
+                'servicerequestId' => $service_request->id,
+                "message" => $msg,
+                'status' => 'Re-opened',
+            );
+            $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
 
             /* send mail */
-            SendMailHelper::sendRequestUpdateMail($service_request->id,$msg,'Re-opened');
-
-            $status = 1;
+            // SendMailHelper::sendRequestUpdateMail($service_request->id,$msg,'Re-opened');
             
+            $status = 1;
         }
         return response()->json($status);
+    }
+
+    public function sendMailUsingCURL(Request $request)
+    {
+        if(isset($request['functionName']) && !empty($request['functionName'])){
+
+            /**
+             * Send email according to type using CURL.
+             */
+            switch ($request['functionName']) {
+                case "reopenRequest":
+                    SendMailHelper::sendRequestUpdateMail($request['servicerequestId'],$request['message'],$request['status']);
+                    break;
+                case "storeRequest":
+                    SendMailHelper::sendRequestCreationMail($request['servicerequestId']);
+                    break;
+                case "statusChange":
+                    SendMailHelper::sendRequestUpdateMail($request['servicerequestId'],$request['message']);
+                    break;
+                case "acceptRequest":
+                    SendMailHelper::sendRequestAcceptRejectMail($request['servicerequestId'],$request['technicianName']);
+                    break;
+                case "rejectRequest":
+                    SendMailHelper::sendRequestAcceptRejectMail($request['servicerequestId'],$request['technicianName']);
+                    break;
+                case "requestStatusApi":
+                    SendMailHelper::sendRequestAcceptRejectMail($request['servicerequestId'],$request['technicianName']);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
