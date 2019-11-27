@@ -2785,6 +2785,9 @@ class ServiceRequestsController extends Controller
                 case "requestStatusApi":
                     SendMailHelper::sendRequestAcceptRejectMail($request['servicerequestId'],$request['technicianName']);
                     break;
+                case "updateRequestDetailV2":
+                    SendMailHelper::sendRequestUpdateMail($request['servicerequestId'],$request['message']);
+                    break;
                 default:
                     break;
             }

@@ -537,13 +537,13 @@ class ServiceRequest extends Model
                 /**
                  * send request status mail.
                  */
-                $url = config('constants.APP_URL').'/sendMailCurl';
-                $postFields = array(
-                    'functionName' => 'requestStatusApi',
-                    'servicerequestId' => $requestId,
-                    "technicianName" => $technicianName,
-                );
-                $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
+                // $url = config('constants.APP_URL').'/sendMailCurl';
+                // $postFields = array(
+                //     'functionName' => 'requestStatusApi',
+                //     'servicerequestId' => $requestId,
+                //     "technicianName" => $technicianName,
+                // );
+                // $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
 
                 $response = 1;
             }

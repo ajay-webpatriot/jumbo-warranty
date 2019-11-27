@@ -7,6 +7,7 @@ use Validator;
 use Hash;
 use App\ServiceRequest;
 use SendMailHelper;
+use CommonFunctionsHelper;
 use App\ServiceRequestLog;
 use App\Http\Controllers\Controller;
 
@@ -410,7 +411,18 @@ class ServiceRequestApiController extends Controller
 
                 $technician_name=ucwords($technician_name->name);
 
-                SendMailHelper::sendRequestAcceptRejectMail($serviceRequestId,$technician_name);
+                /**
+                 * send request status mail.
+                 */
+                $url = config('constants.APP_URL').'/sendMailCurl';
+                $postFields = array(
+                    'functionName' => 'requestStatusApi',
+                    'servicerequestId' => $serviceRequestId,
+                    'technicianName' => $technician_name
+                );
+                $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
+
+                // SendMailHelper::sendRequestAcceptRejectMail($serviceRequestId,$technician_name);
 
                 $status = 1;
                 $message = 'Request status change';
@@ -1264,8 +1276,19 @@ class ServiceRequestApiController extends Controller
             //send mail on every status change
             $msg='Status is changed from '.$serviceRequestDetailStatusUpdate->status.' to '.$request_status.'.';
 
+            /**
+             * send request status mail.
+             */
+            $url = config('constants.APP_URL').'/sendMailCurl';
+            $postFields = array(
+                'functionName' => 'updateRequestDetailV2',
+                'servicerequestId' => $serviceRequestId,
+                'message' => $msg
+            );
+            $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
+
             /* send mail */
-            SendMailHelper::sendRequestUpdateMail($serviceRequestId,$msg);
+            // SendMailHelper::sendRequestUpdateMail($serviceRequestId,$msg);
         }
 
         $serviceRequestDetail->status = $request_status;
