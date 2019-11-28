@@ -143,6 +143,23 @@
                                                         padding-right: 15px;
                                                         padding-left: 15px;">
                                                         <div class="row custDiv"  {{ ($service_request->company_id == "") ? 'style=display:none' : ''}}>
+                                                        
+                                                            <div class="col-xs-12">
+                                                                <div class="cusEmailbl" <?php if(empty($service_request->customer->email)){ echo 'style="display:none;"';} ?>>
+                                                                    {!! Form::label('customer_email', trans('quickadmin.service-request.fields.email').': ', ['class' => 'control-label ', 'style' => 'font-weight:bold;']) !!}
+
+                                                                    {!! Form::label('', $service_request->customer->email, ['class' => 'control-label fontweight cusEmail']) !!}
+                                                                    <br>
+                                                                </div>
+
+                                                                <div class="cusPhonelbl" <?php if(empty($service_request->customer->phone)){ echo 'style="display:none;"';} ?>>
+                                                                    {!! Form::label('customer_phone', trans('quickadmin.service-request.fields.phone').': ', ['class' => 'control-label ', 'style' => 'font-weight:bold;']) !!}
+
+                                                                    {!! Form::label('', $service_request->customer->phone, ['class' => 'control-label fontweight cusPhone ']) !!}  
+                                                                    <br>
+                                                                </div>
+                                                            </div>
+                                                            
                                                             <div class="col-xs-12">
                                                                 {!! Form::label('customer_id', trans('quickadmin.service-request.fields.customer-address').': ', ['class' => 'control-label', 'style' => 'font-weight:bold;']) !!}
                                                                 <div class="custAddress">
