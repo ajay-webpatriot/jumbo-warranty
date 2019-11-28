@@ -323,7 +323,7 @@ class SendMail
       $receiver_email['service_center_admin'] = $service_center_admin_email;
     }
 
-    \Log::info("== email send to this array ==".json_encode( $receiver_email ));
+    // \Log::info("== email send to this array ==".json_encode( $receiver_email ));
 
     foreach ($receiver_email as $key => $value) {
       if(!empty($value)){ 
