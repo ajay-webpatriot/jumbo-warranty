@@ -200,138 +200,174 @@ class SendMail
 
   public static function sendRequestUpdateMail($request_id,$update_message,$requestStatus = NULL){
 
-        $service_request = ServiceRequest::findOrFail($request_id);
-        
-        $customer_email = "";
-        $customer_phone = "";
-        $admin_email = "";
-        $company_admin_email = "";
-        $service_center_admin_email = "";
-        $technician_email = "";
-       
-        $customer= \App\Customer::where('id',$service_request->customer_id)->where('status','Active')->get()->first();
-        if(!empty($customer)){
-          if($customer->email != ''){
-            $customer_email=$customer->email;
-          }
+    $service_request = ServiceRequest::findOrFail($request_id);
 
-          // Send SMS to customer.
-          if(trim($customer->phone) != ''){
-            
-            // Remove special character allow only numbers. 
-            $customer_phone = preg_replace('/[^0-9]/', '', $customer->phone);
+    \Log::info("== request result ==".json_encode( $service_request ));
+   
+    $customer_email = "";
+    $customer_phone = "";
+    $admin_email = "";
+    $company_admin_email = "";
+    $service_center_admin_email = "";
+    $technician_email = "";
 
-            // Message parameters.
-            $msg_requestNumber = 'JW'.sprintf("%04d", $service_request->id);
-            $msg_requestType = $service_request->service_type;
-            $msg_requestProductName = $service_request->product->name;
-            $msg_requestStatus = $service_request->status;
+    if( $service_request->status != "Service center assigned" && $service_request->status != 'Technician assigned'){
 
-            // Change request status.
-            if(isset($requestStatus) && $requestStatus != NULL){
-              $msg_requestStatus = $requestStatus;
-            }
-            
-            // Message body ( sms template which was approved by provider ).
-            $message_body = "Your service request ".$msg_requestNumber." to ".$msg_requestType." ".$msg_requestProductName." is having status ".$msg_requestStatus.".";
-            
-            //Send sms to customer only with fix (approve) template.
-            $resultSMS = SMSHelper::sendsmscustomer($customer_phone,$message_body);
-          }
+      \Log::info("== request in if loop to send sms ==".json_encode( $service_request->status ));
+
+      $customer = \App\Customer::where('id',$service_request->customer_id)->where('status','Active')->get()->first();
+
+      if(!empty($customer)){
+        if($customer->email != '') {
+          $customer_email=$customer->email;
         }
 
-        $admin= \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
-                          ->where('status','Active')
-                          ->get()->pluck('email')->toArray();
-        if(!empty($admin)){                  
-          // $admin_email=$admin->email;
-           $admin_email=$admin;
-        } 
-    
+        // Send SMS to customer.
+        if(trim($customer->phone) != '') {
 
-        $receiver_email = array('admin' => $admin_email,
-          // 'company_admin' => $company_admin_email,
-          'customer' => $customer_email,
-          'rajdip' => 'rajdip.webpatriot@gmail.com'
+          // Remove special character allow only numbers. 
+          $customer_phone = preg_replace('/[^0-9]/', '', $customer->phone);
+
+          // Message parameters.
+          $msg_requestNumber = 'JW'.sprintf("%04d", $service_request->id);
+          $msg_requestType = $service_request->service_type;
+          $msg_requestProductName = $service_request->product->name;
+          $msg_requestStatus = $service_request->status;
+
+          // Change request status.
+          if(isset($requestStatus) && $requestStatus != NULL) {
+            $msg_requestStatus = $requestStatus;
+          }
+          
+          // Message body ( sms template which was approved by provider ).
+          $message_body = "Your service request ".$msg_requestNumber." to ".$msg_requestType." ".$msg_requestProductName." is having status ".$msg_requestStatus.".";
+          
+          //Send sms to customer only with fix (approve) template.
+          $resultSMS = SMSHelper::sendsmscustomer($customer_phone,$message_body);
+        }
+      }
+    }
+
+    $admin = \App\User::where('role_id',config('constants.ADMIN_ROLE_ID'))
+    ->where('status','Active')
+    ->get()->pluck('email')->toArray();
+
+    if(!empty($admin)) {                  
+      // $admin_email=$admin->email;
+      $admin_email=$admin;
+    }
+
+    $receiver_email = array('admin' => $admin_email,
+      // 'company_admin' => $company_admin_email,
+      'rajdip' => 'rajdip.webpatriot@gmail.com'
+    );
+
+    if( $service_request->status != "Service center assigned" && $service_request->status != 'Technician assigned'){
+
+      \Log::info("== request in if loop to send email to customer ==".json_encode( $service_request->status ));
+
+      $receiver_email['customer'] =  $customer_email;
+    }
+    
+    $technician = \App\User::where('id',$service_request->technician_id)
+    ->where('status','Active')
+    ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+    ->get()->first();
+
+    if($service_request->status == "Closed") {
+      $company_admin = \App\User::where('company_id',$service_request->company_id)
+      ->where('status','Active')
+      ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
+      ->get()->pluck('email')->toArray();
+
+      if(!empty($company_admin)) {  
+        // $company_admin_email=$company_admin->email;
+        $company_admin_email = $company_admin;
+        $receiver_email['company_admin'] = $company_admin_email;
+      }
+
+      // $technician = \App\User::where('id',$service_request->technician_id)
+      // ->where('status','Active')
+      // ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
+      // ->get()->first();
+
+      if(!empty($technician)) {
+        $technician_email=$technician->email;
+        $receiver_email['technician'] = $technician_email;
+      }
+    }else if(isset($requestStatus) && $requestStatus != NULL && $requestStatus == 'Re-opened') {
+     
+      // Re-opened request status mail send to Technician.
+      if(!empty($technician)) {
+        $technician_email=$technician->email;
+        $receiver_email['technician'] = $technician_email;
+      }
+    }else if($service_request->status == 'Technician assigned' || $service_request->status == 'Service center assigned'){
+      if(!empty($technician)) {
+        $technician_email=$technician->email;
+        $receiver_email['technician'] = $technician_email;
+      }
+    }
+
+    $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
+    ->where('status','Active')
+    ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
+    ->get()->pluck('email')->toArray();
+
+    if(!empty($service_center_admin)){
+
+      \Log::info("== request in if loop to send email to service center admin ==".json_encode( $service_request->status ));
+      
+      // $service_center_admin_email=$service_center_admin->email;
+      $service_center_admin_email=$service_center_admin;
+      $receiver_email['service_center_admin'] = $service_center_admin_email;
+    }
+
+    \Log::info("== email send to this array ==".json_encode( $receiver_email ));
+
+    foreach ($receiver_email as $key => $value) {
+      if(!empty($value)){ 
+        $role = "";
+        // if($key == 'admin')
+        // {
+        //   $username = $admin->name;
+        // }
+        // else if($key == 'company_admin'){
+        //   $username = $company_admin->name;
+        // }
+        // else if($key == 'service_center_admin'){
+        //   $username = $service_center_admin->name;
+        // }
+        // else if($key == 'technician'){
+        //   $username = $technician->name;
+        // }
+        // else if($key == 'customer'){
+        //   $username = $customer->firstname.' '.$customer->lastname;
+        // }
+
+        if($key == 'customer') {
+          $role = 'customer';
+        }
+
+        $to_email=$value;
+
+        $data=array('subject' => 'Service Request Status Changed',
+          // 'user_name' => ucwords($username),
+          'service_request' => $service_request,
+          'receiver_email' => $value,
+          'update_message' => $update_message,
+          'role' => $role,
         );
 
-        if($service_request->status == "Closed")
-        {
-          $company_admin= \App\User::where('company_id',$service_request->company_id)
-                                    ->where('status','Active')
-                                    ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
-                                    ->get()->pluck('email')->toArray();
-
-          if(!empty($company_admin)){  
-            // $company_admin_email=$company_admin->email;
-            $company_admin_email = $company_admin;
-            $receiver_email['company_admin'] = $company_admin_email;
-          }
-
-          $technician= \App\User::where('id',$service_request->technician_id)
-                                ->where('status','Active')
-                                ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-                                ->get()->first();
-          if(!empty($technician)){
-            $technician_email=$technician->email;
-            $receiver_email['technician'] = $technician_email;
-          }
-        }
-
-        $service_center_admin= \App\User::where('service_center_id',$service_request->service_center_id)
-          ->where('status','Active')
-          ->where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
-          ->get()->pluck('email')->toArray();
-
-        if(!empty($service_center_admin)){
-          // $service_center_admin_email=$service_center_admin->email;
-          $service_center_admin_email=$service_center_admin;
-          $receiver_email['service_center_admin'] = $service_center_admin_email;
-        }
-       
-        foreach ($receiver_email as $key => $value) {
-          if(!empty($value))
-          { 
-              $role = "";
-              // if($key == 'admin')
-              // {
-              //   $username = $admin->name;
-              // }
-              // else if($key == 'company_admin'){
-              //   $username = $company_admin->name;
-              // }
-              // else if($key == 'service_center_admin'){
-              //   $username = $service_center_admin->name;
-              // }
-              // else if($key == 'technician'){
-              //   $username = $technician->name;
-              // }
-              // else if($key == 'customer'){
-              //   $username = $customer->firstname.' '.$customer->lastname;
-              // }
-              if($key == 'customer'){
-                $role = 'customer';
-              }
-              $to_email=$value;
-              $data=array('subject' => 'Service Request Status Changed',
-                    // 'user_name' => ucwords($username),
-                    'service_request' => $service_request,
-                    'receiver_email' => $value,
-                    'update_message' => $update_message,
-                    'role' => $role,
-                    );
-          
-              Mail::send('admin.emails.service_request_update_email',$data, function ($message)  use ( $to_email){
-                        $message->to($to_email)
-                          ->subject('Service Request Status Changed')
-                          // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
-                          // ->from(env('MAIL_USERNAME'),env('APP_NAME'));
-                          ->from(config('mail.from.address'),config('mail.from.name'));
-                  });   
-          }     
-        }
-        
-  
+        Mail::send('admin.emails.service_request_update_email',$data, function ($message)  use ( $to_email) {
+          $message->to($to_email)
+          ->subject('Service Request Status Changed')
+          // ->from('info.emailtest1@gmail.com','Jumbo-Warranty');
+          // ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+          ->from(config('mail.from.address'),config('mail.from.name'));
+        });   
+      }     
+    }
   }
 
   public static function sendRequestAcceptRejectMail($request_id,$technician_name){

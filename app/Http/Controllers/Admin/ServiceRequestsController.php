@@ -168,7 +168,7 @@ class ServiceRequestsController extends Controller
                     $total_paid_amounts->where('service_center_id',auth()->user()->service_center_id);
                 }
 
-                $total_paid_amount = $total_paid_amounts->where('status','Closed')->where('is_paid','1')->sum('amount');
+                $total_paid_amount = $total_paid_amounts->where('is_paid','1')->sum('amount');
                 
                 /**
                  * Total Due amount.
@@ -179,7 +179,8 @@ class ServiceRequestsController extends Controller
                     $total_due_amounts->where('service_center_id',auth()->user()->service_center_id);
                 }
 
-                $total_due_amount = $total_due_amounts->where('status','Closed')->where('is_paid','0')->sum('amount');
+                $total_due_amount = $total_due_amounts->where('is_paid','0')->sum('amount');
+
             }
             else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
@@ -239,7 +240,7 @@ class ServiceRequestsController extends Controller
                     $total_paid_amounts->where('service_center_id',session('filter_service_center'));
                 }
 
-                $total_paid_amount = $total_paid_amounts->where('status','Closed')->where('is_paid','1')->sum('amount');
+                $total_paid_amount = $total_paid_amounts->where('is_paid','1')->sum('amount');
                 
                 /**
                  * Total Due amount.
@@ -250,7 +251,7 @@ class ServiceRequestsController extends Controller
                     $total_due_amounts->where('service_center_id',session('filter_service_center'));
                 }
 
-                $total_due_amount = $total_due_amounts->where('status','Closed')->where('is_paid','0')->sum('amount');
+                $total_due_amount = $total_due_amounts->where('is_paid','0')->sum('amount');
             }
             else
             {
@@ -581,12 +582,12 @@ class ServiceRequestsController extends Controller
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
                     $tableField['amount'] = '<i class="fa fa-rupee"></i> '.number_format($SingleServiceRequest->amount,2);
 
-                    $paidStatus = ' - ';
-                    if($SingleServiceRequest->is_paid == 1 && $SingleServiceRequest->status == "Closed" ){
+                    // $paidStatus = ' - ';
+                    if($SingleServiceRequest->is_paid == 1 ){
 
                         $paidStatus = 'Paid';
 
-                    }else if($SingleServiceRequest->is_paid == 0 && $SingleServiceRequest->status == "Closed"){
+                    }else if($SingleServiceRequest->is_paid == 0 ){
 
                         $paidStatus = 'Due';
                     }
@@ -596,10 +597,10 @@ class ServiceRequestsController extends Controller
                     $tableField['service_center'] =(!empty($SingleServiceRequest->sname))?ucfirst($SingleServiceRequest->sname):'<div style="text-align:center;">-</div>';
                     $tableField['company_name'] =ucfirst($SingleServiceRequest->cname);
 
-                    $paidStatus = ' - ';
-                    if($SingleServiceRequest->is_paid == 1 && $SingleServiceRequest->status == "Closed" ){
+                    // $paidStatus = ' - ';
+                    if($SingleServiceRequest->is_paid == 1){
                         $paidStatus = 'Paid';
-                    }else if($SingleServiceRequest->is_paid == 0 && $SingleServiceRequest->status == "Closed"){
+                    }else if($SingleServiceRequest->is_paid == 0 ){
                         
                         $paidStatus = 'Due';
                     }
@@ -1117,12 +1118,7 @@ class ServiceRequestsController extends Controller
         //     //     $additional_charges[]=$value->$key;
         //     // }
         // }
-        
-        // echo "<pre>";
-        // print_r($additional_charge_title);
-        // echo "</pre>";
-        // exit();
-        
+
         $service_request['additional_charges']=$additional_charge;
 
         $custAddressData = \App\Customer::where('id',$service_request['customer_id'])
@@ -1560,7 +1556,7 @@ class ServiceRequestsController extends Controller
             $postFields = array(
                 'functionName' => 'statusChange',
                 'servicerequestId' => $id,
-                "message" => $msg,
+                'message' => $msg,
             );
             $jsondata = CommonFunctionsHelper::postCURL($url,$postFields);
             // SendMailHelper::sendRequestUpdateMail($id,$msg);
@@ -2522,13 +2518,13 @@ class ServiceRequestsController extends Controller
                 
             }
             // calculate total paid and due service request
-            $data['paid_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','1')->sum('amount');
+            $data['paid_amount'] = ServiceRequest::select('id','amount')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','1')->sum('amount');
 
-            $data['due_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','0')->sum('amount');
+            $data['due_amount'] = ServiceRequest::select('id','amount')->where('service_center_id',$details['serviceCenterId'])->where('is_paid','0')->sum('amount');
         }else{
-            $data['paid_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('is_paid','1')->sum('amount');
+            $data['paid_amount'] = ServiceRequest::select('id','amount')->where('is_paid','1')->sum('amount');
 
-            $data['due_amount'] = ServiceRequest::select('id','amount')->where('status','Closed')->where('is_paid','0')->sum('amount');
+            $data['due_amount'] = ServiceRequest::select('id','amount')->where('is_paid','0')->sum('amount');
         }
                
         echo json_encode($data);
