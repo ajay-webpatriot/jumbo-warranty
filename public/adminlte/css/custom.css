@@ -51,3 +51,10 @@ table tr th, table tr td{padding-left: 15px !important;padding-right: 15px !impo
 .action_button{
 	white-space: nowrap !important;
 }
+/* .ptop{
+	padding-top: 3px;
+} */
+.pleftright{
+	padding-left: 5px;
+	padding-right: 3px;
+}

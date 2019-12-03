@@ -573,4 +573,5 @@ return [
 	'qa_team-management-singular' => 'Team',
 	'quickadmin_title' => 'Jumbo Warranty',
 	'qa_customer_phone' => 'Customer Phone Number',
+	'qa_login_as' => 'Login As',
 ];
