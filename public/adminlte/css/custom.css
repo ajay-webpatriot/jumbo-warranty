@@ -58,3 +58,6 @@ table tr th, table tr td{padding-left: 15px !important;padding-right: 15px !impo
 	padding-left: 5px;
 	padding-right: 3px;
 }
+.role {
+    font-weight: normal !important;
+}

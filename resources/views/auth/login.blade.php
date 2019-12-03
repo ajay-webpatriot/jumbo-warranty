@@ -53,17 +53,16 @@
                             <div class="col-md-6 ptop">
 
                                 <input type="radio" name="role_id" id="admin" value="Admin" requird>
-                                <label for="admin" class="control-label pleftright">Admin</label>
-
-                                <input type="radio" name="role_id" id="serviceadmin" value="Service Center" requird>
-                                <label for="serviceadmin" class="control-label pleftright">Service Center</label>
-
-                                <input type="radio" name="role_id" id="technician" value="Technician" requird>
-                                <label for="technician" class="control-label pleftright">Technician</label>
+                                <label for="admin" class="control-label pleftright role">Admin</label>
 
                                 <input type="radio" name="role_id" id="company" value="Company" requird>
-                                <label for="company" class="control-label pleftright">Company</label>
+                                <label for="company" class="control-label pleftright role">Company</label>
 
+                                <input type="radio" name="role_id" id="serviceadmin" value="Service Center" requird>
+                                <label for="serviceadmin" class="control-label pleftright role">Service Center</label>
+
+                                <input type="radio" name="role_id" id="technician" value="Technician" requird>
+                                <label for="technician" class="control-label pleftright role">Technician</label>
                             </div>
                         </div>
                         
