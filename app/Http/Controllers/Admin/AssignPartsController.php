@@ -52,7 +52,7 @@ class AssignPartsController extends Controller
             if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
             {
                 //get company admin's or user's own company assigned parts if logged in user is company admin or user
-                $assign_parts = AssignPart::where('company_id',auth()->user()->company_id)->get();
+                $assign_parts = AssignPart::where('company_id',auth()->user()->company_id)->orderBy('id', 'desc')->get();
             }
             else
             {

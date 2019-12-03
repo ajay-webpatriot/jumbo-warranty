@@ -50,23 +50,53 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-        // This section is the only change
-        if ($this->guard()->validate($this->credentials($request))) {
-            $user = $this->guard()->getLastAttempted();
-            // Make sure the user is active
-            if ($user['status'] == 'Active' && $this->attemptLogin($request)) {
-                // Send the normal successful login response
-                return $this->sendLoginResponse($request);
-            } else {
-                // Increment the failed login attempts and redirect back to the
-                // login form with an error message.
-                $this->incrementLoginAttempts($request);
-                return redirect()
-                    ->back()
-                    ->withInput($request->only($this->username(), 'remember'))
-                    ->withErrors(['active' => 'You must be active to login.']);
+        //check selected role_id
+        switch($request->role_id){
+            case 'Admin': $roleToCheck = array(SUPER_ADMIN, ADMIN); break;
+            case 'Company': $roleToCheck = array(COMPANY_ADMIN, COMPANY_USER);break;
+            case 'Service Center': $roleToCheck = array(SERVICE_CENTER_ADMIN);break;
+            case 'Technician': $roleToCheck = array(TECHNICIAN);break;
+        }
+
+        foreach($roleToCheck as $role_id){
+            // This section is the only change
+            $credentials = $this->credentials($request);
+            $credentials['role_id'] = $role_id;
+            if ($this->guard()->validate($credentials)) {
+                $user = $this->guard()->getLastAttempted();
+                // Make sure the user is active
+                if ($this->attemptLogin($request)) {
+                    // Send the normal successful login response
+                    return $this->sendLoginResponse($request);
+                } else {
+                    // Increment the failed login attempts and redirect back to the
+                    // login form with an error message.
+                    $this->incrementLoginAttempts($request);
+                    return redirect()
+                        ->back()
+                        ->withInput($request->only($this->username(), 'remember'))
+                        ->withErrors(['active' => 'You must be active to login.']);
+                }
             }
         }
+
+        // // This section is the only change
+        // if ($this->guard()->validate($this->credentials($request))) {
+        //     $user = $this->guard()->getLastAttempted();
+        //     // Make sure the user is active
+        //     if ($user['status'] == 'Active' && $this->attemptLogin($request)) {
+        //         // Send the normal successful login response
+        //         return $this->sendLoginResponse($request);
+        //     } else {
+        //         // Increment the failed login attempts and redirect back to the
+        //         // login form with an error message.
+        //         $this->incrementLoginAttempts($request);
+        //         return redirect()
+        //             ->back()
+        //             ->withInput($request->only($this->username(), 'remember'))
+        //             ->withErrors(['active' => 'You must be active to login.']);
+        //     }
+        // }
 
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
@@ -75,5 +105,32 @@ class LoginController extends Controller
 
         return $this->sendFailedLoginResponse($request);
     }
-    
+
+    /**
+     * Validate the user login request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    protected function validateLogin(Request $request)
+    {
+        $this->validate($request, [
+            $this->username() => 'required|string',
+            'password' => 'required|string',
+            'role_id'  => 'required'
+        ]);
+    }
+
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        $credentials = $request->only($this->username(), 'password');
+        $credentials['status'] = 'Active';
+        return $credentials;
+    }    
 }

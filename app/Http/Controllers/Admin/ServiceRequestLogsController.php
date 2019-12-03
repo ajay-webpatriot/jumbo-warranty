@@ -44,11 +44,11 @@ class ServiceRequestLogsController extends Controller
         
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
         {
-            $service_request_log = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+            $service_request_log = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->orderBy('id', 'desc')->get();
         }
         else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
         {
-            $service_request_log = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+            $service_request_log = ServiceRequest::where('technician_id',auth()->user()->id)->orderBy('id', 'desc')->get();
         }
         else
         {
