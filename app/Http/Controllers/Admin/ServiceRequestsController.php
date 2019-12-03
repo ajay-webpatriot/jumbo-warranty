@@ -236,9 +236,9 @@ class ServiceRequestsController extends Controller
                  */
                 $total_paid_amounts = ServiceRequest::select('id','amount');
                 
-                if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+                // if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
                     $total_paid_amounts->where('service_center_id',session('filter_service_center'));
-                }
+                // }
 
                 $total_paid_amount = $total_paid_amounts->where('is_paid','1')->sum('amount');
                 
@@ -247,9 +247,9 @@ class ServiceRequestsController extends Controller
                  */
                 $total_due_amounts = ServiceRequest::select('id','amount');
 
-                if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+                // if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
                     $total_due_amounts->where('service_center_id',session('filter_service_center'));
-                }
+                // }
 
                 $total_due_amount = $total_due_amounts->where('is_paid','0')->sum('amount');
             }
