@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Dusk\DuskServiceProvider;
 use DB;
+use Log;
 
 
 class AppServiceProvider extends ServiceProvider
