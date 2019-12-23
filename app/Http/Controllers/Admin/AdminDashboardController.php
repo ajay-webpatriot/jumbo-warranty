@@ -208,9 +208,12 @@ class AdminDashboardController extends Controller
         $Status = 0;
         $color = '';
        
-        $ServiceCount = ServiceRequest::select('service_requests.*','users.name as createdbyName',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-        LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
-        ->leftjoin('users','service_requests.created_by','=','users.id');
+        $ServiceCount = ServiceRequest::with('company')->with('customer')
+                    ->with('service_center')->with('product')->with('technician')
+                    ->select('service_requests.*','users.name as createdbyName',
+                        DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+                        DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
+                    ->leftjoin('users','service_requests.created_by','=','users.id');
 
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
