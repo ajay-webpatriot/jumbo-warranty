@@ -81,6 +81,7 @@ class AdminDashboardController extends Controller
         ->join('customers','service_requests.customer_id','=','customers.id')
         ->join('products','service_requests.product_id','=','products.id')
         ->whereIn('service_requests.service_type',array('repair','installation'))
+        ->where('service_requests.status', '!=', 'Closed')
         ->orderBy('service_requests.created_at','DESC')
         ->limit(10);
 
