@@ -31,17 +31,6 @@ class ServiceRequestLogsController extends Controller
             return abort(401);
         }
         
-        // if (request('show_deleted') == 1) {
-        //     if (! Gate::allows('service_request_log_delete')) {
-        //         return abort(401);
-        //     }
-        //     $service_request_log = ServiceRequestLog::onlyTrashed()->orderby('created_at','desc')->get();
-        // } else {
-            
-        //         $service_request_log = ServiceRequestLog::all()->sortByDesc('created_at');
-        //     }
-
-        
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
         {
             $service_request_log = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->orderBy('id', 'desc')->get();

@@ -36,16 +36,6 @@ class CompanyUsersController extends Controller
             return abort(401);
         }
 
-        // show all company users
-        // $query = User::where('role_id',config('constants.COMPANY_USER_ROLE_ID'))
-        //                 ->orderby('name');
-
-        // //get company admin's own company users if logged in user is company admin
-        // if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID')){
-        //     $query->where('company_id',auth()->user()->company_id);
-        // }                
-        // $users = $query->get();
-
         $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.company_users.index', compact('companies'));
     }
@@ -61,8 +51,6 @@ class CompanyUsersController extends Controller
             return abort(401);
         }
 
-        
-
         $tableFieldData = [];
         $ViewButtons = '';
         $EditButtons = '';
@@ -76,8 +64,35 @@ class CompanyUsersController extends Controller
          ->whereNull('companies.deleted_at')
          ->where('users.role_id',config('constants.COMPANY_USER_ROLE_ID'));
 
-        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+        if(!empty($request->input('company')))
         {
+            $requestFilterCountQuery->Where('users.company_id', $request['company']);                
+        }
+        elseif(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
+        {
+            $requestFilterCountQuery->where('company_id',auth()->user()->company_id);
+        }
+        // fetch total count without any filter
+        $countRecordQuery = $requestFilterCountQuery;
+        $countRecord = $countRecordQuery->count('users.id');
+
+        //Search from table
+        if(!empty($request->input('search.value')))
+        {
+            $searchVal = $request['search']['value'];
+            $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+                if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
+                {
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                }
+                $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
+            });
+        }
+
+        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')) {
             $columnArray = array(
                     1 => 'users.id',
                     2 =>'companies.name' ,
@@ -86,29 +101,6 @@ class CompanyUsersController extends Controller
                     5 =>'users.email' ,
                     6 =>'users.status' 
                 );
-
-            if(!empty($request->input('company')))
-            {   
-                $requestFilterCountQuery->Where('users.company_id', $request['company']);
-            }
-
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
         }
         else{
             $columnArray = array(
@@ -118,26 +110,6 @@ class CompanyUsersController extends Controller
                     4 =>'users.email' ,
                     5 =>'users.status' 
                 );
-
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
-            {
-                $requestFilterCountQuery->where('company_id',auth()->user()->company_id);
-            }
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            } 
         }
         
         $limit = $request->input('length');
@@ -145,88 +117,14 @@ class CompanyUsersController extends Controller
         $order = $columnArray[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
 
-        
-        $requestFilterCount = $requestFilterCountQuery->count('users.id');
-        
+        $company_usersQuery = $requestFilterCountQuery;
+        $requestFilterCount = $requestFilterCountQuery->count('users.id');        
 
-        $company_usersQuery = User::select('users.*','companies.name as company_name')
-         ->join('companies','users.company_id','=','companies.id')
-         ->join('roles','users.role_id','=','roles.id')
-         ->where('companies.status','Active')
-         ->whereNull('companies.deleted_at')
-         ->where('users.role_id',config('constants.COMPANY_USER_ROLE_ID'))
-         ->offset($start)
+        $company_usersQuery->offset($start)
          ->limit($limit)
          ->orderBy($order,$dir);
 
-
-        // filter data from table
-        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
-        {
-            if(!empty($request->input('company')))
-            {   
-                $company_usersQuery->Where('users.company_id', $request['company']);
-            }
-
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $company_usersQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
-            // fetch total count without any filter
-            $countRecord = User::select('users.*')
-                ->join('companies','users.company_id','=','companies.id')
-                ->join('roles','users.role_id','=','roles.id')
-                ->where('companies.status','Active')
-                ->whereNull('companies.deleted_at')
-                ->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->count('users.id');
-        } 
-        else 
-        {
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID'))
-            {
-                $company_usersQuery->where('company_id',auth()->user()->company_id);
-            }
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $company_usersQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
-            // fetch total count without any filter
-            $countRecord = User::select('users.*')
-                ->join('companies','users.company_id','=','companies.id')
-                ->join('roles','users.role_id','=','roles.id')
-                ->where('companies.status','Active')
-                ->whereNull('companies.deleted_at')
-                ->where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->where('company_id',auth()->user()->company_id)->count('users.id');
-        } 
-
-        
-        
         $company_users = $company_usersQuery->get();
-        
 
         if(!empty($company_users)){
 

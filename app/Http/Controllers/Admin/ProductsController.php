@@ -47,7 +47,7 @@ class ProductsController extends Controller
             }
             $products = Product::onlyTrashed()->get();
         } else {
-            $products = Product::all()->sortByDesc('id');
+            $products = Product::with('category')->get()->sortByDesc('id');
         }
 
         return view('admin.products.index', compact('products'));

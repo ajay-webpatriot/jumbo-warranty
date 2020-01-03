@@ -39,18 +39,6 @@ class TechniciansController extends Controller
             return abort(401);
         }
 
-        // $query = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))
-        //                 ->orderby('name')->whereHas('service_center', function ($query) {
-        //                                 $query->where('status', 'Active');
-        //                         });
-
-        // //get service center's own technician if logged in user is technician
-        // if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
-        //     $query->where('service_center_id',auth()->user()->service_center_id);
-        // }
-        // //if logged in user is super admin or admin then show all technicians
-        // $users = $query->get();
-
         $service_centers = \App\ServiceCenter::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         return view('admin.technicians.index', compact('service_centers'));
     }
@@ -66,8 +54,6 @@ class TechniciansController extends Controller
             return abort(401);
         }
 
-        
-
         $tableFieldData = [];
         $ViewButtons = '';
         $EditButtons = '';
@@ -81,6 +67,34 @@ class TechniciansController extends Controller
          ->where('service_centers.status','Active')
          ->where('users.role_id',config('constants.TECHNICIAN_ROLE_ID'));
 
+        if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
+        {
+            $requestFilterCountQuery->where('service_center_id',auth()->user()->service_center_id);
+        }
+        elseif(!empty($request->input('service_center')))
+        {   
+            $requestFilterCountQuery->Where('users.service_center_id', $request['service_center']);
+        }
+
+        // fetch total count without any filter
+        $countRecordQuery = $requestFilterCountQuery;
+        $countRecord = $countRecordQuery->count('users.id');
+
+        //Search from table
+        if(!empty($request->input('search.value')))
+        { 
+            $searchVal = $request['search']['value'];
+            $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+                if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')){
+                    $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
+                }
+                $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
+                $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
+            });
+        }
+
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         {
             $columnArray = array(
@@ -91,29 +105,6 @@ class TechniciansController extends Controller
                     5 =>'users.email' ,
                     6 =>'users.status' 
                 );
-
-            if(!empty($request->input('service_center')))
-            {   
-                $requestFilterCountQuery->Where('users.service_center_id', $request['service_center']);
-            }
-
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
         }
         else{
             $columnArray = array(
@@ -123,26 +114,6 @@ class TechniciansController extends Controller
                     4 =>'users.email' ,
                     5 =>'users.status' 
                 );
-
-            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-            {
-                $requestFilterCountQuery->where('service_center_id',auth()->user()->service_center_id);
-            }
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            } 
         }
         
         $limit = $request->input('length');
@@ -150,88 +121,13 @@ class TechniciansController extends Controller
         $order = $columnArray[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
 
-        
-        $requestFilterCount = $requestFilterCountQuery->count('users.id');
-        
+        $techniciansQuery = $requestFilterCountQuery;
+        $requestFilterCount = $requestFilterCountQuery->count('users.id');        
 
-        $techniciansQuery = User::select('users.*','service_centers.name as service_center_name')
-         ->join('service_centers','users.service_center_id','=','service_centers.id')
-         ->join('roles','users.role_id','=','roles.id')
-         ->whereNull('service_centers.deleted_at')
-         ->where('service_centers.status','Active')
-         ->where('users.role_id',config('constants.TECHNICIAN_ROLE_ID'))
-         ->offset($start)
+        $techniciansQuery->offset($start)
          ->limit($limit)
          ->orderBy($order,$dir);
-
-
-        // filter data from table
-        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
-        {
-            if(!empty($request->input('service_center')))
-            {   
-                $techniciansQuery->Where('users.service_center_id', $request['service_center']);
-            }
-
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $techniciansQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
-            // fetch total count without any filter
-            $countRecord = User::select('users.*','service_centers.name as service_center_name')
-                 ->join('service_centers','users.service_center_id','=','service_centers.id')
-                 ->join('roles','users.role_id','=','roles.id')
-                 ->whereNull('service_centers.deleted_at')
-                 ->where('service_centers.status','Active')
-                ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->count('users.id');
-        } 
-        else 
-        {
-            if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-            {
-                $techniciansQuery->where('service_center_id',auth()->user()->service_center_id);
-            }
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $techniciansQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                    $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
-            // fetch total count without any filter
-            $countRecord = User::select('users.*','service_centers.name as service_center_name')
-                 ->join('service_centers','users.service_center_id','=','service_centers.id')
-                 ->join('roles','users.role_id','=','roles.id')
-                 ->whereNull('service_centers.deleted_at')
-                 ->where('service_centers.status','Active')
-                 ->where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('service_center_id',auth()->user()->service_center_id)->count('users.id');
-        } 
-
-        
-        
         $technicians = $techniciansQuery->get();
-        
 
         if(!empty($technicians)){
 

@@ -607,6 +607,9 @@
                     "formData":formData,
                     "_token": "{{ csrf_token() }}"
                 },
+                beforeSend:function(){
+                    console.log("starting ajax call");
+                },
                 dataType: "json",
                 success:function(data) {
                     console.log(data.color);

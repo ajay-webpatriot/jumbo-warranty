@@ -36,15 +36,6 @@ class ServiceCenterAdminsController extends Controller
             return abort(401);
         }
 
-        // show all service center admin
-        // $query = User::where('role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
-        //                 ->orderby('name')->whereHas('service_center', function ($query) {
-        //                                 $query->where('status', 'Active');
-        //                         });
-
-    
-        // $users = $query->get();
-
         $service_centers = \App\ServiceCenter::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
         return view('admin.service_center_admins.index', compact('service_centers'));
     }
@@ -86,6 +77,10 @@ class ServiceCenterAdminsController extends Controller
          ->where('service_centers.status','Active')
          ->where('users.role_id',config('constants.SERVICE_ADMIN_ROLE_ID'));
 
+        $countRecordQuery = $requestFilterCountQuery;
+        // fetch total count without any filter
+        $countRecord = $countRecordQuery->count('users.id');
+
         if(!empty($request->input('service_center')))
         {   
             $requestFilterCountQuery->Where('users.service_center_id', $request['service_center']);
@@ -96,65 +91,22 @@ class ServiceCenterAdminsController extends Controller
         { 
             $searchVal = $request['search']['value'];
             $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                
                 $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
-
                 $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
                 $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
                 $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
                 $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
             });
         }
-        $requestFilterCount = $requestFilterCountQuery->count('users.id');
-        
+        $service_center_adminsQuery = $requestFilterCountQuery;
 
-        $service_center_adminsQuery = User::select('users.*','service_centers.name as service_center_name')
-         ->join('service_centers','users.service_center_id','=','service_centers.id')
-         ->join('roles','users.role_id','=','roles.id')
-         ->whereNull('service_centers.deleted_at')
-         ->where('service_centers.status','Active')
-         ->where('users.role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))
-         ->offset($start)
+        $requestFilterCount = $requestFilterCountQuery->count('users.id');        
+
+        $service_center_admins = $service_center_adminsQuery->offset($start)
          ->limit($limit)
-         ->orderBy($order,$dir);
+         ->orderBy($order,$dir)
+         ->get();
 
-
-        // filter data from table
-        if(!empty($request->input('service_center')))
-        {   
-            $service_center_adminsQuery->Where('users.service_center_id', $request['service_center']);
-        }
-
-        //Search from table
-        if(!empty($request->input('search.value')))
-        { 
-            $searchVal = $request['search']['value'];
-            $service_center_adminsQuery->where(function ($query) use ($searchVal) {
-
-                
-                $query->orWhere('service_centers.name', 'like', '%' . $searchVal . '%');
-
-                $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-            });
-        }
-        
-        $service_center_admins = $service_center_adminsQuery->get();
-
-        // fetch total count without any filter
-        $countRecord = User::select('users.*','service_centers.name as service_center_name')
-         ->join('service_centers','users.service_center_id','=','service_centers.id')
-         ->join('roles','users.role_id','=','roles.id')
-         ->whereNull('service_centers.deleted_at')
-         ->where('service_centers.status','Active')
-         ->where('users.role_id',config('constants.SERVICE_ADMIN_ROLE_ID'))->count('users.id');
         if(!empty($service_center_admins)){
             
             foreach ($service_center_admins as $key => $service_center_admin) {

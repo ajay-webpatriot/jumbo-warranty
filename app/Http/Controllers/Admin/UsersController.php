@@ -36,22 +36,7 @@ class UsersController extends Controller
         if (! Gate::allows('user_access')) {
             return abort(401);
         }
-        // if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID'))
-        // {
-        //     $users = User::where('role_id',config('constants.COMPANY_USER_ROLE_ID'))->where('company_id',auth()->user()->company_id)->get();
-        // }
-        // else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-        // {
-        //     $users = User::where('role_id',config('constants.TECHNICIAN_ROLE_ID'))->where('service_center_id',auth()->user()->service_center_id)->get();
-        // }
-        // else
-        // {
-            $users = User::where('role_id',config('constants.ADMIN_ROLE_ID'))->orderby('id','DESC')->get();
-        // }
-        
-        
-        
-
+        $users = User::where('role_id',config('constants.ADMIN_ROLE_ID'))->orderby('id','DESC')->get();
         return view('admin.users.index', compact('users'));
     }
     /**

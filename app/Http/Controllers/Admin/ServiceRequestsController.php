@@ -47,40 +47,11 @@ class ServiceRequestsController extends Controller
         if (! Gate::allows('service_request_access')) {
             return abort(401);
         }
-        // echo "<pre>"; 
-        // print_r(session::all());exit;
-        // echo "<pre>"; print_r (session::all()); echo "</pre>"; exit();
-
-        // if (request('show_deleted') == 1) {
-        //     if (! Gate::allows('service_request_delete')) {
-        //         return abort(401);
-        //     }
-        //     $service_requests = ServiceRequest::onlyTrashed()->get();
-        // } else {
-        //     if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID'))
-        //     {
-        //         $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
-        //     }
-        //     else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
-        //     {
-        //         $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
-        //     }
-        //     else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-        //     {
-        //         $service_requests = ServiceRequest::where('company_id',auth()->user()->company_id)->get();
-        //     }
-        //     else
-        //     {
-        //         $service_requests = ServiceRequest::all();
-        //     }
-            
-        // }
 
         // filter dropdown details
-       
-       
         $companies = \App\Company::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
-        $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
+        $companyName = isset($companies[auth()->user()->company_id]) ? $companies[auth()->user()->company_id] : '';
+        // $companyName = \App\Company::where('id',auth()->user()->company_id)->get()->pluck('name');
         $total_paid_amount = 0;
         $total_due_amount = 0;
         if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
@@ -143,7 +114,7 @@ class ServiceRequestsController extends Controller
             else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') )
             {
                 // fetch product and customer of assigned request to service center admin for filter functionality
-                $service_requests = ServiceRequest::where('service_center_id',auth()->user()->service_center_id)->get();
+                $service_requests = ServiceRequest::with('customer')->with('product')->where('service_center_id',auth()->user()->service_center_id)->get();
                 if(count($service_requests) > 0)
                 {
                     foreach($service_requests as $key => $value)
@@ -185,7 +156,7 @@ class ServiceRequestsController extends Controller
             else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
             {
                 // fetch product and customer of assigned request to technician for filter functionality
-                $service_requests = ServiceRequest::where('technician_id',auth()->user()->id)->get();
+                $service_requests = ServiceRequest::with('customer')->with('product')->where('technician_id',auth()->user()->id)->get();
                 if(count($service_requests) > 0)
                 {
                     foreach($service_requests as $key => $value)
@@ -202,8 +173,6 @@ class ServiceRequestsController extends Controller
             }
         }
 
-        $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->where('status','Active')->get()->pluck('name');
-        
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
         {
             $technicians = \App\User::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')
@@ -218,6 +187,8 @@ class ServiceRequestsController extends Controller
         {
 
             $service_centers = \App\ServiceCenter::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')->where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
+            $serviceCenterName = isset($service_centers[auth()->user()->service_center_id]) ? $service_centers[auth()->user()->service_center_id] : '';
+            // $serviceCenterName = \App\ServiceCenter::where('id',auth()->user()->service_center_id)->where('status','Active')->get()->pluck('name');
             if(!empty(session('filter_service_center')))
             {
                 $technicians = \App\User::select(DB::raw('CONCAT(UCASE(LEFT(name, 1)),SUBSTRING(name, 2)) as name'),'id')

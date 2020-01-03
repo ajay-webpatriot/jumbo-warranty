@@ -36,11 +36,6 @@ class CompanyAdminsController extends Controller
             return abort(401);
         }
 
-        // show all company admin
-        // $query = User::where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
-        //                 ->orderby('name');
-        // $users = $query->get();
-
         $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         
         return view('admin.company_admins.index', compact('companies'));
@@ -69,7 +64,6 @@ class CompanyAdminsController extends Controller
         $order = $columnArray[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
 
-
         $tableFieldData = [];
         $ViewButtons = '';
         $EditButtons = '';
@@ -83,75 +77,35 @@ class CompanyAdminsController extends Controller
          ->whereNull('companies.deleted_at')
          ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'));
 
-        if(!empty($request->input('company')))
-        {   
+        $countRecordQuery = $requestFilterCountQuery;
+        $countRecord = $countRecordQuery->count('users.id');
+
+        if(!empty($request->input('company'))){
             $requestFilterCountQuery->Where('users.company_id', $request['company']);
         }
 
         //Search from table
         if(!empty($request->input('search.value')))
-        { 
+        {
             $searchVal = $request['search']['value'];
-            $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                
+            $requestFilterCountQuery->where(function ($query) use ($searchVal) {                
                 $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-
                 $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
                 $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
                 $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
                 $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
             });
         }
+
+        $company_adminsQuery = $requestFilterCountQuery;
         $requestFilterCount = $requestFilterCountQuery->count('users.id');
-        
 
-        $company_adminsQuery = User::select('users.*','companies.name as company_name')
-         ->join('companies','users.company_id','=','companies.id')
-         ->join('roles','users.role_id','=','roles.id')
-         ->where('companies.status','Active')
-         ->whereNull('companies.deleted_at')
-         ->where('users.role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))
-         ->offset($start)
-         ->limit($limit)
-         ->orderBy($order,$dir);
-
-
-        // filter data from table
-        if(!empty($request->input('company')))
-        {   
-            $company_adminsQuery->Where('users.company_id', $request['company']);
-        }
-
-        //Search from table
-        if(!empty($request->input('search.value')))
-        { 
-            $searchVal = $request['search']['value'];
-            $company_adminsQuery->where(function ($query) use ($searchVal) {
-
-                
-                $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-
-                $query->orWhere('users.name', 'like', '%' . $searchVal . '%');
-
-                $query->orWhere('users.phone', 'like', '%' . $searchVal . '%');
-                $query->orWhere('users.email', 'like', '%' . $searchVal . '%');
-                $query->orWhere('users.status', 'like', '%' . $searchVal . '%');
-
-            });
-        }
+        $company_adminsQuery ->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir);        
         
         $company_admins = $company_adminsQuery->get();
 
-        // fetch total count without any filter
-        $countRecord = User::select('users.*')
-            ->join('companies','users.company_id','=','companies.id')
-            ->join('roles','users.role_id','=','roles.id')
-            ->where('companies.status','Active')
-            ->whereNull('companies.deleted_at')
-            ->where('role_id',config('constants.COMPANY_ADMIN_ROLE_ID'))->count('users.id');
         if(!empty($company_admins)){
             
             foreach ($company_admins as $key => $company_admin) {

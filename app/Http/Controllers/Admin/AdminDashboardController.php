@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\ServiceRequest;
 use App\Company;
 use DB;
+use Log;
 
 class AdminDashboardController extends Controller
 {
@@ -20,85 +21,6 @@ class AdminDashboardController extends Controller
         // if((auth()->user()->role_id != config('constants.SUPER_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.ADMIN_ROLE_ID')) && (auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))){
         //     return view('home');
         // }
-
-        $PendingComplainCount       = 0;
-        $SolvedComplainCount        = 0;
-        $PendingInstallationCount   = 0;
-        $SolvedInstallationCount    = 0;
-
-        // $ServiceTypes = ServiceRequest::select('service_type','status')
-        // ->whereIn('service_type',array('repair','installation'))
-        // ->get();
-        $serviceTypesQuery = ServiceRequest::select('service_type','status')
-        ->whereIn('service_type',array('repair','installation'));
-        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
-
-            $serviceTypesQuery->Where('service_requests.company_id', auth()->user()->company_id);
-           
-        }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
-
-            $serviceTypesQuery->where('service_requests.service_center_id',auth()->user()->service_center_id);
-            
-        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
-
-            $serviceTypesQuery->where('service_requests.technician_id',auth()->user()->id);
-        }
-        $ServiceTypes = $serviceTypesQuery->get();
-
-        $enum_status_color = ServiceRequest::$enum_status_color_code;
-        
-        foreach ($ServiceTypes as $key => $SingleServiceTypes) {
-
-            if($SingleServiceTypes->service_type == 'repair' && $SingleServiceTypes->status != 'Closed'){
-
-                /*Total panding complain (Repair) */
-                $PendingComplainCount++;
-
-            }else if($SingleServiceTypes->service_type == 'repair' && $SingleServiceTypes->status == 'Closed'){
-
-                /*Total solved complain (Repair) */
-                $SolvedComplainCount++;
-
-            }else if($SingleServiceTypes->service_type == 'installation' && $SingleServiceTypes->status != 'Closed'){
-
-                /*Total panding installation */
-                $PendingInstallationCount++;
-
-            }else if($SingleServiceTypes->service_type == 'installation' && $SingleServiceTypes->status == 'Closed'){
-
-                /*Total solved installation */
-                $SolvedInstallationCount++;
-
-            }
-        }
-         
-        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.is_reopen','service_requests.created_by','service_requests.amount','service_requests.service_type','companies.name as cname','customers.phone','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
-        LCASE(SUBSTRING(customers.firstname, 2)))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)), 
-        LCASE(SUBSTRING(customers.lastname, 2)))) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
-        LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
-        ->leftjoin('users','service_requests.created_by','=','users.id')
-        ->leftjoin('companies','service_requests.company_id','=','companies.id')
-        ->join('customers','service_requests.customer_id','=','customers.id')
-        ->join('products','service_requests.product_id','=','products.id')
-        ->whereIn('service_requests.service_type',array('repair','installation'))
-        ->where('service_requests.status', '!=', 'Closed')
-        ->orderBy('service_requests.created_at','DESC')
-        ->limit(10);
-
-        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-        {
-            $ServiceTypeDetailsQuery->Where('service_requests.company_id', auth()->user()->company_id);
-
-        }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
-
-            $ServiceTypeDetailsQuery->where('service_requests.service_center_id',auth()->user()->service_center_id);
-            
-        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
-
-            $ServiceTypeDetailsQuery->where('service_requests.technician_id',auth()->user()->id);
-        }
-
-        $ServiceTypeDetails = $ServiceTypeDetailsQuery->get();
 
         if($request->ajax())
         {
@@ -127,6 +49,79 @@ class AdminDashboardController extends Controller
             exit();
         }
 
+        $PendingComplainCount       = 0;
+        $SolvedComplainCount        = 0;
+        $PendingInstallationCount   = 0;
+        $SolvedInstallationCount    = 0;
+
+        $enum_status_color = ServiceRequest::$enum_status_color_code;
+
+        $serviceTypesQuery = ServiceRequest::select('service_type','status')
+        ->whereIn('service_type',array('repair','installation'));
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID')){
+            $serviceTypesQuery->Where('service_requests.company_id', auth()->user()->company_id);
+           
+        }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+            $serviceTypesQuery->where('service_requests.service_center_id',auth()->user()->service_center_id);
+            
+        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+            $serviceTypesQuery->where('service_requests.technician_id',auth()->user()->id);
+        }
+        $ServiceTypes = $serviceTypesQuery->get();        
+        
+        foreach ($ServiceTypes as $key => $SingleServiceTypes) {
+
+            if($SingleServiceTypes->service_type == 'repair' && $SingleServiceTypes->status != 'Closed'){
+
+                /*Total panding complain (Repair) */
+                $PendingComplainCount++;
+
+            }else if($SingleServiceTypes->service_type == 'repair' && $SingleServiceTypes->status == 'Closed'){
+
+                /*Total solved complain (Repair) */
+                $SolvedComplainCount++;
+
+            }else if($SingleServiceTypes->service_type == 'installation' && $SingleServiceTypes->status != 'Closed'){
+
+                /*Total panding installation */
+                $PendingInstallationCount++;
+
+            }else if($SingleServiceTypes->service_type == 'installation' && $SingleServiceTypes->status == 'Closed'){
+
+                /*Total solved installation */
+                $SolvedInstallationCount++;
+
+            }
+        }
+
+        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.is_reopen','service_requests.created_by','service_requests.amount','service_requests.service_type','companies.name as cname','customers.phone','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
+        LCASE(SUBSTRING(customers.firstname, 2)))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)), 
+        LCASE(SUBSTRING(customers.lastname, 2)))) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
+        LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
+        ->leftjoin('users','service_requests.created_by','=','users.id')
+        ->leftjoin('companies','service_requests.company_id','=','companies.id')
+        ->join('customers','service_requests.customer_id','=','customers.id')
+        ->join('products','service_requests.product_id','=','products.id')
+        ->whereIn('service_requests.service_type',array('repair','installation'))
+        ->where('service_requests.status', '!=', 'Closed')
+        ->orderBy('service_requests.created_at','DESC')
+        ->limit(10);
+
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $ServiceTypeDetailsQuery->Where('service_requests.company_id', auth()->user()->company_id);
+
+        }else if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            $ServiceTypeDetailsQuery->where('service_requests.service_center_id',auth()->user()->service_center_id);
+            
+        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+            $ServiceTypeDetailsQuery->where('service_requests.technician_id',auth()->user()->id);
+        }
+
+        $ServiceTypeDetails = $ServiceTypeDetailsQuery->get();
+
         $CompaninesName = Company::select('companies.name as CompanyName','companies.status as CompanyStatus','companies.id as CompanyId')
         ->where('deleted_at',NULL)
         ->where('status','=','Active')->get();
@@ -136,7 +131,7 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,$type)
     {
-
+        Log::info("in getCompanyDashboardData");
         $todayDate = date('Y-m-d');
         $startDate = date('Y-m-d',strtotime($startDate));
         $endDate = date('Y-m-d',strtotime($endDate));
@@ -199,6 +194,7 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardDataByType(Request $request)
     {
+        Log::info("in getCompanyDashboardDataByType");
         $todayDate = date('Y-m-d');
         $startDate = date('Y-m-d',strtotime($request->formData[1]['value']));
         $endDate = date('Y-m-d',strtotime($request->formData[2]['value']));
@@ -282,70 +278,17 @@ class AdminDashboardController extends Controller
             ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$startDate."' AND '".$endDate."'");
             // ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$todayDate."'");
              
-            /*Total Closed count*/
-            
+            /*Total Closed count*/            
         }
+
         $ServiceCount->join('customers','service_requests.customer_id','=','customers.id')
         ->join('products','service_requests.product_id','=','products.id')
         ->whereIn('service_requests.service_type',array('repair','installation'))
         ->orderBy('service_requests.created_at','DESC');
-        
-        // if($request->ajax()){
 
-        //     $ServiceCount = ServiceRequest::select('service_requests.*',DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)),LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'));
-
-        //     if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-        //     {
-        //         $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
-        //     }else{
-        //         if($request->companyId != 'all'){
-        //                 $ServiceCount->where('service_requests.company_id',$request->companyId);
-        //         }
-        //     }
-            
-       
-        //     if($type == "installation_today"){
-
-        //         $ServiceCount->where('service_requests.service_type','=','installation')
-        //         ->where('service_requests.status','!=','Closed')
-        //         ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request->startDate."' AND '".$request->endDate."'");
-
-        //     }elseif ($type == "repair_today") {
-        //         $ServiceCount->where('service_requests.service_type','=','repair')
-        //         ->where('service_requests.status','!=','Closed')
-        //         ->whereRaw("DATE_FORMAT(service_requests.created_at, '%Y-%m-%d') BETWEEN '".$request->startDate."' AND '".$request->endDate."'");
-
-        //     }elseif ($type == "delayed_request") {
-
-        //         $ServiceCount->where('service_requests.status','!=','Closed')
-        //         ->whereRaw("DATE_FORMAT(service_requests.completion_date, '%Y-%m-%d') < '".$request->todayDate."'");
-
-        //     }elseif ($type == "closed_request") {
-
-        //         $ServiceCount->where('service_requests.status','=','Closed')
-        //         ->whereRaw("DATE_FORMAT(service_requests.closed_at, '%Y-%m-%d') = '".$request->todayDate."'");
-        //     }
-        //     $ServiceCount->join('customers','service_requests.customer_id','=','customers.id')
-        //     ->join('products','service_requests.product_id','=','products.id')
-        //     ->whereIn('service_requests.service_type',array('repair','installation'))
-        //     ->orderBy('service_requests.created_at','DESC');
-
-        //     $ServiceCount->limit(10)->offset($request->limitStart);
-
-        // }else{
-            // $ServiceCount->limit(10);
-        // }
         $dataByType = $ServiceCount->get();
 
         $enum_status_color = ServiceRequest::$enum_status_color_code;
-
-        // if($request->ajax()){
-        //     return response()->json(['dataByType' => $dataByType,
-        //     'enum_status_color' => $enum_status_color]);
-        // }else{
-        //     $ServiceCount->limit(10);
-        // }
-
         
         $returnHTML = view('admin.request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'))->render();
 

@@ -38,25 +38,6 @@ class AssignProductsController extends Controller
         if (! Gate::allows('assign_product_access')) {
             return abort(401);
         }
-
-
-        // if (request('show_deleted') == 1) {
-        //     if (! Gate::allows('assign_product_delete')) {
-        //         return abort(401);
-        //     }
-        //     $assign_products = AssignProduct::onlyTrashed()->get();
-        // } else {
-
-        //     if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
-        //     {
-        //         //get company admin's or user's own company assigned product if logged in user is company admin or user
-        //         $assign_products = AssignProduct::where('company_id',auth()->user()->company_id)->get();
-        //     }
-        //     else
-        //     {
-        //         $assign_products = AssignProduct::all();
-        //     }
-        // }
         $companies = \App\Company::where('status','Active')->orderBy('name')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.assign_products.index', compact('companies'));
     }
@@ -70,8 +51,6 @@ class AssignProductsController extends Controller
         if (! Gate::allows('assign_product_access')) {
             return abort(401);
         }
-
-        
 
         $tableFieldData = [];
         $ViewButtons = '';
@@ -88,6 +67,8 @@ class AssignProductsController extends Controller
          ->Where('companies.status', 'Active')
          ->groupBy('assign_products.company_id');
 
+        $countRecordQuery = $requestFilterCountQuery;
+        $countRecord = $countRecordQuery->get()->count();
         
             $columnArray = array(
                     1 => 'assign_products.id',
@@ -117,54 +98,14 @@ class AssignProductsController extends Controller
         $order = $columnArray[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
 
-       
+        $assignProductQuery = $requestFilterCountQuery;
         $requestFilterCount = $requestFilterCountQuery->get()->count();
 
         // get data with  or without filter
-        $assignProductQuery = AssignProduct::select('assign_products.*','companies.name as company_name',DB::raw('group_concat(products.name) as product_name'))
-         ->join('companies','assign_products.company_id','=','companies.id')
-         ->join('products','products.id','=','assign_products.product_id')
-         ->whereNull('companies.deleted_at')
-         ->whereNull('products.deleted_at')
-         ->Where('products.status', 'Active')
-         ->Where('companies.status', 'Active')
-         ->groupBy('assign_products.company_id')
-         ->offset($start)
-         ->limit($limit)
-         ->orderBy($order,$dir);
-
-
-        // filter data from table
-        
-        if(!empty($request->input('company')))
-        {   
-            $assignProductQuery->Where('assign_products.company_id', $request['company']);
-        }
-
-        //Search from table
-        if(!empty($request->input('search.value')))
-        { 
-            $searchVal = $request['search']['value'];
-            $assignProductQuery->where(function ($query) use ($searchVal) {
-
-                $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-                
-
-            });
-        }
-
-
-        // fetch total count without any filter
-        $countRecord = AssignProduct::select('assign_products.*','companies.name as company_name',DB::raw('group_concat(products.name) as product_name'))
-        ->join('companies','assign_products.company_id','=','companies.id')
-        ->join('products','products.id','assign_products.product_id')
-        ->whereNull('companies.deleted_at')
-        ->whereNull('products.deleted_at')
-        ->Where('products.status', 'Active')
-        ->Where('companies.status', 'Active')
-        ->groupBy('assign_products.company_id')->get()->count();
-        
-        // echo $assignProductQuery->toSql();exit;
+        $assignProductQuery->groupBy('assign_products.company_id')
+                             ->offset($start)
+                             ->limit($limit)
+                             ->orderBy($order,$dir);
 
         $assignProducts = $assignProductQuery->get();
         

@@ -43,26 +43,6 @@ class CustomersController extends Controller
         if (! Gate::allows('customer_access')) {
             return abort(401);
         }
-// echo "<pre>"; print_r (auth()->user()); echo "</pre>"; exit();
-
-        // if (request('show_deleted') == 1) {
-        //     if (! Gate::allows('customer_delete')) {
-        //         return abort(401);
-        //     }
-        //     $customers = Customer::onlyTrashed()->get();
-        // } else {
-
-        //     if(auth()->user()->role_id ==  config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id ==  config('constants.COMPANY_USER_ROLE_ID'))
-        //     {
-        //         //get company admin's or user's own company customers if logged in user is company admin or user
-        //         $customers = Customer::where('company_id',auth()->user()->company_id)->get();
-        //     }
-        //     else
-        //     {
-        //         $customers = Customer::all();
-        //     }
-            
-        // }
         $companies = \App\Company::where('status','Active')->get()->pluck('name', 'id')->prepend(trans('quickadmin.qa_show_all'), '');
         return view('admin.customers.index', compact('companies'));
     }
@@ -76,9 +56,6 @@ class CustomersController extends Controller
         if (! Gate::allows('customer_access')) {
             return abort(401);
         }
-
-        
-
         $tableFieldData = [];
         $ViewButtons = '';
         $EditButtons = '';
@@ -90,6 +67,35 @@ class CustomersController extends Controller
          ->whereNull('companies.deleted_at')
          ->where('companies.status','Active');
 
+        if(!empty($request->input('company')))
+        {   
+            $requestFilterCountQuery->Where('customers.company_id', $request['company']);
+        }
+        elseif(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $requestFilterCountQuery->where('company_id',auth()->user()->company_id);
+        }
+
+        $countRecordQuery = $requestFilterCountQuery;
+        // fetch total count without any filter
+        $countRecord = $countRecordQuery->count('customers.id');
+
+        //Search from table
+        if(!empty($request->input('search.value')))
+        { 
+            $searchVal = $request['search']['value'];
+            $requestFilterCountQuery->where(function ($query) use ($searchVal) {
+
+                if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID')){
+                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
+                }
+                $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
+                $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
+                $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
+
+            });
+        }        
+
         if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
         {
             $columnArray = array(
@@ -99,26 +105,6 @@ class CustomersController extends Controller
                     4 =>'companies.name' ,
                     5 =>'customers.status'
                 );
-
-            if(!empty($request->input('company')))
-            {   
-                $requestFilterCountQuery->Where('customers.company_id', $request['company']);
-            }
-
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
         }
         else{
            $columnArray = array(
@@ -127,25 +113,6 @@ class CustomersController extends Controller
                     3 =>'customers.phone' ,
                     4 =>'customers.status'
                 );
-
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                $requestFilterCountQuery->where('company_id',auth()->user()->company_id);
-            }
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $requestFilterCountQuery->where(function ($query) use ($searchVal) {
-
-                    
-                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.email', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
-
-                });
-            } 
         }
         
         $limit = $request->input('length');
@@ -153,77 +120,13 @@ class CustomersController extends Controller
         $order = $columnArray[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
 
-        
-        $requestFilterCount = $requestFilterCountQuery->count('customers.id');
-        
+        $customerQuery = $requestFilterCountQuery;
+        $requestFilterCount = $requestFilterCountQuery->count('customers.id');        
 
-        $customerQuery = Customer::select('customers.*','companies.name as company_name')
-         ->join('companies','customers.company_id','=','companies.id')
-         ->whereNull('companies.deleted_at')
-         ->where('companies.status','Active')
-         ->offset($start)
+        $customerQuery->offset($start)
          ->limit($limit)
          ->orderBy($order,$dir);
-
-
-        // filter data from table
-        if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
-        {
-            if(!empty($request->input('company')))
-            {   
-                $customerQuery->Where('customers.company_id', $request['company']);
-            }
-
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $customerQuery->where(function ($query) use ($searchVal) {
-
-                    $query->orWhere('companies.name', 'like', '%' . $searchVal . '%');
-                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
-            // fetch total count without any filter
-            $countRecord = Customer::select('customers.*')
-                            ->join('companies','customers.company_id','=','companies.id')
-                            ->whereNull('companies.deleted_at')
-                            ->where('companies.status','Active')
-                            ->count('customers.id');
-        } 
-        else 
-        {
-            if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
-            {
-                $customerQuery->where('customers.company_id',auth()->user()->company_id);
-            }
-            //Search from table
-            if(!empty($request->input('search.value')))
-            { 
-                $searchVal = $request['search']['value'];
-                $customerQuery->where(function ($query) use ($searchVal) {
-
-                    $query->orWhere(DB::raw("CONCAT(`customers`.`firstname`,' ', `customers`.`lastname`)"), 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.phone', 'like', '%' . $searchVal . '%');
-                    $query->orWhere('customers.status', 'like', '%' . $searchVal . '%');
-
-                });
-            }
-            // fetch total count without any filter
-            $countRecord = Customer::select('customers.*')
-                            ->join('companies','customers.company_id','=','companies.id')
-                            ->whereNull('companies.deleted_at')
-                            ->where('companies.status','Active')
-                            ->where('company_id',auth()->user()->company_id)->count('customers.id');
-        } 
-
-        
-        
-        $customers = $customerQuery->get();
-        
+        $customers = $customerQuery->get();        
 
         if(!empty($customers)){
 
