@@ -1156,7 +1156,22 @@
                                 <tr data-entry-id="{{ $service_request_log->id }}">
                                     <td field-key='serial_no'>{{ $no++ }}</td>
                                     <td field-key='name'>{{ $service_request_log->action_made or '' }}</td>
-                                    <td field-key='email'>{{ $service_request_log->user->name or '' }}</td>
+                                    <td field-key='email'>
+                                        @if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+                                            @if($service_request_log->user->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && $service_request_log->user->role_id != config('constants.TECHNICIAN_ROLE_ID'))
+                                                {{ $service_request_log->user->name or '' }}
+                                            @else
+                                                Service Center
+                                            @endif
+                                        @elseif(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
+                                            @if($service_request_log->user->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && $service_request_log->user->role_id != config('constants.COMPANY_USER_ROLE_ID'))
+                                                {{ $service_request_log->user->name or '' }}
+                                            @else
+                                                Company
+                                            @endif
+                                        @else
+                                            {{ $service_request_log->user->name or '' }}
+                                        @endif
                                     <td field-key='created_at'>{{ (!empty($service_request_log->created_at))?App\Helpers\CommonFunctions::setDateTimeFormat($service_request_log->created_at) : '' }}</td>
                                 </tr>
                             @endforeach

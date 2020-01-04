@@ -983,7 +983,7 @@ class ServiceRequestsController extends Controller
                     $enum_mop = ServiceRequest::$enum_mop;
                     // $enum_status = ServiceRequest::$enum_status;
             
-        $service_request = ServiceRequest::findOrFail($id);
+        $service_request = ServiceRequest::with('parts')->findOrFail($id);
 
         $userDetail = '';
         if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID')){
@@ -1185,19 +1185,18 @@ class ServiceRequestsController extends Controller
         // get service log accroding to logged in user
         if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID'))
         {
-            $service_request_logs = ServiceRequestLog::select('service_request_id','action_made_service_center as action_made','created_at','user_id')
+            $service_request_logs = ServiceRequestLog::with('user')->select('service_request_id','action_made_service_center as action_made','created_at','user_id')
                                     ->where('service_request_id',$id)->get();
         }
         else if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
         {
-            $service_request_logs = ServiceRequestLog::select('service_request_id','action_made_company as action_made','created_at','user_id')
+            $service_request_logs = ServiceRequestLog::with('user')->select('service_request_id','action_made_company as action_made','created_at','user_id')
                                     ->where('service_request_id',$id)->get();
         }
         else
         {
-            $service_request_logs = ServiceRequestLog::where('service_request_id',$id)->get();
+            $service_request_logs = ServiceRequestLog::with('user')->where('service_request_id',$id)->get();
         }
-
         $enum_company_status = \App\Company::$enum_status;
         $enum_customer_status = \App\Customer::$enum_status;
         $enum_service_center_status = \App\ServiceCenter::$enum_status;
@@ -1770,7 +1769,8 @@ class ServiceRequestsController extends Controller
         $enum_status_color = ServiceRequest::$enum_status_color_code;
         $service_request['additional_charges']=$additional_charges;
 
-        $service_request_logs = $service_request->servicerequestlog;
+        // $service_request_logs = $service_request->servicerequestlog;
+        $service_request_logs = ServiceRequestLog::with('user')->where('service_request_id', $id)->get();
         return view('admin.service_requests.show', compact('service_request', 'service_request_logs','additional_charge_title','enum_status_color','userDetail'))->with('no', 1);
     }
 

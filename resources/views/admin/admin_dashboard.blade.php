@@ -384,25 +384,24 @@
                               <div class="table-responsive">
                                 <table class="table no-margin recent-service-request table-striped table-hover table-bordered table-responsive">
                                   <thead>
+                                  <?php $columnCount = 1; ?>
                                     <tr>
-                                        <th>@lang('quickadmin.service-request.fields.request-id')</th>
-                                        <th>@lang('quickadmin.service-request.fields.title')</th>
+                                        <th>@lang('quickadmin.service-request.fields.request-id') <?php $columnCount++; ?></th>
+                                        <th>@lang('quickadmin.service-request.fields.title') <?php $columnCount++; ?></th>
                                         <!-- check role id to show company name -->
                                          @if(auth()->user()->role_id == config('constants.SUPER_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.ADMIN_ROLE_ID'))
-                                        <th>@lang('quickadmin.service-request.fields.company')</th>
+                                        <th>@lang('quickadmin.service-request.fields.company') <?php $columnCount++; ?></th>
                                         @endif
-                                        <th>@lang('quickadmin.service-request.fields.customer')</th>
+                                        <th>@lang('quickadmin.service-request.fields.customer') <?php $columnCount++; ?></th>
                                         @if(auth()->user()->role_id != config('constants.COMPANY_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.COMPANY_USER_ROLE_ID'))
-
-                                            <th>@lang('quickadmin.service-request.fields.amount')</th>
-
+                                            <th>@lang('quickadmin.service-request.fields.amount') <?php $columnCount++; ?></th>
                                         @endif
                                         @if(auth()->user()->role_id != config('constants.SERVICE_ADMIN_ROLE_ID') && auth()->user()->role_id != config('constants.TECHNICIAN_ROLE_ID'))
-                                            <th>@lang('quickadmin.service-request.fields.created_by')</th>
+                                            <th>@lang('quickadmin.service-request.fields.created_by') <?php $columnCount++; ?></th>
                                         @endif
-                                        <th>@lang('quickadmin.service-request.fields.created_date')</th>
-                                        <th>@lang('quickadmin.service-request.fields.status')</th>
-                                        <th>@lang('quickadmin.qa_action')</th>
+                                        <th>@lang('quickadmin.service-request.fields.created_date') <?php $columnCount++; ?></th>
+                                        <th>@lang('quickadmin.service-request.fields.status') <?php $columnCount++; ?></th>
+                                        <th>@lang('quickadmin.qa_action') <?php $columnCount++; ?></th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -489,6 +488,10 @@
                                             </td>
                                         </tr>
                                         @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="{{$columnCount}}" style="text-align:center;">No service request found</td>
+                                        </tr>
                                     @endif
                                   </tbody>
                                 </table>
@@ -607,9 +610,9 @@
                     "formData":formData,
                     "_token": "{{ csrf_token() }}"
                 },
-                beforeSend:function(){
-                    console.log("starting ajax call");
-                },
+                // beforeSend:function(){
+                //     console.log("starting ajax call");
+                // },
                 dataType: "json",
                 success:function(data) {
                     console.log(data.color);

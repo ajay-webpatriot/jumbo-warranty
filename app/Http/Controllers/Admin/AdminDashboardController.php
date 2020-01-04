@@ -94,7 +94,7 @@ class AdminDashboardController extends Controller
             }
         }
 
-        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.is_reopen','service_requests.created_by','service_requests.amount','service_requests.service_type','companies.name as cname','customers.phone','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
+        $ServiceTypeDetailsQuery = ServiceRequest::select('service_requests.status','service_requests.is_accepted','service_requests.is_reopen','service_requests.created_by','service_requests.amount','service_requests.service_type','companies.name as cname','customers.phone','service_requests.id','users.name as createdbyName','service_requests.created_at',DB::raw('CONCAT(CONCAT(UCASE(LEFT(customers.firstname, 1)), 
         LCASE(SUBSTRING(customers.firstname, 2)))," ",CONCAT(UCASE(LEFT(customers.lastname, 1)), 
         LCASE(SUBSTRING(customers.lastname, 2)))) as customer_name'),DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), 
         LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
@@ -131,7 +131,6 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardData($startDate,$endDate,$SelectedCompanyId,$type)
     {
-        Log::info("in getCompanyDashboardData");
         $todayDate = date('Y-m-d');
         $startDate = date('Y-m-d',strtotime($startDate));
         $endDate = date('Y-m-d',strtotime($endDate));
@@ -194,7 +193,6 @@ class AdminDashboardController extends Controller
 
     public function getCompanyDashboardDataByType(Request $request)
     {
-        Log::info("in getCompanyDashboardDataByType");
         $todayDate = date('Y-m-d');
         $startDate = date('Y-m-d',strtotime($request->formData[1]['value']));
         $endDate = date('Y-m-d',strtotime($request->formData[2]['value']));

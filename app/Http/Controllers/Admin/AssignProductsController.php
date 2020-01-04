@@ -119,9 +119,12 @@ class AssignProductsController extends Controller
 
                 $product_array = explode(',', $assignProduct->product_name);
                 $product_string = '';
-                foreach ($product_array as $key => $value) {
-                    $product_string .= '<span class="label label-info label-many">'.ucfirst($value).'</span>';
+                if(count($product_array)>0){
+                    $product_string = implode(", &nbsp;", $product_array);
                 }
+                // foreach ($product_array as $key => $value) {
+                //     $product_string .= '<span class="label label-info label-many">'.ucfirst($value).'</span>';
+                // }
                 $tableField['product_name'] = $product_string;
 
                 $EditButtons = '';
