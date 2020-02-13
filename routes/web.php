@@ -122,6 +122,9 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
     Route::get('dashboard','Admin\AdminDashboardController@index')->name('index');
 
     Route::post('dashboard/listdata','Admin\AdminDashboardController@getCompanyDashboardDataByType')->name('request_list');
+    //for pending request
+    Route::post('dashboard/pendinglistdata','Admin\AdminDashboardController@getCompanyDashboardDataPneding')->name('request_list');
+
     // Route::get('getCompanyDashboardRequestCount','Admin\AdminDashboardController@getCompanyDashboardRequestCount')->name('getCompanyDashboardRequestCount');
 
     //company admin ajax data table

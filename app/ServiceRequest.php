@@ -344,7 +344,10 @@ class ServiceRequest extends Model
             }
             if(!empty($request['status']))
             {   
-                if($request['status']  == "Re Opened"){
+                //for show all without closed
+                if($request['status'] == "NotClosed"){
+                    $service_requestsQuery->Where('service_requests.status','!=' ,'closed');
+                }elseif($request['status']  == "Re Opened"){
                     $service_requestsQuery->Where('service_requests.is_reopen', 1);
                 }else{
                     $service_requestsQuery->Where('service_requests.status', $request['status']);

@@ -262,9 +262,12 @@ class ServiceRequestsController extends Controller
         // $request_stauts = ServiceRequest::$enum_status;
         $externalValue = ["Re-opened" => "Re-opened"];
         $request_stauts = ServiceRequest::$enum_status + $externalValue;
+
         asort($request_stauts); // sort array
         $request_stauts = ['' => trans('quickadmin.qa_show_all')] + $request_stauts;
 
+        //add new status for  show without closed request
+        $request_stauts['NotClosed'] = "Show All Not Closed";
         $request_type = ['' => trans('quickadmin.qa_show_all')] + ServiceRequest::$enum_service_type;
 
         return view('admin.service_requests.index', compact('companies', 'customers', 'products', 'companyName', 'serviceCenterName', 'service_centers', 'technicians','request_stauts','request_type','total_paid_amount','total_due_amount'));
@@ -462,7 +465,11 @@ class ServiceRequestsController extends Controller
             {   
                 $request->session()->put('filter_request_status', $request['status']);
                 // Check request stauts
-                if($request->input('status') == "Re-opened"){
+
+                //check show not closed
+                if($request->input('status') == "NotClosed"){
+                    $service_requestsQuery->Where('service_requests.status','!=' ,'closed');
+                }elseif($request->input('status') == "Re-opened"){
                     $service_requestsQuery->Where('service_requests.is_reopen', 1);
                 }else{
                     $service_requestsQuery->Where('service_requests.status', $request['status']);
@@ -590,6 +597,9 @@ class ServiceRequestsController extends Controller
                     }else if($SingleServiceRequest->is_paid == 0 ){
 
                         $paidStatus = 'Due';
+                        if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') && $SingleServiceRequest->status != 'Closed') { 
+                            $paidStatus .= '<span class="label label-danger paddingMarginLeftLabel" data-toggle="tooltip" title="" data-original-title="Paid" onclick="updatePaidstatus('.$SingleServiceRequest->id.');" ><i class="fa fa-check" aria-hidden="true"></i></span>';
+                        }
                     }
                     $tableField['amount_paid'] = ucfirst($paidStatus);
 
@@ -603,6 +613,9 @@ class ServiceRequestsController extends Controller
                     }else if($SingleServiceRequest->is_paid == 0 ){
                         
                         $paidStatus = 'Due';
+                        if(auth()->user()->role_id == config('constants.ADMIN_ROLE_ID') && $SingleServiceRequest->status != 'Closed') { 
+                            $paidStatus .= '<span class="label label-danger paddingMarginLeftLabel" data-toggle="tooltip" title="" data-original-title="Paid" onclick="updatePaidstatus('.$SingleServiceRequest->id.');" ><i class="fa fa-check" aria-hidden="true"></i></span>';
+                        }
                     }
                     $tableField['amount_paid'] = ucfirst($paidStatus);
 
@@ -1573,7 +1586,11 @@ class ServiceRequestsController extends Controller
         {
             // allow only admin and super admin to generate PDF
             // return $this->createReceiptPDF($id);
-            return redirect()->route('admin.service_request.invoice',[$id]);
+
+            //old routes
+            //return redirect()->route('admin.service_request.invoice',[$id]);
+
+            return redirect()->route('admin.service_requests.index')->with('success','Service Request updated successfully!');
         }
         else
         {

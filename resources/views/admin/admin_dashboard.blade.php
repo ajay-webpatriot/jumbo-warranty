@@ -250,7 +250,7 @@
                 <div class="row">
 
                     <!-- Total PENDING complain -->
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-3 col-sm-6 col-xs-12" onclick="getRequestListPending('PendingComplainCount')">
                         <div class="info-box">
                             <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
                             <div class="info-box-content">
@@ -261,7 +261,7 @@
                     </div>
                        
                     <!-- Total PENDING installation -->
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-3 col-sm-6 col-xs-12" onclick="getRequestListPending('PendingInstallationCount')">
                         <div class="info-box">
                             <span class="info-box-icon bg-red"><i class="fa fa-tv"></i></span>
                             <div class="info-box-content">
@@ -274,7 +274,7 @@
                     <div class="clearfix visible-sm-block"></div>
 
                     <!-- Total solved installation -->
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-3 col-sm-6 col-xs-12" onclick="getRequestListPending('SolvedInstallationCount')">
                         <div class="info-box">
                             <span class="info-box-icon bg-green"><i class="fa fa-tv"></i></span>
                             <div class="info-box-content">
@@ -285,7 +285,7 @@
                     </div>
                         
                     <!-- Total solved complain -->
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-3 col-sm-6 col-xs-12" onclick="getRequestListPending('SolvedComplainCount')">
                         <div class="info-box">
                             <span class="info-box-icon bg-yellow"><i class="ion ion-ios-gear-outline"></i></span>
                             <div class="info-box-content">
@@ -293,6 +293,18 @@
                                 <span class="info-box-number">{{$SolvedComplainCount}}</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="row" style="display:none;" id="pendingListView">
+                        <div class="col-md-12">
+                            <div class="box" id="pendingboxcolor">
+                                <div id="pendingRequestlistHtml">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center" id="pendingAddloader" style="display:none;">
+                        <i class="fa fa-refresh fa-spin"></i>
                     </div>
                 </div>
 
@@ -625,6 +637,34 @@
             });
             
         });
+        //add for toal count section
+        function getRequestListPending(type){
+            var color = $('#storeHiddenColor').val();
+            $('#pendingboxcolor').removeClass('box-'+color);
+            $('#pendingAddloader').removeAttr('style');
+            $('#pendingAddloader').addClass('overlay');
+
+            $.ajax({
+                type:'POST',
+                url:APP_URL+'/admin/dashboard/pendinglistdata',
+                data:{
+                    "service_type": type,
+                    "_token": "{{ csrf_token() }}"
+                },
+                dataType: "json",
+                success:function(data) {
+                    console.log(data.color);
+                    $('#storeHiddenColor').val(data.color);
+                    $('#pendingboxcolor').addClass('box-'+data.color);
+                    $('#pendingAddloader').hide();
+                    $('#pendingAddloader').removeClass('overlay');
+                    $('#pendingListView').removeAttr('style');
+                    $('#pendingRequestlistHtml').html(data.html);
+                    $('.datatable').dataTable();
+                }
+            });
+            
+        }
         
 
     </script>
