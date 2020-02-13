@@ -296,6 +296,88 @@ class AdminDashboardController extends Controller
         
     }
 
+    public function getCompanyDashboardDataPneding(Request $request)
+    {
+        $type = $request->service_type;
+        $typeTitle = '';
+        $dataByType = (object)array();
+        $Status = 0;
+        $color = '';
+       
+        $ServiceCount = ServiceRequest::with('company')->with('customer')
+                    ->with('service_center')->with('product')->with('technician')
+                    ->select('service_requests.*','users.name as createdbyName',
+                        DB::raw('CONCAT(customers.firstname," ",customers.lastname) as customer_name'),
+                        DB::raw('CONCAT(CONCAT(UCASE(LEFT(service_requests.service_type, 1)), LCASE(SUBSTRING(service_requests.service_type, 2)))," - ",products.name) as servicerequest_title'))
+                    ->leftjoin('users','service_requests.created_by','=','users.id');
+
+        if(auth()->user()->role_id == config('constants.COMPANY_ADMIN_ROLE_ID') || auth()->user()->role_id == config('constants.COMPANY_USER_ROLE_ID'))
+        {
+            $ServiceCount->Where('service_requests.company_id', auth()->user()->company_id);
+
+        }
+        if(auth()->user()->role_id == config('constants.SERVICE_ADMIN_ROLE_ID')){
+
+            $ServiceCount->where('service_requests.service_center_id',auth()->user()->service_center_id);
+            
+        }else if(auth()->user()->role_id == config('constants.TECHNICIAN_ROLE_ID')){
+
+            $ServiceCount->where('service_requests.technician_id',auth()->user()->id);
+
+        }
+       
+        if($type == "PendingComplainCount"){
+
+            $typeTitle = 'TOTAL PENDING COMPLAINS';
+            $color = 'info';
+
+            $ServiceCount->where('service_requests.service_type','=','repair')
+            ->where('service_requests.status','!=','Closed');
+
+        }elseif ($type == "PendingInstallationCount") {
+
+            $typeTitle = 'TOTAL PENDING INSTALLATION';
+            $color = 'danger';
+
+            $ServiceCount->where('service_requests.service_type','=','installation')
+            ->where('service_requests.status','!=','Closed');
+
+        }elseif ($type == "SolvedInstallationCount") {
+            
+            $typeTitle = 'TOTAL SOLVED INSTALLATION';
+            $color = 'success';
+
+           $ServiceCount->where('service_requests.service_type','=','installation')
+            ->where('service_requests.status','=','Closed');
+
+            /*Total Delayed count*/
+            // $dataByType = $ServiceCount->get();
+
+        }elseif ($type == "SolvedComplainCount") {
+
+            $typeTitle = 'TOTAL SOLVED COMPLAINS';
+            $color = 'warning';
+
+            $ServiceCount->where('service_requests.service_type','=','repair')
+            ->where('service_requests.status','=','Closed');            
+        }
+        $ServiceCount->join('customers','service_requests.customer_id','=','customers.id')
+        ->join('products','service_requests.product_id','=','products.id')
+        ->whereIn('service_requests.service_type',array('repair','installation'))
+        ->orderBy('service_requests.created_at','DESC');
+        
+        
+        $dataByType = $ServiceCount->get();
+
+        $enum_status_color = ServiceRequest::$enum_status_color_code;
+
+
+        
+        $returnHTML = view('admin.pending_request_list',compact('dataByType','enum_status_color','typeTitle','type','companyId','startDate','endDate','todayDate','color'))->render();
+
+        return response()->json(array('success' => true, 'html'=>$returnHTML, 'type' => $type, 'color' => $color));        
+    }
+
     // public function getCompanyDashboardRequestCount()
     // {
     //     $GetFilterValue = Input::all();

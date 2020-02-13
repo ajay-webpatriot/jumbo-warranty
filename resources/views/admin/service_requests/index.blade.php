@@ -1433,6 +1433,29 @@
                 }
             });
         }
+        //for update status paid
+        function updatePaidstatus(serviceRequestId) {
+            if (confirm('Are you sure to change status to Pay?')) {
+                if(serviceRequestId != 0){
+
+                   $.ajax({
+                    type:'POST',
+                    url:APP_URL+"/admin/amountPaid",
+                    data:{
+                        'serviceRequestId':serviceRequestId,
+                        '_token': '{{csrf_token()}}'
+                    },
+                    dataType: "json",
+                    success:function(data) {
+                        if(data == 1){
+                            tableServiceRequest.draw();
+                        }
+                    }
+                   });
+                  
+                }
+            }
+        }
 
         $(document).on("change","#filter_customer, #filter_product, #filter_technician",function(evt){
             tableServiceRequest.draw();
