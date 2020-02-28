@@ -53,10 +53,6 @@
                             <td field-key='zipcode'>{{ $customer->zipcode }}</td>
                         </tr>
                         <tr>
-                            <th>@lang('quickadmin.customers.fields.location')</th>
-                            <td field-key='location'>{{ $customer->location }}</td>
-                        </tr>
-                        <tr>
                             <th>@lang('quickadmin.customers.fields.status')</th>
                             <td field-key='status'>{{ $customer->status }}</td>
                         </tr>

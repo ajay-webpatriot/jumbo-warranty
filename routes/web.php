@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth', 'preventBackHistory'], 'prefix' => 'admin
     Route::get('/getTechnicians','Admin\ServiceRequestsController@getTechnicians');
     Route::get('/getCustomerAddress','Admin\ServiceRequestsController@getCustomerAddress');
     Route::get('/getSuggestedServiceCenter','Admin\ServiceRequestsController@getSuggestedServiceCenter');
-    Route::get('/getTransporationCharge','Admin\ServiceRequestsController@getTransporationCharge');
+    // Route::get('/getTransporationCharge','Admin\ServiceRequestsController@getTransporationCharge');
 
     //service request ajax
     Route::post('/DataTableServiceRequestAjax','Admin\ServiceRequestsController@DataTableServiceRequestAjax');

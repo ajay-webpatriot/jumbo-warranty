@@ -590,7 +590,7 @@ function getTechnicians(serviceCenterId) {
        		$("#technician_id").html(data.options);
        	}
     });
-	    getTransporationCharge();
+	    // getTransporationCharge();
 }
 function getSuggestedServiceCenter(customerId) {
 	$.ajax({
@@ -619,7 +619,7 @@ function getSuggestedServiceCenter(customerId) {
 		       		$("#suggestedHTML").html(suggestedServiceCenters);	
 				}
 	       		
-	       		getTransporationCharge();
+	       		// getTransporationCharge();
 	       	}
 	    });
 }
@@ -768,6 +768,7 @@ function allowNumberWithComma(ele, evt) {
     return true;
 }
 
+/*disable transportation charge function
 function getTransporationCharge() {
 
 	var customerId = $("#customer_id").val();
@@ -828,7 +829,7 @@ function getTransporationCharge() {
 	{
 		$(".transportationDiv").hide();
 	}
-}
+}*/
 
 function getAssignedProducts(ele) {
 	

@@ -52,13 +52,6 @@
                             <td field-key='zipcode'>{{ $user->zipcode }}</td>
                         </tr>
                         <tr>
-                            <th>@lang('quickadmin.users.fields.location')</th>
-                            <td>
-                    <strong>{{ $user->location_address }}</strong>
-                    <div id='location-map' style='width: 600px;height: 300px;' class='map' data-key='location' data-latitude='{{$user->location_latitude}}' data-longitude='{{$user->location_longitude}}'></div>
-                </td>
-                        </tr>
-                        <tr>
                             <th>@lang('quickadmin.users.fields.email')</th>
                             <td field-key='email'>{{ $user->email }}</td>
                         </tr>
@@ -333,29 +326,4 @@
 
 @section('javascript')
     @parent
-   <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
- 
-    <script>
-        function initialize() {
-            const maps = document.getElementsByClassName("map");
-            for (let i = 0; i < maps.length; i++) {
-                const field = maps[i]
-                const fieldKey = field.dataset.key;
-                const latitude = parseFloat(field.dataset.latitude) || -33.8688;
-                const longitude = parseFloat(field.dataset.longitude) || 151.2195;
-        
-                const map = new google.maps.Map(document.getElementById(fieldKey + '-map'), {
-                    center: {lat: latitude, lng: longitude},
-                    zoom: 13
-                });
-                const marker = new google.maps.Marker({
-                    map: map,
-                    position: {lat: latitude, lng: longitude},
-                });
-        
-                marker.setVisible(true);
-            }    
-              
-          }
-    </script>
 @stop

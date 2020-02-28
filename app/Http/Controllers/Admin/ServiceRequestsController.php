@@ -2265,7 +2265,7 @@ class ServiceRequestsController extends Controller
         echo json_encode($data);
         exit;
     }
-    public function getTransporationCharge(Request $request)
+    /*ublic function getTransporationCharge(Request $request)
     {
         // ajx function to get transportation charges if customer is in supported zipcode area
         
@@ -2311,7 +2311,7 @@ class ServiceRequestsController extends Controller
         }
         echo json_encode($data);
         exit;
-    }
+    }*/
 
     public function getSuggestedServiceCenter(Request $request)
     {

@@ -245,7 +245,8 @@ class CustomersController extends Controller
             }
         
         }
-
+        //disable to get lat long of user
+        /*
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
         
         $request['location_latitude']=0; 
@@ -270,7 +271,7 @@ class CustomersController extends Controller
                 return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError); 
             exit;
             }
-        }
+        }*/
         // else
         // {
         //     $request['location_latitude']=112;
@@ -379,6 +380,7 @@ class CustomersController extends Controller
                     exit;
             }
         }
+        /* disable function to get user's lat long
         if(isset($customer->zipcode) && isset($request['zipcode']))
         {
             if($customer->zipcode !== $request['zipcode'])
@@ -410,7 +412,7 @@ class CustomersController extends Controller
 
                 }
             }
-        }
+        }*/
         // echo "<pre>"; print_r ($request->all()); echo "</pre>"; exit();
         $customer->update($request->all());
 

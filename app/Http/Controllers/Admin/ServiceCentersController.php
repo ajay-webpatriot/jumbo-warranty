@@ -118,6 +118,7 @@ class ServiceCentersController extends Controller
             }
         
         }
+        /* disable function to get user's lat/long
         $resultLocation=GoogleAPIHelper::getLatLong($request['zipcode']);
         //Check lat & long for request zipcode
         $validvalidatorError=array();
@@ -140,7 +141,7 @@ class ServiceCentersController extends Controller
                 return redirect()->back()->withInput(Input::all())->withErrors($validvalidatorError);
                 exit;
             }
-        }
+        }*/
 
         $service_center = ServiceCenter::create($request->all());
 
@@ -234,7 +235,7 @@ class ServiceCentersController extends Controller
 
         $service_center = ServiceCenter::findOrFail($id);
 
-
+        /* disable function to get user's lat/long
         if(isset($service_center->zipcode) && isset($request['zipcode']))
         {
             if($service_center->zipcode !== $request['zipcode'])
@@ -263,7 +264,7 @@ class ServiceCentersController extends Controller
                     }
                 }
             }
-        }     
+        }*/
         
         $service_center->update($request->all());
 

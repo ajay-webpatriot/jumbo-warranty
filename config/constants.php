@@ -6,7 +6,7 @@ return [
 	'SERVICE_ADMIN_ROLE_ID' => env('SERVICE_ADMIN_ROLE_ID','5'),
 	'TECHNICIAN_ROLE_ID' => env('TECHNICIAN_ROLE_ID','6'),
 	'COMPANY_USER_ROLE_ID' => env('COMPANY_USER_ROLE_ID','7'),
-	'GOOGLE_MAPS_API_KEY' =>  env('GOOGLE_MAPS_API_KEY','AIzaSyBsNVGUNzn19onCo93Vb1aupJO45oGrVMc'),
+	// 'GOOGLE_MAPS_API_KEY' =>  env('GOOGLE_MAPS_API_KEY','AIzaSyBsNVGUNzn19onCo93Vb1aupJO45oGrVMc'),
 	// 'PRE_ADDITIONAL_CHARGES_FOR' => array("Please select", "additional charge 1", "additional charge 2"),
 	'PRE_ADDITIONAL_CHARGES_FOR' => array('Please select', 
 			'Motherboard Replace','Speaker replace','LVDS replace',
